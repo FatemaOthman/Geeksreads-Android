@@ -16,6 +16,12 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <activity android:name=".MyBooksShelvesActivity"/>
+        <activity android:name=".ChangePasswordActivity"/>
+        <activity android:name=".EditProfile" />
+        <activity android:name=".BookActivity" />
+        <activity android:name=".LoginActivity"
+                  android:parentActivityName= ".SignupActivity"/>
     </application>
 
 </manifest>
