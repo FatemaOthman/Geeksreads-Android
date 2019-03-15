@@ -1,0 +1,159 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/relativeLayout"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context=".EditProfile">
+
+    <include
+        android:id="@+id/toolbar"
+        layout="@layout/toolbar">
+    </include>
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <ImageView
+                android:id="@+id/UserProfilePhoto"
+                android:layout_width="match_parent"
+                android:layout_height="150dp"
+                android:layout_marginTop="20dp"
+                android:layout_marginBottom="20dp"
+                tools:layout_editor_absoluteX="107dp"
+                tools:layout_editor_absoluteY="89dp"
+                tools:srcCompat="@tools:sample/avatars" />
+
+            <EditText
+                android:id="@+id/FullNameTxt"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="30dp"
+                android:layout_marginLeft="0dp"
+                android:layout_marginTop="0dp"
+                android:layout_marginEnd="30dp"
+                android:layout_marginRight="0dp"
+                android:layout_marginBottom="10dp"
+                android:ems="10"
+                android:hint="@string/FullNameHint"
+                android:inputType="textPersonName" />
+
+            <EditText
+                android:id="@+id/DisplayNameTxt"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="30dp"
+                android:layout_marginLeft="0dp"
+                android:layout_marginTop="0dp"
+                android:layout_marginEnd="30dp"
+                android:layout_marginRight="0dp"
+                android:layout_marginBottom="10dp"
+                android:ems="10"
+                android:hint="@string/DisplayNameHint"
+                android:inputType="textPersonName" />
+
+            <EditText
+                android:id="@+id/UserNameTxt"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="30dp"
+                android:layout_marginLeft="0dp"
+                android:layout_marginTop="0dp"
+                android:layout_marginEnd="30dp"
+                android:layout_marginRight="0dp"
+                android:layout_marginBottom="10dp"
+                android:ems="10"
+                android:hint="@string/UsernameHint"
+                android:inputType="textPersonName" />
+
+            <EditText
+                android:id="@+id/EmailAddressTxt"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="30dp"
+                android:layout_marginLeft="0dp"
+                android:layout_marginTop="0dp"
+                android:layout_marginEnd="30dp"
+                android:layout_marginRight="0dp"
+                android:layout_marginBottom="10dp"
+                android:ems="10"
+                android:hint="@string/EmailHint"
+                android:inputType="textEmailAddress" />
+
+            <EditText
+                android:id="@+id/BirthDate"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="30dp"
+                android:layout_marginLeft="0dp"
+                android:layout_marginTop="0dp"
+                android:layout_marginEnd="30dp"
+                android:layout_marginRight="0dp"
+                android:layout_marginBottom="10dp"
+                android:ems="10"
+                android:hint="@string/BirthDateHint"
+                android:inputType="date" />
+
+            <Spinner
+                android:id="@+id/CountryList"
+                android:layout_width="match_parent"
+                android:layout_height="45dp"
+                android:layout_marginStart="30dp"
+                android:layout_marginLeft="0dp"
+                android:layout_marginTop="0dp"
+                android:layout_marginEnd="30dp"
+                android:layout_marginRight="0dp"
+                android:layout_marginBottom="10dp"
+                android:entries="@array/Countries" />
+
+            <Spinner
+                android:id="@+id/GenderList"
+                android:layout_width="match_parent"
+                android:layout_height="45dp"
+                android:layout_marginStart="30dp"
+                android:layout_marginLeft="0dp"
+                android:layout_marginTop="0dp"
+                android:layout_marginEnd="30dp"
+                android:layout_marginRight="0dp"
+                android:layout_marginBottom="10dp"
+                android:entries="@array/Gender" />
+
+            <Button
+                android:id="@+id/ChangePasswordBtn"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="30dp"
+                android:layout_marginLeft="0dp"
+                android:layout_marginTop="0dp"
+                android:layout_marginEnd="30dp"
+                android:layout_marginRight="0dp"
+                android:layout_marginBottom="10dp"
+                android:background="@color/color0"
+                android:text="@string/ChangePasswordBtnTxt"
+                android:textColor="@color/white" />
+
+            <Button
+                android:id="@+id/SaveChangesBtn"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="30dp"
+                android:layout_marginLeft="0dp"
+                android:layout_marginTop="0dp"
+                android:layout_marginEnd="30dp"
+                android:layout_marginRight="0dp"
+                android:layout_marginBottom="10dp"
+                android:background="@color/color0"
+                android:text="@string/SaveChangesBtnTxt"
+                android:textColor="@color/white" />
+        </LinearLayout>
+    </ScrollView>
+
+</LinearLayout>
