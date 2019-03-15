@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">GoodReads_Group2</string>
+    <string name="app_name">GeekReads</string>
 	<string name="OrLoginHere">Or if you already have an account, </string>
     <string name="LoginBtnTxt">Login</string>
     <string name="SignUpBtnTxt">Sign Up</string>
@@ -16,6 +16,14 @@
     <string name="SaveChangesBtnTxt">Save Changes</string>
     <string name="SignUpHeaderTxt">Create a new account in geeksreads</string>
     <string name="CancelTxt">Cancel</string>
+    <string name="TempAuthorName">Author Name</string>
+    <string name="TempBookTitle">Book Title</string>
+    <string name="TempRatingNumber">Ratings No.</string>
+    <string name="TempReviewsNumber">Reviews No.</string>
+    <string name="BookDescriptionTxt">Book Description</string>
+    <string name="BookImageDescription">Cover</string>
+    <string name="TempDesc"> Here will be the Description of the Book</string>
+
 		
     <string-array name="BookValues">
         <item>Want to Read</item>

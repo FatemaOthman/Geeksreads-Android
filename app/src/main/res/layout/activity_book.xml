@@ -24,6 +24,7 @@
             <ImageView
                 android:id="@+id/BookCover"
                 android:layout_width="match_parent"
+                android:contentDescription="@string/BookImageDescription"
                 android:layout_height="332dp"
                 app:srcCompat="@android:drawable/ic_menu_report_image" />
 
@@ -31,7 +32,7 @@
                 android:id="@+id/BookTitleTxt"
                 android:layout_width="match_parent"
                 android:layout_height="36dp"
-                android:text="Book Title"
+                android:text="@string/TempBookTitle"
                 android:textAlignment="center"
                 android:textSize="24sp" />
 
@@ -40,7 +41,7 @@
                 android:id="@+id/AuthorNameTxt"
                 android:layout_width="match_parent"
                 android:layout_height="35dp"
-                android:text="Author Name"
+                android:text="@string/TempAuthorName"
                 android:textAlignment="center"
                 android:textSize="24sp" />
 
@@ -62,7 +63,6 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:clickable="true"
                     android:maxHeight="45dp"
                     android:maxWidth="30dp"
                     android:minHeight="30dp"
@@ -76,7 +76,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent"
                     android:layout_weight="1"
-                    android:text="ratings No"
+                    android:text="@string/TempRatingNumber"
                     android:textAlignment="center"
                     android:textSize="18sp" />
 
@@ -85,7 +85,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent"
                     android:layout_weight="1"
-                    android:text="Reviews No"
+                    android:text="@string/TempReviewsNumber"
                     android:textAlignment="center"
                     android:textSize="18sp" />
             </LinearLayout>
@@ -112,7 +112,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="20dp"
-                android:text="Book Description"
+                android:text="@string/BookDescriptionTxt"
                 android:textAlignment="center"
                 android:textSize="18sp"
                 android:textStyle="bold" />
@@ -130,9 +130,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="10dp"
-                android:layout_marginLeft="2dp"
                 android:scrollbars="vertical"
-                android:text="Hello all i need to perform Ratings in my application... SO i need to create custom Ratings bar... Can Anyone Help me in this?Hello all i need to perform Ratings in my application... SO i need to create custom Ratings bar... Can Anyone Help me in this?Hello all i need to perform Ratings in my application... SO i need to create custom Ratings bar... Can Anyone Help me in this?"
+                android:text="-------------------------------------------"
                 android:textSize="18sp" />
         </LinearLayout>
     </ScrollView>
