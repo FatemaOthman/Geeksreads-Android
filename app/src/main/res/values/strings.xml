@@ -1,0 +1,8 @@
+<resources>
+    <string name="app_name">GoodReads_Group2</string>
+    <string-array name="BookValues">
+        <item>Want to Read</item>
+        <item>Read</item>
+        <item>Currently Reading</item>
+    </string-array>
+</resources>
