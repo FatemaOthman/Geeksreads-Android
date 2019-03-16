@@ -1,0 +1,20 @@
+<android.support.v4.widget.SwipeRefreshLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/swipelayout"
+    tools:context=".ReadBooksActivity"
+    style="@style/SwipeRefreshingLayout">
+
+    <include
+        android:id="@+id/toolbar"
+        layout="@layout/toolbar" />
+
+    <ListView
+        android:id="@+id/itemslist"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_centerInParent="true"
+        android:textDirection="rtl"
+        android:transcriptMode="alwaysScroll">
+
+    </ListView>
+</android.support.v4.widget.SwipeRefreshLayout>
