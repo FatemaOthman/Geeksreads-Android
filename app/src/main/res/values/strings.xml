@@ -2,19 +2,4 @@
     <string name="app_name">GeeksReads</string>
     <string name="MorsyTest1">MorsyTest1</string>
     <string name="ShroukTest1">ShroukTest1</string>
-    <string name="TempAuthorName">Author Name</string>
-    <string name="TempBookTitle">Book Title</string>
-    <string name="TempRatingNumber">Ratings No.</string>
-    <string name="TempReviewsNumber">Reviews No.</string>
-    <string name="BookDescriptionTxt">Book Description</string>
-    <string name="BookImageDescription">Cover</string>
-    <string name="TempDesc"> Here will be the Description of the Book</string>
-
-
-    <string-array name="BookValues">
-        <item>Want to Read</item>
-        <item>Read</item>
-        <item>Currently Reading</item>
-    </string-array>
-
 </resources>
