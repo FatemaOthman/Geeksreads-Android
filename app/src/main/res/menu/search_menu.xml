@@ -4,6 +4,15 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <item
+        android:id="@+id/SidebarButton"
+        android:icon="@mipmap/sidebar_icon"
+        android:orderInCategory="1"
+        android:title="Button"
+        app:showAsAction="always">
+
+    </item>
+
+    <item
         android:id="@+id/menuSearch"
         android:layout_width="100dp"
         android:layout_gravity="left"
@@ -18,20 +27,10 @@
     </item>
 
     <item
-        android:id="@+id/SidebarButton"
-        android:icon="@mipmap/sidebar_icon"
-        android:orderInCategory="1"
-        android:title="Button"
-        app:actionViewClass="android.widget.Button"
-        app:showAsAction="always">
-
-    </item>
-    <item
         android:id="@+id/NotificationButton"
         android:icon="@mipmap/notification"
         android:orderInCategory="3"
         android:title="Button"
-        app:actionViewClass="android.widget.Button"
         app:showAsAction="always">
 
     </item>

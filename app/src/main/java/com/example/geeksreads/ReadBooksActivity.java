@@ -119,7 +119,7 @@ public class ReadBooksActivity extends AppCompatActivity {
                 return;
             }
             try {
-                ListView itemsList = findViewById(R.id.itemslist);
+                ListView itemsList = findViewById(R.id.ReadBookList);
                 itemsList.setAdapter(new BookList_JSONAdapter(mContext, new JSONArray(result)));
             }
             catch(JSONException e)

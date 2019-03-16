@@ -8,28 +8,28 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.widget.SearchView;
 
-public class MyBooksShelvesActivity extends AppCompatActivity {
+public class CurrentlyReadingActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_my_books_shelves);
-        Toolbar myToolbar = findViewById(R.id.toolbar);
+        setContentView(R.layout.activity_currently_reading);
+
+        Toolbar myToolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(myToolbar);
-        getSupportActionBar().setDisplayShowTitleEnabled(false);
+        getSupportActionBar().setTitle("Currently Reading");
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
     }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater inflater = getMenuInflater();
-        inflater.inflate(R.menu.search_menu, menu);
-        MenuItem item = menu.findItem(R.id.menuSearch);
+        inflater.inflate(R.menu.setting_menu, menu);
+        MenuItem item = menu.findItem(R.id.menuSetting);
         SearchView searchView = (SearchView) item.getActionView();
-        searchView.setIconifiedByDefault(false);
         searchView.setMaxWidth(800);
         searchView.setQueryHint("Search books");
-        searchView.setBackgroundColor(getResources().getColor(R.color.white));
         return super.onCreateOptionsMenu(menu);
     }
 }

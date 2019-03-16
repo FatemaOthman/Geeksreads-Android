@@ -21,7 +21,6 @@
         android:icon="@mipmap/notification"
         android:orderInCategory="3"
         android:title="Button"
-        app:actionViewClass="android.widget.Button"
         app:showAsAction="always">
 
     </item>

@@ -9,22 +9,29 @@
         android:roundIcon="@mipmap/logo_vertically"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-
+        <activity android:name=".CurrentlyReadingActivity"></activity>
+        <activity android:name=".WantToReadActivity" />
         <activity android:name=".SignupActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
+
                 <category android:name="android.intent.category.LAUNCHER" />
+
+                <action android:name="android.intent.action.VIEW" />
             </intent-filter>
         </activity>
-        <activity android:name=".BookActivity"/>
-        <activity android:name=".EditProfileActivity"/>
+        <activity android:name=".EditProfileActivity" />
+        <activity android:name=".MyBooksShelvesActivity" />
+        <activity android:name=".BookActivity" />
         <activity
             android:name=".LoginActivity"
             android:parentActivityName=".SignupActivity" />
         <activity
             android:name=".ChangePasswordActivity"
             android:parentActivityName=".EditProfileActivity" />
-        <activity android:name=".ReadBooksActivity" />
-
+        <activity
+            android:name=".ReadBooksActivity"
+            android:parentActivityName=".MyBooksShelvesActivity" />
     </application>
+
 </manifest>
