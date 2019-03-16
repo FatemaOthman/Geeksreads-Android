@@ -8,6 +8,10 @@
     android:orientation="vertical"
     tools:context=".LoginActivity">
 
+    <include
+        android:id="@+id/toolbar"
+        layout="@layout/toolbar" />
+
     <ImageView
         android:id="@+id/Logo"
         android:layout_width="match_parent"
