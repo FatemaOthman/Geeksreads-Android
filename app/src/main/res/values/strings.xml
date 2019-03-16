@@ -18,6 +18,7 @@
     <string name="SaveChangesBtnTxt">Save Changes</string>
     <string name="SignUpHeaderTxt">Create a new account in geeksreads</string>
     <string name="CancelTxt">Cancel</string>
+    <string name="ReadTxt">Read</string>
 
     <string-array name="Gender">
         <item>Male</item>
