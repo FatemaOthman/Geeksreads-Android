@@ -1,4 +1,5 @@
 <resources>
     <string name="app_name">GeeksReads</string>
     <string name="MorsyTest1">MorsyTest1</string>
+    <string name="ShroukTest1">ShroukTest1</string>
 </resources>
