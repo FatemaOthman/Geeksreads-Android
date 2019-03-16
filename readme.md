@@ -16,6 +16,7 @@ Please take into consideration the below notes:
     Horizontal Logo: https://github.com/WaelAshraf/Geeksreads-Android/blob/Android-Team/Logo2.png .
 
 4] So far, for integrating github with Android Studio:
+
     1. Download Git setup from this link: https://git-scm.com/downloads "Download 2.21.0 for Windows"
     2. Run the setup, and press Next, Next, Next, "Use Git and optional Unix tools from the command prompt", Next, Next, Next, Next, Install.
     3. Open Android Studio
@@ -33,7 +34,6 @@ Please take into consideration the below notes:
     15. It will pull the branch and ask you for some Merge Acceptance , Accept every thing
     16. It will build and you may get an SDK Version error, Close the project and open it again (TEDATA)
     17. It wil open inssha'Allah.
-
     18. For Modifying anything in code, you have to commit all you changes with proper comment, (To Commit, VCS Menu > Commit)
     19. To Publish your modified code on github repo, Pull the latest version first then Merge your files with github files and then Push to Android-Team Branch
     20. To Pull: VCS Menu >> Git >> Pull {{PULL fetches the latest code on github then Merges the files}}
