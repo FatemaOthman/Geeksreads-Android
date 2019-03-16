@@ -29,6 +29,9 @@
     <string name="ReadTxt">   Read</string>
     <string name="CurrentlyReadingTxt">   Currently Reading</string>
     <string name="WantToReadTxt">   Want to Read</string>
+    <string name="ButtonText">Button</string>
+    <string name="SearchText">Button</string>
+
     <string-array name="BookValues">
         <item>Want to Read</item>
         <item>Read</item>

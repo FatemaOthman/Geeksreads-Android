@@ -48,7 +48,7 @@ public class ReadBooksActivity extends AppCompatActivity {
         RequestTask task = new RequestTask();
         task.execute(webService);
 
-        Toolbar myToolbar = (Toolbar) findViewById(R.id.toolbar);
+        Toolbar myToolbar = findViewById(R.id.toolbar);
         setSupportActionBar(myToolbar);
         getSupportActionBar().setTitle("Read");
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);

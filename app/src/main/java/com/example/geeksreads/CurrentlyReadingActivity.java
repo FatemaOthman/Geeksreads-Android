@@ -15,7 +15,7 @@ public class CurrentlyReadingActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_currently_reading);
 
-        Toolbar myToolbar = (Toolbar) findViewById(R.id.toolbar);
+        Toolbar myToolbar = findViewById(R.id.toolbar);
         setSupportActionBar(myToolbar);
         getSupportActionBar().setTitle("Currently Reading");
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);

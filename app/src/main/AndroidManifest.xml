@@ -3,14 +3,11 @@
     package="com.example.geeksreads">
 
     <application
-        android:allowBackup="true"
         android:icon="@mipmap/logo_vertically"
         android:label="@string/app_name"
         android:roundIcon="@mipmap/logo_vertically"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".CurrentlyReadingActivity"></activity>
-        <activity android:name=".WantToReadActivity" />
         <activity android:name=".SignupActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -20,6 +17,8 @@
                 <action android:name="android.intent.action.VIEW" />
             </intent-filter>
         </activity>
+        <activity android:name=".CurrentlyReadingActivity"/>
+        <activity android:name=".WantToReadActivity" />
         <activity android:name=".EditProfileActivity" />
         <activity android:name=".MyBooksShelvesActivity" />
         <activity android:name=".BookActivity" />

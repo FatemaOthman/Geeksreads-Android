@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<menu xmlns:tools="http://schemas.android.com/tools"
+<menu
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
@@ -7,7 +7,7 @@
         android:id="@+id/SidebarButton"
         android:icon="@mipmap/sidebar_icon"
         android:orderInCategory="1"
-        android:title="Button"
+        android:title="@string/ButtonText"
         app:showAsAction="always">
 
     </item>
@@ -19,7 +19,7 @@
         android:layout_marginLeft="0dp"
         android:icon="@android:drawable/ic_menu_search"
         android:orderInCategory="2"
-        android:title="Search"
+        android:title="@string/SearchText"
         app:actionViewClass="android.widget.SearchView"
         app:iconifiedByDefault="false"
         app:showAsAction="always">
@@ -30,7 +30,7 @@
         android:id="@+id/NotificationButton"
         android:icon="@mipmap/notification"
         android:orderInCategory="3"
-        android:title="Button"
+        android:title="@string/ButtonText"
         app:showAsAction="always">
 
     </item>

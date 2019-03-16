@@ -9,7 +9,7 @@
         android:layout_marginLeft="0dp"
         android:icon="@android:drawable/ic_menu_search"
         android:orderInCategory="2"
-        android:title="Search"
+        android:title="@string/SearchText"
         app:actionViewClass="android.widget.SearchView"
         app:iconifiedByDefault="false"
         app:showAsAction="always">
@@ -20,7 +20,7 @@
         android:id="@+id/NoteficationButton"
         android:icon="@mipmap/notification"
         android:orderInCategory="3"
-        android:title="Button"
+        android:title="@string/SearchText"
         app:showAsAction="always">
 
     </item>
