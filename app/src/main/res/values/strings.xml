@@ -26,8 +26,9 @@
     <string name="SaveChangesBtnTxt">Save Changes</string>
     <string name="SignUpHeaderTxt">Create a new account in geeksreads</string>
     <string name="CancelTxt">Cancel</string>
-    <string name="ReadTxt">Read</string>
-
+    <string name="ReadTxt">   Read</string>
+    <string name="CurrentlyReadingTxt">   Currently Reading</string>
+    <string name="WantToReadTxt">   Want to Read</string>
     <string-array name="BookValues">
         <item>Want to Read</item>
         <item>Read</item>

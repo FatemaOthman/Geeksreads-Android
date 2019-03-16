@@ -22,7 +22,7 @@
         android:icon="@mipmap/sidebar_icon"
         android:orderInCategory="1"
         android:title="Button"
-        app:actionViewClass="android.widget.button"
+        app:actionViewClass="android.widget.Button"
         app:showAsAction="always">
 
     </item>
@@ -31,7 +31,7 @@
         android:icon="@mipmap/notification"
         android:orderInCategory="3"
         android:title="Button"
-        app:actionViewClass="android.widget.button"
+        app:actionViewClass="android.widget.Button"
         app:showAsAction="always">
 
     </item>
