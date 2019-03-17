@@ -1,11 +1,14 @@
 package com.example.geeksreads;
 
+import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.Button;
 import android.widget.SearchView;
 
 public class MyBooksShelvesActivity extends AppCompatActivity {
@@ -17,7 +20,36 @@ public class MyBooksShelvesActivity extends AppCompatActivity {
         Toolbar myToolbar = findViewById(R.id.toolbar);
         setSupportActionBar(myToolbar);
         getSupportActionBar().setDisplayShowTitleEnabled(false);
+        
+        Button ReadButton = findViewById(R.id.ReadBtn);
+        Button CurrentlyReadingButton = findViewById(R.id.CurrentlyReadingBtn);
+        Button WantToReadButton = findViewById(R.id.WantToReadBtn);
 
+        ReadButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                Intent myIntent = new Intent(MyBooksShelvesActivity.this, ReadBooksActivity.class);
+                startActivity(myIntent);
+
+            }
+        });
+        CurrentlyReadingButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent myIntent = new Intent(MyBooksShelvesActivity.this,CurrentlyReadingActivity.class);
+                startActivity(myIntent);
+
+            }
+        });
+        WantToReadButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent myIntent = new Intent(MyBooksShelvesActivity.this, WantToReadActivity.class);
+                startActivity(myIntent);
+
+            }
+        });
     }
 
     @Override
