@@ -1,8 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<menu
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    >
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <item
         android:id="@+id/SidebarButton"
@@ -14,7 +12,7 @@
     </item>
 
     <item
-        android:id="@+id/menuSearch"
+        android:id="@+id/menunotification"
         android:layout_width="100dp"
         android:layout_gravity="left"
         android:layout_marginLeft="0dp"
@@ -27,12 +25,5 @@
 
     </item>
 
-    <item
-        android:id="@+id/NotificationButton"
-        android:icon="@mipmap/notification"
-        android:orderInCategory="3"
-        android:title="@string/ButtonText"
-        app:showAsAction="always">
 
-    </item>
 </menu>

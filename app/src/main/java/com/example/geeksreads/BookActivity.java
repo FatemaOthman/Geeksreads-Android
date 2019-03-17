@@ -22,6 +22,8 @@ public class BookActivity extends AppCompatActivity {
         setSupportActionBar(myToolbar);
         getSupportActionBar().setDisplayShowTitleEnabled(false);
 
+
+
     }
 
     @Override

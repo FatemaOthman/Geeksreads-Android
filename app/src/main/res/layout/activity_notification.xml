@@ -1,6 +1,6 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/LinearLayoutWantRead"
+    android:id="@+id/LinearLayoutNotification"
     android:layout_width="match_parent"
 
     android:layout_height="match_parent"
@@ -18,7 +18,7 @@
         style="@style/SwipeRefreshingLayout">
 
         <ListView
-            android:id="@+id/WantToReadBookList"
+            android:id="@+id/NotificationList"
             android:layout_width="match_parent"
             android:layout_height="match_parent" />
     </android.support.v4.widget.SwipeRefreshLayout>
