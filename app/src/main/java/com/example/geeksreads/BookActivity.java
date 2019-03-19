@@ -1,18 +1,30 @@
 package com.example.geeksreads;
 
 
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.widget.AdapterView;
+import android.widget.ImageView;
+import android.widget.RatingBar;
 import android.widget.SearchView;
+import android.widget.Spinner;
+import android.widget.TextView;
 
+import java.io.InputStream;
+import java.net.HttpURLConnection;
+import java.net.URL;
 
 
 public class BookActivity extends AppCompatActivity {
 
+    ImageView BookCover;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -23,7 +35,17 @@ public class BookActivity extends AppCompatActivity {
         getSupportActionBar().setDisplayShowTitleEnabled(false);
 
 
+        BookCover = findViewById(R.id.BookCover);
+        TextView BookTitle = findViewById(R.id.BookNameTxt);
+        TextView BookAuthor = findViewById(R.id.AuthorNameTxt);
+        TextView RatingsNumber = findViewById(R.id.RatingsNumberTxt);
+        TextView ReviewsNumber = findViewById(R.id.ReviewsNumberTxt);
+        Spinner BookOptions = findViewById(R.id.OptionsDropList);
+        RatingBar BookRatings = findViewById(R.id.ratingBar);
+        TextView BookDescription = findViewById(R.id.DescriptionTxt);
 
+        GetImage getCover = new GetImage();
+        getCover.execute();
     }
 
     @Override
@@ -40,7 +62,7 @@ public class BookActivity extends AppCompatActivity {
     }
 
 
-    /*private class GetImage extends AsyncTask<String, Void, Bitmap> {
+    private class GetImage extends AsyncTask<String, Void, Bitmap> {
         @Override
         protected Bitmap doInBackground(String... params) {
             try {
@@ -59,9 +81,11 @@ public class BookActivity extends AppCompatActivity {
 
         @Override
         protected void onPostExecute(Bitmap result) {
-            //ImageView imageView = (ImageView) findViewById();
-            //imageView.setImageBitmap(result);
+            BookCover.setImageBitmap(result);
         }
-    }*/
+    }
+
+    //TODO: Adding JSON Async Task to get All Books information.
+
 }
 
