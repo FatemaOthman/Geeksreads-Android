@@ -1,6 +1,7 @@
 package com.example.geeksreads;
 
 
+import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.AsyncTask;
@@ -12,12 +13,21 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.widget.AdapterView;
 import android.widget.ImageView;
+import android.widget.ListView;
 import android.widget.RatingBar;
 import android.widget.SearchView;
 import android.widget.Spinner;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.io.BufferedReader;
+import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
 
@@ -25,6 +35,14 @@ import java.net.URL;
 public class BookActivity extends AppCompatActivity {
 
     ImageView BookCover;
+    Context mContext;
+    TextView BookTitle;
+    TextView BookAuthor;
+    TextView RatingsNumber;
+    TextView ReviewsNumber;
+    Spinner BookOptions;
+    RatingBar BookRatings;
+    TextView BookDescription;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -33,16 +51,17 @@ public class BookActivity extends AppCompatActivity {
         Toolbar myToolbar = findViewById(R.id.toolbar);
         setSupportActionBar(myToolbar);
         getSupportActionBar().setDisplayShowTitleEnabled(false);
+        mContext = this;
 
 
         BookCover = findViewById(R.id.BookCover);
-        TextView BookTitle = findViewById(R.id.BookNameTxt);
-        TextView BookAuthor = findViewById(R.id.AuthorNameTxt);
-        TextView RatingsNumber = findViewById(R.id.RatingsNumberTxt);
-        TextView ReviewsNumber = findViewById(R.id.ReviewsNumberTxt);
-        Spinner BookOptions = findViewById(R.id.OptionsDropList);
-        RatingBar BookRatings = findViewById(R.id.ratingBar);
-        TextView BookDescription = findViewById(R.id.DescriptionTxt);
+        BookTitle = findViewById(R.id.BookNameTxt);
+        BookAuthor = findViewById(R.id.AuthorNameTxt);
+        RatingsNumber = findViewById(R.id.RatingsNumberTxt);
+        ReviewsNumber = findViewById(R.id.ReviewsNumberTxt);
+        BookOptions = findViewById(R.id.OptionsDropList);
+        BookRatings = findViewById(R.id.ratingBar);
+        BookDescription = findViewById(R.id.DescriptionTxt);
 
         GetImage getCover = new GetImage();
         getCover.execute();
@@ -85,7 +104,71 @@ public class BookActivity extends AppCompatActivity {
         }
     }
 
-    //TODO: Adding JSON Async Task to get All Books information.
+
+    public class RequestTask extends AsyncTask<String, Void, String> {
+        public static final String REQUEST_METHOD = "GET";
+        public static final int READ_TIMEOUT = 3000;
+        public static final int CONNECTION_TIMEOUT = 3000;
+        public Boolean internetConn = false;
+
+        @Override
+        protected String doInBackground(String... params){
+            String stringUrl = params[0];
+            String result;
+            String inputLine;
+            try {
+                //Create a URL object holding our url
+                URL myUrl = new URL(stringUrl);
+                //Create a connection
+                HttpURLConnection connection =(HttpURLConnection)
+                        myUrl.openConnection();
+                //Set methods and timeouts
+                connection.setRequestMethod(REQUEST_METHOD);
+                connection.setReadTimeout(READ_TIMEOUT);
+                connection.setConnectTimeout(CONNECTION_TIMEOUT);
+
+                //Connect to our url
+                connection.connect();
+                //Create a new InputStreamReader
+                InputStreamReader streamReader = new
+                        InputStreamReader(connection.getInputStream());
+                //Create a new buffered reader and String Builder
+                BufferedReader reader = new BufferedReader(streamReader);
+                StringBuilder stringBuilder = new StringBuilder();
+                //Check if the line we are reading is not null
+                while((inputLine = reader.readLine()) != null){
+                    stringBuilder.append(inputLine);
+                }
+                //Close our InputStream and Buffered reader
+                reader.close();
+                streamReader.close();
+                //Set our result equal to our stringBuilder
+                result = stringBuilder.toString();
+            }
+            catch(IOException e){
+                e.printStackTrace();
+                result = null;
+            }
+            return result;
+        }
+        protected void onPostExecute(String result){
+            if(result==null) {
+                Toast.makeText(mContext,"Unable to connect to server", Toast.LENGTH_SHORT).show();
+                return;
+            }
+            try {
+                JSONObject jsonObject = new JSONObject(result);
+                BookTitle.setText(jsonObject.getString("BookTitle"));
+                BookAuthor.setText(jsonObject.getString("BookAuthor"));
+                //TODO: Adding Others TextViews and Edit the Keys.
+
+            }
+            catch(JSONException e)
+            {
+                e.printStackTrace();
+            }
+        }
+    }
 
 }
 
