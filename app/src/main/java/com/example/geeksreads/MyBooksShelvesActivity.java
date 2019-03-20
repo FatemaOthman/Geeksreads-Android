@@ -20,7 +20,7 @@ public class MyBooksShelvesActivity extends AppCompatActivity {
         Toolbar myToolbar = findViewById(R.id.toolbar);
         setSupportActionBar(myToolbar);
         getSupportActionBar().setDisplayShowTitleEnabled(false);
-        
+
         Button ReadButton = findViewById(R.id.ReadBtn);
         Button CurrentlyReadingButton = findViewById(R.id.CurrentlyReadingBtn);
         Button WantToReadButton = findViewById(R.id.WantToReadBtn);
