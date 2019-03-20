@@ -20,7 +20,6 @@ public class SignupActivity extends AppCompatActivity
         setContentView(R.layout.activity_signup);
 
         Button loginLink = findViewById(R.id.OrLoginLinkBtn);
-
         loginLink.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {

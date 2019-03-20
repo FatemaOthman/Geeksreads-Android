@@ -25,8 +25,16 @@
     <string name="ChangePasswordBtnTxt">Change Password</string>
     <string name="SaveChangesBtnTxt">Save Changes</string>
     <string name="SignUpHeaderTxt">Create a new account in geeksreads</string>
+    <string name="UserProfilePicture">User\'s Profile Picture</string>
+    <string name="EditProfile">Edit Profile</string>
+    <string name="EditProfileLogo">Logo of Edit Button</string>
     <string name="CancelTxt">Cancel</string>
+    <string name="NumberFollowers">Number of Followers</string>
+    <string name="NumberFollowing">Number of Following</string>
+    <string name="ActualNumberFollowers">Number Here</string>
+    <string name="ActualNumberFollowing">Number Here</string>
     <string name="ReadTxt">   Read</string>
+    <string name="ReviewsText">Reviews</string>
     <string name="CurrentlyReadingTxt">   Currently Reading</string>
     <string name="WantToReadTxt">   Want to Read</string>
     <string name="ButtonText">Button</string>
