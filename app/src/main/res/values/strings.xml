@@ -2,14 +2,13 @@
     <string name="app_name">GeeksReads</string>
     <string name="MorsyTest1">MorsyTest1</string>
     <string name="ShroukTest1">ShroukTest1</string>
-
     <string name="TempAuthorName">Author Name</string>
     <string name="TempBookTitle">Book Title</string>
     <string name="TempRatingNumber">Ratings No.</string>
     <string name="TempReviewsNumber">Reviews No.</string>
     <string name="BookDescriptionTxt">Book Description</string>
     <string name="BookImageDescription">Cover</string>
-    <string name="TempDesc"> Here will be the Description of the Book</string>
+    <string name="TempDesc">     Here will be the Description of the Book</string>
     <string name="OrLoginHere">Or if you already have an account,</string>
     <string name="LoginBtnTxt">Login</string>
     <string name="SignUpBtnTxt">Sign Up</string>
@@ -39,6 +38,10 @@
     <string name="WantToReadTxt">   Want to Read</string>
     <string name="ButtonText">Button</string>
     <string name="SearchText">Button</string>
+    <string name="PublishedOnString">Originally Published on:</string>
+    <string name="PublishedDay">Day</string>
+    <string name="PublishedMonth">Month</string>
+    <string name="PublishedYear">Year</string>
 
     <string-array name="BookValues">
         <item>Want to Read</item>
