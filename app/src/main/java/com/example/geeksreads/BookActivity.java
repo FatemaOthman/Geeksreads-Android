@@ -1,6 +1,8 @@
 package com.example.geeksreads;
 
 
+import android.annotation.SuppressLint;
+import android.app.AlertDialog;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -11,38 +13,43 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
-import android.widget.AdapterView;
 import android.widget.ImageView;
-import android.widget.ListView;
-import android.widget.RatingBar;
 import android.widget.SearchView;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.BufferedReader;
+import java.io.BufferedWriter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.OutputStream;
+import java.io.OutputStreamWriter;
 import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
 import java.net.URL;
+import java.net.URLEncoder;
 
 
 public class BookActivity extends AppCompatActivity {
 
-    ImageView BookCover;
+    ImageView bookCover;
     Context mContext;
-    TextView BookTitle;
-    TextView BookAuthor;
-    TextView RatingsNumber;
-    TextView ReviewsNumber;
-    Spinner BookOptions;
-    RatingBar BookRatings;
-    TextView BookDescription;
+    TextView bookTitle;
+    TextView bookAuthor;
+    TextView ratingsNumber;
+    TextView reviewsNumber;
+    Spinner bookOptions;
+    TextView bookRatings;
+    TextView bookDescription;
+    TextView publishingDay;
+    TextView publishingMonth;
+    TextView publishingYear;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -54,18 +61,33 @@ public class BookActivity extends AppCompatActivity {
         mContext = this;
 
 
-        BookCover = findViewById(R.id.BookCover);
-        BookTitle = findViewById(R.id.BookNameTxt);
-        BookAuthor = findViewById(R.id.AuthorNameTxt);
-        RatingsNumber = findViewById(R.id.RatingsNumberTxt);
-        ReviewsNumber = findViewById(R.id.ReviewsNumberTxt);
-        BookOptions = findViewById(R.id.OptionsDropList);
-        BookRatings = findViewById(R.id.ratingBar);
-        BookDescription = findViewById(R.id.DescriptionTxt);
+        bookCover = findViewById(R.id.BookCover);
+        bookTitle = findViewById(R.id.BookTitleTxt);
+        bookAuthor = findViewById(R.id.AuthorNameTxt);
+        ratingsNumber = findViewById(R.id.RatingsNumberTxt);
+        reviewsNumber = findViewById(R.id.ReviewsNumberTxt);
+        bookOptions = findViewById(R.id.OptionsDropList);
+        bookRatings = findViewById(R.id.RatingBar);
+        bookDescription = findViewById(R.id.DescriptionTxt);
+        publishingDay = findViewById(R.id.PublishedOnDay);
+        publishingMonth = findViewById(R.id.PublishedOnMonth);
+        publishingYear = findViewById(R.id.PublishedOnYear);
 
-        GetImage getCover = new GetImage();
-        getCover.execute();
+        JSONObject JSON = new JSONObject();
+        try {
+            // TODO: Put all your JSON values Here.
+            JSON.put("Name", "value");
+        }catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+        // TODO: Change the URL with your Service.
+        String UrlService = "http://geeksreads.000webhostapp.com/<FolderName>/<FileName>";
+
+        GetBookDetails getBookDetails = new GetBookDetails();
+        getBookDetails.execute(UrlService,JSON.toString());
     }
+
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -81,11 +103,16 @@ public class BookActivity extends AppCompatActivity {
     }
 
 
+    /**
+     * Class that get image from Url and Add it to ImageView.
+     *  The only Parameter is the Url.
+     */
     private class GetImage extends AsyncTask<String, Void, Bitmap> {
         @Override
         protected Bitmap doInBackground(String... params) {
             try {
-                URL url = new URL("http://xxx.xxx.xxx/image.jpg");
+                String photoUrl = params[0];
+                URL url = new URL(photoUrl);
                 HttpURLConnection connection = (HttpURLConnection) url.openConnection();
                 connection.setDoInput(true);
                 connection.connect();
@@ -100,67 +127,92 @@ public class BookActivity extends AppCompatActivity {
 
         @Override
         protected void onPostExecute(Bitmap result) {
-            BookCover.setImageBitmap(result);
+            bookCover.setImageBitmap(result);
         }
     }
 
-
-    public class RequestTask extends AsyncTask<String, Void, String> {
+    /**
+     * Class that get the data from host and Add it to its views.
+     *  The Parameters are host Url and toSend Data.
+     */
+    public class GetBookDetails extends AsyncTask<String, Void, String> {
         public static final String REQUEST_METHOD = "GET";
-        public static final int READ_TIMEOUT = 3000;
-        public static final int CONNECTION_TIMEOUT = 3000;
-        public Boolean internetConn = false;
+        //public static final int READ_TIMEOUT = 3000;
+        //public static final int CONNECTION_TIMEOUT = 3000;
+        AlertDialog dialog;
+
+        @Override
+        protected void onPreExecute() {
+            dialog = new AlertDialog.Builder(mContext).create();
+            dialog.setTitle("Connection Status");
+        }
 
         @Override
         protected String doInBackground(String... params){
-            String stringUrl = params[0];
-            String result;
-            String inputLine;
+            String UrlString = params[0];
+            String JSONString = params[1];
+            String result= "";
+
             try {
                 //Create a URL object holding our url
-                URL myUrl = new URL(stringUrl);
-                //Create a connection
-                HttpURLConnection connection =(HttpURLConnection)
-                        myUrl.openConnection();
-                //Set methods and timeouts
-                connection.setRequestMethod(REQUEST_METHOD);
-                connection.setReadTimeout(READ_TIMEOUT);
-                connection.setConnectTimeout(CONNECTION_TIMEOUT);
+                URL url = new URL(UrlString);
+                HttpURLConnection http = (HttpURLConnection) url.openConnection();
+                http.setRequestMethod(REQUEST_METHOD);
+                http.setDoInput(true);
+                http.setDoOutput(true);
 
-                //Connect to our url
-                connection.connect();
+                OutputStream ops = http.getOutputStream();
+                BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(ops,"UTF-8"));
+                String data = URLEncoder.encode("Json","UTF-8")+"="+URLEncoder.encode(JSONString,"UTF-8");
+
+                writer.write(data);
+                writer.flush();
+                writer.close();
+                ops.close();
+
                 //Create a new InputStreamReader
-                InputStreamReader streamReader = new
-                        InputStreamReader(connection.getInputStream());
-                //Create a new buffered reader and String Builder
-                BufferedReader reader = new BufferedReader(streamReader);
-                StringBuilder stringBuilder = new StringBuilder();
-                //Check if the line we are reading is not null
-                while((inputLine = reader.readLine()) != null){
-                    stringBuilder.append(inputLine);
+                InputStream ips = http.getInputStream();
+                BufferedReader reader = new BufferedReader(new InputStreamReader(ips,"ISO-8859-1"));
+                String line ="";
+                while ((line = reader.readLine()) != null)
+                {
+                    result += line;
                 }
-                //Close our InputStream and Buffered reader
                 reader.close();
-                streamReader.close();
-                //Set our result equal to our stringBuilder
-                result = stringBuilder.toString();
-            }
-            catch(IOException e){
-                e.printStackTrace();
-                result = null;
+                ips.close();
+                http.disconnect();
+                return result;
+
+            } catch (MalformedURLException e) {
+                result = e.getMessage();
+            } catch (IOException e) {
+                result = e.getMessage();
             }
             return result;
-        }
+            }
+
+        @SuppressLint("SetTextI18n")
         protected void onPostExecute(String result){
             if(result==null) {
                 Toast.makeText(mContext,"Unable to connect to server", Toast.LENGTH_SHORT).show();
                 return;
             }
             try {
+                dialog.setMessage(result);
+                //dialog.show();
+                // TODO: Add your Post Execute logic here.
                 JSONObject jsonObject = new JSONObject(result);
-                BookTitle.setText(jsonObject.getString("BookTitle"));
-                BookAuthor.setText(jsonObject.getString("BookAuthor"));
-                //TODO: Adding Others TextViews and Edit the Keys.
+                bookTitle.setText(jsonObject.getString("Title"));
+                bookAuthor.setText(jsonObject.getString("Author"));
+                ratingsNumber.setText(jsonObject.getString("ratings-count") + "" + "Ratings");
+                reviewsNumber.setText(jsonObject.getString("text-reviews-count")+ "" + "Reviews");
+                bookRatings.setText(jsonObject.getString("average-rating"));
+                bookDescription.setText(jsonObject.getString("book-description"));
+                publishingDay.setText(jsonObject.getString("original-publication-day"));
+                publishingMonth.setText(jsonObject.getString("original-publication-month"));
+                publishingYear.setText(jsonObject.getString("original-publication-year"));
+                GetImage getCover = new GetImage();
+                getCover.execute(jsonObject.getString("photo-url"));
 
             }
             catch(JSONException e)
@@ -168,6 +220,7 @@ public class BookActivity extends AppCompatActivity {
                 e.printStackTrace();
             }
         }
+
     }
 
 }
