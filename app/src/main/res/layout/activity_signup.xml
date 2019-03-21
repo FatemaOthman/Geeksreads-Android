@@ -24,7 +24,7 @@
         android:text="@string/SignUpHeaderTxt" />
 
     <EditText
-        android:id="@+id/FullNameTxt"
+        android:id="@+id/UserNameTxt"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginStart="30dp"
@@ -34,8 +34,7 @@
         android:layout_marginRight="0dp"
         android:layout_marginBottom="10dp"
         android:ems="10"
-        android:hint="@string/FullNameHint"
-        android:inputType="textEmailAddress" />
+        android:hint="@string/UsernameHint" />
 
     <EditText
         android:id="@+id/EmailTxt"
