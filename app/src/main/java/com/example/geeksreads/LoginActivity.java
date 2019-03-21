@@ -3,6 +3,7 @@ package com.example.geeksreads;
 import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.support.v7.app.AppCompatActivity;
@@ -62,6 +63,10 @@ public class LoginActivity extends AppCompatActivity
                 {
                     LoginMail.setError("Please enter your Geeksreads login Email");
                 }
+                else if (!LoginEmailStr.matches(".+[@].+[.].+"))
+                {
+                    LoginMail.setError("Please enter a valid Email");
+                }
                 else if (LoginPasswordStr.isEmpty())
                 {
                     LoginPassword.setError("Please enter your Geeksreads Login Password");
@@ -100,7 +105,7 @@ public class LoginActivity extends AppCompatActivity
 
         @Override
         protected void onPreExecute() {
-            dialog = new AlertDialog.Builder(mContext).create();
+            dialog = new AlertDialog.Builder(mContext).setPositiveButton("OK", null).create();
             dialog.setTitle("Connection Status");
         }
 
@@ -170,9 +175,11 @@ public class LoginActivity extends AppCompatActivity
                     Password.setText("");
                     CurrentToken = jsonObject.getString("ReturnToken");
 
-                    //Go to Sign in Layout
+                    dialog.show();
+                    //Go to Notifications Layout
                     Intent myIntent = new Intent(LoginActivity.this, NotificationActivity.class);
                     startActivity(myIntent);
+
                 }
                 else
                 {

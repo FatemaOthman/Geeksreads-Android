@@ -3,6 +3,7 @@ package com.example.geeksreads;
 import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.support.v7.app.AppCompatActivity;
@@ -71,12 +72,9 @@ public class SignupActivity extends AppCompatActivity
                 {
                     FullName.setError("Username length should be 3 characters minimum and 50 characters maximum");
                 }
-                else if (!PasswordStr.equals(ConfPassword.getText().toString()))
+                else if (!EmailStr.matches(".+[@].+[.].+"))
                 {
-                    Password.setError("Passwords don't match");
-                    ConfPassword.setError("Passwords don't match");
-                    Password.setText("");
-                    ConfPassword.setText("");
+                    Email.setError("Please enter a valid Email");
                 }
                 else if (PasswordStr.length() < 6)
                 {
@@ -85,24 +83,28 @@ public class SignupActivity extends AppCompatActivity
                     Password.setText("");
                     ConfPassword.setText("");
                 }
-                else if (!PasswordStr.matches("[0-9]"))
+                else if (!PasswordStr.matches(".*[0-9].*"))
                 {
                     Password.setError("Password should contain numbers");
                     ConfPassword.setError("Password should contain numbers");
                     Password.setText("");
                     ConfPassword.setText("");
                 }
-                else if (!PasswordStr.matches("[a-z]"))
+                else if (!PasswordStr.matches(".*[a-z].*"))
                 {
                     Password.setError("Password should contain letters");
-                    ConfPassword.setError("Password should contain letters");
                     Password.setText("");
                     ConfPassword.setText("");
                 }
-                else if (!PasswordStr.matches("[A-Z]"))
+                else if (!PasswordStr.matches(".*[A-Z].*"))
                 {
                     Password.setError("Password should contain upper case letters");
-                    ConfPassword.setError("Password should contain upper case letters");
+                    Password.setText("");
+                    ConfPassword.setText("");
+                }
+                else if (!PasswordStr.equals(ConfPassword.getText().toString()))
+                {
+                    ConfPassword.setError("Passwords don't match");
                     Password.setText("");
                     ConfPassword.setText("");
                 }
@@ -142,7 +144,7 @@ public class SignupActivity extends AppCompatActivity
 
         @Override
         protected void onPreExecute() {
-            dialog = new AlertDialog.Builder(mContext).create();
+            dialog = new AlertDialog.Builder(mContext).setPositiveButton("OK", null).create();
             dialog.setTitle("Connection Status");
         }
 
@@ -214,9 +216,12 @@ public class SignupActivity extends AppCompatActivity
                     Password.setText("");
                     ConfPassword.setText("");
 
+                    dialog.show();
+
                     //Go to Sign in Layout
                     Intent myIntent = new Intent(SignupActivity.this, LoginActivity.class);
                     startActivity(myIntent);
+
                 }
                 else
                 {
