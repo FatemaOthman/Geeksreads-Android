@@ -76,13 +76,13 @@ public class BookActivity extends AppCompatActivity {
         JSONObject JSON = new JSONObject();
         try {
             // TODO: Put all your JSON values Here.
-            JSON.put("Name", "value");
+            JSON.put("id", "value");
         }catch (JSONException e) {
             e.printStackTrace();
         }
 
         // TODO: Change the URL with your Service.
-        String UrlService = "http://geeksreads.000webhostapp.com/<FolderName>/<FileName>";
+        String UrlService = "http://geeksreads.000webhostapp.com/Shrouk/BookDetails.php";
 
         GetBookDetails getBookDetails = new GetBookDetails();
         getBookDetails.execute(UrlService,JSON.toString());
@@ -163,7 +163,7 @@ public class BookActivity extends AppCompatActivity {
 
                 OutputStream ops = http.getOutputStream();
                 BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(ops,"UTF-8"));
-                String data = URLEncoder.encode("Json","UTF-8")+"="+URLEncoder.encode(JSONString,"UTF-8");
+                String data = URLEncoder.encode("id","UTF-8")+"="+URLEncoder.encode(JSONString,"UTF-8");
 
                 writer.write(data);
                 writer.flush();
@@ -204,15 +204,15 @@ public class BookActivity extends AppCompatActivity {
                 JSONObject jsonObject = new JSONObject(result);
                 bookTitle.setText(jsonObject.getString("Title"));
                 bookAuthor.setText(jsonObject.getString("Author"));
-                ratingsNumber.setText(jsonObject.getString("ratings-count") + "" + "Ratings");
-                reviewsNumber.setText(jsonObject.getString("text-reviews-count")+ "" + "Reviews");
-                bookRatings.setText(jsonObject.getString("average-rating"));
-                bookDescription.setText(jsonObject.getString("book-description"));
-                publishingDay.setText(jsonObject.getString("original-publication-day"));
-                publishingMonth.setText(jsonObject.getString("original-publication-month"));
-                publishingYear.setText(jsonObject.getString("original-publication-year"));
-                GetImage getCover = new GetImage();
-                getCover.execute(jsonObject.getString("photo-url"));
+                ratingsNumber.setText(jsonObject.getString("ratingcount") + " " + "Ratings");
+                reviewsNumber.setText(jsonObject.getString("textreviewscount")+ " " + "Reviews");
+                bookRatings.setText(jsonObject.getString("averagerating"));
+                bookDescription.setText(jsonObject.getString("bookdescription"));
+                publishingDay.setText(jsonObject.getString("originalpublicationday"));
+                publishingMonth.setText(jsonObject.getString("originalpublicationmonth"));
+                publishingYear.setText(jsonObject.getString("originalpublicationyear"));
+                //GetImage getCover = new GetImage();
+               // getCover.execute(jsonObject.getString("photourl"));
 
             }
             catch(JSONException e)
