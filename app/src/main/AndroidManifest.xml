@@ -11,8 +11,7 @@
         android:roundIcon="@mipmap/logo_vertically"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".SignupActivity"/>
-        <activity android:name=".BookActivity">
+        <activity android:name=".SignupActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -20,6 +19,9 @@
 
                 <action android:name="android.intent.action.VIEW" />
             </intent-filter>
+        </activity>
+        <activity android:name=".BookActivity">
+
         </activity>
         <activity android:name=".CurrentlyReadingActivity" />
         <activity android:name=".WantToReadActivity" />
@@ -29,7 +31,8 @@
         <activity android:name=".Profile" />
         <activity
             android:name=".LoginActivity"
-            android:parentActivityName=".SignupActivity" />
+            android:parentActivityName=".SignupActivity">
+        </activity>
         <activity
             android:name=".ChangePasswordActivity"
             android:parentActivityName=".EditProfileActivity" />
