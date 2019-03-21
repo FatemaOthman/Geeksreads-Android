@@ -12,6 +12,12 @@
         layout="@layout/toolbar">
     </include>
 
+    <ProgressBar
+        android:id="@+id/progressBar"
+        style="?android:attr/progressBarStyle"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent">
@@ -191,9 +197,12 @@
                 android:background="?android:attr/listDivider"
                 android:backgroundTint="@android:color/black" />
 
+
         </LinearLayout>
 
 
     </ScrollView>
+
+
 
 </LinearLayout>

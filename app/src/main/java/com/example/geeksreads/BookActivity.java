@@ -14,7 +14,9 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.SearchView;
 import android.widget.Spinner;
 import android.widget.TextView;
@@ -50,6 +52,7 @@ public class BookActivity extends AppCompatActivity {
     TextView publishingDay;
     TextView publishingMonth;
     TextView publishingYear;
+    ProgressBar progress;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -60,7 +63,7 @@ public class BookActivity extends AppCompatActivity {
         setSupportActionBar(myToolbar);
         getSupportActionBar().setDisplayShowTitleEnabled(false);
         mContext = this;
-
+        progress = findViewById(R.id.progressBar);
 
         bookCover = findViewById(R.id.BookCover);
         bookTitle = findViewById(R.id.BookTitleTxt);
@@ -84,7 +87,7 @@ public class BookActivity extends AppCompatActivity {
 
         // TODO: Change the URL with your Service.
         String UrlService = "http://geeksreads.000webhostapp.com/Shrouk/BookDetails.php";
-
+        progress.setVisibility(View.VISIBLE);
         GetBookDetails getBookDetails = new GetBookDetails();
         getBookDetails.execute(UrlService,JSON.toString());
     }
@@ -146,6 +149,7 @@ public class BookActivity extends AppCompatActivity {
         protected void onPreExecute() {
             dialog = new AlertDialog.Builder(mContext).create();
             dialog.setTitle("Connection Status");
+            progress.setVisibility(View.VISIBLE);
         }
 
         @Override
@@ -194,6 +198,7 @@ public class BookActivity extends AppCompatActivity {
 
         @SuppressLint("SetTextI18n")
         protected void onPostExecute(String result){
+            progress.setVisibility(View.GONE);
             if(result==null) {
                 Toast.makeText(mContext,"Unable to connect to server", Toast.LENGTH_SHORT).show();
                 return;
