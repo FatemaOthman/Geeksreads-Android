@@ -4,6 +4,7 @@ package com.example.geeksreads;
 import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.AsyncTask;
@@ -198,8 +199,9 @@ public class BookActivity extends AppCompatActivity {
                 return;
             }
             try {
-                dialog.setMessage(result);
+                dialog.setMessage("Done");
                 //dialog.show();
+
                 // TODO: Add your Post Execute logic here.
                 JSONObject jsonObject = new JSONObject(result);
                 bookTitle.setText(jsonObject.getString("Title"));
