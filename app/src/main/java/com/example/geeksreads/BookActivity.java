@@ -40,6 +40,7 @@ import java.net.URLEncoder;
 
 public class BookActivity extends AppCompatActivity {
 
+    public static String bookActivityTest;
     ImageView bookCover;
     Context mContext;
     TextView bookTitle;
@@ -134,6 +135,7 @@ public class BookActivity extends AppCompatActivity {
         @Override
         protected void onPostExecute(Bitmap result) {
             progress.setVisibility(View.GONE);
+            bookActivityTest = "Done";
             bookCover.setImageBitmap(result);
 
         }
