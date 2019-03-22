@@ -21,23 +21,28 @@
                 <action android:name="android.intent.action.VIEW" />
             </intent-filter>
         </activity>
+
         <activity android:name=".FollowActivity" />
         <activity android:name=".SignupActivity"/>
         <activity android:name=".Profile"/>
-        <activity android:name=".CurrentlyReadingActivity" />
-        <activity android:name=".WantToReadActivity" />
         <activity android:name=".EditProfileActivity" />
         <activity android:name=".MyBooksShelvesActivity" />
         <activity android:name=".NotificationActivity" />
+
         <activity
             android:name=".LoginActivity"
-            android:parentActivityName=".SignupActivity">
-        </activity>
+            android:parentActivityName=".SignupActivity"/>
         <activity
             android:name=".ChangePasswordActivity"
             android:parentActivityName=".EditProfileActivity" />
         <activity
             android:name=".ReadBooksActivity"
+            android:parentActivityName=".MyBooksShelvesActivity" />
+        <activity
+            android:name=".CurrentlyReadingActivity"
+            android:parentActivityName=".MyBooksShelvesActivity" />
+        <activity
+            android:name=".WantToReadActivity"
             android:parentActivityName=".MyBooksShelvesActivity" />
     </application>
 
