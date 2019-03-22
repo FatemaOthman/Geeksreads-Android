@@ -49,9 +49,7 @@ public class BookActivity extends AppCompatActivity {
     Spinner bookOptions;
     TextView bookRatings;
     TextView bookDescription;
-    TextView publishingDay;
-    TextView publishingMonth;
-    TextView publishingYear;
+    TextView publishingDate;
     ProgressBar progress;
 
     @Override
@@ -73,9 +71,8 @@ public class BookActivity extends AppCompatActivity {
         bookOptions = findViewById(R.id.OptionsDropList);
         bookRatings = findViewById(R.id.RatingBar);
         bookDescription = findViewById(R.id.DescriptionTxt);
-        publishingDay = findViewById(R.id.PublishedOnDay);
-        publishingMonth = findViewById(R.id.PublishedOnMonth);
-        publishingYear = findViewById(R.id.PublishedOnYear);
+        publishingDate = findViewById(R.id.PublishedOnTxt);
+
 
         JSONObject JSON = new JSONObject();
         try {
@@ -217,14 +214,14 @@ public class BookActivity extends AppCompatActivity {
                 // TODO: Add your Post Execute logic here.
                 JSONObject jsonObject = new JSONObject(result);
                 bookTitle.setText(jsonObject.getString("Title"));
-                bookAuthor.setText(jsonObject.getString("Author"));
+                bookAuthor.setText("By: " + "" +jsonObject.getString("Author"));
                 ratingsNumber.setText(jsonObject.getString("ratingcount") + " " + "Ratings");
                 reviewsNumber.setText(jsonObject.getString("textreviewscount")+ " " + "Reviews");
                 bookRatings.setText(jsonObject.getString("averagerating"));
                 bookDescription.setText(jsonObject.getString("bookdescription"));
-                publishingDay.setText(jsonObject.getString("originalpublicationday"));
-                publishingMonth.setText(jsonObject.getString("originalpublicationmonth"));
-                publishingYear.setText(jsonObject.getString("originalpublicationyear"));
+                publishingDate.setText("Originally Published" + "  " + jsonObject.getString("originalpublicationday")
+                                       + " - " + jsonObject.getString("originalpublicationmonth")
+                                       + " - " + jsonObject.getString("originalpublicationyear"));
                 GetImage getCover = new GetImage();
                 getCover.execute(jsonObject.getString("photourl"));
 
