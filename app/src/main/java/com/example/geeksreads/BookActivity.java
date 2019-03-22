@@ -112,6 +112,11 @@ public class BookActivity extends AppCompatActivity {
      *  The only Parameter is the Url.
      */
     private class GetImage extends AsyncTask<String, Void, Bitmap> {
+
+        protected void onPreExecute() {
+            progress.setVisibility(View.VISIBLE);
+        }
+
         @Override
         protected Bitmap doInBackground(String... params) {
             try {
@@ -131,7 +136,9 @@ public class BookActivity extends AppCompatActivity {
 
         @Override
         protected void onPostExecute(Bitmap result) {
+            progress.setVisibility(View.GONE);
             bookCover.setImageBitmap(result);
+
         }
     }
 
@@ -218,8 +225,8 @@ public class BookActivity extends AppCompatActivity {
                 publishingDay.setText(jsonObject.getString("originalpublicationday"));
                 publishingMonth.setText(jsonObject.getString("originalpublicationmonth"));
                 publishingYear.setText(jsonObject.getString("originalpublicationyear"));
-                //GetImage getCover = new GetImage();
-               // getCover.execute(jsonObject.getString("photourl"));
+                GetImage getCover = new GetImage();
+                getCover.execute(jsonObject.getString("photourl"));
 
             }
             catch(JSONException e)
