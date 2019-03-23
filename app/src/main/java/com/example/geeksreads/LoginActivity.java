@@ -34,7 +34,7 @@ public class LoginActivity extends AppCompatActivity
     String LoginEmailStr, LoginPasswordStr;
     Context mContext;
     String CurrentToken,CurrentUserID;
-
+    public static String forTest;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -59,13 +59,10 @@ public class LoginActivity extends AppCompatActivity
                 LoginEmailStr = LoginMail.getText().toString();
                 LoginPasswordStr = LoginPassword.getText().toString();
 
-                if (LoginEmailStr.isEmpty())
-                {
-                    LoginMail.setError("Please enter your Geeksreads login Email");
-                }
-                else if (!LoginEmailStr.matches(".+[@].+[.].+"))
+                if (!LoginEmailStr.matches(".+[@].+[.].+"))
                 {
                     LoginMail.setError("Please enter a valid Email");
+                    forTest = LoginMail.getError().toString();
                 }
                 else if (LoginPasswordStr.isEmpty())
                 {
@@ -101,12 +98,12 @@ public class LoginActivity extends AppCompatActivity
         public static final String REQUEST_METHOD = "GET";
         //public static final int READ_TIMEOUT = 3000;
         //public static final int CONNECTION_TIMEOUT = 3000;
-        AlertDialog dialog;
+
 
         @Override
         protected void onPreExecute() {
-            dialog = new AlertDialog.Builder(mContext).setPositiveButton("OK", null).create();
-            dialog.setTitle("Connection Status");
+            //dialog = new AlertDialog.Builder(mContext).setPositiveButton("OK", null).create();
+            //dialog.setTitle("Connection Status");
         }
 
         @Override
@@ -160,8 +157,7 @@ public class LoginActivity extends AppCompatActivity
                 return;
             }
             try {
-
-                // TODO: Add your Post Execute logic here.
+                AlertDialog dialog = new AlertDialog.Builder(mContext).setPositiveButton("OK", null).create();
                 JSONObject jsonObject = new JSONObject(result);
                 dialog.setTitle("Create account on GeeksReads");
                 dialog.setMessage(jsonObject.getString("ReturnMsg"));
@@ -174,12 +170,11 @@ public class LoginActivity extends AppCompatActivity
                     Email.setText("");
                     Password.setText("");
                     CurrentToken = jsonObject.getString("ReturnToken");
+                    CurrentUserID = jsonObject.getString("UserID");
 
-                    dialog.show();
                     //Go to Notifications Layout
                     Intent myIntent = new Intent(LoginActivity.this, NotificationActivity.class);
                     startActivity(myIntent);
-
                 }
                 else
                 {

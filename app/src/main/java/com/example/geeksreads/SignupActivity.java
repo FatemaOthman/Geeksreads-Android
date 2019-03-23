@@ -35,7 +35,7 @@ public class SignupActivity extends AppCompatActivity
     String EmailStr;
     String PasswordStr;
     Context mContext;
-
+    public static String forTest;
 
     @Override
     protected void onCreate(Bundle savedInstanceState)
@@ -71,42 +71,47 @@ public class SignupActivity extends AppCompatActivity
                 if (FullNameStr.length() < 3 || FullNameStr.length() > 50)
                 {
                     FullName.setError("Username length should be 3 characters minimum and 50 characters maximum");
+                    forTest = FullName.getError().toString();
                 }
                 else if (!EmailStr.matches(".+[@].+[.].+"))
                 {
                     Email.setError("Please enter a valid Email");
+                    forTest = Email.getError().toString();
                 }
                 else if (PasswordStr.length() < 6)
                 {
                     Password.setError("Password should be 6 characters or more");
-                    ConfPassword.setError("Password should be 6 characters or more");
                     Password.setText("");
                     ConfPassword.setText("");
+                    forTest = Password.getError().toString();
                 }
                 else if (!PasswordStr.matches(".*[0-9].*"))
                 {
                     Password.setError("Password should contain numbers");
-                    ConfPassword.setError("Password should contain numbers");
                     Password.setText("");
                     ConfPassword.setText("");
+                    forTest = Password.getError().toString();
                 }
                 else if (!PasswordStr.matches(".*[a-z].*"))
                 {
-                    Password.setError("Password should contain letters");
+                    Password.setError("Password should contain lower case letters");
                     Password.setText("");
                     ConfPassword.setText("");
+                    forTest = Password.getError().toString();
                 }
                 else if (!PasswordStr.matches(".*[A-Z].*"))
                 {
                     Password.setError("Password should contain upper case letters");
                     Password.setText("");
                     ConfPassword.setText("");
+                    forTest = Password.getError().toString();
                 }
                 else if (!PasswordStr.equals(ConfPassword.getText().toString()))
                 {
                     ConfPassword.setError("Passwords don't match");
                     Password.setText("");
                     ConfPassword.setText("");
+                    forTest = ConfPassword.getError().toString();
                 }
                 else
                 {
@@ -140,12 +145,11 @@ public class SignupActivity extends AppCompatActivity
         public static final String REQUEST_METHOD = "GET";
         //public static final int READ_TIMEOUT = 3000;
         //public static final int CONNECTION_TIMEOUT = 3000;
-        AlertDialog dialog;
+
 
         @Override
         protected void onPreExecute() {
-            dialog = new AlertDialog.Builder(mContext).setPositiveButton("OK", null).create();
-            dialog.setTitle("Connection Status");
+
         }
 
         @Override
@@ -199,34 +203,44 @@ public class SignupActivity extends AppCompatActivity
                 return;
             }
             try {
+                AlertDialog.Builder dialog = new AlertDialog.Builder(mContext);
 
-                // TODO: Add your Post Execute logic here.
-                JSONObject jsonObject = new JSONObject(result);
+                final JSONObject jsonObject = new JSONObject(result);
                 dialog.setTitle("Create account on GeeksReads");
                 dialog.setMessage(jsonObject.getString("ReturnMsg"));
+                forTest = jsonObject.getString("ReturnMsg");
+
+                dialog.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        try {
+                            if (jsonObject.getString("ReturnMsg").contains("A verification email has been sent"))
+                            {
+                                final EditText FullName = findViewById(R.id.UserNameTxt);
+                                final EditText Email = findViewById((R.id.EmailTxt));
+                                final EditText Password = findViewById(R.id.PasswordTxt);
+                                final EditText ConfPassword = findViewById(R.id.ConfirmPasswordTxt);
+                                FullName.setText("");
+                                Email.setText("");
+                                Password.setText("");
+                                ConfPassword.setText("");
+
+                                //Go to Sign in Layout
+                                Intent myIntent = new Intent(SignupActivity.this, LoginActivity.class);
+                                startActivity(myIntent);
+                            }
+                            else
+                            {
+                                //Stay Here
+                            }
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                });
                 dialog.show();
-                if (jsonObject.getString("ReturnMsg").contains("A verification email has been sent"))
-                {
-                    final EditText FullName = findViewById(R.id.UserNameTxt);
-                    final EditText Email = findViewById((R.id.EmailTxt));
-                    final EditText Password = findViewById(R.id.PasswordTxt);
-                    final EditText ConfPassword = findViewById(R.id.ConfirmPasswordTxt);
-                    FullName.setText("");
-                    Email.setText("");
-                    Password.setText("");
-                    ConfPassword.setText("");
 
-                    dialog.show();
 
-                    //Go to Sign in Layout
-                    Intent myIntent = new Intent(SignupActivity.this, LoginActivity.class);
-                    startActivity(myIntent);
-
-                }
-                else
-                {
-                    //Stay Here
-                }
             }
             catch(JSONException e)
             {
