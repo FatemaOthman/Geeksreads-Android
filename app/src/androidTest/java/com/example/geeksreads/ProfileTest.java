@@ -19,12 +19,12 @@ public class ProfileTest {
     public void Test_1() {
 
         //Test Profile Picture:
-       assertEquals("http://geeksreads.000webhostapp.com/Amr/MyPic.jpg",Profile.ForTestProfilePicture);
+        assertEquals("http://geeksreads.000webhostapp.com/Amr/MyPic.jpg",Profile.ForTestProfilePicture);
 
         //Test Followers Count:
-       assertEquals("15",Profile.ForTestFollowersCount);
+        assertEquals("15",Profile.ForTestFollowersCount);
 
         //Test Following Count:
-        assertEquals("20",Profile.ForTestProfilePicture);
+        assertEquals("20",Profile.ForTestFollowingCount);
     }
 }

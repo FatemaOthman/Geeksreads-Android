@@ -82,10 +82,6 @@ public class Profile extends AppCompatActivity
         FollowingCount = Following;
         BooksCount = findViewById(R.id.NumberOfBooks);
 
-
-        ForTestFollowersCount=FollowersCount.getText().toString();
-        ForTestFollowingCount=FollowingCount.getText().toString();
-
         //In my code here, I am not sending any data to the backend:
         JSONObject JSON = new JSONObject();
         /*
@@ -213,6 +209,9 @@ public class Profile extends AppCompatActivity
                 Profile.GetUserPicture Pic = new Profile.GetUserPicture();
                 Pic.execute(jsonObject.getString("photourl"));
 
+                ForTestProfilePicture = jsonObject.getString("photourl");
+                ForTestFollowersCount = FollowersCount.getText().toString();
+                ForTestFollowingCount = FollowingCount.getText().toString();
             }
             catch(JSONException e)
             {
