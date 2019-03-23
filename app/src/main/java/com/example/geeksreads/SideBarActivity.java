@@ -67,6 +67,12 @@ public class SideBarActivity extends AppCompatActivity
         userName = (TextView) v.findViewById(R.id.UserNameTxt);
         userPhoto = (ImageView) v.findViewById(R.id.UserPhoto);
 
+        LayoutInflater menuinflater = LayoutInflater.from(SideBarActivity.this);
+        final View menuv = inflater.inflate(R.menu.activity_side_bar_drawer, null);
+        followersCount = (TextView) menuv.findViewById(R.id.Followers);
+        booksCount = (TextView) menuv.findViewById(R.id.MyBooks);
+
+
         JSONObject JSON = new JSONObject();
 
         String UrlService = "http://geeksreads.000webhostapp.com/Fatema/SideBar.php";
@@ -108,12 +114,12 @@ public class SideBarActivity extends AppCompatActivity
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
-        MenuInflater inflater = getMenuInflater();
-        inflater.inflate(R.menu.activity_side_bar_drawer, menu);
+        getMenuInflater().inflate(R.menu.side_bar, menu);
+       /* inflater.inflate(R.menu.activity_side_bar_drawer, menu);
         MenuItem itemFollower = menu.findItem(R.id.Followers);
         followersCount = (TextView) itemFollower.getActionView();
         MenuItem itemBook = menu.findItem(R.id.MyBooks);
-        booksCount = (TextView) itemBook.getActionView();
+        booksCount = (TextView) itemBook.getActionView();*/
 
         return true;
     }
@@ -137,8 +143,7 @@ public class SideBarActivity extends AppCompatActivity
     @Override
     public boolean onNavigationItemSelected(MenuItem item) {
         // Handle navigation view item clicks here.
-        int id = item.getItemId();
-
+        int id=item.getItemId();
         if (id == R.id.Home) {
             // Handle the camera action
         } else if (id == R.id.Followers) {
@@ -240,8 +245,8 @@ public class SideBarActivity extends AppCompatActivity
                 return;
             }
             try {
-                dialog.setMessage("Done");
-                //dialog.show();
+                dialog.setMessage(result);
+                dialog.show();
 
                 // TODO: Add your Post Execute logic here.
                 JSONObject jsonObject = new JSONObject(result);
