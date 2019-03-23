@@ -9,6 +9,7 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
+import android.text.Layout;
 import android.view.LayoutInflater;
 import android.view.MenuInflater;
 import android.view.View;
@@ -47,6 +48,8 @@ public class SideBarActivity extends AppCompatActivity
     Context mContext;
     TextView followersCount;
     TextView booksCount;
+    private Menu menu;
+
 
 
     @Override
@@ -66,11 +69,10 @@ public class SideBarActivity extends AppCompatActivity
         final View v = inflater.inflate(R.layout.nav_header_side_bar, null);
         userName = (TextView) v.findViewById(R.id.UserNameTxt);
         userPhoto = (ImageView) v.findViewById(R.id.UserPhoto);
-
-        LayoutInflater menuinflater = LayoutInflater.from(SideBarActivity.this);
-        final View menuv = inflater.inflate(R.menu.activity_side_bar_drawer, null);
-        followersCount = (TextView) menuv.findViewById(R.id.Followers);
-        booksCount = (TextView) menuv.findViewById(R.id.MyBooks);
+      //  MenuItem FollowersItem = menu.findItem(R.id.Followers);
+      //  MenuItem BooksItem=menu.findItem(R.id.MyBooks);
+                //followersCount=findViewById(R.id.Followers);
+        //booksCount=findViewById(R.id.MyBooks);
 
 
         JSONObject JSON = new JSONObject();
@@ -96,6 +98,13 @@ public class SideBarActivity extends AppCompatActivity
         toggle.syncState();
 
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
+        Menu menu = navigationView.getMenu();
+        MenuItem itemFollower = menu.findItem(R.id.Followers);
+        followersCount = (TextView) itemFollower.getActionView();
+        followersCount.setTextColor(getResources().getColor(R.color.white));
+        MenuItem itemBook = menu.findItem(R.id.MyBooks);
+        booksCount = (TextView) itemBook.getActionView();
+        booksCount.setTextColor(getResources().getColor(R.color.white));
         navigationView.setNavigationItemSelectedListener(this);
     }
 
@@ -120,7 +129,11 @@ public class SideBarActivity extends AppCompatActivity
         followersCount = (TextView) itemFollower.getActionView();
         MenuItem itemBook = menu.findItem(R.id.MyBooks);
         booksCount = (TextView) itemBook.getActionView();*/
+      // super.onCreateOptionsMenu(menu);
 
+        // Create your menu...
+
+//        this.menu = menu;
         return true;
     }
 
