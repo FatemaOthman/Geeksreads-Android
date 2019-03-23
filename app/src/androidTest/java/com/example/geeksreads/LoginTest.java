@@ -17,12 +17,11 @@ public class LoginTest {
     @Rule
     public ActivityTestRule<LoginActivity> menuActivityTestRule =
             new ActivityTestRule<>(LoginActivity.class, true, true);
-
     @Test
     public void Test_1() {
-        /* User Didn't Verify Account Yet */
+        /* User Didn't write a valid Email */
         onView(withId(R.id.EmailTxt))
-                .perform(typeText("mahmoud_1@live.com"), closeSoftKeyboard());
+                .perform(typeText("mahmoud_1@live"), closeSoftKeyboard());
         onView(withId(R.id.PasswordTxt))
                 .perform(typeText("Mah1142019"), closeSoftKeyboard());
         onView(withId(R.id.LoginBtn)).perform(click());
@@ -32,6 +31,18 @@ public class LoginTest {
 
     @Test
     public void Test_2() {
+        /* User Didn't write a password */
+        onView(withId(R.id.EmailTxt))
+                .perform(typeText("mahmoud_1@live.com"), closeSoftKeyboard());
+        onView(withId(R.id.PasswordTxt))
+                .perform(typeText(""), closeSoftKeyboard());
+        onView(withId(R.id.LoginBtn)).perform(click());
+
+        assertEquals("Please enter your Geeksreads Login Password",LoginActivity.forTest);
+    }
+
+    @Test
+    public void Test_3() {
         /* User Didn't Verify Account Yet */
         onView(withId(R.id.EmailTxt))
                 .perform(typeText("mahmoud_1@live.com"), closeSoftKeyboard());
@@ -43,7 +54,7 @@ public class LoginTest {
     }
 
     @Test
-    public void Test_3() {
+    public void Test_4() {
         /* User entered a wrong password or email */
         onView(withId(R.id.EmailTxt))
                 .perform(typeText("mahmoud_2@live.com"), closeSoftKeyboard());
@@ -55,7 +66,7 @@ public class LoginTest {
     }
 
     @Test
-    public void Test_4() {
+    public void Test_5() {
         /* User logged in successfully */
         onView(withId(R.id.EmailTxt))
                 .perform(typeText("mahmoud_2@live.com"), closeSoftKeyboard());
@@ -67,7 +78,7 @@ public class LoginTest {
     }
 
     @Test
-    public void Test_5() {
+    public void Test_6() {
         /* Other error occurred in Login */
         onView(withId(R.id.EmailTxt))
                 .perform(typeText("mahmoud_3@live.com"), closeSoftKeyboard());

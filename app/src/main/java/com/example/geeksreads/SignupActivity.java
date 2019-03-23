@@ -71,47 +71,47 @@ public class SignupActivity extends AppCompatActivity
                 if (FullNameStr.length() < 3 || FullNameStr.length() > 50)
                 {
                     FullName.setError("Username length should be 3 characters minimum and 50 characters maximum");
-                    forTest = FullName.getError().toString();
+                    forTest = "Username length should be 3 characters minimum and 50 characters maximum";
                 }
                 else if (!EmailStr.matches(".+[@].+[.].+"))
                 {
                     Email.setError("Please enter a valid Email");
-                    forTest = Email.getError().toString();
+                    forTest = "Please enter a valid Email";
                 }
                 else if (PasswordStr.length() < 6)
                 {
                     Password.setError("Password should be 6 characters or more");
                     Password.setText("");
                     ConfPassword.setText("");
-                    forTest = Password.getError().toString();
+                    forTest = "Password should be 6 characters or more";
                 }
                 else if (!PasswordStr.matches(".*[0-9].*"))
                 {
                     Password.setError("Password should contain numbers");
                     Password.setText("");
                     ConfPassword.setText("");
-                    forTest = Password.getError().toString();
+                    forTest = "Password should contain numbers";
                 }
                 else if (!PasswordStr.matches(".*[a-z].*"))
                 {
                     Password.setError("Password should contain lower case letters");
                     Password.setText("");
                     ConfPassword.setText("");
-                    forTest = Password.getError().toString();
+                    forTest = "Password should contain lower case letters";
                 }
                 else if (!PasswordStr.matches(".*[A-Z].*"))
                 {
                     Password.setError("Password should contain upper case letters");
                     Password.setText("");
                     ConfPassword.setText("");
-                    forTest = Password.getError().toString();
+                    forTest = "Password should contain upper case letters";
                 }
                 else if (!PasswordStr.equals(ConfPassword.getText().toString()))
                 {
                     ConfPassword.setError("Passwords don't match");
                     Password.setText("");
                     ConfPassword.setText("");
-                    forTest = ConfPassword.getError().toString();
+                    forTest = "Passwords don't match";
                 }
                 else
                 {

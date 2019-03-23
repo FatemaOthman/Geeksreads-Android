@@ -62,11 +62,12 @@ public class LoginActivity extends AppCompatActivity
                 if (!LoginEmailStr.matches(".+[@].+[.].+"))
                 {
                     LoginMail.setError("Please enter a valid Email");
-                    forTest = LoginMail.getError().toString();
+                    forTest = "Please enter a valid Email";
                 }
                 else if (LoginPasswordStr.isEmpty())
                 {
                     LoginPassword.setError("Please enter your Geeksreads Login Password");
+                    forTest = "Please enter your Geeksreads Login Password";
                 }
                 else
                 {
@@ -161,7 +162,7 @@ public class LoginActivity extends AppCompatActivity
                 AlertDialog.Builder dialog = new AlertDialog.Builder(mContext);
                 dialog.setTitle("Login to GeeksReads");
                 dialog.setMessage(jsonObject.getString("ReturnMsg"));
-
+                forTest = jsonObject.getString("ReturnMsg");
                 dialog.setPositiveButton("OK", new DialogInterface.OnClickListener()
                 {
                     @Override

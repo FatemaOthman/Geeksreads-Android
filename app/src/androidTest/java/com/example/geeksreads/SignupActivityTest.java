@@ -143,7 +143,7 @@ public class SignupActivityTest {
 
         onView(withId(R.id.SignupBtn)).perform(click());
 
-        assertEquals("A verification email has been sent",SignupActivity.forTest);
+        assertEquals("A verification email has been sent to mahmoud_1@live.com",SignupActivity.forTest);
     }
     @Test
     public void Test_9() {
