@@ -40,7 +40,7 @@ import java.net.URLEncoder;
 
 public class BookActivity extends AppCompatActivity {
 
-    public static String bookActivityTest;
+    public static String forTestAuthor, forTestTitle, forTestRate, forTestDate;
     ImageView bookCover;
     Context mContext;
     TextView bookTitle;
@@ -135,7 +135,7 @@ public class BookActivity extends AppCompatActivity {
         @Override
         protected void onPostExecute(Bitmap result) {
             progress.setVisibility(View.GONE);
-            bookActivityTest = "Done";
+            //bookActivityTest = "Done";
             bookCover.setImageBitmap(result);
 
         }
@@ -227,6 +227,10 @@ public class BookActivity extends AppCompatActivity {
                 GetImage getCover = new GetImage();
                 getCover.execute(jsonObject.getString("photourl"));
 
+                forTestAuthor = bookAuthor.getText().toString();
+                forTestTitle = bookTitle.getText().toString();
+                forTestRate = bookRatings.getText().toString();
+                forTestDate= publishingDate.getText().toString();
             }
             catch(JSONException e)
             {

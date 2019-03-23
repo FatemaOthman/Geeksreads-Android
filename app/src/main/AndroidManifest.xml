@@ -16,13 +16,13 @@
             android:label="@string/title_activity_side_bar"
             android:theme="@style/AppTheme.NoActionBar"/>
 
-        <activity android:name=".BookActivity"/>
+        <activity android:name=".Profile"/>
         <activity android:name=".SideBarActivity" android:label="@string/title_activity_side_bar"
             android:theme="@style/AppTheme.NoActionBar">
 
         </activity>
 
-        <activity android:name=".Profile" >
+        <activity android:name=".BookActivity" >
 
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
