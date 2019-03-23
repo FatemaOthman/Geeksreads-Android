@@ -64,10 +64,8 @@ public class SideBarActivity extends AppCompatActivity
 
         LayoutInflater inflater = LayoutInflater.from(SideBarActivity.this);
         final View v = inflater.inflate(R.layout.nav_header_side_bar, null);
-
         userName = (TextView) v.findViewById(R.id.UserNameTxt);
         userPhoto = (ImageView) v.findViewById(R.id.UserPhoto);
-
 
         JSONObject JSON = new JSONObject();
 
