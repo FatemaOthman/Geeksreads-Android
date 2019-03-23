@@ -40,6 +40,7 @@
     <string name="ReviewsText">Reviews</string>
     <string name="Followers">Followers</string>
     <string name="Following">Following</string>
+    <string name="FollowUnfollow">Un\\Follow</string>
     <string name="CurrentlyReadingTxt">   Currently Reading</string>
     <string name="WantToReadTxt">   Want to Read</string>
     <string name="ButtonText">Button</string>
@@ -48,6 +49,8 @@
     <string name="PublishedDay">Day</string>
     <string name="PublishedMonth">Month</string>
     <string name="PublishedYear">Year</string>
+    <string name="FollowerString">Followers</string>
+    <string name="FollowingString">Following</string>
     <string name="title_activity_side_bar">SideBarActivity</string>
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
