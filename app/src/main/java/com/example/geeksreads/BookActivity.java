@@ -40,7 +40,7 @@ import java.net.URLEncoder;
 
 public class BookActivity extends AppCompatActivity {
 
-    public static String forTestAuthor, forTestTitle, forTestRate, forTestDate;
+    public static String forTestAuthor, forTestTitle, forTestRate, forTestDate, forTestBookActivity;
     ImageView bookCover;
     Context mContext;
     TextView bookTitle;
@@ -135,7 +135,7 @@ public class BookActivity extends AppCompatActivity {
         @Override
         protected void onPostExecute(Bitmap result) {
             progress.setVisibility(View.GONE);
-            //bookActivityTest = "Done";
+            forTestBookActivity = "Done";
             bookCover.setImageBitmap(result);
 
         }
