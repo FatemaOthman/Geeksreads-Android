@@ -39,3 +39,13 @@ Please take into consideration the below notes:
     20. To Pull: VCS Menu >> Git >> Pull {{PULL fetches the latest code on github then Merges the files}}
     21. To Push: VCS Menu >> Git >> Push
 
+5] In order to facilitate future Integration between Android team and Back end team using a Public Host for APIs used, I created a real public host and domain for our project, so that we can upload and edit our Mimic Services on it and access them over internet from the Mobile Application. Here are some information regarding our Public Host:
+    
+    1. Public Domain Link: http://geeksreads.000webhostapp.com/
+    2. Each one of us, will upload his files in a specific folder http://geeksreads.000webhostapp.com/<Folder Name>/ , Such as http://geeksreads.000webhostapp.com/Morsy/
+    3. Host supports Php and MySQL.
+    4. To Upload files, go to https://files.000webhost.com/
+    5. Login Username: geeksreads
+    6. Login Password: <Sent on Whatsapp Group>
+    7. Every one should upload his files in his own folder only and don't edit any other files!
+      
