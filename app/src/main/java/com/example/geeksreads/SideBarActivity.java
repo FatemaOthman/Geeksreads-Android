@@ -9,6 +9,8 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
+import android.view.LayoutInflater;
+import android.view.MenuInflater;
 import android.view.View;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
@@ -19,6 +21,7 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.ImageView;
+import android.widget.SearchView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -55,9 +58,16 @@ public class SideBarActivity extends AppCompatActivity
 
         mContext = this;
         userPhoto=findViewById(R.id.UserPhoto);
-        userName=findViewById(R.id.UserNameTxt);
-        followersCount=findViewById(R.id.Followers);
-        booksCount=findViewById(R.id.MyBooks);
+        //userName=findViewById(R.id.UserNameTxt);
+        //followersCount=findViewById(R.id.Followers);
+        //booksCount=findViewById(R.id.MyBooks);
+
+        LayoutInflater inflater = LayoutInflater.from(SideBarActivity.this);
+        final View v = inflater.inflate(R.layout.nav_header_side_bar, null);
+
+        userName = (TextView) v.findViewById(R.id.UserNameTxt);
+
+
         JSONObject JSON = new JSONObject();
 
         String UrlService = "http://geeksreads.000webhostapp.com/Fatema/SideBar.php";
@@ -84,6 +94,8 @@ public class SideBarActivity extends AppCompatActivity
         navigationView.setNavigationItemSelectedListener(this);
     }
 
+
+
     @Override
     public void onBackPressed() {
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
@@ -97,7 +109,13 @@ public class SideBarActivity extends AppCompatActivity
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.side_bar, menu);
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.activity_side_bar_drawer, menu);
+        MenuItem itemFollower = menu.findItem(R.id.Followers);
+        followersCount = (TextView) itemFollower.getActionView();
+        MenuItem itemBook = menu.findItem(R.id.MyBooks);
+        booksCount = (TextView) itemBook.getActionView();
+
         return true;
     }
 
