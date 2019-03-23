@@ -157,29 +157,42 @@ public class LoginActivity extends AppCompatActivity
                 return;
             }
             try {
-                AlertDialog dialog = new AlertDialog.Builder(mContext).setPositiveButton("OK", null).create();
-                JSONObject jsonObject = new JSONObject(result);
-                dialog.setTitle("Create account on GeeksReads");
+                final JSONObject jsonObject = new JSONObject(result);
+                AlertDialog.Builder dialog = new AlertDialog.Builder(mContext);
+                dialog.setTitle("Login to GeeksReads");
                 dialog.setMessage(jsonObject.getString("ReturnMsg"));
-                dialog.show();
-                if (jsonObject.getString("ReturnMsg").contains("Login Succeeded"))
-                {
-                    //Go to Home Layout
-                    final EditText Email = findViewById((R.id.EmailTxt));
-                    final EditText Password = findViewById(R.id.PasswordTxt);
-                    Email.setText("");
-                    Password.setText("");
-                    CurrentToken = jsonObject.getString("ReturnToken");
-                    CurrentUserID = jsonObject.getString("UserID");
 
-                    //Go to Notifications Layout
-                    Intent myIntent = new Intent(LoginActivity.this, NotificationActivity.class);
-                    startActivity(myIntent);
-                }
-                else
+                dialog.setPositiveButton("OK", new DialogInterface.OnClickListener()
                 {
-                    //Stay Here
-                }
+                    @Override
+                    public void onClick(DialogInterface dialog, int which)
+                    {
+                        try {
+                            if (jsonObject.getString("ReturnMsg").contains("Login Succeeded"))
+                            {
+                                final EditText Email = findViewById((R.id.EmailTxt));
+                                final EditText Password = findViewById(R.id.PasswordTxt);
+                                Email.setText("");
+                                Password.setText("");
+                                CurrentToken = jsonObject.getString("ReturnToken");
+                                CurrentUserID = jsonObject.getString("UserID");
+
+                                //Go to Book Activity Layout
+                                Intent myIntent = new Intent(LoginActivity.this, BookActivity.class);
+                                startActivity(myIntent);
+                            }
+                            else
+                            {
+                                //Stay Here
+                            }
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                });
+
+                dialog.show();
+
             }
             catch(JSONException e)
             {
