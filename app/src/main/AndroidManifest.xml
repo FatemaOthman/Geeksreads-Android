@@ -2,8 +2,8 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.example.geeksreads">
 
-    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
-    <uses-permission android:name="android.permission.INTERNET"/>
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.INTERNET" />
 
     <application
         android:icon="@mipmap/logo_vertically"
@@ -11,11 +11,11 @@
         android:roundIcon="@mipmap/logo_vertically"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-
-        <activity android:name=".BookActivity" >
-
-        </activity>
-
+        <activity
+            android:name=".SideBarActivity"
+            android:label="@string/title_activity_side_bar"
+            android:theme="@style/AppTheme.NoActionBar"></activity>
+        <activity android:name=".BookActivity"></activity>
         <activity android:name=".FollowActivity" />
         <activity android:name=".SignupActivity">
             <intent-filter>
@@ -26,14 +26,13 @@
                 <action android:name="android.intent.action.VIEW" />
             </intent-filter>
         </activity>
-        <activity android:name=".Profile"/>
+        <activity android:name=".Profile" />
         <activity android:name=".EditProfileActivity" />
         <activity android:name=".MyBooksShelvesActivity" />
         <activity android:name=".NotificationActivity" />
-
         <activity
             android:name=".LoginActivity"
-            android:parentActivityName=".SignupActivity"/>
+            android:parentActivityName=".SignupActivity" />
         <activity
             android:name=".ChangePasswordActivity"
             android:parentActivityName=".EditProfileActivity" />

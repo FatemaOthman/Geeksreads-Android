@@ -11,5 +11,8 @@
     <color name="color2">#5b4931</color>
     <color name="White">#FFFFFF</color>
     <color name="bkColor">#F9F9F9</color>
+    <color name="colorNavHeader">#5c5c5c</color>
+    <color name="colorNavBackground">#333333</color>
+    <color name="colorFont">#FFFFFF</color>
 
 </resources>

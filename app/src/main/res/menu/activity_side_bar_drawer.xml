@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:showIn="navigation_view">
+
+    <group android:checkableBehavior="single">
+        <item
+            android:id="@+id/Home"
+            android:icon="@drawable/ic_home"
+            android:title="Home" />
+        <item
+            android:id="@+id/MyBooks"
+            android:icon="@drawable/ic_book"
+            app:actionViewClass="android.widget.TextView"
+            app:showAsAction="always"
+            android:title="My Books                                  0"
+
+            />
+        <item
+            android:id="@+id/Followers"
+            android:icon="@drawable/ic_friends"
+            app:actionViewClass="android.widget.TextView"
+            app:showAsAction="always"
+            android:title="Followers                                  0"
+            />
+    </group>
+
+</menu>
