@@ -17,9 +17,12 @@
             android:theme="@style/AppTheme.NoActionBar"/>
 
         <activity android:name=".BookActivity"/>
-        <activity android:name=".FollowActivity" />
         <activity android:name=".SideBarActivity" android:label="@string/title_activity_side_bar"
             android:theme="@style/AppTheme.NoActionBar">
+
+        </activity>
+
+        <activity android:name=".Profile" >
 
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -28,8 +31,13 @@
 
                 <action android:name="android.intent.action.VIEW" />
             </intent-filter>
+
+
         </activity>
-        <activity android:name=".Profile" />
+        <activity android:name=".OtherProfileActivity"/>
+        <activity android:name=".FollowActivity"/>
+
+
         <activity android:name=".EditProfileActivity" />
         <activity android:name=".MyBooksShelvesActivity" />
         <activity android:name=".NotificationActivity" />
@@ -51,3 +59,4 @@
     </application>
 
 </manifest>
+
