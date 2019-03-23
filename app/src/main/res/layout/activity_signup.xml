@@ -32,7 +32,7 @@
         android:layout_marginTop="0dp"
         android:layout_marginEnd="30dp"
         android:layout_marginRight="0dp"
-        android:layout_marginBottom="10dp"
+        android:layout_marginBottom="0dp"
         android:ems="10"
         android:hint="@string/UsernameHint" />
 
@@ -44,7 +44,7 @@
         android:layout_marginLeft="0dp"
         android:layout_marginEnd="30dp"
         android:layout_marginRight="0dp"
-        android:layout_marginBottom="10dp"
+        android:layout_marginBottom="0dp"
         android:ems="10"
         android:hint="@string/EmailHint"
         android:inputType="textEmailAddress" />
@@ -57,7 +57,7 @@
         android:layout_marginLeft="0dp"
         android:layout_marginEnd="30dp"
         android:layout_marginRight="0dp"
-        android:layout_marginBottom="10dp"
+        android:layout_marginBottom="0dp"
         android:ems="10"
         android:hint="@string/NewPasswordHint"
         android:inputType="textPassword" />
@@ -70,7 +70,7 @@
         android:layout_marginLeft="0dp"
         android:layout_marginEnd="30dp"
         android:layout_marginRight="0dp"
-        android:layout_marginBottom="20dp"
+        android:layout_marginBottom="15dp"
         android:autoText="false"
         android:ems="10"
         android:hint="@string/ConfirmNewPasswordHint"
@@ -85,7 +85,7 @@
         android:layout_marginLeft="0dp"
         android:layout_marginEnd="30dp"
         android:layout_marginRight="0dp"
-        android:layout_marginBottom="20dp"
+        android:layout_marginBottom="10dp"
         android:background="@color/color0"
         android:text="@string/SignUpBtnTxt" />
 
