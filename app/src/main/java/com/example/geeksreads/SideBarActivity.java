@@ -48,7 +48,6 @@ public class SideBarActivity extends AppCompatActivity
     Context mContext;
     TextView followersCount;
     TextView booksCount;
-    private Menu menu;
 
 
 
@@ -65,10 +64,24 @@ public class SideBarActivity extends AppCompatActivity
         //followersCount=findViewById(R.id.Followers);
         //booksCount=findViewById(R.id.MyBooks);
 
-        LayoutInflater inflater = LayoutInflater.from(SideBarActivity.this);
-        final View v = inflater.inflate(R.layout.nav_header_side_bar, null);
-        userName = (TextView) v.findViewById(R.id.UserNameTxt);
-        userPhoto = (ImageView) v.findViewById(R.id.UserPhoto);
+        //LayoutInflater inflater = LayoutInflater.from(SideBarActivity.this);
+        //final View v = inflater.inflate(R.layout.nav_header_side_bar, null);
+        //userName = (TextView) v.findViewById(R.id.UserNameTxt);
+        //userPhoto = (ImageView) v.findViewById(R.id.UserPhoto);
+        //////////////////////////////////////////////////////
+        NavigationView navigationViewe = (NavigationView) findViewById(R.id.nav_view);
+        navigationViewe.setNavigationItemSelectedListener(this);
+        View header=navigationViewe.getHeaderView(0);
+        /*View view=navigationView.inflateHeaderView(R.layout.nav_header_main);*/
+        userName = (TextView)header.findViewById(R.id.UserNameTxt);
+        userPhoto = (ImageView) header.findViewById(R.id.UserPhoto);
+      //  name.setText(personName);
+       // email.setText(personEmail);
+
+
+
+
+        /////////////////////////////////////////////////////
       //  MenuItem FollowersItem = menu.findItem(R.id.Followers);
       //  MenuItem BooksItem=menu.findItem(R.id.MyBooks);
                 //followersCount=findViewById(R.id.Followers);
