@@ -245,8 +245,8 @@ public class SideBarActivity extends AppCompatActivity
 
                 // TODO: Add your Post Execute logic here.
                 JSONObject jsonObject = new JSONObject(result);
-                followersCount.setText("Followers                                  "+jsonObject.getString("Followers"));
-                booksCount.setText("My Books                                  "+jsonObject.getString("CountBooks"));
+                followersCount.setText("Followers                             "+jsonObject.getString("Followers"));
+                booksCount.setText("My Books                             "+jsonObject.getString("CountBooks"));
                 userName.setText(jsonObject.getString("UserName"));
                 SideBarActivity.GetUserPicture Pic = new SideBarActivity.GetUserPicture();
                 Pic.execute(jsonObject.getString("photourl"));

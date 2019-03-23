@@ -14,7 +14,7 @@
             android:icon="@drawable/ic_book"
             app:actionViewClass="android.widget.TextView"
             app:showAsAction="always"
-            android:title="My Books                                  0"
+            android:title="My Books                            0"
 
             />
         <item
@@ -22,7 +22,7 @@
             android:icon="@drawable/ic_friends"
             app:actionViewClass="android.widget.TextView"
             app:showAsAction="always"
-            android:title="Followers                                  0"
+            android:title="Followers                           0"
             />
     </group>
 
