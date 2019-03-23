@@ -57,7 +57,7 @@ public class SideBarActivity extends AppCompatActivity
         setSupportActionBar(toolbar);
 
         mContext = this;
-        userPhoto=findViewById(R.id.UserPhoto);
+        //userPhoto=findViewById(R.id.UserPhoto);
         //userName=findViewById(R.id.UserNameTxt);
         //followersCount=findViewById(R.id.Followers);
         //booksCount=findViewById(R.id.MyBooks);
@@ -66,6 +66,7 @@ public class SideBarActivity extends AppCompatActivity
         final View v = inflater.inflate(R.layout.nav_header_side_bar, null);
 
         userName = (TextView) v.findViewById(R.id.UserNameTxt);
+        userPhoto = (ImageView) v.findViewById(R.id.UserPhoto);
 
 
         JSONObject JSON = new JSONObject();
