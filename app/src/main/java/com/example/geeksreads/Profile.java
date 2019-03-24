@@ -84,16 +84,7 @@ public class Profile extends AppCompatActivity
 
         //In my code here, I am not sending any data to the backend:
         JSONObject JSON = new JSONObject();
-        /*
-        try {
-            // TODO: Put all your JSON values Here.
-            JSON.put("Picture", "value");
-        }catch (JSONException e) {
-            e.printStackTrace();
-        }
-        */
 
-        // TODO: Change the URL with your Service.
         String UrlService = "http://geeksreads.000webhostapp.com/Amr/UserProfile.php";
 
         Profile.GetProfileDetails MyProfile = new Profile.GetProfileDetails();
@@ -200,8 +191,7 @@ public class Profile extends AppCompatActivity
             try {
                 dialog.setMessage("Done");
                 //dialog.show();
-
-                // TODO: Add your Post Execute logic here.
+                
                 JSONObject jsonObject = new JSONObject(result);
                 FollowersCount.setText(jsonObject.getString("Followers"));
                 FollowingCount.setText(jsonObject.getString("Following"));
