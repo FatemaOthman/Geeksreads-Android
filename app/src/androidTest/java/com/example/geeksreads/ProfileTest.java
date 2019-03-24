@@ -1,12 +1,11 @@
 package com.example.geeksreads;
 
-import android.support.test.espresso.action.ViewActions;
 import android.support.test.rule.ActivityTestRule;
 
 import org.junit.Rule;
 import org.junit.Test;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
 
 
 public class ProfileTest {
@@ -17,6 +16,7 @@ public class ProfileTest {
 
     @Test
     public void Test_1() {
+
 
         //Test Profile Picture:
         assertEquals("http://geeksreads.000webhostapp.com/Amr/MyPic.jpg",Profile.ForTestProfilePicture);

@@ -14,19 +14,18 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
+
 import org.json.JSONException;
 import org.json.JSONObject;
+
 import java.io.BufferedReader;
-import java.io.BufferedWriter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.io.OutputStream;
-import java.io.OutputStreamWriter;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 
 public class Profile extends AppCompatActivity
 {
@@ -46,14 +45,18 @@ public class Profile extends AppCompatActivity
         setContentView(R.layout.profile);
         mContext=this;
 
+        UserPhoto = findViewById(R.id.UserProfilePhoto);
+        BooksCount = findViewById(R.id.NumberOfBooks);
+        FollowersCount = findViewById(R.id.ActualFollowersCount);
+        FollowingCount = findViewById(R.id.ActualFollowingCount);
+
         //////////////////////////////////////////////////////
         Toolbar myToolbar = findViewById(R.id.toolbar);
         setSupportActionBar(myToolbar);
         getSupportActionBar().setTitle("Profile");
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
-        TextView Followers= findViewById(R.id.ActualFollowersCount);
-        Followers.setOnClickListener(new View.OnClickListener() {
+        FollowersCount.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 Intent myIntent = new Intent(Profile.this,FollowActivity.class);
@@ -61,8 +64,7 @@ public class Profile extends AppCompatActivity
             }
         });
 
-        TextView Following= findViewById(R.id.ActualFollowingCount);
-        Following.setOnClickListener(new View.OnClickListener() {
+        FollowingCount.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 Intent myIntent = new Intent(Profile.this,FollowActivity.class);
@@ -71,31 +73,13 @@ public class Profile extends AppCompatActivity
         });
 
 
-        //////////////////////////////////////////////////////
-        //Strings and Variables:
 
-        mContext = this;
-
-
-        UserPhoto = findViewById(R.id.UserProfilePhoto);
-        FollowersCount = Followers;
-        FollowingCount = Following;
-        BooksCount = findViewById(R.id.NumberOfBooks);
 
         //In my code here, I am not sending any data to the backend:
         JSONObject JSON = new JSONObject();
-        /*
-        try {
-            // TODO: Put all your JSON values Here.
-            JSON.put("Picture", "value");
-        }catch (JSONException e) {
-            e.printStackTrace();
-        }
-        */
 
-        // TODO: Change the URL with your Service.
+        // Calling Async Task with my server url
         String UrlService = "http://geeksreads.000webhostapp.com/Amr/UserProfile.php";
-
         Profile.GetProfileDetails MyProfile = new Profile.GetProfileDetails();
         MyProfile.execute(UrlService,JSON.toString());
 
@@ -103,7 +87,10 @@ public class Profile extends AppCompatActivity
 
     }
 
-
+    /*  Class GetUserPicture:
+     *      Gets user picture from the url and changes it into bitmap
+     *      sets the imageView into the same bitmap
+     */
     private class GetUserPicture extends AsyncTask<String, Void, Bitmap> {
 
         @Override
@@ -118,7 +105,7 @@ public class Profile extends AppCompatActivity
                 Bitmap myBitmap = BitmapFactory.decodeStream(input);
                 return myBitmap;
             }catch (Exception e){
-                // Log.d(TAG,e.getMessage());
+
             }
             return null;
         }
@@ -137,8 +124,7 @@ public class Profile extends AppCompatActivity
      */
     public class GetProfileDetails extends AsyncTask<String, Void, String> {
         public static final String REQUEST_METHOD = "GET";
-        //public static final int READ_TIMEOUT = 3000;
-        //public static final int CONNECTION_TIMEOUT = 3000;
+
         AlertDialog dialog;
 
         @Override
@@ -159,20 +145,10 @@ public class Profile extends AppCompatActivity
                 HttpURLConnection http = (HttpURLConnection) url.openConnection();
                 http.setRequestMethod(REQUEST_METHOD);
                 http.setDoInput(true);
-                http.setDoOutput(true);
-
-                OutputStream ops = http.getOutputStream();
-                BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(ops,"UTF-8"));
-                String data = URLEncoder.encode("id","UTF-8")+"="+URLEncoder.encode(JSONString,"UTF-8");
-
-                writer.write(data);
-                writer.flush();
-                writer.close();
-                ops.close();
 
                 //Create a new InputStreamReader
                 InputStream ips = http.getInputStream();
-                BufferedReader reader = new BufferedReader(new InputStreamReader(ips,"ISO-8859-1"));
+                BufferedReader reader = new BufferedReader(new InputStreamReader(ips, StandardCharsets.ISO_8859_1));
                 String line ="";
                 while ((line = reader.readLine()) != null)
                 {
@@ -198,10 +174,7 @@ public class Profile extends AppCompatActivity
                 return;
             }
             try {
-                dialog.setMessage("Done");
-                //dialog.show();
 
-                // TODO: Add your Post Execute logic here.
                 JSONObject jsonObject = new JSONObject(result);
                 FollowersCount.setText(jsonObject.getString("Followers"));
                 FollowingCount.setText(jsonObject.getString("Following"));
