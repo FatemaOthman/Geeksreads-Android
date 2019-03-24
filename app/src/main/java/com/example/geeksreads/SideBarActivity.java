@@ -7,6 +7,7 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.support.constraint.solver.widgets.WidgetContainer;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.text.Layout;
@@ -41,6 +42,8 @@ import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLEncoder;
+import android.content.Intent;
+
 
 public class SideBarActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
@@ -77,6 +80,26 @@ public class SideBarActivity extends AppCompatActivity
         /*View view=navigationView.inflateHeaderView(R.layout.nav_header_main);*/
         userName = (TextView)header.findViewById(R.id.UserNameTxt);
         userPhoto = (ImageView) header.findViewById(R.id.UserPhoto);
+        userName.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                //code here ...
+                Intent myIntent = new Intent(SideBarActivity.this, Profile.class);
+                SideBarActivity.this.startActivity(myIntent);
+
+            }
+        });
+        userPhoto.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                //code here ...
+                Intent myIntent = new Intent(SideBarActivity.this, Profile.class);
+                SideBarActivity.this.startActivity(myIntent);
+
+            }
+        });
       //  name.setText(personName);
        // email.setText(personEmail);
 
@@ -171,14 +194,31 @@ public class SideBarActivity extends AppCompatActivity
     @Override
     public boolean onNavigationItemSelected(MenuItem item) {
         // Handle navigation view item clicks here.
+        AlertDialog D;
+        D = new AlertDialog.Builder(mContext).create();
+
         int id=item.getItemId();
         if (id == R.id.Home) {
-            // Handle the camera action
+            D.setMessage("Followers Page");
+            D.show();
+
         } else if (id == R.id.Followers) {
+            D.setMessage("Followers Page");
+            D.show();
 
         } else if (id == R.id.MyBooks) {
+            D.setMessage("Books Page");
+            D.show();
+
 
         }
+        else if(id == R.id.UserPhoto||id == R.id.UserNameTxt||id==R.id.Nav_Header){
+            D.setMessage("User's Profile");
+            D.show();
+
+
+        }
+
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);

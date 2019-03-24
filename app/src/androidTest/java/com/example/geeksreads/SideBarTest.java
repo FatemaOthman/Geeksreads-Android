@@ -6,7 +6,6 @@ import android.support.test.rule.ActivityTestRule;
 import org.junit.Test;
 
 import static org.junit.Assert.assertEquals;
-import android.content.Intent;
 
 public class SideBarTest{
     public ActivityTestRule<SideBarActivity> menuActivityTestRule =

@@ -2,6 +2,7 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/Nav_Header"
     android:layout_width="match_parent"
     android:layout_height="@dimen/nav_header_height"
     android:background="@color/colorNavHeader"
@@ -13,6 +14,7 @@
     android:paddingBottom="@dimen/activity_vertical_margin"
     android:theme="@style/ThemeOverlay.AppCompat.Dark">
 
+
     <ImageView
         android:id="@+id/UserPhoto"
         android:layout_width="103dp"
@@ -20,6 +22,7 @@
         android:layout_gravity="center"
         android:contentDescription="@string/nav_header_desc"
         android:paddingTop="@dimen/nav_header_vertical_spacing"
+        android:clickable="true"
         app:srcCompat="@drawable/circle" />
 
 
@@ -27,10 +30,12 @@
         android:id="@+id/UserNameTxt"
         android:layout_width="102dp"
         android:layout_height="match_parent"
+        android:clickable="true"
         android:gravity="right|center_vertical"
         android:paddingTop="@dimen/nav_header_vertical_spacing"
         android:text="@string/nav_header_title"
         android:textAppearance="@style/TextAppearance.AppCompat.Widget.PopupMenu.Header"
         android:textColor="@color/colorFont" />
+
 
 </LinearLayout>
