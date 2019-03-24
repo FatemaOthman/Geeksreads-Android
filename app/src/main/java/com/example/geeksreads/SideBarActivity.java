@@ -283,8 +283,6 @@ public class SideBarActivity extends AppCompatActivity
                 return;
             }
             try {
-                dialog.setMessage(result);
-                dialog.show();
 
                 // TODO: Add your Post Execute logic here.
                 JSONObject jsonObject = new JSONObject(result);
