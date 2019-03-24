@@ -28,64 +28,81 @@ import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLEncoder;
+import java.util.Objects;
 
 public class LoginActivity extends AppCompatActivity
 {
-    String LoginEmailStr, LoginPasswordStr;
-    Context mContext;
-    String CurrentToken,CurrentUserID;
-    public static String forTest;
+    /** Global Private Variables to Store Login Email and Login Password from Text boxes */
+    private String loginEmailStr;
+    private String loginPasswordStr;
+    /** Global Variables to Store Context of this Activity itself */
+    private Context mContext;
+    /** Global Variables to Store Returned Login Token and User ID */
+    public String currentToken,currentUserID;
+    /** Global Public Static Variables used for Testing */
+    public static String sForTest;
+
+    /**
+     * Function for Starting Logic Actions after Creating the Layout
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
 
-
+        /*For Displaying the toolbar on the top of Login Layout */
         Toolbar myToolbar = findViewById(R.id.toolbar);
         setSupportActionBar(myToolbar);
-        getSupportActionBar().setTitle("Login");
+        Objects.requireNonNull(getSupportActionBar()).setTitle("Login");
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         mContext = this;
 
+        /* Getting Text boxes and Buttons from the layout */
         Button LoginButton = findViewById(R.id.LoginBtn);
-        final EditText LoginMail =  findViewById(R.id.EmailTxt);
-        final EditText LoginPassword = findViewById(R.id.PasswordTxt);
+        final EditText loginMail =  findViewById(R.id.EmailTxt);
+        final EditText loginPassword = findViewById(R.id.PasswordTxt);
 
+
+        /* Function Handler for Clicking on Login Button, to Start Checking input Field
+           and Sending JSON String to the Backend Login API
+         */
         LoginButton.setOnClickListener(new View.OnClickListener()
         {
             @Override
             public void onClick(View v)
             {
-                LoginEmailStr = LoginMail.getText().toString();
-                LoginPasswordStr = LoginPassword.getText().toString();
+                loginEmailStr = loginMail.getText().toString();
+                loginPasswordStr = loginPassword.getText().toString();
 
-                if (!LoginEmailStr.matches(".+[@].+[.].+"))
+                /* If the user entered an invalid Email Address */
+                if (!loginEmailStr.matches(".+[@].+[.].+"))
                 {
-                    LoginMail.setError("Please enter a valid Email");
-                    forTest = "Please enter a valid Email";
+                    loginMail.setError("Please enter a valid Email");
+                    sForTest = "Please enter a valid Email";
                 }
-                else if (LoginPasswordStr.isEmpty())
+                /* If the user entered an empty Password */
+                else if (loginPasswordStr.isEmpty())
                 {
-                    LoginPassword.setError("Please enter your Geeksreads Login Password");
-                    forTest = "Please enter your Geeksreads Login Password";
+                    loginPassword.setError("Please enter your Geeksreads Login Password");
+                    sForTest = "Please enter your Geeksreads Login Password";
                 }
+                /* If the user entered a valid email and password */
                 else
                 {
-                    //TODO Call Async Login Function
-                    JSONObject JSON = new JSONObject();
+                    JSONObject mJSON = new JSONObject();
                     try {
-                        // TODO: Put all your JSON values Here.
-                        JSON.put("UserEmail", LoginEmailStr);
-                        JSON.put("UserPassword", LoginPasswordStr);
+                        mJSON.put("UserEmail", loginEmailStr);
+                        mJSON.put("UserPassword", loginPasswordStr);
                     }catch (JSONException e) {
                         e.printStackTrace();
                     }
 
-                    // TODO: Change the URL with your Service.
-                    String UrlService = "http://geeksreads.000webhostapp.com/Morsy/Signin.php";
+                    /* URL For Login API */
+                    String urlService = "http://geeksreads.000webhostapp.com/Morsy/Signin.php";
 
+                    /* Creating a new instance of Sign in Class */
                     SignIn signIn = new SignIn();
-                    signIn.execute(UrlService,JSON.toString());
+                    signIn.execute(urlService,mJSON.toString());
                 }
             }
         });
@@ -96,15 +113,11 @@ public class LoginActivity extends AppCompatActivity
      *  The Parameters are host Url and toSend Data.
      */
     public class SignIn extends AsyncTask<String, Void, String> {
-        public static final String REQUEST_METHOD = "GET";
-        //public static final int READ_TIMEOUT = 3000;
-        //public static final int CONNECTION_TIMEOUT = 3000;
-
+        static final String REQUEST_METHOD="GET";
 
         @Override
         protected void onPreExecute() {
-            //dialog = new AlertDialog.Builder(mContext).setPositiveButton("OK", null).create();
-            //dialog.setTitle("Connection Status");
+            /* Do Nothing */
         }
 
         @Override
@@ -114,13 +127,15 @@ public class LoginActivity extends AppCompatActivity
             String result= "";
 
             try {
-                //Create a URL object holding our url
+                /* Create a URL object holding our url */
                 URL url = new URL(UrlString);
+                /* Create an HTTP Connection and adjust its options */
                 HttpURLConnection http = (HttpURLConnection) url.openConnection();
                 http.setRequestMethod(REQUEST_METHOD);
                 http.setDoInput(true);
                 http.setDoOutput(true);
 
+                /* A Stream object to hold the sent data to API Call */
                 OutputStream ops = http.getOutputStream();
                 BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(ops,"UTF-8"));
                 String data = URLEncoder.encode("Json","UTF-8")+"="+URLEncoder.encode(JSONString,"UTF-8");
@@ -130,7 +145,7 @@ public class LoginActivity extends AppCompatActivity
                 writer.close();
                 ops.close();
 
-                //Create a new InputStreamReader
+                /* A Stream object to get the returned data from API Call */
                 InputStream ips = http.getInputStream();
                 BufferedReader reader = new BufferedReader(new InputStreamReader(ips,"ISO-8859-1"));
                 String line ="";
@@ -143,7 +158,9 @@ public class LoginActivity extends AppCompatActivity
                 http.disconnect();
                 return result;
 
-            } catch (MalformedURLException e) {
+            }
+            /* Handling Exceptions */
+            catch (MalformedURLException e) {
                 result = e.getMessage();
             } catch (IOException e) {
                 result = e.getMessage();
@@ -158,33 +175,37 @@ public class LoginActivity extends AppCompatActivity
                 return;
             }
             try {
+                /* Creating a JSON Object to parse the data in */
                 final JSONObject jsonObject = new JSONObject(result);
+
+                /* Creating an Alert Dialog to Show Login Results to User */
                 AlertDialog.Builder dialog = new AlertDialog.Builder(mContext);
                 dialog.setTitle("Login to GeeksReads");
                 dialog.setMessage(jsonObject.getString("ReturnMsg"));
-                forTest = jsonObject.getString("ReturnMsg");
+
+                sForTest = jsonObject.getString("ReturnMsg");
+
                 dialog.setPositiveButton("OK", new DialogInterface.OnClickListener()
                 {
                     @Override
                     public void onClick(DialogInterface dialog, int which)
                     {
                         try {
-                            if (jsonObject.getString("ReturnMsg").contains("Login Succeeded"))
-                            {
+                            if (jsonObject.getString("ReturnMsg").contains("Login Succeeded")) {
                                 final EditText Email = findViewById((R.id.EmailTxt));
                                 final EditText Password = findViewById(R.id.PasswordTxt);
                                 Email.setText("");
                                 Password.setText("");
-                                CurrentToken = jsonObject.getString("ReturnToken");
-                                CurrentUserID = jsonObject.getString("UserID");
 
-                                //Go to Book Activity Layout
+                                /* Storing returned Token and User ID */
+                                currentToken = jsonObject.getString("ReturnToken");
+                                currentUserID = jsonObject.getString("UserID");
+
+                                /* Go to Next Activity Layout */
                                 Intent myIntent = new Intent(LoginActivity.this, BookActivity.class);
                                 startActivity(myIntent);
-                            }
-                            else
-                            {
-                                //Stay Here
+                            } else {
+                                /* If Login didn't succeed, Stay Here in the same Activity and Do Nothing */
                             }
                         } catch (JSONException e) {
                             e.printStackTrace();
@@ -195,6 +216,7 @@ public class LoginActivity extends AppCompatActivity
                 dialog.show();
 
             }
+            /* Catching Exceptions */
             catch(JSONException e)
             {
                 e.printStackTrace();
