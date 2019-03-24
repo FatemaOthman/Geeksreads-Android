@@ -33,6 +33,9 @@
         android:ems="10"
         android:hint="@string/EmailHint"
         android:inputType="textEmailAddress"
+        android:maxLines="1"
+        android:minLines="1"
+        android:singleLine="true"
         tools:layout_editor_absoluteX="45dp"
         tools:layout_editor_absoluteY="324dp" />
 
@@ -48,6 +51,7 @@
         android:ems="10"
         android:hint="@string/PasswordHint"
         android:inputType="textPassword"
+        android:singleLine="true"
         tools:layout_editor_absoluteX="45dp"
         tools:layout_editor_absoluteY="390dp" />
 
