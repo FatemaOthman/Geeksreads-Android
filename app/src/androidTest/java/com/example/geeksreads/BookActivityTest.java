@@ -16,18 +16,18 @@ public class BookActivityTest {
     public void Test() {
 
         /* Testing getting Author of the Book right */
-        assertEquals("By: Jane Austen",BookActivity.forTestAuthor);
+        assertEquals("By: Jane Austen",BookActivity.sForTestAuthor);
 
         /* Testing getting Title of the Book right */
-        assertEquals("Pride and Prejudice",BookActivity.forTestTitle);
+        assertEquals("Pride and Prejudice",BookActivity.sForTestTitle);
 
         /* Testing getting Rating of the Book right */
-        assertEquals("4.25",BookActivity.forTestRate);
+        assertEquals("4.25",BookActivity.sForTestRate);
 
         /* Testing getting Date of the Book right */
-        assertEquals("Originally Published  28 - 1 - 1813",BookActivity.forTestDate);
+        assertEquals("Originally Published  28 - 1 - 1813",BookActivity.sForTestDate);
 
         /* Testing The finishing of all Async Tasks */
-        assertEquals("Done",BookActivity.forTestBookActivity);
+        assertEquals("Done",BookActivity.sForTestBookActivity);
     }
 }

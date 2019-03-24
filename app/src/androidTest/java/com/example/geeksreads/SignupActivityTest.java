@@ -18,8 +18,8 @@ public class SignupActivityTest {
             new ActivityTestRule<>(SignupActivity.class, true, true);
 
     @Test
+    /* Username less than 3 characters */
     public void Test_1() {
-        /* Username less than 3 characters */
         onView(withId(R.id.UserNameTxt))
                 .perform(typeText("Ab"), closeSoftKeyboard());
         onView(withId(R.id.EmailTxt))
@@ -31,11 +31,11 @@ public class SignupActivityTest {
 
         onView(withId(R.id.SignupBtn)).perform(click());
 
-        assertEquals("Username length should be 3 characters minimum and 50 characters maximum",SignupActivity.forTest);
+        assertEquals("Username length should be 3 characters minimum and 50 characters maximum",SignupActivity.sForTest);
     }
     @Test
+    /* Email is not valid */
     public void Test_2() {
-        /* Email is not valid */
         onView(withId(R.id.UserNameTxt))
                 .perform(typeText("MahmoudMorsy"), closeSoftKeyboard());
         onView(withId(R.id.EmailTxt))
@@ -47,11 +47,11 @@ public class SignupActivityTest {
 
         onView(withId(R.id.SignupBtn)).perform(click());
 
-        assertEquals("Please enter a valid Email",SignupActivity.forTest);
+        assertEquals("Please enter a valid Email",SignupActivity.sForTest);
     }
     @Test
+    /* Password is less than 6 characters */
     public void Test_3() {
-        /* Password is less than 6 characters */
         onView(withId(R.id.UserNameTxt))
                 .perform(typeText("MahmoudMorsy"), closeSoftKeyboard());
         onView(withId(R.id.EmailTxt))
@@ -63,11 +63,11 @@ public class SignupActivityTest {
 
         onView(withId(R.id.SignupBtn)).perform(click());
 
-        assertEquals("Password should be 6 characters or more",SignupActivity.forTest);
+        assertEquals("Password should be 6 characters or more",SignupActivity.sForTest);
     }
     @Test
+    /* Password has no numbers */
     public void Test_4() {
-        /* Password has no numbers */
         onView(withId(R.id.UserNameTxt))
                 .perform(typeText("MahmoudMorsy"), closeSoftKeyboard());
         onView(withId(R.id.EmailTxt))
@@ -79,11 +79,11 @@ public class SignupActivityTest {
 
         onView(withId(R.id.SignupBtn)).perform(click());
 
-        assertEquals("Password should contain numbers",SignupActivity.forTest);
+        assertEquals("Password should contain numbers",SignupActivity.sForTest);
     }
     @Test
+    /* Password has no lower case letters */
     public void Test_5() {
-        /* Password has no lower case letters */
         onView(withId(R.id.UserNameTxt))
                 .perform(typeText("MahmoudMorsy"), closeSoftKeyboard());
         onView(withId(R.id.EmailTxt))
@@ -95,11 +95,11 @@ public class SignupActivityTest {
 
         onView(withId(R.id.SignupBtn)).perform(click());
 
-        assertEquals("Password should contain lower case letters",SignupActivity.forTest);
+        assertEquals("Password should contain lower case letters",SignupActivity.sForTest);
     }
     @Test
+    /* Password has no upper case letters */
     public void Test_6() {
-        /* Password has no upper case letters */
         onView(withId(R.id.UserNameTxt))
                 .perform(typeText("MahmoudMorsy"), closeSoftKeyboard());
         onView(withId(R.id.EmailTxt))
@@ -111,11 +111,11 @@ public class SignupActivityTest {
 
         onView(withId(R.id.SignupBtn)).perform(click());
 
-        assertEquals("Password should contain upper case letters",SignupActivity.forTest);
+        assertEquals("Password should contain upper case letters",SignupActivity.sForTest);
     }
     @Test
+    /* Passwords don't match */
     public void Test_7() {
-        /* Passwords don't match */
         onView(withId(R.id.UserNameTxt))
                 .perform(typeText("MahmoudMorsy"), closeSoftKeyboard());
         onView(withId(R.id.EmailTxt))
@@ -127,11 +127,11 @@ public class SignupActivityTest {
 
         onView(withId(R.id.SignupBtn)).perform(click());
 
-        assertEquals("Password should contain upper case letters",SignupActivity.forTest);
+        assertEquals("Password should contain upper case letters",SignupActivity.sForTest);
     }
     @Test
+    /* Creating account and Waiting Email Verification */
     public void Test_8() {
-        /* Creating account and Waiting Email Verification */
         onView(withId(R.id.UserNameTxt))
                 .perform(typeText("MahmoudMorsy"), closeSoftKeyboard());
         onView(withId(R.id.EmailTxt))
@@ -143,11 +143,11 @@ public class SignupActivityTest {
 
         onView(withId(R.id.SignupBtn)).perform(click());
 
-        assertEquals("A verification email has been sent to mahmoud_1@live.com",SignupActivity.forTest);
+        assertEquals("A verification email has been sent to mahmoud_1@live.com",SignupActivity.sForTest);
     }
     @Test
+    /* Creating account but User is already registered */
     public void Test_9() {
-        /* Creating account but User is already registered */
         onView(withId(R.id.UserNameTxt))
                 .perform(typeText("MahmoudMorsy"), closeSoftKeyboard());
         onView(withId(R.id.EmailTxt))
@@ -159,11 +159,11 @@ public class SignupActivityTest {
 
         onView(withId(R.id.SignupBtn)).perform(click());
 
-        assertEquals("User already registered",SignupActivity.forTest);
+        assertEquals("User already registered",SignupActivity.sForTest);
     }
     @Test
+    /* Creating account and an error occurred */
     public void Test_10() {
-        /* Creating account and an error occurred */
         onView(withId(R.id.UserNameTxt))
                 .perform(typeText("MahmoudMorsy"), closeSoftKeyboard());
         onView(withId(R.id.EmailTxt))
@@ -175,6 +175,6 @@ public class SignupActivityTest {
 
         onView(withId(R.id.SignupBtn)).perform(click());
 
-        assertEquals("An Error Occurred",SignupActivity.forTest);
+        assertEquals("An Error Occurred",SignupActivity.sForTest);
     }
 }
