@@ -8,12 +8,13 @@ import android.graphics.BitmapFactory;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
+
 import org.json.JSONException;
 import org.json.JSONObject;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
@@ -21,6 +22,7 @@ import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.nio.charset.StandardCharsets;
 
 
 public class OtherProfileActivity extends AppCompatActivity
@@ -37,18 +39,6 @@ public class OtherProfileActivity extends AppCompatActivity
         setContentView(R.layout.other_profile);
         mContext=this;
 
-        //////////////////////////////////////////////////////
-        /*
-        Toolbar myToolbar = findViewById(R.id.toolbar);
-        setSupportActionBar(myToolbar);
-        getSupportActionBar().setTitle("Other Profile");
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-
-        */
-        //////////////////////////////////////////////////////
-        //Strings and Variables:
-
-        mContext = this;
 
 
         OtherUserPhoto = findViewById(R.id.UserProfilePhoto);
@@ -57,16 +47,8 @@ public class OtherProfileActivity extends AppCompatActivity
 
         //In my code here, I am not sending any data to the backend:
         JSONObject JSON = new JSONObject();
-/*
-        try {
-            // TODO: Put all your JSON values Here.
-            JSON.put("Name", "Amr");
-        }catch (JSONException e) {
-            e.printStackTrace();
-        }
-*/
+
         System.out.println("1- Created JSON FILE");
-        // TODO: Change the URL with your Service.
         String UrlService = "http://geeksreads.000webhostapp.com/Amr/OtherUserProfile.php";
         OtherProfileActivity.GetOtherProfileDetails MyProfile = new OtherProfileActivity.GetOtherProfileDetails();
         MyProfile.execute(UrlService,JSON.toString());
@@ -135,7 +117,7 @@ public class OtherProfileActivity extends AppCompatActivity
 
                 //Create a new InputStreamReader
                 InputStream ips = http.getInputStream();
-                BufferedReader reader = new BufferedReader(new InputStreamReader(ips,"ISO-8859-1"));
+                BufferedReader reader = new BufferedReader(new InputStreamReader(ips, StandardCharsets.ISO_8859_1));
                 String line ="";
                 while ((line = reader.readLine()) != null)
                 {

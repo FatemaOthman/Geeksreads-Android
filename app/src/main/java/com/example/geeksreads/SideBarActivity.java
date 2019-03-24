@@ -3,18 +3,14 @@ package com.example.geeksreads;
 import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.support.constraint.solver.widgets.WidgetContainer;
 import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
-import android.text.Layout;
-import android.view.LayoutInflater;
-import android.view.MenuInflater;
-import android.view.View;
 import android.support.design.widget.NavigationView;
+import android.support.design.widget.Snackbar;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
@@ -22,9 +18,8 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.ViewDebug;
+import android.view.View;
 import android.widget.ImageView;
-import android.widget.SearchView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -42,7 +37,7 @@ import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLEncoder;
-import android.content.Intent;
+import java.nio.charset.StandardCharsets;
 
 
 public class SideBarActivity extends AppCompatActivity
@@ -60,7 +55,7 @@ public class SideBarActivity extends AppCompatActivity
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_side_bar);
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
         mContext = this;
@@ -68,12 +63,12 @@ public class SideBarActivity extends AppCompatActivity
         //////////////////////////////////////////////////////
 
         //Setting the references to refer at the needed views
-        NavigationView navigationViewe = (NavigationView) findViewById(R.id.nav_view);
+        NavigationView navigationViewe = findViewById(R.id.nav_view);
         navigationViewe.setNavigationItemSelectedListener(this);
         View header=navigationViewe.getHeaderView(0);
         /*View view=navigationView.inflateHeaderView(R.layout.nav_header_main);*/
-        userName = (TextView)header.findViewById(R.id.UserNameTxt);
-        userPhoto = (ImageView) header.findViewById(R.id.UserPhoto);
+        userName = header.findViewById(R.id.UserNameTxt);
+        userPhoto = header.findViewById(R.id.UserPhoto);
         ////////////////////////////////////////////////////////
         //Getting profile pic or user name clicked to go to the profile activity
 
@@ -105,7 +100,7 @@ public class SideBarActivity extends AppCompatActivity
         getSideBarDetails.execute(UrlService,JSON.toString());
 
 
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
+        FloatingActionButton fab = findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -114,13 +109,13 @@ public class SideBarActivity extends AppCompatActivity
             }
         });
 
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+        DrawerLayout drawer = findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
                 this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
         drawer.addDrawerListener(toggle);
         toggle.syncState();
 
-        NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
+        NavigationView navigationView = findViewById(R.id.nav_view);
         Menu menu = navigationView.getMenu();
         MenuItem itemFollower = menu.findItem(R.id.Followers);
         followersCount = (TextView) itemFollower.getActionView();
@@ -135,7 +130,7 @@ public class SideBarActivity extends AppCompatActivity
 
     @Override
     public void onBackPressed() {
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+        DrawerLayout drawer = findViewById(R.id.drawer_layout);
         if (drawer.isDrawerOpen(GravityCompat.START)) {
             drawer.closeDrawer(GravityCompat.START);
         } else {
@@ -189,8 +184,7 @@ public class SideBarActivity extends AppCompatActivity
         }
 
 
-
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+        DrawerLayout drawer = findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
         return true;
     }
@@ -247,7 +241,7 @@ public class SideBarActivity extends AppCompatActivity
                 http.setDoOutput(true);
 
                 OutputStream ops = http.getOutputStream();
-                BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(ops,"UTF-8"));
+                BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(ops, StandardCharsets.UTF_8));
                 String data = URLEncoder.encode("id","UTF-8")+"="+URLEncoder.encode(JSONString,"UTF-8");
 
                 writer.write(data);
@@ -257,7 +251,7 @@ public class SideBarActivity extends AppCompatActivity
 
                 //Create a new InputStreamReader
                 InputStream ips = http.getInputStream();
-                BufferedReader reader = new BufferedReader(new InputStreamReader(ips,"ISO-8859-1"));
+                BufferedReader reader = new BufferedReader(new InputStreamReader(ips, StandardCharsets.ISO_8859_1));
                 String line ="";
                 while ((line = reader.readLine()) != null)
                 {

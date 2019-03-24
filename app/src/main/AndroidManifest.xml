@@ -35,8 +35,14 @@
 
 
         </activity>
-        <activity android:name=".OtherProfileActivity"/>
-        <activity android:name=".FollowActivity"/>
+
+        <activity
+            android:name=".OtherProfileActivity"
+            android:parentActivityName=".Profile" />
+
+        <activity
+            android:name=".FollowActivity"
+            android:parentActivityName=".Profile" />
 
 
         <activity android:name=".EditProfileActivity" />
