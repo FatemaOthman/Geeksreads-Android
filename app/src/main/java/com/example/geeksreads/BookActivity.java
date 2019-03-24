@@ -40,7 +40,7 @@ import java.net.URLEncoder;
 
 public class BookActivity extends AppCompatActivity {
 
-    public static String forTestAuthor, forTestTitle, forTestRate, forTestDate, forTestBookActivity;
+    public static String sForTestAuthor, sForTestTitle, sForTestRate, sForTestDate, sForTestBookActivity;
     ImageView bookCover;
     Context mContext;
     TextView bookTitle;
@@ -51,7 +51,7 @@ public class BookActivity extends AppCompatActivity {
     TextView bookRatings;
     TextView bookDescription;
     TextView publishingDate;
-    ProgressBar progress;
+    ProgressBar mProgressBar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -62,8 +62,9 @@ public class BookActivity extends AppCompatActivity {
         setSupportActionBar(myToolbar);
         getSupportActionBar().setDisplayShowTitleEnabled(false);
         mContext = this;
-        progress = findViewById(R.id.progressBar);
 
+        /** Getting All views by id from Layout */
+        mProgressBar = findViewById(R.id.progressBar);
         bookCover = findViewById(R.id.BookCover);
         bookTitle = findViewById(R.id.BookTitleTxt);
         bookAuthor = findViewById(R.id.AuthorNameTxt);
@@ -75,19 +76,19 @@ public class BookActivity extends AppCompatActivity {
         publishingDate = findViewById(R.id.PublishedOnTxt);
 
 
-        JSONObject JSON = new JSONObject();
+        /** Creating Json Object to be send */
+        JSONObject jsonObject = new JSONObject();
         try {
-            // TODO: Put all your JSON values Here.
-            JSON.put("id", "value");
+            jsonObject.put("id", "value");
         }catch (JSONException e) {
             e.printStackTrace();
         }
 
-        // TODO: Change the URL with your Service.
+        /** Calling Async Task with my server url */
         String UrlService = "http://geeksreads.000webhostapp.com/Shrouk/BookDetails.php";
-        progress.setVisibility(View.VISIBLE);
+        mProgressBar.setVisibility(View.VISIBLE);
         GetBookDetails getBookDetails = new GetBookDetails();
-        getBookDetails.execute(UrlService,JSON.toString());
+        getBookDetails.execute(UrlService,jsonObject.toString());
     }
 
 
@@ -112,7 +113,7 @@ public class BookActivity extends AppCompatActivity {
     private class GetImage extends AsyncTask<String, Void, Bitmap> {
 
         protected void onPreExecute() {
-            progress.setVisibility(View.VISIBLE);
+            mProgressBar.setVisibility(View.VISIBLE);
         }
 
         @Override
@@ -134,8 +135,8 @@ public class BookActivity extends AppCompatActivity {
 
         @Override
         protected void onPostExecute(Bitmap result) {
-            progress.setVisibility(View.GONE);
-            forTestBookActivity = "Done";
+            mProgressBar.setVisibility(View.GONE);
+            sForTestBookActivity = "Done";
             bookCover.setImageBitmap(result);
 
         }
@@ -147,15 +148,13 @@ public class BookActivity extends AppCompatActivity {
      */
     public class GetBookDetails extends AsyncTask<String, Void, String> {
         public static final String REQUEST_METHOD = "GET";
-        //public static final int READ_TIMEOUT = 3000;
-        //public static final int CONNECTION_TIMEOUT = 3000;
         AlertDialog dialog;
 
         @Override
         protected void onPreExecute() {
             dialog = new AlertDialog.Builder(mContext).create();
             dialog.setTitle("Connection Status");
-            progress.setVisibility(View.VISIBLE);
+            mProgressBar.setVisibility(View.VISIBLE);
         }
 
         @Override
@@ -204,7 +203,7 @@ public class BookActivity extends AppCompatActivity {
 
         @SuppressLint("SetTextI18n")
         protected void onPostExecute(String result){
-            progress.setVisibility(View.GONE);
+            mProgressBar.setVisibility(View.GONE);
             if(result==null) {
                 Toast.makeText(mContext,"Unable to connect to server", Toast.LENGTH_SHORT).show();
                 return;
@@ -213,7 +212,7 @@ public class BookActivity extends AppCompatActivity {
                 dialog.setMessage("Done");
                 //dialog.show();
 
-                // TODO: Add your Post Execute logic here.
+                /** Get Json Object from server and preview results on Layout views */
                 JSONObject jsonObject = new JSONObject(result);
                 bookTitle.setText(jsonObject.getString("Title"));
                 bookAuthor.setText("By: " + "" +jsonObject.getString("Author"));
@@ -224,13 +223,15 @@ public class BookActivity extends AppCompatActivity {
                 publishingDate.setText("Originally Published" + "  " + jsonObject.getString("originalpublicationday")
                                        + " - " + jsonObject.getString("originalpublicationmonth")
                                        + " - " + jsonObject.getString("originalpublicationyear"));
+
+                /** Start Async Task to get the image from url */
                 GetImage getCover = new GetImage();
                 getCover.execute(jsonObject.getString("photourl"));
 
-                forTestAuthor = bookAuthor.getText().toString();
-                forTestTitle = bookTitle.getText().toString();
-                forTestRate = bookRatings.getText().toString();
-                forTestDate= publishingDate.getText().toString();
+                sForTestAuthor = bookAuthor.getText().toString();
+                sForTestTitle = bookTitle.getText().toString();
+                sForTestRate = bookRatings.getText().toString();
+                sForTestDate= publishingDate.getText().toString();
             }
             catch(JSONException e)
             {

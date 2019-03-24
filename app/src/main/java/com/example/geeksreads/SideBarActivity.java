@@ -328,8 +328,8 @@ public class SideBarActivity extends AppCompatActivity
 
                 forTestUserPhotoURL = jsonObject.getString("photourl");
                 forTestUserName=userName.getText().toString();
-                forTestFollowersCount=followersCount.getText().toString();
-                forTestBooksCount=booksCount.getText().toString();
+                forTestFollowersCount=jsonObject.getString("Followers");
+                forTestBooksCount=jsonObject.getString("CountBooks");
 
             }
             catch(JSONException e)

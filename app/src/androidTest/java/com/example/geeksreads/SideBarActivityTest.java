@@ -37,7 +37,7 @@ public class SideBarActivityTest {
 
 
         /* Testing getting Author of the Book right */
-        assertEquals("http://geeksreads.000webhostapp.com/Fatema/SideBar.php",SideBarActivity.forTestUserPhotoURL);
+        assertEquals("https://geeksreads.000webhostapp.com/Fatema/userPic.jpg",SideBarActivity.forTestUserPhotoURL);
 
 
 
