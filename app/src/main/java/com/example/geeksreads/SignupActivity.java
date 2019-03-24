@@ -31,12 +31,20 @@ import java.net.URLEncoder;
 
 public class SignupActivity extends AppCompatActivity
 {
-    String FullNameStr;
-    String EmailStr;
-    String PasswordStr;
-    Context mContext;
-    public static String forTest;
+    /** Global Private Variable to Store Sign up Username from Text boxes */
+    private String fullNameStr;
+    /** Global Private Variable to Store Sign up Email Address from Text boxes */
+    private String emailStr;
+    /** Global Private Variable to Store Sign up Password from Text boxes */
+    private String passwordStr;
+    /** Global Variables to Store Context of this Activity itself */
+    private Context mContext;
+    /** Global Public Static Variables used for Testing */
+    public static String sForTest;
 
+    /**
+     * Function for Starting Logic Actions after Creating the Layout
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState)
     {
@@ -53,84 +61,91 @@ public class SignupActivity extends AppCompatActivity
         });
 
         mContext = this;
-        final EditText FullName = findViewById(R.id.UserNameTxt);
-        final EditText Email = findViewById((R.id.EmailTxt));
-        final EditText Password = findViewById(R.id.PasswordTxt);
-        final EditText ConfPassword = findViewById(R.id.ConfirmPasswordTxt);
 
-        Button SignUp = findViewById(R.id.SignupBtn);
-        SignUp.setOnClickListener(new View.OnClickListener()
+        /* Getting Text boxes and Buttons from the layout */
+        final EditText fullName = findViewById(R.id.UserNameTxt);
+        final EditText email = findViewById((R.id.EmailTxt));
+        final EditText password = findViewById(R.id.PasswordTxt);
+        final EditText confPassword = findViewById(R.id.ConfirmPasswordTxt);
+
+        Button signUpButton = findViewById(R.id.SignupBtn);
+        /* Function Handler for Clicking on Sign up Button, to Start Checking input Fields
+           and Sending JSON String to the Backend Sign up API
+         */
+        signUpButton.setOnClickListener(new View.OnClickListener()
         {
             @Override
             public void onClick(View v)
             {
-                FullNameStr = FullName.getText().toString();
-                EmailStr = Email.getText().toString();
-                PasswordStr = Password.getText().toString();
+                fullNameStr = fullName.getText().toString();
+                emailStr = email.getText().toString();
+                passwordStr = password.getText().toString();
 
-                if (FullNameStr.length() < 3 || FullNameStr.length() > 50)
+                /* If the user entered an invalid Username */
+                if (fullNameStr.length() < 3 || fullNameStr.length() > 50)
                 {
-                    FullName.setError("Username length should be 3 characters minimum and 50 characters maximum");
-                    forTest = "Username length should be 3 characters minimum and 50 characters maximum";
+                    fullName.setError("Username length should be 3 characters minimum and 50 characters maximum");
+                    sForTest = "Username length should be 3 characters minimum and 50 characters maximum";
                 }
-                else if (!EmailStr.matches(".+[@].+[.].+"))
+                /* If the user entered an invalid Email Address */
+                else if (!emailStr.matches(".+[@].+[.].+"))
                 {
-                    Email.setError("Please enter a valid Email");
-                    forTest = "Please enter a valid Email";
+                    email.setError("Please enter a valid Email");
+                    sForTest = "Please enter a valid Email";
                 }
-                else if (PasswordStr.length() < 6)
+                /* If the user entered an invalid Password */
+                else if (passwordStr.length() < 6)
                 {
-                    Password.setError("Password should be 6 characters or more");
-                    Password.setText("");
-                    ConfPassword.setText("");
-                    forTest = "Password should be 6 characters or more";
+                    password.setError("Password should be 6 characters or more");
+                    password.setText("");
+                    confPassword.setText("");
+                    sForTest = "Password should be 6 characters or more";
                 }
-                else if (!PasswordStr.matches(".*[0-9].*"))
+                else if (!passwordStr.matches(".*[0-9].*"))
                 {
-                    Password.setError("Password should contain numbers");
-                    Password.setText("");
-                    ConfPassword.setText("");
-                    forTest = "Password should contain numbers";
+                    password.setError("Password should contain numbers");
+                    password.setText("");
+                    confPassword.setText("");
+                    sForTest = "Password should contain numbers";
                 }
-                else if (!PasswordStr.matches(".*[a-z].*"))
+                else if (!passwordStr.matches(".*[a-z].*"))
                 {
-                    Password.setError("Password should contain lower case letters");
-                    Password.setText("");
-                    ConfPassword.setText("");
-                    forTest = "Password should contain lower case letters";
+                    password.setError("Password should contain lower case letters");
+                    password.setText("");
+                    confPassword.setText("");
+                    sForTest = "Password should contain lower case letters";
                 }
-                else if (!PasswordStr.matches(".*[A-Z].*"))
+                else if (!passwordStr.matches(".*[A-Z].*"))
                 {
-                    Password.setError("Password should contain upper case letters");
-                    Password.setText("");
-                    ConfPassword.setText("");
-                    forTest = "Password should contain upper case letters";
+                    password.setError("Password should contain upper case letters");
+                    password.setText("");
+                    confPassword.setText("");
+                    sForTest = "Password should contain upper case letters";
                 }
-                else if (!PasswordStr.equals(ConfPassword.getText().toString()))
+                else if (!passwordStr.equals(confPassword.getText().toString()))
                 {
-                    ConfPassword.setError("Passwords don't match");
-                    Password.setText("");
-                    ConfPassword.setText("");
-                    forTest = "Passwords don't match";
+                    confPassword.setError("Passwords don't match");
+                    password.setText("");
+                    confPassword.setText("");
+                    sForTest = "Passwords don't match";
                 }
+                /* If the user entered a valid username, email and password */
                 else
                 {
-                    //TODO Call Async Function
                     JSONObject JSON = new JSONObject();
                     try {
-                        // TODO: Put all your JSON values Here.
-                        JSON.put("UserName", FullNameStr);
-                        JSON.put("UserEmail", EmailStr);
-                        JSON.put("UserPassword", PasswordStr);
+                        JSON.put("UserName", fullNameStr);
+                        JSON.put("UserEmail", emailStr);
+                        JSON.put("UserPassword", passwordStr);
                     }catch (JSONException e) {
                         e.printStackTrace();
                     }
+                    /* URL For Sign up API */
+                    String urlService = "http://geeksreads.000webhostapp.com/Morsy/Signup.php";
 
-                    // TODO: Change the URL with your Service.
-                    String UrlService = "http://geeksreads.000webhostapp.com/Morsy/Signup.php";
-
-                    SignUp signUp = new SignUp();
-                    signUp.execute(UrlService,JSON.toString());
+                    /* Creating a new instance of Sign up Class */
+                    signUp signUp = new signUp();
+                    signUp.execute(urlService,JSON.toString());
                 }
 
             }
@@ -141,15 +156,12 @@ public class SignupActivity extends AppCompatActivity
      * Class that get the data from host and Add it to its views.
      *  The Parameters are host Url and toSend Data.
      */
-    public class SignUp extends AsyncTask<String, Void, String> {
-        public static final String REQUEST_METHOD = "GET";
-        //public static final int READ_TIMEOUT = 3000;
-        //public static final int CONNECTION_TIMEOUT = 3000;
-
+    public class signUp extends AsyncTask<String, Void, String> {
+        static final String REQUEST_METHOD = "GET";
 
         @Override
         protected void onPreExecute() {
-
+            /* Do Nothing */
         }
 
         @Override
@@ -159,13 +171,14 @@ public class SignupActivity extends AppCompatActivity
             String result= "";
 
             try {
-                //Create a URL object holding our url
+                /* Create a URL object holding our url */
                 URL url = new URL(UrlString);
+                /* Create an HTTP Connection and adjust its options */
                 HttpURLConnection http = (HttpURLConnection) url.openConnection();
                 http.setRequestMethod(REQUEST_METHOD);
                 http.setDoInput(true);
                 http.setDoOutput(true);
-
+                /* A Stream object to hold the sent data to API Call */
                 OutputStream ops = http.getOutputStream();
                 BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(ops,"UTF-8"));
                 String data = URLEncoder.encode("Json","UTF-8")+"="+URLEncoder.encode(JSONString,"UTF-8");
@@ -175,7 +188,7 @@ public class SignupActivity extends AppCompatActivity
                 writer.close();
                 ops.close();
 
-                //Create a new InputStreamReader
+                /* A Stream object to get the returned data from API Call */
                 InputStream ips = http.getInputStream();
                 BufferedReader reader = new BufferedReader(new InputStreamReader(ips,"ISO-8859-1"));
                 String line ="";
@@ -187,8 +200,9 @@ public class SignupActivity extends AppCompatActivity
                 ips.close();
                 http.disconnect();
                 return result;
-
-            } catch (MalformedURLException e) {
+            }
+            /* Handling Exceptions */
+            catch (MalformedURLException e) {
                 result = e.getMessage();
             } catch (IOException e) {
                 result = e.getMessage();
@@ -203,12 +217,14 @@ public class SignupActivity extends AppCompatActivity
                 return;
             }
             try {
-                AlertDialog.Builder dialog = new AlertDialog.Builder(mContext);
-
+                /* Creating a JSON Object to parse the data in */
                 final JSONObject jsonObject = new JSONObject(result);
+
+                /* Creating an Alert Dialog to Show Sign up Results to User */
+                AlertDialog.Builder dialog = new AlertDialog.Builder(mContext);
                 dialog.setTitle("Create account on GeeksReads");
                 dialog.setMessage(jsonObject.getString("ReturnMsg"));
-                forTest = jsonObject.getString("ReturnMsg");
+                sForTest = jsonObject.getString("ReturnMsg");
 
                 dialog.setPositiveButton("OK", new DialogInterface.OnClickListener()
                 {
@@ -227,13 +243,13 @@ public class SignupActivity extends AppCompatActivity
                                 Password.setText("");
                                 ConfPassword.setText("");
 
-                                //Go to Sign in Layout
+                                /* Go to Next Activity Layout */
                                 Intent myIntent = new Intent(SignupActivity.this, LoginActivity.class);
                                 startActivity(myIntent);
                             }
                             else
                             {
-                                //Stay Here
+                                /* If Sign up didn't succeed, Stay Here in the same Activity and Do Nothing */
                             }
                         } catch (JSONException e) {
                             e.printStackTrace();
@@ -241,9 +257,8 @@ public class SignupActivity extends AppCompatActivity
                     }
                 });
                 dialog.show();
-
-
             }
+            /* Catching Exceptions */
             catch(JSONException e)
             {
                 e.printStackTrace();

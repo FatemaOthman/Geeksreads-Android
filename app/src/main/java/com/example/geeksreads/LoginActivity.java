@@ -58,7 +58,7 @@ public class LoginActivity extends AppCompatActivity
         mContext = this;
 
         /* Getting Text boxes and Buttons from the layout */
-        Button LoginButton = findViewById(R.id.LoginBtn);
+        Button loginButton = findViewById(R.id.LoginBtn);
         final EditText loginMail =  findViewById(R.id.EmailTxt);
         final EditText loginPassword = findViewById(R.id.PasswordTxt);
 
@@ -66,7 +66,7 @@ public class LoginActivity extends AppCompatActivity
         /* Function Handler for Clicking on Login Button, to Start Checking input Field
            and Sending JSON String to the Backend Login API
          */
-        LoginButton.setOnClickListener(new View.OnClickListener()
+        loginButton.setOnClickListener(new View.OnClickListener()
         {
             @Override
             public void onClick(View v)
