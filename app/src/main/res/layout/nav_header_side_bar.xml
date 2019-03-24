@@ -23,7 +23,7 @@
         android:contentDescription="@string/nav_header_desc"
         android:paddingTop="@dimen/nav_header_vertical_spacing"
         android:clickable="true"
-        app:srcCompat="@drawable/circle"
+        app:srcCompat="@drawable/square"
 
         />
 
@@ -33,7 +33,7 @@
         android:layout_width="102dp"
         android:layout_height="match_parent"
         android:clickable="true"
-        android:gravity="right|center_vertical"
+        android:gravity="center|center_vertical"
         android:paddingTop="@dimen/nav_header_vertical_spacing"
         android:text="@string/nav_header_title"
         android:textAppearance="@style/TextAppearance.AppCompat.Large"

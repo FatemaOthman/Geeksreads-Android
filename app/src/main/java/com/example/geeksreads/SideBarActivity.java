@@ -47,7 +47,7 @@ import android.content.Intent;
 
 public class SideBarActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
-    public static String forTestUserPhotoURL,forTestUserName,forTestFollowersCount,forTestBooksCount,forTestSideBarActivity;
+    public static String forTestUserPhotoURL,forTestUserName,forTestFollowersCount,forTestBooksCount;
     ImageView userPhoto;
     TextView userName;
     Context mContext;
@@ -64,22 +64,19 @@ public class SideBarActivity extends AppCompatActivity
         setSupportActionBar(toolbar);
 
         mContext = this;
-        //userPhoto=findViewById(R.id.UserPhoto);
-        //userName=findViewById(R.id.UserNameTxt);
-        //followersCount=findViewById(R.id.Followers);
-        //booksCount=findViewById(R.id.MyBooks);
 
-        //LayoutInflater inflater = LayoutInflater.from(SideBarActivity.this);
-        //final View v = inflater.inflate(R.layout.nav_header_side_bar, null);
-        //userName = (TextView) v.findViewById(R.id.UserNameTxt);
-        //userPhoto = (ImageView) v.findViewById(R.id.UserPhoto);
         //////////////////////////////////////////////////////
+
+        //Setting the references to refer at the needed views
         NavigationView navigationViewe = (NavigationView) findViewById(R.id.nav_view);
         navigationViewe.setNavigationItemSelectedListener(this);
         View header=navigationViewe.getHeaderView(0);
         /*View view=navigationView.inflateHeaderView(R.layout.nav_header_main);*/
         userName = (TextView)header.findViewById(R.id.UserNameTxt);
         userPhoto = (ImageView) header.findViewById(R.id.UserPhoto);
+        ////////////////////////////////////////////////////////
+        //Getting profile pic or user name clicked to go to the profile activity
+
         userName.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -100,18 +97,6 @@ public class SideBarActivity extends AppCompatActivity
 
             }
         });
-      //  name.setText(personName);
-       // email.setText(personEmail);
-
-
-
-
-        /////////////////////////////////////////////////////
-      //  MenuItem FollowersItem = menu.findItem(R.id.Followers);
-      //  MenuItem BooksItem=menu.findItem(R.id.MyBooks);
-                //followersCount=findViewById(R.id.Followers);
-        //booksCount=findViewById(R.id.MyBooks);
-
 
         JSONObject JSON = new JSONObject();
 
@@ -160,18 +145,8 @@ public class SideBarActivity extends AppCompatActivity
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.side_bar, menu);
-       /* inflater.inflate(R.menu.activity_side_bar_drawer, menu);
-        MenuItem itemFollower = menu.findItem(R.id.Followers);
-        followersCount = (TextView) itemFollower.getActionView();
-        MenuItem itemBook = menu.findItem(R.id.MyBooks);
-        booksCount = (TextView) itemBook.getActionView();*/
-      // super.onCreateOptionsMenu(menu);
 
-        // Create your menu...
-
-//        this.menu = menu;
         return true;
     }
 
@@ -199,7 +174,7 @@ public class SideBarActivity extends AppCompatActivity
 
         int id=item.getItemId();
         if (id == R.id.Home) {
-            D.setMessage("Followers Page");
+            D.setMessage("Home Page");
             D.show();
 
         } else if (id == R.id.Followers) {
@@ -212,12 +187,7 @@ public class SideBarActivity extends AppCompatActivity
 
 
         }
-        else if(id == R.id.UserPhoto||id == R.id.UserNameTxt||id==R.id.Nav_Header){
-            D.setMessage("User's Profile");
-            D.show();
 
-
-        }
 
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
@@ -246,7 +216,6 @@ public class SideBarActivity extends AppCompatActivity
         @Override
         protected void onPostExecute(Bitmap result) {
             userPhoto.setImageBitmap(result);
-            forTestSideBarActivity = "Done";
 
         }
     }

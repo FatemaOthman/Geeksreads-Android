@@ -10,7 +10,6 @@ import org.junit.Test;
 import static org.junit.Assert.*;
 
 public class SideBarActivityTest {
-    // forTestUserPhotoURL,forTestUserName,forTestFollowersCount,forTestBooksCount,forTestSideBarActivity;
     @Rule
     public ActivityTestRule<SideBarActivity> menuActivityTestRule =
             new ActivityTestRule<SideBarActivity>(SideBarActivity.class);
@@ -26,24 +25,20 @@ public class SideBarActivityTest {
     @Test
     public void Test() {
 
-        /* Testing getting Rating of the Book right */
+        /* Testing getting Number of Followers right */
         assertEquals("14",SideBarActivity.forTestFollowersCount);
 
-        /* Testing getting Date of the Book right */
+        /* Testing getting Number of Books  right */
         assertEquals("25",SideBarActivity.forTestBooksCount);
 
-        /* Testing getting Title of the Book right */
+        /* Testing getting User Name of the User right */
         assertEquals("Fatema Othman",SideBarActivity.forTestUserName);
 
 
-        /* Testing getting Author of the Book right */
+        /* Testing getting URL of the User's Profile Pic right */
         assertEquals("https://geeksreads.000webhostapp.com/Fatema/userPic.jpg",SideBarActivity.forTestUserPhotoURL);
 
-
-
-        /* Testing The finishing of all Async Tasks */
-        assertEquals("Done",SideBarActivity.forTestSideBarActivity);
-    }
+          }
 
     @After
     public void tearDown() throws Exception {
