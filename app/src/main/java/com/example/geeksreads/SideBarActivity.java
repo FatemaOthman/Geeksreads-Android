@@ -21,6 +21,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.ViewDebug;
 import android.widget.ImageView;
 import android.widget.SearchView;
 import android.widget.TextView;
@@ -43,6 +44,7 @@ import java.net.URLEncoder;
 
 public class SideBarActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
+    public static String forTestUserPhotoURL,forTestUserName,forTestFollowersCount,forTestBooksCount,forTestSideBarActivity;
     ImageView userPhoto;
     TextView userName;
     Context mContext;
@@ -204,6 +206,7 @@ public class SideBarActivity extends AppCompatActivity
         @Override
         protected void onPostExecute(Bitmap result) {
             userPhoto.setImageBitmap(result);
+            forTestSideBarActivity = "Done";
 
         }
     }
@@ -281,6 +284,12 @@ public class SideBarActivity extends AppCompatActivity
                 userName.setText(jsonObject.getString("UserName"));
                 SideBarActivity.GetUserPicture Pic = new SideBarActivity.GetUserPicture();
                 Pic.execute(jsonObject.getString("photourl"));
+
+
+                forTestUserPhotoURL = jsonObject.getString("photourl");
+                forTestUserName=userName.getText().toString();
+                forTestFollowersCount=followersCount.getText().toString();
+                forTestBooksCount=booksCount.getText().toString();
 
             }
             catch(JSONException e)
