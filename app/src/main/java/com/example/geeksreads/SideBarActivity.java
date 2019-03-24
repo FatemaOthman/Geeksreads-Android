@@ -88,7 +88,7 @@ public class SideBarActivity extends AppCompatActivity
 
                 //code here ...
                 Intent myIntent = new Intent(SideBarActivity.this, Profile.class);
-                SideBarActivity.this.startActivity(myIntent);
+                startActivity(myIntent);
 
             }
         });
@@ -120,13 +120,25 @@ public class SideBarActivity extends AppCompatActivity
         MenuItem itemFollower = menu.findItem(R.id.Followers);
         followersCount = (TextView) itemFollower.getActionView();
         followersCount.setTextColor(getResources().getColor(R.color.white));
+        followersCount.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent myIntent = new Intent(SideBarActivity.this, FollowActivity.class);
+                SideBarActivity.this.startActivity(myIntent);
+            }
+        });
         MenuItem itemBook = menu.findItem(R.id.MyBooks);
         booksCount = (TextView) itemBook.getActionView();
         booksCount.setTextColor(getResources().getColor(R.color.white));
+        booksCount.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent myIntent = new Intent(SideBarActivity.this, BookActivity.class);
+                SideBarActivity.this.startActivity(myIntent);
+            }
+        });
         navigationView.setNavigationItemSelectedListener(this);
     }
-
-
 
     @Override
     public void onBackPressed() {

@@ -202,7 +202,7 @@ public class LoginActivity extends AppCompatActivity
                                 currentUserID = jsonObject.getString("UserID");
 
                                 /* Go to Next Activity Layout */
-                                Intent myIntent = new Intent(LoginActivity.this, BookActivity.class);
+                                Intent myIntent = new Intent(LoginActivity.this, SideBarActivity.class);
                                 startActivity(myIntent);
                             } else {
                                 /* If Login didn't succeed, Stay Here in the same Activity and Do Nothing */
