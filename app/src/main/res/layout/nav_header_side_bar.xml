@@ -23,7 +23,9 @@
         android:contentDescription="@string/nav_header_desc"
         android:paddingTop="@dimen/nav_header_vertical_spacing"
         android:clickable="true"
-        app:srcCompat="@drawable/circle" />
+        app:srcCompat="@drawable/circle"
+
+        />
 
 
     <TextView
@@ -34,7 +36,7 @@
         android:gravity="right|center_vertical"
         android:paddingTop="@dimen/nav_header_vertical_spacing"
         android:text="@string/nav_header_title"
-        android:textAppearance="@style/TextAppearance.AppCompat.Widget.PopupMenu.Header"
+        android:textAppearance="@style/TextAppearance.AppCompat.Large"
         android:textColor="@color/colorFont" />
 
 
