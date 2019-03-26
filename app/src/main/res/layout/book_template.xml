@@ -49,16 +49,13 @@
                     android:layout_weight="1"
                     android:text="@string/TempRatingNumber" />
 
-                <RatingBar
+                <TextView
                     android:id="@+id/ratingBar"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
+                    android:layout_width="156dp"
+                    android:layout_height="35dp"
                     android:layout_weight="1"
-                    android:maxHeight="45dp"
-                    android:numStars="5"
-                    android:scaleX="0.5"
-                    android:scaleY="0.5"
-                    android:stepSize="1" />
+                    android:text="@string/TempRatingNumber" />
+
             </LinearLayout>
 
             <TextView

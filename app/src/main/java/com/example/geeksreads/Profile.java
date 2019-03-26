@@ -1,4 +1,4 @@
-package com.example.geeksreads;
+ package com.example.geeksreads;
 
 import android.annotation.SuppressLint;
 import android.app.AlertDialog;
@@ -128,8 +128,6 @@ public class Profile extends AppCompatActivity
      */
     public class GetProfileDetails extends AsyncTask<String, Void, String> {
         public static final String REQUEST_METHOD = "GET";
-        //public static final int READ_TIMEOUT = 3000;
-        //public static final int CONNECTION_TIMEOUT = 3000;
         AlertDialog dialog;
 
         @Override
@@ -191,7 +189,7 @@ public class Profile extends AppCompatActivity
             try {
                 dialog.setMessage("Done");
                 //dialog.show();
-                
+
                 JSONObject jsonObject = new JSONObject(result);
                 FollowersCount.setText(jsonObject.getString("Followers"));
                 FollowingCount.setText(jsonObject.getString("Following"));
