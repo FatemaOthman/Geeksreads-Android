@@ -64,12 +64,20 @@ public class BookActivity extends AppCompatActivity implements NavigationView.On
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_book);
 
+        /* ToolBar and SideBar Setups */
         Toolbar myToolbar = findViewById(R.id.toolbar);
         setSupportActionBar(myToolbar);
         getSupportActionBar().setDisplayShowTitleEnabled(false);
+        DrawerLayout drawer = findViewById(R.id.drawer_layout);
+        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(this, drawer, myToolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
+        drawer.addDrawerListener(toggle);
+        toggle.syncState();
+        NavigationView navigationView = findViewById(R.id.nav_view);
+        navigationView.setNavigationItemSelectedListener(this);
+
         mContext = this;
 
-        /** Getting All views by id from Layout */
+        /* Getting All views by id from Layout */
         mProgressBar = findViewById(R.id.progressBar);
         bookCover = findViewById(R.id.BookCover);
         bookTitle = findViewById(R.id.BookTitleTxt);
@@ -82,7 +90,7 @@ public class BookActivity extends AppCompatActivity implements NavigationView.On
         publishingDate = findViewById(R.id.PublishedOnTxt);
 
 
-        /** Creating Json Object to be send */
+        /* Creating Json Object to be send */
         JSONObject jsonObject = new JSONObject();
         try {
             jsonObject.put("id", "value");
@@ -90,21 +98,12 @@ public class BookActivity extends AppCompatActivity implements NavigationView.On
             e.printStackTrace();
         }
 
-        /** Calling Async Task with my server url */
+        /* Calling Async Task with my server url */
         String UrlService = "http://geeksreads.000webhostapp.com/Shrouk/BookDetails.php";
         mProgressBar.setVisibility(View.VISIBLE);
         GetBookDetails getBookDetails = new GetBookDetails();
         getBookDetails.execute(UrlService,jsonObject.toString());
 
-
-        DrawerLayout drawer = findViewById(R.id.drawer_layout);
-        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
-                this, drawer, myToolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
-        drawer.addDrawerListener(toggle);
-        toggle.syncState();
-
-        NavigationView navigationView = findViewById(R.id.nav_view);
-        navigationView.setNavigationItemSelectedListener(this);
     }
 
 
@@ -125,11 +124,12 @@ public class BookActivity extends AppCompatActivity implements NavigationView.On
         MenuItem item = menu.findItem(R.id.menuSearch);
         SearchView searchView = (SearchView) item.getActionView();
         searchView.setIconifiedByDefault(false);
-        searchView.setMaxWidth(780);
+        searchView.setMaxWidth(800);
         searchView.setQueryHint("Search books");
         searchView.setBackgroundColor(getResources().getColor(R.color.white));
         return super.onCreateOptionsMenu(menu);
     }
+
 
     @Override
     public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
