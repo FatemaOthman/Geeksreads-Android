@@ -86,6 +86,17 @@ public class EditProfileActivity extends AppCompatActivity {
         final Spinner countryList = findViewById(R.id.CountryList);
         final Spinner genderList = findViewById(R.id.GenderList);
 
+        Button changePassword = findViewById(R.id.ChangePasswordBtn);
+
+        changePassword.setOnClickListener(new View.OnClickListener()
+        {
+            @Override
+            public void onClick(View v) {
+                /* Go to Next Activity Layout */
+                Intent myIntent = new Intent(EditProfileActivity.this, ChangePasswordActivity.class);
+                startActivity(myIntent);
+            }
+        });
 
         Button saveChange = findViewById(R.id.SaveChangesBtn);
         saveChange.setOnClickListener(new View.OnClickListener()
@@ -205,7 +216,8 @@ public class EditProfileActivity extends AppCompatActivity {
 
         }
     }
-    public class GetProfileData extends AsyncTask<String, Void, String> {
+
+    private class GetProfileData extends AsyncTask<String, Void, String> {
         JSONObject mJSON = new JSONObject();
         static final String REQUEST_METHOD="GET";
 
@@ -314,7 +326,7 @@ public class EditProfileActivity extends AppCompatActivity {
 
     }
 
-    public class SaveProfileData extends AsyncTask<String, Void, String> {
+    private class SaveProfileData extends AsyncTask<String, Void, String> {
         JSONObject mJSON = new JSONObject();
         static final String REQUEST_METHOD="GET";
 
