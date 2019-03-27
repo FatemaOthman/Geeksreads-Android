@@ -17,20 +17,22 @@
             android:name=".SideBarActivity"
             android:theme="@style/AppTheme.NoActionBar">
 
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
 
-                <category android:name="android.intent.category.LAUNCHER" />
-
-                <action android:name="android.intent.action.VIEW" />
-            </intent-filter>
         </activity>
 
         <activity android:name=".BookActivity" />
         <activity android:name=".Profile"/>
         <activity android:name=".SignupActivity"/>
         <activity android:name=".EditProfileActivity" />
-        <activity android:name=".MyBooksShelvesActivity" />
+        <activity android:name=".MyBooksShelvesActivity" >
+        <intent-filter>
+            <action android:name="android.intent.action.MAIN" />
+
+            <category android:name="android.intent.category.LAUNCHER" />
+
+            <action android:name="android.intent.action.VIEW" />
+        </intent-filter>
+        </activity>
         <activity android:name=".NotificationActivity" />
         <activity
             android:name=".OtherProfileActivity"

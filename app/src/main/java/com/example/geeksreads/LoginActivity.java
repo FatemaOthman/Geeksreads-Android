@@ -39,7 +39,7 @@ public class LoginActivity extends AppCompatActivity
     /** Global Variables to Store Context of this Activity itself */
     private Context mContext;
     /** Global Variables to Store Returned Login Token and User ID */
-    public String currentToken,currentUserID;
+    public static String sCurrentToken,sCurrentUserID;
     /** Global Public Static Variables used for Testing */
     public static String sForTest;
 
@@ -114,6 +114,7 @@ public class LoginActivity extends AppCompatActivity
      *  The Parameters are host Url and toSend Data.
      */
     public class SignIn extends AsyncTask<String, Void, String> {
+        JSONObject mJSON = new JSONObject();
         static final String REQUEST_METHOD="GET";
 
         @Override
@@ -199,8 +200,8 @@ public class LoginActivity extends AppCompatActivity
                                 Password.setText("");
 
                                 /* Storing returned Token and User ID */
-                                currentToken = jsonObject.getString("ReturnToken");
-                                currentUserID = jsonObject.getString("UserID");
+                                sCurrentToken = jsonObject.getString("ReturnToken");
+                                sCurrentUserID = jsonObject.getString("UserID");
 
                                 /* Go to Next Activity Layout */
                                 Intent myIntent = new Intent(LoginActivity.this, SideBarActivity.class);

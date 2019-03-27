@@ -29,6 +29,9 @@
             android:layout_marginRight="0dp"
             android:background="@color/bkColor"
             android:drawableRight="@android:drawable/ic_menu_send"
+            android:fadingEdge="none"
+            android:requiresFadingEdge="none"
+            android:shadowColor="@color/White"
             android:text="@string/ReadTxt"
             android:textAlignment="viewStart"
             android:textAppearance="@style/TextAppearance.AppCompat" />
