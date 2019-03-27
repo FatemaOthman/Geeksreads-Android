@@ -48,6 +48,8 @@ public class SideBarActivity extends AppCompatActivity
     Context mContext;
     TextView followersCount;
     TextView booksCount;
+    MenuItem FollowItem;
+    MenuItem BookItem;
 
 
 
@@ -93,6 +95,7 @@ public class SideBarActivity extends AppCompatActivity
             }
         });
 
+
         JSONObject JSON = new JSONObject();
 
         String UrlService = "http://geeksreads.000webhostapp.com/Fatema/SideBar.php";
@@ -119,10 +122,12 @@ public class SideBarActivity extends AppCompatActivity
         Menu menu = navigationView.getMenu();
         MenuItem itemFollower = menu.findItem(R.id.Followers);
         followersCount = (TextView) itemFollower.getActionView();
+        FollowItem = menu.findItem(R.id.Followers);
         followersCount.setTextColor(getResources().getColor(R.color.white));
         MenuItem itemBook = menu.findItem(R.id.MyBooks);
         booksCount = (TextView) itemBook.getActionView();
         booksCount.setTextColor(getResources().getColor(R.color.white));
+        BookItem = menu.findItem(R.id.MyBooks);
         navigationView.setNavigationItemSelectedListener(this);
     }
 
@@ -168,17 +173,18 @@ public class SideBarActivity extends AppCompatActivity
         D = new AlertDialog.Builder(mContext).create();
 
         int id=item.getItemId();
+
         if (id == R.id.Home) {
-            D.setMessage("Home Page");
-            D.show();
+            // Intent myIntenta = new Intent(SideBarActivity.this, Profile.class);
+            //SideBarActivity.this.startActivity(myIntenta);
 
         } else if (id == R.id.Followers) {
-            D.setMessage("Followers Page");
-            D.show();
+            Intent myIntenta = new Intent(SideBarActivity.this, FollowActivity.class);
+            SideBarActivity.this.startActivity(myIntenta);
 
         } else if (id == R.id.MyBooks) {
-            D.setMessage("Books Page");
-            D.show();
+            Intent myIntenta = new Intent(SideBarActivity.this, BookActivity.class);
+            SideBarActivity.this.startActivity(myIntenta);
 
 
         }
@@ -278,10 +284,13 @@ public class SideBarActivity extends AppCompatActivity
             }
             try {
 
-                // TODO: Add your Post Execute logic here.
                 JSONObject jsonObject = new JSONObject(result);
-                followersCount.setText("Followers                             "+jsonObject.getString("Followers"));
-                booksCount.setText("My Books                             "+jsonObject.getString("CountBooks"));
+
+                // followersCount.setText(jsonObject.getString("Followers"));
+                FollowItem.setTitle("Followers   " + jsonObject.getString("Followers"));
+                // booksCount.setText(jsonObject.getString("CountBooks"));
+                BookItem.setTitle("My Books   " + jsonObject.getString("CountBooks"));
+
                 userName.setText(jsonObject.getString("UserName"));
                 SideBarActivity.GetUserPicture Pic = new SideBarActivity.GetUserPicture();
                 Pic.execute(jsonObject.getString("photourl"));

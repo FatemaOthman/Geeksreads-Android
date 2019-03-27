@@ -6,8 +6,8 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.AsyncTask;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.widget.Button;
@@ -28,6 +28,7 @@ import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 import java.util.Objects;
 
 public class LoginActivity extends AppCompatActivity
@@ -137,7 +138,7 @@ public class LoginActivity extends AppCompatActivity
 
                 /* A Stream object to hold the sent data to API Call */
                 OutputStream ops = http.getOutputStream();
-                BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(ops,"UTF-8"));
+                BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(ops, StandardCharsets.UTF_8));
                 String data = URLEncoder.encode("Json","UTF-8")+"="+URLEncoder.encode(JSONString,"UTF-8");
 
                 writer.write(data);
@@ -147,7 +148,7 @@ public class LoginActivity extends AppCompatActivity
 
                 /* A Stream object to get the returned data from API Call */
                 InputStream ips = http.getInputStream();
-                BufferedReader reader = new BufferedReader(new InputStreamReader(ips,"ISO-8859-1"));
+                BufferedReader reader = new BufferedReader(new InputStreamReader(ips, StandardCharsets.ISO_8859_1));
                 String line ="";
                 while ((line = reader.readLine()) != null)
                 {
@@ -202,7 +203,7 @@ public class LoginActivity extends AppCompatActivity
                                 currentUserID = jsonObject.getString("UserID");
 
                                 /* Go to Next Activity Layout */
-                                Intent myIntent = new Intent(LoginActivity.this, BookActivity.class);
+                                Intent myIntent = new Intent(LoginActivity.this, SideBarActivity.class);
                                 startActivity(myIntent);
                             } else {
                                 /* If Login didn't succeed, Stay Here in the same Activity and Do Nothing */

@@ -14,16 +14,7 @@
         android:theme="@style/AppTheme">
         <activity
             android:name=".SignupActivity"
-            android:label="@string/title_activity_side_bar"
-            android:theme="@style/AppTheme.NoActionBar"/>
-
-        <activity android:name=".BookActivity"/>
-        <activity android:name=".Profile" android:label="@string/title_activity_side_bar"
             android:theme="@style/AppTheme.NoActionBar">
-
-        </activity>
-
-        <activity android:name=".SideBarActivity" >
 
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -32,6 +23,18 @@
 
                 <action android:name="android.intent.action.VIEW" />
             </intent-filter>
+
+
+        </activity>
+
+        <activity android:name=".BookActivity" />
+        <activity
+            android:name=".Profile"
+            android:theme="@style/AppTheme.NoActionBar">
+
+        </activity>
+
+        <activity android:name=".SideBarActivity">
 
 
         </activity>
