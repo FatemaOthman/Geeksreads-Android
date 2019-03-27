@@ -12,8 +12,9 @@
         android:roundIcon="@mipmap/logo_vertically"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
+
         <activity
-            android:name=".SignupActivity"
+            android:name=".SideBarActivity"
             android:theme="@style/AppTheme.NoActionBar">
 
             <intent-filter>
@@ -23,34 +24,20 @@
 
                 <action android:name="android.intent.action.VIEW" />
             </intent-filter>
-
-
         </activity>
 
         <activity android:name=".BookActivity" />
-        <activity
-            android:name=".Profile"
-            android:theme="@style/AppTheme.NoActionBar">
-
-        </activity>
-
-        <activity android:name=".SideBarActivity">
-
-
-        </activity>
-
-        <activity
-            android:name=".OtherProfileActivity"
-            android:parentActivityName=".Profile" />
-
-        <activity
-            android:name=".FollowActivity"
-            android:parentActivityName=".Profile" />
-
-
+        <activity android:name=".Profile"/>
+        <activity android:name=".SignupActivity"/>
         <activity android:name=".EditProfileActivity" />
         <activity android:name=".MyBooksShelvesActivity" />
         <activity android:name=".NotificationActivity" />
+        <activity
+            android:name=".OtherProfileActivity"
+            android:parentActivityName=".Profile" />
+        <activity
+            android:name=".FollowActivity"
+            android:parentActivityName=".Profile" />
         <activity
             android:name=".LoginActivity"
             android:parentActivityName=".SignupActivity" />
