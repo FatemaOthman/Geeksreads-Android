@@ -41,6 +41,7 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
+import java.util.Objects;
 
 public class NotificationActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener{
 
@@ -64,7 +65,7 @@ public class NotificationActivity extends AppCompatActivity implements Navigatio
         /* ToolBar and SideBar Setups */
         Toolbar myToolbar = findViewById(R.id.toolbar);
         setSupportActionBar(myToolbar);
-        getSupportActionBar().setTitle("Notifications");
+        Objects.requireNonNull(getSupportActionBar()).setTitle("Notifications");
         DrawerLayout drawer = findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(this, drawer, myToolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
         drawer.addDrawerListener(toggle);
@@ -107,7 +108,7 @@ public class NotificationActivity extends AppCompatActivity implements Navigatio
 
         final JSONObject jsonObject = new JSONObject();
         try {
-            JSON.put("id", "value");
+            JSON.put("UserID", "value");
         }catch (JSONException e) {
             e.printStackTrace();
         }
