@@ -172,7 +172,7 @@ public class NotificationActivity extends AppCompatActivity implements Navigatio
             startActivity(myIntent);
 
         } else if (id == R.id.MyBooks) {
-            Intent myIntent = new Intent(NotificationActivity.this, BookActivity.class);
+            Intent myIntent = new Intent(NotificationActivity.this, MyBooksShelvesActivity.class);
             startActivity(myIntent);
         }
         DrawerLayout drawer = findViewById(R.id.drawer_layout);

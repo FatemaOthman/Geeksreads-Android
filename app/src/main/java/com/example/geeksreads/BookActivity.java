@@ -4,7 +4,6 @@ package com.example.geeksreads;
 import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -21,7 +20,6 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.SearchView;
@@ -37,7 +35,6 @@ import java.io.BufferedWriter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.io.NotSerializableException;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.net.HttpURLConnection;
@@ -45,6 +42,7 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
+import java.util.Objects;
 
 
 public class BookActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener{
@@ -80,7 +78,7 @@ public class BookActivity extends AppCompatActivity implements NavigationView.On
         /* ToolBar and SideBar Setups */
         Toolbar myToolbar = findViewById(R.id.toolbar);
         setSupportActionBar(myToolbar);
-        getSupportActionBar().setDisplayShowTitleEnabled(false);
+        Objects.requireNonNull(getSupportActionBar()).setDisplayShowTitleEnabled(false);
         DrawerLayout drawer = findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(this, drawer, myToolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
         drawer.addDrawerListener(toggle);
@@ -199,7 +197,7 @@ public class BookActivity extends AppCompatActivity implements NavigationView.On
             startActivity(myIntent);
 
         } else if (id == R.id.MyBooks) {
-            Intent myIntent = new Intent(BookActivity.this, BookActivity.class);
+            Intent myIntent = new Intent(BookActivity.this, MyBooksShelvesActivity.class);
             startActivity(myIntent);
         }
         DrawerLayout drawer = findViewById(R.id.drawer_layout);
