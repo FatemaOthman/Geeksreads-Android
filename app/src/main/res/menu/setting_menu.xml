@@ -17,7 +17,7 @@
     </item>
 
     <item
-        android:id="@+id/NoteficationButton"
+        android:id="@+id/NotificationButton"
         android:icon="@mipmap/notification"
         android:orderInCategory="3"
         android:title="@string/SearchText"

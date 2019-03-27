@@ -39,6 +39,7 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
+import java.util.Objects;
 
 public class EditProfileActivity extends AppCompatActivity {
 
@@ -58,7 +59,7 @@ public class EditProfileActivity extends AppCompatActivity {
 
         Toolbar myToolbar = findViewById(R.id.toolbar);
         setSupportActionBar(myToolbar);
-        getSupportActionBar().setTitle("Edit Profile");
+        Objects.requireNonNull(getSupportActionBar()).setTitle("Edit Profile");
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         mContext = this;
@@ -162,6 +163,15 @@ public class EditProfileActivity extends AppCompatActivity {
         SearchView searchView = (SearchView) item.getActionView();
         searchView.setMaxWidth(800);
         searchView.setQueryHint("Search books");
+        MenuItem item1 = menu.findItem(R.id.NotificationButton);
+        item1.setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
+            @Override
+            public boolean onMenuItemClick(MenuItem item) {
+                Intent mIntent = new Intent(EditProfileActivity.this, NotificationActivity.class);
+                startActivity(mIntent);
+                return true;
+            }
+        });
         return super.onCreateOptionsMenu(menu);
     }
 
