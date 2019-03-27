@@ -5,6 +5,9 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.Picture;
 import android.os.AsyncTask;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -16,6 +19,7 @@ import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.SearchView;
 import android.widget.Spinner;
 import android.widget.Toast;
@@ -161,6 +165,36 @@ public class EditProfileActivity extends AppCompatActivity {
         return super.onCreateOptionsMenu(menu);
     }
 
+    /*  Class GetUserPicture:
+     *      Gets user picture from the url and changes it into bitmap
+     *      sets the imageView into the same bitmap
+     */
+    private class GetPicture extends AsyncTask<String, Void, Bitmap> {
+
+        @Override
+        protected Bitmap doInBackground(String... params) {
+            try {
+                String photoUrl = params[0];
+                URL url = new URL(photoUrl);
+                HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+                connection.setDoInput(true);
+                connection.connect();
+                InputStream input = connection.getInputStream();
+                Bitmap myBitmap = BitmapFactory.decodeStream(input);
+                return myBitmap;
+            }catch (Exception e){
+
+            }
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(Bitmap result) {
+            ImageView userProfilePhoto = findViewById(R.id.UserProfilePhoto);
+            userProfilePhoto.setImageBitmap(result);
+
+        }
+    }
     public class GetProfileData extends AsyncTask<String, Void, String> {
         JSONObject mJSON = new JSONObject();
         static final String REQUEST_METHOD="GET";
@@ -257,6 +291,9 @@ public class EditProfileActivity extends AppCompatActivity {
                     int spinnerPosition = adapter.getPosition(compareValue);
                     genderList.setSelection(spinnerPosition);
                 }
+
+                GetPicture Pic = new GetPicture();
+                Pic.execute(jsonObject.getString("PhotoUrl"));
             }
             /* Catching Exceptions */
             catch(JSONException e)
