@@ -47,7 +47,9 @@
             android:parentActivityName=".SignupActivity" />
         <activity
             android:name=".ChangePasswordActivity"
-            android:parentActivityName=".EditProfileActivity" />
+            android:parentActivityName=".EditProfileActivity" >
+
+        </activity>
         <activity
             android:name=".ReadBooksActivity"
             android:parentActivityName=".MyBooksShelvesActivity" />
