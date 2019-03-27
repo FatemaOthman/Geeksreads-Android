@@ -38,23 +38,9 @@
                 android:layout_marginTop="0dp"
                 android:layout_marginEnd="30dp"
                 android:layout_marginRight="0dp"
-                android:layout_marginBottom="10dp"
+                android:layout_marginBottom="0dp"
                 android:ems="10"
                 android:hint="@string/FullNameHint"
-                android:inputType="textPersonName" />
-
-            <EditText
-                android:id="@+id/DisplayNameTxt"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="30dp"
-                android:layout_marginLeft="0dp"
-                android:layout_marginTop="0dp"
-                android:layout_marginEnd="30dp"
-                android:layout_marginRight="0dp"
-                android:layout_marginBottom="10dp"
-                android:ems="10"
-                android:hint="@string/DisplayNameHint"
                 android:inputType="textPersonName" />
 
             <EditText
@@ -66,7 +52,7 @@
                 android:layout_marginTop="0dp"
                 android:layout_marginEnd="30dp"
                 android:layout_marginRight="0dp"
-                android:layout_marginBottom="10dp"
+                android:layout_marginBottom="0dp"
                 android:ems="10"
                 android:hint="@string/UsernameHint"
                 android:inputType="textPersonName" />
@@ -80,7 +66,7 @@
                 android:layout_marginTop="0dp"
                 android:layout_marginEnd="30dp"
                 android:layout_marginRight="0dp"
-                android:layout_marginBottom="10dp"
+                android:layout_marginBottom="0dp"
                 android:ems="10"
                 android:hint="@string/EmailHint"
                 android:inputType="textEmailAddress" />
@@ -94,7 +80,7 @@
                 android:layout_marginTop="0dp"
                 android:layout_marginEnd="30dp"
                 android:layout_marginRight="0dp"
-                android:layout_marginBottom="10dp"
+                android:layout_marginBottom="0dp"
                 android:ems="10"
                 android:hint="@string/BirthDateHint"
                 android:inputType="date" />
@@ -108,7 +94,7 @@
                 android:layout_marginTop="0dp"
                 android:layout_marginEnd="30dp"
                 android:layout_marginRight="0dp"
-                android:layout_marginBottom="10dp"
+                android:layout_marginBottom="0dp"
                 android:entries="@array/Countries" />
 
             <Spinner
