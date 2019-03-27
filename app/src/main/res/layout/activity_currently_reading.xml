@@ -18,7 +18,7 @@
         style="@style/SwipeRefreshingLayout">
 
         <ListView
-            android:id="@+id/NotificationList"
+            android:id="@+id/CurrentlyReadingList"
             android:layout_width="match_parent"
             android:layout_height="match_parent" />
     </android.support.v4.widget.SwipeRefreshLayout>

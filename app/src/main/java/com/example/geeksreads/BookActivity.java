@@ -5,10 +5,16 @@ import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
+import android.support.design.widget.NavigationView;
+import android.support.v4.view.GravityCompat;
+import android.support.v4.widget.DrawerLayout;
+import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
@@ -38,7 +44,7 @@ import java.net.URL;
 import java.net.URLEncoder;
 
 
-public class BookActivity extends AppCompatActivity {
+public class BookActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener{
 
     public static String sForTestAuthor, sForTestTitle, sForTestRate, sForTestDate, sForTestBookActivity;
     ImageView bookCover;
@@ -58,12 +64,20 @@ public class BookActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_book);
 
+        /* ToolBar and SideBar Setups */
         Toolbar myToolbar = findViewById(R.id.toolbar);
         setSupportActionBar(myToolbar);
         getSupportActionBar().setDisplayShowTitleEnabled(false);
+        DrawerLayout drawer = findViewById(R.id.drawer_layout);
+        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(this, drawer, myToolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
+        drawer.addDrawerListener(toggle);
+        toggle.syncState();
+        NavigationView navigationView = findViewById(R.id.nav_view);
+        navigationView.setNavigationItemSelectedListener(this);
+
         mContext = this;
 
-        /** Getting All views by id from Layout */
+        /* Getting All views by id from Layout */
         mProgressBar = findViewById(R.id.progressBar);
         bookCover = findViewById(R.id.BookCover);
         bookTitle = findViewById(R.id.BookTitleTxt);
@@ -76,7 +90,7 @@ public class BookActivity extends AppCompatActivity {
         publishingDate = findViewById(R.id.PublishedOnTxt);
 
 
-        /** Creating Json Object to be send */
+        /* Creating Json Object to be send */
         JSONObject jsonObject = new JSONObject();
         try {
             jsonObject.put("id", "value");
@@ -84,13 +98,24 @@ public class BookActivity extends AppCompatActivity {
             e.printStackTrace();
         }
 
-        /** Calling Async Task with my server url */
+        /* Calling Async Task with my server url */
         String UrlService = "http://geeksreads.000webhostapp.com/Shrouk/BookDetails.php";
         mProgressBar.setVisibility(View.VISIBLE);
         GetBookDetails getBookDetails = new GetBookDetails();
         getBookDetails.execute(UrlService,jsonObject.toString());
+
     }
 
+
+    @Override
+    public void onBackPressed() {
+        DrawerLayout drawer = findViewById(R.id.drawer_layout);
+        if (drawer.isDrawerOpen(GravityCompat.START)) {
+            drawer.closeDrawer(GravityCompat.START);
+        } else {
+            super.onBackPressed();
+        }
+    }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -103,6 +128,12 @@ public class BookActivity extends AppCompatActivity {
         searchView.setQueryHint("Search books");
         searchView.setBackgroundColor(getResources().getColor(R.color.white));
         return super.onCreateOptionsMenu(menu);
+    }
+
+
+    @Override
+    public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
+        return false;
     }
 
 
