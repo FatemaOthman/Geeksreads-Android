@@ -8,6 +8,7 @@ import android.graphics.BitmapFactory;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -16,12 +17,16 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.BufferedReader;
+import java.io.BufferedWriter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.OutputStream;
+import java.io.OutputStreamWriter;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 
 
@@ -47,8 +52,14 @@ public class OtherProfileActivity extends AppCompatActivity
 
         //In my code here, I am not sending any data to the backend:
         JSONObject JSON = new JSONObject();
+        try {
+            JSON.put("UserId", getIntent().getStringExtra("UserId"));
+            Log.i("AMR", "PassedID: " + getIntent().getStringExtra("UserId"));
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
 
-        System.out.println("1- Created JSON FILE");
+
         String UrlService = "http://geeksreads.000webhostapp.com/Amr/OtherUserProfile.php";
         OtherProfileActivity.GetOtherProfileDetails MyProfile = new OtherProfileActivity.GetOtherProfileDetails();
         MyProfile.execute(UrlService,JSON.toString());
@@ -104,8 +115,6 @@ public class OtherProfileActivity extends AppCompatActivity
         protected String doInBackground(String... params){
             String UrlString = params[0];
             String JSONString = params[1];
-            System.out.println("URL: "+UrlString);
-            System.out.println("JSON: "+JSONString);
             String result= "";
 
             try {
@@ -114,7 +123,19 @@ public class OtherProfileActivity extends AppCompatActivity
                 HttpURLConnection http = (HttpURLConnection) url.openConnection();
                 http.setRequestMethod(REQUEST_METHOD);
                 http.setDoInput(true);
+                http.setDoOutput(true);
 
+                OutputStream ops = http.getOutputStream();
+                BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(ops, StandardCharsets.UTF_8));
+                String data = URLEncoder.encode("UserId", "UTF-8") + "=" + URLEncoder.encode(JSONString, "UTF-8");
+
+                writer.write(data);
+                writer.flush();
+                writer.close();
+                ops.close();
+
+
+                /////////////////////////////////////////
                 //Create a new InputStreamReader
                 InputStream ips = http.getInputStream();
                 BufferedReader reader = new BufferedReader(new InputStreamReader(ips, StandardCharsets.ISO_8859_1));
@@ -133,7 +154,6 @@ public class OtherProfileActivity extends AppCompatActivity
             } catch (IOException e) {
                 result = e.getMessage();
             }
-
             return result;
         }
 
@@ -147,7 +167,7 @@ public class OtherProfileActivity extends AppCompatActivity
                 dialog.setMessage("Done");
                 //dialog.show();
 
-                // TODO: Add your Post Execute logic here.
+
                 JSONObject jsonObject = new JSONObject(result);
                 OtherProfileActivity.GetOtherUserPicture Pic = new OtherProfileActivity.GetOtherUserPicture();
                 Pic.execute(jsonObject.getString("photourl"));

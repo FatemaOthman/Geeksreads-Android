@@ -1,7 +1,6 @@
 package com.example.geeksreads;
 
 import android.content.Context;
-import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.AsyncTask;
@@ -38,14 +37,15 @@ public class CustomAdapter extends ArrayAdapter<UserDataModel> implements View.O
     @Override
     public void onClick(View v) {
 
-
+/*
         int position = (Integer) v.getTag();
         UserDataModel dataModel = getItem(position);
 
         Intent myIntent = new Intent(getContext(), OtherProfileActivity.class);
         myIntent.putExtra("UserID", dataModel.getID());
+        Log.i("AMR","SentID: "+dataModel.getID());
         mContext.startActivity(myIntent);
-
+*/
 
     }
 

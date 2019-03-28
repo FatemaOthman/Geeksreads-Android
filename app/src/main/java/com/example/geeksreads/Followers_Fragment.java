@@ -69,14 +69,10 @@ public class Followers_Fragment extends Fragment {
 
                 final UserDataModel dataModel = dataModels.get(position);
 
-                FollowersList.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
                         Intent myIntent = new Intent(getActivity(), OtherProfileActivity.class);
+                Log.i("AMR", "SentID: " + dataModel.getID());
                         myIntent.putExtra("UserID", dataModel.getID());
                         startActivity(myIntent);
-                    }
-                });
 
             }
         });
