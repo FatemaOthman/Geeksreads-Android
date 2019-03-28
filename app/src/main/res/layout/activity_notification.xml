@@ -20,7 +20,7 @@
         </include>
 
         <android.support.v4.widget.SwipeRefreshLayout
-            android:id="@+id/swipelayout"
+            android:id="@+id/notificationSwipeLayout"
             tools:context=".ReadBooksActivity"
             style="@style/SwipeRefreshingLayout">
 

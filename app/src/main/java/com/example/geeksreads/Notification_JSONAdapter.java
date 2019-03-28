@@ -63,11 +63,11 @@ public class Notification_JSONAdapter extends BaseAdapter {
         View itemView;
 
         LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-        itemView = Objects.requireNonNull(inflater).inflate(R.layout.book_template, viewGroup,false);
+        itemView = Objects.requireNonNull(inflater).inflate(R.layout.notification_template, viewGroup,false);
         try {
 
             String body = data.getJSONObject(i).getString("body");
-            if (!data.getJSONObject(i).getBoolean("Seen"))
+            if (!data.getJSONObject(i).getBoolean("seen"))
             {
                 NotificationManager notificationManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
                 Notification notify = new Notification.Builder(context.getApplicationContext()).setContentTitle("GeeeksRead").setContentText(body).setContentTitle("GeeeksReads").setSmallIcon(R.drawable.ic_book).build();                notify.flags |= Notification.FLAG_AUTO_CANCEL;

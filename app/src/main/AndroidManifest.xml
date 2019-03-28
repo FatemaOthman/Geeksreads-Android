@@ -13,17 +13,11 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
 
-        <activity
-            android:name=".SideBarActivity"
-            android:theme="@style/AppTheme.NoActionBar">
-
-
-        </activity>
-
+        <activity android:name=".SideBarActivity"/>
         <activity android:name=".BookActivity" />
         <activity android:name=".Profile"/>
         <activity android:name=".SignupActivity"/>
-        <activity android:name=".EditProfileActivity">
+        <activity android:name=".NotificationActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -35,7 +29,7 @@
         <activity android:name=".MyBooksShelvesActivity" >
 
         </activity>
-        <activity android:name=".NotificationActivity" />
+        <activity android:name=".EditProfileActivity" />
         <activity
             android:name=".OtherProfileActivity"
             android:parentActivityName=".Profile" />

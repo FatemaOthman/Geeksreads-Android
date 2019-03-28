@@ -11,6 +11,7 @@ import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -46,6 +47,7 @@ import java.util.Objects;
 public class NotificationActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener{
 
     Context mContext;
+    SwipeRefreshLayout mSwipeRefreshLayout;
 
     /* SideBar Views */
     ImageView userPhoto;
@@ -112,29 +114,19 @@ public class NotificationActivity extends AppCompatActivity implements Navigatio
         }catch (JSONException e) {
             e.printStackTrace();
         }
+        final String UrlService = "http://geeksreads.000webhostapp.com/Shrouk/Notifications.php";
 
-        final String UrlService = "http://geeksreads.000webhostapp.com/Shrouk/BookDetails.php";
-
-        Thread t = new Thread() {
+        mSwipeRefreshLayout = findViewById(R.id.notificationSwipeLayout);
+        mSwipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
-            public void run() {
-                try {
-                    while (!isInterrupted()) {
-                        Thread.sleep(1000);
-                        runOnUiThread(new Runnable() {
-                            @Override
-                            public void run() {
-                                GetNotificationsList performBackgroundTask = new GetNotificationsList();
-                                performBackgroundTask.execute(UrlService,jsonObject.toString());
-                            }
-                        });
-                    }
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
+            public void onRefresh() {
+                GetNotificationsList performBackgroundTask = new GetNotificationsList();
+                performBackgroundTask.execute(UrlService,jsonObject.toString());
             }
-        };
-        t.start();
+        });
+
+        GetNotificationsList performBackgroundTask = new GetNotificationsList();
+        performBackgroundTask.execute(UrlService,jsonObject.toString());
 
     }
 
@@ -245,12 +237,13 @@ public class NotificationActivity extends AppCompatActivity implements Navigatio
         @SuppressLint("SetTextI18n")
         protected void onPostExecute(String result){
             //progress.setVisibility(View.GONE);
+            mSwipeRefreshLayout.setRefreshing(false);
             if(result==null) {
                 Toast.makeText(mContext,"Unable to connect to server", Toast.LENGTH_SHORT).show();
                 return;
             }
             try {
-                dialog.setMessage("Done");
+                dialog.setMessage(result);
                 //dialog.show();
                 ListView notificationList = findViewById(R.id.NotificationList);
                 notificationList.setAdapter(new Notification_JSONAdapter(mContext, new JSONArray(result)));
