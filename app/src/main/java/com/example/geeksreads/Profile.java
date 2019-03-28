@@ -39,7 +39,7 @@ public class Profile extends AppCompatActivity
     TextView FollowersCount;
     TextView FollowingCount;
     TextView BooksCount;
-
+    public static String CurrentUser; //Put Id of user here.
     public static String ForTestProfilePicture,ForTestFollowersCount, ForTestFollowingCount;
 
     @Override
@@ -62,7 +62,9 @@ public class Profile extends AppCompatActivity
         FollowersCount.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                //   Intent myIntent = new Intent(Profile.this,FollowActivity.class);
                 Intent myIntent = new Intent(Profile.this,FollowActivity.class);
+                myIntent.putExtra("UserID", CurrentUser);
                 startActivity(myIntent);
             }
         });
@@ -71,6 +73,7 @@ public class Profile extends AppCompatActivity
             @Override
             public void onClick(View view) {
                 Intent myIntent = new Intent(Profile.this,FollowActivity.class);
+                myIntent.putExtra("UserID", CurrentUser);
                 startActivity(myIntent);
             }
         });
@@ -152,7 +155,7 @@ public class Profile extends AppCompatActivity
 
                 OutputStream ops = http.getOutputStream();
                 BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(ops, StandardCharsets.UTF_8));
-                String data = URLEncoder.encode("id", "UTF-8") + "=" + URLEncoder.encode(JSONString, "UTF-8");
+                String data = URLEncoder.encode("UserId", "UTF-8") + "=" + URLEncoder.encode(JSONString, "UTF-8");
 
                 writer.write(data);
                 writer.flush();
