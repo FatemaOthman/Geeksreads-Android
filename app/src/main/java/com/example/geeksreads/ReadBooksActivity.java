@@ -2,9 +2,9 @@ package com.example.geeksreads;
 
 import android.content.Context;
 import android.os.AsyncTask;
+import android.os.Bundle;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -32,7 +32,7 @@ public class ReadBooksActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_read_books);
-        mContext=this;
+        mContext = this;
 
         final String webService = "";
 
@@ -73,7 +73,7 @@ public class ReadBooksActivity extends AppCompatActivity {
         public Boolean internetConn = false;
 
         @Override
-        protected String doInBackground(String... params){
+        protected String doInBackground(String... params) {
             String stringUrl = params[0];
             String result;
             String inputLine;
@@ -81,7 +81,7 @@ public class ReadBooksActivity extends AppCompatActivity {
                 //Create a URL object holding our url
                 URL myUrl = new URL(stringUrl);
                 //Create a connection
-                HttpURLConnection connection =(HttpURLConnection)
+                HttpURLConnection connection = (HttpURLConnection)
                         myUrl.openConnection();
                 //Set methods and timeouts
                 connection.setRequestMethod(REQUEST_METHOD);
@@ -97,7 +97,7 @@ public class ReadBooksActivity extends AppCompatActivity {
                 BufferedReader reader = new BufferedReader(streamReader);
                 StringBuilder stringBuilder = new StringBuilder();
                 //Check if the line we are reading is not null
-                while((inputLine = reader.readLine()) != null){
+                while ((inputLine = reader.readLine()) != null) {
                     stringBuilder.append(inputLine);
                 }
                 //Close our InputStream and Buffered reader
@@ -105,25 +105,23 @@ public class ReadBooksActivity extends AppCompatActivity {
                 streamReader.close();
                 //Set our result equal to our stringBuilder
                 result = stringBuilder.toString();
-            }
-            catch(IOException e){
+            } catch (IOException e) {
                 e.printStackTrace();
                 result = null;
             }
             return result;
         }
-        protected void onPostExecute(String result){
+
+        protected void onPostExecute(String result) {
             mSwipeRefreshLayout.setRefreshing(false);
-            if(result==null) {
-                Toast.makeText(mContext,"Unable to connect to server", Toast.LENGTH_SHORT).show();
+            if (result == null) {
+                Toast.makeText(mContext, "Unable to connect to server", Toast.LENGTH_SHORT).show();
                 return;
             }
             try {
                 ListView itemsList = findViewById(R.id.ReadBookList);
                 itemsList.setAdapter(new BookList_JSONAdapter(mContext, new JSONArray(result)));
-            }
-            catch(JSONException e)
-            {
+            } catch (JSONException e) {
                 e.printStackTrace();
             }
         }

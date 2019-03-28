@@ -6,8 +6,8 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:fitsSystemWindows="true"
-    tools:openDrawer="start"
-    tools:context=".BookActivity">
+    tools:context=".BookActivity"
+    tools:openDrawer="start">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -16,8 +16,7 @@
 
         <include
             android:id="@+id/toolbar"
-            layout="@layout/toolbar">
-        </include>
+            layout="@layout/toolbar"></include>
 
         <ProgressBar
             android:id="@+id/progressBar"
@@ -33,7 +32,7 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="vertical" >
+                android:orientation="vertical">
 
                 <ImageView
                     android:id="@+id/BookCover"
@@ -180,9 +179,9 @@
                         android:id="@+id/PublishedOnTxt"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_weight="1"
                         android:layout_marginStart="15dp"
                         android:layout_marginEnd="15dp"
+                        android:layout_weight="1"
                         android:text="@string/PublishedOnString"
                         android:textAlignment="center"
                         android:textColor="@android:color/background_dark" />
@@ -213,11 +212,11 @@
         android:layout_height="match_parent"
         android:layout_gravity="start"
 
+        android:background="@color/colorNavBackground"
         android:fitsSystemWindows="true"
         app:headerLayout="@layout/nav_header_side_bar"
         app:itemIconTint="@color/colorFont"
         app:itemTextColor="@color/colorFont"
-        android:background="@color/colorNavBackground"
         app:menu="@menu/activity_side_bar_drawer"
 
         />

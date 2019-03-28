@@ -7,10 +7,9 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.graphics.Picture;
 import android.os.AsyncTask;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -43,10 +42,14 @@ import java.util.Objects;
 
 public class EditProfileActivity extends AppCompatActivity {
 
-    /** Global Variables to Store Context of this Activity itself */
-    private Context mContext;
-    /** Global Public Static Variables used for Testing */
+    /**
+     * Global Public Static Variables used for Testing
+     */
     public static String sForTest;
+    /**
+     * Global Variables to Store Context of this Activity itself
+     */
+    private Context mContext;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -68,7 +71,7 @@ public class EditProfileActivity extends AppCompatActivity {
         try {
             mJSON.put("UserID", LoginActivity.sCurrentUserID);
             mJSON.put("UserToken", LoginActivity.sCurrentToken);
-        }catch (JSONException e) {
+        } catch (JSONException e) {
             e.printStackTrace();
         }
 
@@ -77,7 +80,7 @@ public class EditProfileActivity extends AppCompatActivity {
 
         /* Creating a new instance of Sign in Class */
         GetProfileData getProfileData = new GetProfileData();
-        getProfileData.execute(urlService,mJSON.toString());
+        getProfileData.execute(urlService, mJSON.toString());
 
         final EditText fullNameTxt = findViewById(R.id.FullNameTxt);
         final EditText userNameTxt = findViewById(R.id.UserNameTxt);
@@ -88,8 +91,7 @@ public class EditProfileActivity extends AppCompatActivity {
 
         Button changePassword = findViewById(R.id.ChangePasswordBtn);
 
-        changePassword.setOnClickListener(new View.OnClickListener()
-        {
+        changePassword.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 /* Go to Next Activity Layout */
@@ -99,11 +101,9 @@ public class EditProfileActivity extends AppCompatActivity {
         });
 
         Button saveChange = findViewById(R.id.SaveChangesBtn);
-        saveChange.setOnClickListener(new View.OnClickListener()
-        {
+        saveChange.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View v)
-            {
+            public void onClick(View v) {
                 String fullNameStr = fullNameTxt.getText().toString();
                 String emailStr = emailAddressTxt.getText().toString();
                 String userNameStr = userNameTxt.getText().toString();
@@ -116,30 +116,24 @@ public class EditProfileActivity extends AppCompatActivity {
                 userNameTxt.setError(null);
                 birthDateTxt.setError(null);
                 /* If the user entered an invalid Username */
-                if (userNameStr.length() < 3 || userNameStr.length() > 50)
-                {
+                if (userNameStr.length() < 3 || userNameStr.length() > 50) {
                     userNameTxt.setError("Username length should be 3 characters minimum and 50 characters maximum");
                     //sForTest = "Username length should be 3 characters minimum and 50 characters maximum";
                 }
                 /* If the user entered an invalid Email Address */
-                else if (!emailStr.matches(".+[@].+[.].+"))
-                {
+                else if (!emailStr.matches(".+[@].+[.].+")) {
                     emailAddressTxt.setError("Please enter a valid email");
                     //sForTest = "Please enter a valid Email";
                 }
                 /* If the user entered an invalid Full Name */
-                else if (fullNameStr.length() < 5 || fullNameStr.length() > 100)
-                {
+                else if (fullNameStr.length() < 5 || fullNameStr.length() > 100) {
                     fullNameTxt.setError("Full name should be 5 characters minimum and 100 characters maximum");
                     //sForTest = "Please enter a valid Email";
-                }
-                else if (!birthDateStr.matches("[0-9]+[/][0-9]+[/][1][9][0-9][0-9]"))
-                {
+                } else if (!birthDateStr.matches("[0-9]+[/][0-9]+[/][1][9][0-9][0-9]")) {
                     birthDateTxt.setError("Please enter a valid date");
                 }
                 /* If the user entered a valid username, email and password */
-                else
-                {
+                else {
                     JSONObject JSON = new JSONObject();
                     try {
                         JSON.put("UserID", LoginActivity.sCurrentUserID);
@@ -151,7 +145,7 @@ public class EditProfileActivity extends AppCompatActivity {
                         JSON.put("Country", countryStr);
                         JSON.put("BirthDate", birthDateStr);
 
-                    }catch (JSONException e) {
+                    } catch (JSONException e) {
                         e.printStackTrace();
                     }
                     /* URL For Sign up API */
@@ -159,7 +153,7 @@ public class EditProfileActivity extends AppCompatActivity {
 
                     /* Creating a new instance of Sign up Class */
                     SaveProfileData saveProfileData = new SaveProfileData();
-                    saveProfileData.execute(urlService,JSON.toString());
+                    saveProfileData.execute(urlService, JSON.toString());
                 }
             }
         });
@@ -203,7 +197,7 @@ public class EditProfileActivity extends AppCompatActivity {
                 InputStream input = connection.getInputStream();
                 Bitmap myBitmap = BitmapFactory.decodeStream(input);
                 return myBitmap;
-            }catch (Exception e){
+            } catch (Exception e) {
 
             }
             return null;
@@ -218,8 +212,8 @@ public class EditProfileActivity extends AppCompatActivity {
     }
 
     private class GetProfileData extends AsyncTask<String, Void, String> {
+        static final String REQUEST_METHOD = "GET";
         JSONObject mJSON = new JSONObject();
-        static final String REQUEST_METHOD="GET";
 
         @Override
         protected void onPreExecute() {
@@ -227,10 +221,10 @@ public class EditProfileActivity extends AppCompatActivity {
         }
 
         @Override
-        protected String doInBackground(String... params){
+        protected String doInBackground(String... params) {
             String UrlString = params[0];
             String JSONString = params[1];
-            String result= "";
+            String result = "";
 
             try {
                 /* Create a URL object holding our url */
@@ -244,7 +238,7 @@ public class EditProfileActivity extends AppCompatActivity {
                 /* A Stream object to hold the sent data to API Call */
                 OutputStream ops = http.getOutputStream();
                 BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(ops, StandardCharsets.UTF_8));
-                String data = URLEncoder.encode("Json","UTF-8")+"="+URLEncoder.encode(JSONString,"UTF-8");
+                String data = URLEncoder.encode("Json", "UTF-8") + "=" + URLEncoder.encode(JSONString, "UTF-8");
 
                 writer.write(data);
                 writer.flush();
@@ -254,9 +248,8 @@ public class EditProfileActivity extends AppCompatActivity {
                 /* A Stream object to get the returned data from API Call */
                 InputStream ips = http.getInputStream();
                 BufferedReader reader = new BufferedReader(new InputStreamReader(ips, StandardCharsets.ISO_8859_1));
-                String line ="";
-                while ((line = reader.readLine()) != null)
-                {
+                String line = "";
+                while ((line = reader.readLine()) != null) {
                     result += line;
                 }
                 reader.close();
@@ -265,8 +258,7 @@ public class EditProfileActivity extends AppCompatActivity {
                 return result;
 
             }
-            /* Handling Exceptions */
-            catch (MalformedURLException e) {
+            /* Handling Exceptions */ catch (MalformedURLException e) {
                 result = e.getMessage();
             } catch (IOException e) {
                 result = e.getMessage();
@@ -275,9 +267,9 @@ public class EditProfileActivity extends AppCompatActivity {
         }
 
         @SuppressLint("SetTextI18n")
-        protected void onPostExecute(String result){
-            if(result==null) {
-                Toast.makeText(mContext,"Unable to connect to server", Toast.LENGTH_SHORT).show();
+        protected void onPostExecute(String result) {
+            if (result == null) {
+                Toast.makeText(mContext, "Unable to connect to server", Toast.LENGTH_SHORT).show();
                 return;
             }
             try {
@@ -317,9 +309,7 @@ public class EditProfileActivity extends AppCompatActivity {
                 GetPicture Pic = new GetPicture();
                 Pic.execute(jsonObject.getString("PhotoUrl"));
             }
-            /* Catching Exceptions */
-            catch(JSONException e)
-            {
+            /* Catching Exceptions */ catch (JSONException e) {
                 e.printStackTrace();
             }
         }
@@ -327,8 +317,8 @@ public class EditProfileActivity extends AppCompatActivity {
     }
 
     private class SaveProfileData extends AsyncTask<String, Void, String> {
+        static final String REQUEST_METHOD = "GET";
         JSONObject mJSON = new JSONObject();
-        static final String REQUEST_METHOD="GET";
 
         @Override
         protected void onPreExecute() {
@@ -336,10 +326,10 @@ public class EditProfileActivity extends AppCompatActivity {
         }
 
         @Override
-        protected String doInBackground(String... params){
+        protected String doInBackground(String... params) {
             String UrlString = params[0];
             String JSONString = params[1];
-            String result= "";
+            String result = "";
 
             try {
                 /* Create a URL object holding our url */
@@ -353,7 +343,7 @@ public class EditProfileActivity extends AppCompatActivity {
                 /* A Stream object to hold the sent data to API Call */
                 OutputStream ops = http.getOutputStream();
                 BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(ops, StandardCharsets.UTF_8));
-                String data = URLEncoder.encode("Json","UTF-8")+"="+URLEncoder.encode(JSONString,"UTF-8");
+                String data = URLEncoder.encode("Json", "UTF-8") + "=" + URLEncoder.encode(JSONString, "UTF-8");
 
                 writer.write(data);
                 writer.flush();
@@ -363,9 +353,8 @@ public class EditProfileActivity extends AppCompatActivity {
                 /* A Stream object to get the returned data from API Call */
                 InputStream ips = http.getInputStream();
                 BufferedReader reader = new BufferedReader(new InputStreamReader(ips, StandardCharsets.ISO_8859_1));
-                String line ="";
-                while ((line = reader.readLine()) != null)
-                {
+                String line = "";
+                while ((line = reader.readLine()) != null) {
                     result += line;
                 }
                 reader.close();
@@ -374,8 +363,7 @@ public class EditProfileActivity extends AppCompatActivity {
                 return result;
 
             }
-            /* Handling Exceptions */
-            catch (MalformedURLException e) {
+            /* Handling Exceptions */ catch (MalformedURLException e) {
                 result = e.getMessage();
             } catch (IOException e) {
                 result = e.getMessage();
@@ -384,44 +372,34 @@ public class EditProfileActivity extends AppCompatActivity {
         }
 
         @SuppressLint("SetTextI18n")
-        protected void onPostExecute(String result)
-        {
+        protected void onPostExecute(String result) {
             AlertDialog.Builder dialog = new AlertDialog.Builder(mContext);
-            if(result==null) {
-                Toast.makeText(mContext,"Unable to connect to server", Toast.LENGTH_SHORT).show();
+            if (result == null) {
+                Toast.makeText(mContext, "Unable to connect to server", Toast.LENGTH_SHORT).show();
                 return;
             }
             try {
                 /* Creating a JSON Object to parse the data in */
                 final JSONObject jsonObject = new JSONObject(result);
 
-                if (jsonObject.getString("ReturnMsg").equals("Your changes are saved successfully"))
-                {
-                    Toast.makeText(mContext,"Your changes are saved successfully", Toast.LENGTH_SHORT).show();
-                }
-                else if (jsonObject.getString("ReturnMsg").contains("A verification email has been sent"))
-                {
+                if (jsonObject.getString("ReturnMsg").equals("Your changes are saved successfully")) {
+                    Toast.makeText(mContext, "Your changes are saved successfully", Toast.LENGTH_SHORT).show();
+                } else if (jsonObject.getString("ReturnMsg").contains("A verification email has been sent")) {
                     dialog.setMessage(jsonObject.getString("ReturnMsg"));
-                    dialog.setPositiveButton("OK", new DialogInterface.OnClickListener()
-                    {
+                    dialog.setPositiveButton("OK", new DialogInterface.OnClickListener() {
                         @Override
-                        public void onClick(DialogInterface dialog, int which)
-                        {
+                        public void onClick(DialogInterface dialog, int which) {
                             /* Go to Next Activity Layout */
                             Intent myIntent = new Intent(EditProfileActivity.this, MyBooksShelvesActivity.class);
                             startActivity(myIntent);
                         }
                     });
                     dialog.show();
-                }
-                else
-                {
-                    Toast.makeText(mContext,"An Error Occurred", Toast.LENGTH_SHORT).show();
+                } else {
+                    Toast.makeText(mContext, "An Error Occurred", Toast.LENGTH_SHORT).show();
                 }
             }
-            /* Catching Exceptions */
-            catch(JSONException e)
-            {
+            /* Catching Exceptions */ catch (JSONException e) {
                 e.printStackTrace();
             }
         }

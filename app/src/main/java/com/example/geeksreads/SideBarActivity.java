@@ -8,9 +8,7 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
-import android.support.design.widget.Snackbar;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
@@ -45,7 +43,7 @@ import java.util.Objects;
 
 public class SideBarActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
-    public static String forTestUserPhotoURL,forTestUserName,forTestFollowersCount,forTestBooksCount;
+    public static String forTestUserPhotoURL, forTestUserName, forTestFollowersCount, forTestBooksCount;
     ImageView userPhoto;
     TextView userName;
     Context mContext;
@@ -53,7 +51,6 @@ public class SideBarActivity extends AppCompatActivity
     TextView booksCount;
     MenuItem FollowItem;
     MenuItem BookItem;
-
 
 
     @Override
@@ -71,7 +68,7 @@ public class SideBarActivity extends AppCompatActivity
         //Setting the references to refer at the needed views
         NavigationView navigationViewe = findViewById(R.id.nav_view);
         navigationViewe.setNavigationItemSelectedListener(this);
-        View header=navigationViewe.getHeaderView(0);
+        View header = navigationViewe.getHeaderView(0);
         /*View view=navigationView.inflateHeaderView(R.layout.nav_header_main);*/
         userName = header.findViewById(R.id.UserNameTxt);
         userPhoto = header.findViewById(R.id.UserPhoto);
@@ -104,7 +101,7 @@ public class SideBarActivity extends AppCompatActivity
 
         String UrlService = "http://geeksreads.000webhostapp.com/Fatema/SideBar.php";
         GetSideBarDetails getSideBarDetails = new GetSideBarDetails();
-        getSideBarDetails.execute(UrlService,JSON.toString());
+        getSideBarDetails.execute(UrlService, JSON.toString());
 
 
         DrawerLayout drawer = findViewById(R.id.drawer_layout);
@@ -125,7 +122,6 @@ public class SideBarActivity extends AppCompatActivity
         BookItem = menu.findItem(R.id.MyBooks);
         navigationView.setNavigationItemSelectedListener(this);
     }
-
 
 
     @Override
@@ -168,7 +164,7 @@ public class SideBarActivity extends AppCompatActivity
         AlertDialog D;
         D = new AlertDialog.Builder(mContext).create();
 
-        int id=item.getItemId();
+        int id = item.getItemId();
 
         if (id == R.id.Home) {
             // Intent myIntenta = new Intent(SideBarActivity.this, Profile.class);
@@ -204,7 +200,7 @@ public class SideBarActivity extends AppCompatActivity
                 InputStream input = connection.getInputStream();
                 Bitmap myBitmap = BitmapFactory.decodeStream(input);
                 return myBitmap;
-            }catch (Exception e){
+            } catch (Exception e) {
                 // Log.d(TAG,e.getMessage());
             }
             return null;
@@ -230,10 +226,10 @@ public class SideBarActivity extends AppCompatActivity
         }
 
         @Override
-        protected String doInBackground(String... params){
+        protected String doInBackground(String... params) {
             String UrlString = params[0];
             String JSONString = params[1];
-            String result= "";
+            String result = "";
 
             try {
                 //Create a URL object holding our url
@@ -245,7 +241,7 @@ public class SideBarActivity extends AppCompatActivity
 
                 OutputStream ops = http.getOutputStream();
                 BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(ops, StandardCharsets.UTF_8));
-                String data = URLEncoder.encode("id","UTF-8")+"="+URLEncoder.encode(JSONString,"UTF-8");
+                String data = URLEncoder.encode("id", "UTF-8") + "=" + URLEncoder.encode(JSONString, "UTF-8");
 
                 writer.write(data);
                 writer.flush();
@@ -255,9 +251,8 @@ public class SideBarActivity extends AppCompatActivity
                 //Create a new InputStreamReader
                 InputStream ips = http.getInputStream();
                 BufferedReader reader = new BufferedReader(new InputStreamReader(ips, StandardCharsets.ISO_8859_1));
-                String line ="";
-                while ((line = reader.readLine()) != null)
-                {
+                String line = "";
+                while ((line = reader.readLine()) != null) {
                     result += line;
                 }
                 reader.close();
@@ -274,9 +269,9 @@ public class SideBarActivity extends AppCompatActivity
         }
 
         @SuppressLint("SetTextI18n")
-        protected void onPostExecute(String result){
-            if(result==null) {
-                Toast.makeText(mContext,"Unable to connect to server", Toast.LENGTH_SHORT).show();
+        protected void onPostExecute(String result) {
+            if (result == null) {
+                Toast.makeText(mContext, "Unable to connect to server", Toast.LENGTH_SHORT).show();
                 return;
             }
             try {
@@ -294,21 +289,16 @@ public class SideBarActivity extends AppCompatActivity
 
 
                 forTestUserPhotoURL = jsonObject.getString("photourl");
-                forTestUserName=userName.getText().toString();
-                forTestFollowersCount=jsonObject.getString("Followers");
-                forTestBooksCount=jsonObject.getString("CountBooks");
+                forTestUserName = userName.getText().toString();
+                forTestFollowersCount = jsonObject.getString("Followers");
+                forTestBooksCount = jsonObject.getString("CountBooks");
 
-            }
-            catch(JSONException e)
-            {
+            } catch (JSONException e) {
                 e.printStackTrace();
             }
         }
 
     }
-
-
-
 
 
 }

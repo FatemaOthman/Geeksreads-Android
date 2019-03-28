@@ -1,6 +1,5 @@
 package com.example.geeksreads;
 
-import android.support.test.espresso.action.ViewActions;
 import android.support.test.rule.ActivityTestRule;
 
 import org.junit.Rule;
@@ -11,7 +10,7 @@ import static android.support.test.espresso.action.ViewActions.click;
 import static android.support.test.espresso.action.ViewActions.closeSoftKeyboard;
 import static android.support.test.espresso.action.ViewActions.typeText;
 import static android.support.test.espresso.matcher.ViewMatchers.withId;
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
 
 public class LoginTest {
     @Rule
@@ -27,7 +26,7 @@ public class LoginTest {
                 .perform(typeText("Mah1142019"), closeSoftKeyboard());
         onView(withId(R.id.LoginBtn)).perform(click());
 
-        assertEquals("Please enter a valid Email",LoginActivity.sForTest);
+        assertEquals("Please enter a valid Email", LoginActivity.sForTest);
     }
 
     @Test
@@ -39,7 +38,7 @@ public class LoginTest {
                 .perform(typeText(""), closeSoftKeyboard());
         onView(withId(R.id.LoginBtn)).perform(click());
 
-        assertEquals("Please enter your Geeksreads Login Password",LoginActivity.sForTest);
+        assertEquals("Please enter your Geeksreads Login Password", LoginActivity.sForTest);
     }
 
     @Test
@@ -51,7 +50,7 @@ public class LoginTest {
                 .perform(typeText("Mah1142019"), closeSoftKeyboard());
         onView(withId(R.id.LoginBtn)).perform(click());
 
-        assertEquals("Your account has not been verified.",LoginActivity.sForTest);
+        assertEquals("Your account has not been verified.", LoginActivity.sForTest);
     }
 
     @Test
@@ -63,7 +62,7 @@ public class LoginTest {
                 .perform(typeText("Abc1142019"), closeSoftKeyboard());
         onView(withId(R.id.LoginBtn)).perform(click());
 
-        assertEquals("Invalid email or password.",LoginActivity.sForTest);
+        assertEquals("Invalid email or password.", LoginActivity.sForTest);
     }
 
     @Test
@@ -75,7 +74,7 @@ public class LoginTest {
                 .perform(typeText("Mah1142019"), closeSoftKeyboard());
         onView(withId(R.id.LoginBtn)).perform(click());
 
-        assertEquals("Login Succeeded",LoginActivity.sForTest);
+        assertEquals("Login Succeeded", LoginActivity.sForTest);
     }
 
     @Test
@@ -87,7 +86,7 @@ public class LoginTest {
                 .perform(typeText("Mah1142019"), closeSoftKeyboard());
         onView(withId(R.id.LoginBtn)).perform(click());
 
-        assertEquals("An Error Occurred",LoginActivity.sForTest);
+        assertEquals("An Error Occurred", LoginActivity.sForTest);
     }
 
 }

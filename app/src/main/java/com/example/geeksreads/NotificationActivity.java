@@ -7,6 +7,7 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.AsyncTask;
+import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
@@ -14,7 +15,6 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -44,7 +44,7 @@ import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.util.Objects;
 
-public class NotificationActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener{
+public class NotificationActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
 
     Context mContext;
     SwipeRefreshLayout mSwipeRefreshLayout;
@@ -105,13 +105,13 @@ public class NotificationActivity extends AppCompatActivity implements Navigatio
         JSONObject JSON = new JSONObject();
         String UrlSideBar = "http://geeksreads.000webhostapp.com/Fatema/SideBar.php";
         GetSideBarDetails getSideBarDetails = new GetSideBarDetails();
-        getSideBarDetails.execute(UrlSideBar,JSON.toString());
+        getSideBarDetails.execute(UrlSideBar, JSON.toString());
 
 
         final JSONObject jsonObject = new JSONObject();
         try {
             JSON.put("UserID", "value");
-        }catch (JSONException e) {
+        } catch (JSONException e) {
             e.printStackTrace();
         }
         final String UrlService = "http://geeksreads.000webhostapp.com/Shrouk/Notifications.php";
@@ -121,12 +121,12 @@ public class NotificationActivity extends AppCompatActivity implements Navigatio
             @Override
             public void onRefresh() {
                 GetNotificationsList performBackgroundTask = new GetNotificationsList();
-                performBackgroundTask.execute(UrlService,jsonObject.toString());
+                performBackgroundTask.execute(UrlService, jsonObject.toString());
             }
         });
 
         GetNotificationsList performBackgroundTask = new GetNotificationsList();
-        performBackgroundTask.execute(UrlService,jsonObject.toString());
+        performBackgroundTask.execute(UrlService, jsonObject.toString());
 
     }
 
@@ -175,7 +175,7 @@ public class NotificationActivity extends AppCompatActivity implements Navigatio
 
     /**
      * Class that get the data from host and Add it to its views.
-     *  The Parameters are host Url and toSend Data.
+     * The Parameters are host Url and toSend Data.
      */
     public class GetNotificationsList extends AsyncTask<String, Void, String> {
         public static final String REQUEST_METHOD = "GET";
@@ -191,10 +191,10 @@ public class NotificationActivity extends AppCompatActivity implements Navigatio
         }
 
         @Override
-        protected String doInBackground(String... params){
+        protected String doInBackground(String... params) {
             String UrlString = params[0];
             String JSONString = params[1];
-            String result= "";
+            String result = "";
 
             try {
                 //Create a URL object holding our url
@@ -205,8 +205,8 @@ public class NotificationActivity extends AppCompatActivity implements Navigatio
                 http.setDoOutput(true);
 
                 OutputStream ops = http.getOutputStream();
-                BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(ops,"UTF-8"));
-                String data = URLEncoder.encode("id","UTF-8")+"="+URLEncoder.encode(JSONString,"UTF-8");
+                BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(ops, StandardCharsets.UTF_8));
+                String data = URLEncoder.encode("id", "UTF-8") + "=" + URLEncoder.encode(JSONString, "UTF-8");
 
                 writer.write(data);
                 writer.flush();
@@ -215,10 +215,9 @@ public class NotificationActivity extends AppCompatActivity implements Navigatio
 
                 //Create a new InputStreamReader
                 InputStream ips = http.getInputStream();
-                BufferedReader reader = new BufferedReader(new InputStreamReader(ips,"ISO-8859-1"));
-                String line ="";
-                while ((line = reader.readLine()) != null)
-                {
+                BufferedReader reader = new BufferedReader(new InputStreamReader(ips, StandardCharsets.ISO_8859_1));
+                String line = "";
+                while ((line = reader.readLine()) != null) {
                     result += line;
                 }
                 reader.close();
@@ -235,11 +234,11 @@ public class NotificationActivity extends AppCompatActivity implements Navigatio
         }
 
         @SuppressLint("SetTextI18n")
-        protected void onPostExecute(String result){
+        protected void onPostExecute(String result) {
             //progress.setVisibility(View.GONE);
             mSwipeRefreshLayout.setRefreshing(false);
-            if(result==null) {
-                Toast.makeText(mContext,"Unable to connect to server", Toast.LENGTH_SHORT).show();
+            if (result == null) {
+                Toast.makeText(mContext, "Unable to connect to server", Toast.LENGTH_SHORT).show();
                 return;
             }
             try {
@@ -247,9 +246,7 @@ public class NotificationActivity extends AppCompatActivity implements Navigatio
                 //dialog.show();
                 ListView notificationList = findViewById(R.id.NotificationList);
                 notificationList.setAdapter(new Notification_JSONAdapter(mContext, new JSONArray(result)));
-            }
-            catch(JSONException e)
-            {
+            } catch (JSONException e) {
                 e.printStackTrace();
             }
         }
@@ -273,7 +270,7 @@ public class NotificationActivity extends AppCompatActivity implements Navigatio
                 InputStream input = connection.getInputStream();
                 Bitmap myBitmap = BitmapFactory.decodeStream(input);
                 return myBitmap;
-            }catch (Exception e){
+            } catch (Exception e) {
                 // Log.d(TAG,e.getMessage());
             }
             return null;
@@ -302,10 +299,10 @@ public class NotificationActivity extends AppCompatActivity implements Navigatio
         }
 
         @Override
-        protected String doInBackground(String... params){
+        protected String doInBackground(String... params) {
             String UrlString = params[0];
             String JSONString = params[1];
-            String result= "";
+            String result = "";
 
             try {
                 //Create a URL object holding our url
@@ -317,7 +314,7 @@ public class NotificationActivity extends AppCompatActivity implements Navigatio
 
                 OutputStream ops = http.getOutputStream();
                 BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(ops, StandardCharsets.UTF_8));
-                String data = URLEncoder.encode("id","UTF-8")+"="+URLEncoder.encode(JSONString,"UTF-8");
+                String data = URLEncoder.encode("id", "UTF-8") + "=" + URLEncoder.encode(JSONString, "UTF-8");
 
                 writer.write(data);
                 writer.flush();
@@ -327,9 +324,8 @@ public class NotificationActivity extends AppCompatActivity implements Navigatio
                 //Create a new InputStreamReader
                 InputStream ips = http.getInputStream();
                 BufferedReader reader = new BufferedReader(new InputStreamReader(ips, StandardCharsets.ISO_8859_1));
-                String line ="";
-                while ((line = reader.readLine()) != null)
-                {
+                String line = "";
+                while ((line = reader.readLine()) != null) {
                     result += line;
                 }
                 reader.close();
@@ -346,9 +342,9 @@ public class NotificationActivity extends AppCompatActivity implements Navigatio
         }
 
         @SuppressLint("SetTextI18n")
-        protected void onPostExecute(String result){
-            if(result==null) {
-                Toast.makeText(mContext,"Unable to connect to server", Toast.LENGTH_SHORT).show();
+        protected void onPostExecute(String result) {
+            if (result == null) {
+                Toast.makeText(mContext, "Unable to connect to server", Toast.LENGTH_SHORT).show();
                 return;
             }
             try {
@@ -359,9 +355,7 @@ public class NotificationActivity extends AppCompatActivity implements Navigatio
                 userName.setText(jsonObject.getString("UserName"));
                 GetUserPicture Pic = new GetUserPicture();
                 Pic.execute(jsonObject.getString("photourl"));
-            }
-            catch(JSONException e)
-            {
+            } catch (JSONException e) {
                 e.printStackTrace();
             }
         }

@@ -5,34 +5,6 @@ import android.support.design.widget.TabLayout;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 
-/*
-public class FollowActivity extends AppCompatActivity {
-
-    private static String CurrentUserID;
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.followers_following);
-
-        Toolbar myToolbar = findViewById(R.id.toolbar);
-        setSupportActionBar(myToolbar);
-        getSupportActionBar().setTitle("Followers/ing");
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        CurrentUserID = getIntent().getStringExtra("UserID");
-
-
-        ViewPager viewPager =  findViewById(R.id.viewpager);
-        viewPager.setAdapter(new CustomPagerAdapter(this));
-    }
-
-
-    public static String getCurrentID(){
-        return CurrentUserID;
-    }
-
-}
-*/
-
 
 public class FollowActivity extends AppCompatActivity {
 
@@ -65,7 +37,7 @@ public class FollowActivity extends AppCompatActivity {
     private void setupViewPager(ViewPager viewPager) {
         Follow_Adapter adapter = new Follow_Adapter(getSupportFragmentManager());
         adapter.addFragment(new Followers_Fragment(), "Followers");
-        adapter.addFragment(new Followers_Fragment(), "Following");
+        adapter.addFragment(new Following_Fragment(), "Following");
         viewPager.setAdapter(adapter);
     }
 }

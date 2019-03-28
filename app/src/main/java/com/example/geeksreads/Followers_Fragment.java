@@ -5,8 +5,10 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v7.app.AlertDialog;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -42,7 +44,7 @@ public class Followers_Fragment extends Fragment {
 
     @Nullable
     @Override
-    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.followers_view, container, false);
         FollowersList = view.findViewById(R.id.FollowersList);
         ///////////////////////////////////////////////////////////////////////
@@ -69,10 +71,10 @@ public class Followers_Fragment extends Fragment {
 
                 final UserDataModel dataModel = dataModels.get(position);
 
-                        Intent myIntent = new Intent(getActivity(), OtherProfileActivity.class);
+                Intent myIntent = new Intent(getActivity(), OtherProfileActivity.class);
                 Log.i("AMR", "SentID: " + dataModel.getID());
-                        myIntent.putExtra("UserID", dataModel.getID());
-                        startActivity(myIntent);
+                myIntent.putExtra("UserId", dataModel.getID());
+                startActivity(myIntent);
 
             }
         });
@@ -84,12 +86,12 @@ public class Followers_Fragment extends Fragment {
     public class GetDetails extends AsyncTask<String, Void, String> {
         public static final String REQUEST_METHOD = "GET";
 
-        // AlertDialog dialog;
+        AlertDialog dialog;
 
         @Override
         protected void onPreExecute() {
-            //  dialog = new AlertDialog.Builder(mContext).create();
-            //   dialog.setTitle("Connection Status");
+            dialog = new AlertDialog.Builder(mContext).create();
+            dialog.setTitle("Connection Status");
         }
 
         @Override
@@ -151,7 +153,7 @@ public class Followers_Fragment extends Fragment {
             try {
 
                 JSONArray jsonArr = new JSONArray(result);
-                // Log.i("AMR","JSONARR: "+jsonArr);
+
                 dataModels = UserDataModel.fromJson(jsonArr);
                 //Data is sent and passed correctly inside the model.
                 FollowerAdapter = new CustomAdapter(dataModels, mContext.getApplicationContext());

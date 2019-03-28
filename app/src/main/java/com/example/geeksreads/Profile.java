@@ -31,22 +31,21 @@ import java.net.URL;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 
-public class Profile extends AppCompatActivity
-{
+public class Profile extends AppCompatActivity {
 
+    public static String CurrentUser; //Put Id of user here.
+    public static String ForTestProfilePicture, ForTestFollowersCount, ForTestFollowingCount;
     ImageView UserPhoto;
     Context mContext;
     TextView FollowersCount;
     TextView FollowingCount;
     TextView BooksCount;
-    public static String CurrentUser; //Put Id of user here.
-    public static String ForTestProfilePicture,ForTestFollowersCount, ForTestFollowingCount;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.profile);
-        mContext=this;
+        mContext = this;
 
         UserPhoto = findViewById(R.id.UserProfilePhoto);
         BooksCount = findViewById(R.id.NumberOfBooks);
@@ -63,7 +62,7 @@ public class Profile extends AppCompatActivity
             @Override
             public void onClick(View view) {
                 //   Intent myIntent = new Intent(Profile.this,FollowActivity.class);
-                Intent myIntent = new Intent(Profile.this,FollowActivity.class);
+                Intent myIntent = new Intent(Profile.this, FollowActivity.class);
                 myIntent.putExtra("UserID", CurrentUser);
                 startActivity(myIntent);
             }
@@ -72,13 +71,11 @@ public class Profile extends AppCompatActivity
         FollowingCount.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent myIntent = new Intent(Profile.this,FollowActivity.class);
+                Intent myIntent = new Intent(Profile.this, FollowActivity.class);
                 myIntent.putExtra("UserID", CurrentUser);
                 startActivity(myIntent);
             }
         });
-
-
 
 
         //In my code here, I am not sending any data to the backend:
@@ -87,8 +84,7 @@ public class Profile extends AppCompatActivity
         // Calling Async Task with my server url
         String UrlService = "http://geeksreads.000webhostapp.com/Amr/UserProfile.php";
         Profile.GetProfileDetails MyProfile = new Profile.GetProfileDetails();
-        MyProfile.execute(UrlService,JSON.toString());
-
+        MyProfile.execute(UrlService, JSON.toString());
 
 
     }
@@ -110,7 +106,7 @@ public class Profile extends AppCompatActivity
                 InputStream input = connection.getInputStream();
                 Bitmap myBitmap = BitmapFactory.decodeStream(input);
                 return myBitmap;
-            }catch (Exception e){
+            } catch (Exception e) {
 
             }
             return null;
@@ -126,7 +122,7 @@ public class Profile extends AppCompatActivity
 
     /**
      * Class that get the data from host and Add it to its views.
-     *  The Parameters are host Url and toSend Data.
+     * The Parameters are host Url and toSend Data.
      */
     public class GetProfileDetails extends AsyncTask<String, Void, String> {
         public static final String REQUEST_METHOD = "GET";
@@ -140,10 +136,10 @@ public class Profile extends AppCompatActivity
         }
 
         @Override
-        protected String doInBackground(String... params){
+        protected String doInBackground(String... params) {
             String UrlString = params[0];
             String JSONString = params[1];
-            String result= "";
+            String result = "";
 
             try {
                 //Create a URL object holding our url
@@ -167,9 +163,8 @@ public class Profile extends AppCompatActivity
                 //Create a new InputStreamReader
                 InputStream ips = http.getInputStream();
                 BufferedReader reader = new BufferedReader(new InputStreamReader(ips, StandardCharsets.ISO_8859_1));
-                String line ="";
-                while ((line = reader.readLine()) != null)
-                {
+                String line = "";
+                while ((line = reader.readLine()) != null) {
                     result += line;
                 }
                 reader.close();
@@ -186,9 +181,9 @@ public class Profile extends AppCompatActivity
         }
 
         @SuppressLint("SetTextI18n")
-        protected void onPostExecute(String result){
-            if(result==null) {
-                Toast.makeText(mContext,"Unable to connect to server", Toast.LENGTH_SHORT).show();
+        protected void onPostExecute(String result) {
+            if (result == null) {
+                Toast.makeText(mContext, "Unable to connect to server", Toast.LENGTH_SHORT).show();
                 return;
             }
             try {
@@ -203,9 +198,7 @@ public class Profile extends AppCompatActivity
                 ForTestProfilePicture = jsonObject.getString("photourl");
                 ForTestFollowersCount = FollowersCount.getText().toString();
                 ForTestFollowingCount = FollowingCount.getText().toString();
-            }
-            catch(JSONException e)
-            {
+            } catch (JSONException e) {
                 e.printStackTrace();
             }
         }

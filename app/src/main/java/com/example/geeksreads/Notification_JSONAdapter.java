@@ -13,16 +13,15 @@ import android.widget.TextView;
 import org.json.JSONArray;
 import org.json.JSONException;
 
-
 import java.util.Objects;
 
 
 public class Notification_JSONAdapter extends BaseAdapter {
 
-    private JSONArray data;
     private final Context context;
+    private JSONArray data;
 
-    Notification_JSONAdapter(Context context,JSONArray data){
+    Notification_JSONAdapter(Context context, JSONArray data) {
         this.data = data;
         this.context = context;
     }
@@ -35,9 +34,9 @@ public class Notification_JSONAdapter extends BaseAdapter {
     @Override
     public Object getItem(int i) {
 
-        try{
+        try {
             return data.getJSONObject(i);
-        }catch(JSONException jse){
+        } catch (JSONException jse) {
             jse.printStackTrace();
         }
 
@@ -56,12 +55,11 @@ public class Notification_JSONAdapter extends BaseAdapter {
         View itemView;
 
         LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-        itemView = Objects.requireNonNull(inflater).inflate(R.layout.notification_template, viewGroup,false);
+        itemView = Objects.requireNonNull(inflater).inflate(R.layout.notification_template, viewGroup, false);
         try {
 
             String body = data.getJSONObject(i).getString("body");
-            if (!data.getJSONObject(i).getBoolean("seen"))
-            {
+            if (!data.getJSONObject(i).getBoolean("seen")) {
                 NotificationManager notificationManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
                 Notification notify = new Notification.Builder(context.getApplicationContext()).setContentTitle("GeeksRead").setContentText(body).setContentTitle("GeeksReads").setSmallIcon(R.drawable.ic_book).build();
                 notify.defaults |= Notification.DEFAULT_SOUND;
@@ -74,9 +72,7 @@ public class Notification_JSONAdapter extends BaseAdapter {
 
             TextView notificationDate = itemView.findViewById(R.id.NotificationDate);
             notificationDate.setText(data.getJSONObject(i).getString("the"));
-        }
-        catch (JSONException e)
-        {
+        } catch (JSONException e) {
             e.printStackTrace();
         }
         return itemView;

@@ -6,8 +6,8 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:fitsSystemWindows="true"
-    tools:openDrawer="start"
-    tools:context=".BookActivity">
+    tools:context=".BookActivity"
+    tools:openDrawer="start">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -16,13 +16,12 @@
 
         <include
             android:id="@+id/toolbar"
-            layout="@layout/toolbar">
-        </include>
+            layout="@layout/toolbar"></include>
 
         <android.support.v4.widget.SwipeRefreshLayout
             android:id="@+id/notificationSwipeLayout"
-            tools:context=".ReadBooksActivity"
-            style="@style/SwipeRefreshingLayout">
+            style="@style/SwipeRefreshingLayout"
+            tools:context=".ReadBooksActivity">
 
             <ListView
                 android:id="@+id/NotificationList"
@@ -41,11 +40,11 @@
         android:layout_height="match_parent"
         android:layout_gravity="start"
 
+        android:background="@color/colorNavBackground"
         android:fitsSystemWindows="true"
         app:headerLayout="@layout/nav_header_side_bar"
         app:itemIconTint="@color/colorFont"
         app:itemTextColor="@color/colorFont"
-        android:background="@color/colorNavBackground"
         app:menu="@menu/activity_side_bar_drawer"
 
         />

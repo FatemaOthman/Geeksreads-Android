@@ -26,9 +26,9 @@
 
             <TextView
                 android:id="@+id/BookNameTxt"
-                android:layout_marginTop="5dp"
                 android:layout_width="match_parent"
                 android:layout_height="45dp"
+                android:layout_marginTop="5dp"
                 android:text="@string/TempBookTitle" />
 
             <TextView

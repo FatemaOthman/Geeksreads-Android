@@ -6,8 +6,8 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:fitsSystemWindows="true"
-    tools:openDrawer="start"
-    tools:context=".MyBooksShelvesActivity">
+    tools:context=".MyBooksShelvesActivity"
+    tools:openDrawer="start">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -16,8 +16,7 @@
 
         <include
             android:id="@+id/toolbar"
-            layout="@layout/toolbar">
-        </include>
+            layout="@layout/toolbar"></include>
 
         <LinearLayout
             android:id="@+id/MyBooksTab"
@@ -99,15 +98,15 @@
     </LinearLayout>
 
     <android.support.design.widget.NavigationView
-    android:id="@+id/nav_view"
-    android:layout_width="wrap_content"
-    android:layout_height="match_parent"
-    android:layout_gravity="start"
+        android:id="@+id/nav_view"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:layout_gravity="start"
 
-    android:fitsSystemWindows="true"
-    app:headerLayout="@layout/nav_header_side_bar"
-    app:itemIconTint="@color/colorFont"
-    app:itemTextColor="@color/colorFont"
-    android:background="@color/colorNavBackground"
-    app:menu="@menu/activity_side_bar_drawer" />
+        android:background="@color/colorNavBackground"
+        android:fitsSystemWindows="true"
+        app:headerLayout="@layout/nav_header_side_bar"
+        app:itemIconTint="@color/colorFont"
+        app:itemTextColor="@color/colorFont"
+        app:menu="@menu/activity_side_bar_drawer" />
 </android.support.v4.widget.DrawerLayout>

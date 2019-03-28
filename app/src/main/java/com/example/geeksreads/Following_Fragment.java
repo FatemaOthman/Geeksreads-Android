@@ -1,18 +1,22 @@
 package com.example.geeksreads;
 
 import android.annotation.SuppressLint;
-import android.app.AlertDialog;
 import android.content.Context;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
+import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.support.v7.app.AppCompatActivity;
+import android.support.annotation.Nullable;
+import android.support.v4.app.Fragment;
+import android.support.v7.app.AlertDialog;
 import android.util.Log;
-import android.widget.ImageView;
-import android.widget.TextView;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.ListView;
 import android.widget.Toast;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -28,76 +32,57 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
 
+public class Following_Fragment extends Fragment {
 
-public class OtherProfileActivity extends AppCompatActivity {
-
-    ImageView OtherUserPhoto;
+    ListView FollowersList;
     Context mContext;
-    TextView UserName;
-    TextView BooksCount;
+    ArrayList<UserDataModel> dataModels;
+    private CustomAdapter FollowingAdapter;
 
+    @Nullable
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.other_profile);
-        mContext = this;
+    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+        View view = inflater.inflate(R.layout.following_view, container, false);
+        FollowersList = view.findViewById(R.id.FollowingList);
+        ///////////////////////////////////////////////////////////////////////
+        mContext = getContext();
+        dataModels = new ArrayList<>();
 
-
-        OtherUserPhoto = findViewById(R.id.UserProfilePhoto);
-        UserName = findViewById(R.id.OtherUserName);
-        BooksCount = findViewById(R.id.OtherNumberBooks);
-
-        //In my code here, I am not sending any data to the backend:
+        //In my code here, I am sending the id of the user
         JSONObject JSON = new JSONObject();
         try {
-            String ID = getIntent().getStringExtra("UserId");
-            JSON.put("UserId", ID);
+            JSON.put("UserId", FollowActivity.getCurrentID()); //Value will be passed from FollowActivity.java
         } catch (JSONException e) {
             e.printStackTrace();
         }
+        // Calling Async Task with my server url
+        String UrlService = "http://geeksreads.000webhostapp.com/Amr/GetFollowers.php";
+        Log.i("AMR", UrlService);
+        Following_Fragment.GetDetails MyFollowing = new GetDetails();
+        MyFollowing.execute(UrlService, JSON.toString());
 
 
-        String UrlService = "http://geeksreads.000webhostapp.com/Amr/OtherUserProfile.php";
-        OtherProfileActivity.GetOtherProfileDetails MyProfile = new OtherProfileActivity.GetOtherProfileDetails();
-        MyProfile.execute(UrlService, JSON.toString());
+        FollowersList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
 
+                final UserDataModel dataModel = dataModels.get(position);
 
-    }
+                Intent myIntent = new Intent(getActivity(), OtherProfileActivity.class);
+                Log.i("AMR", "SentID: " + dataModel.getID());
+                myIntent.putExtra("UserId", dataModel.getID());
+                startActivity(myIntent);
 
-
-    private class GetOtherUserPicture extends AsyncTask<String, Void, Bitmap> {
-
-        @Override
-        protected Bitmap doInBackground(String... params) {
-            try {
-                String photoUrl = params[0];
-                URL url = new URL(photoUrl);
-                HttpURLConnection connection = (HttpURLConnection) url.openConnection();
-                connection.setDoInput(true);
-                connection.connect();
-                InputStream input = connection.getInputStream();
-                Bitmap myBitmap = BitmapFactory.decodeStream(input);
-                return myBitmap;
-            } catch (Exception e) {
-                // Log.d(TAG,e.getMessage());
             }
-            return null;
-        }
+        });
 
-        @Override
-        protected void onPostExecute(Bitmap result) {
-            OtherUserPhoto.setImageBitmap(result);
 
-        }
+        return view;
     }
 
-
-    /**
-     * Class that get the data from host and Add it to its views.
-     * The Parameters are host Url and toSend Data.
-     */
-    public class GetOtherProfileDetails extends AsyncTask<String, Void, String> {
+    public class GetDetails extends AsyncTask<String, Void, String> {
         public static final String REQUEST_METHOD = "GET";
 
         AlertDialog dialog;
@@ -127,7 +112,6 @@ public class OtherProfileActivity extends AppCompatActivity {
                 String data = URLEncoder.encode("UserId", "UTF-8") + "=" + URLEncoder.encode(JSONString, "UTF-8");
 
                 writer.write(data);
-                Log.i("AMR", "dataSent: " + data);
                 writer.flush();
                 writer.close();
                 ops.close();
@@ -144,14 +128,18 @@ public class OtherProfileActivity extends AppCompatActivity {
                 reader.close();
                 ips.close();
                 http.disconnect();
-
+                //Log.i("AMR","RES: "+result);
                 return result;
 
             } catch (MalformedURLException e) {
+
                 result = e.getMessage();
             } catch (IOException e) {
+
                 result = e.getMessage();
             }
+
+
             return result;
         }
 
@@ -162,20 +150,14 @@ public class OtherProfileActivity extends AppCompatActivity {
                 return;
             }
             try {
-                dialog.setMessage("Done");
-                //dialog.show();
 
+                JSONArray jsonArr = new JSONArray(result);
 
-                JSONObject jsonObject = new JSONObject(result);
-
-                OtherProfileActivity.GetOtherUserPicture Pic = new OtherProfileActivity.GetOtherUserPicture();
-                Pic.execute(jsonObject.getString("photourl"));
-
-                UserName.setText(jsonObject.getString("UserNameData"));
-
-                BooksCount.setText(jsonObject.getString("CountBooks") + " " + "Books");
-
-
+                dataModels = UserDataModel.fromJson(jsonArr);
+                //Data is sent and passed correctly inside the model.
+                FollowingAdapter = new CustomAdapter(dataModels, mContext.getApplicationContext());
+                FollowersList.setAdapter(FollowingAdapter);
+                FollowingAdapter.notifyDataSetChanged();
             } catch (JSONException e) {
                 e.printStackTrace();
             }

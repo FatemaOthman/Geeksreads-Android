@@ -4,11 +4,10 @@ import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.AsyncTask;
+import android.support.annotation.NonNull;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.animation.Animation;
-import android.view.animation.AnimationUtils;
 import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -22,9 +21,8 @@ import java.util.ArrayList;
 public class CustomAdapter extends ArrayAdapter<UserDataModel> implements View.OnClickListener {
 
     Context mContext;
-    ViewHolder viewHolder; // view lookup cache stored in tag
+    private ViewHolder viewHolder; // view lookup cache stored in tag
     private ArrayList<UserDataModel> dataSet;
-    private int lastPosition = -1;
 
     public CustomAdapter(ArrayList<UserDataModel> data, Context context) {
         super(context, R.layout.single_follow, data);
@@ -37,20 +35,12 @@ public class CustomAdapter extends ArrayAdapter<UserDataModel> implements View.O
     @Override
     public void onClick(View v) {
 
-/*
-        int position = (Integer) v.getTag();
-        UserDataModel dataModel = getItem(position);
-
-        Intent myIntent = new Intent(getContext(), OtherProfileActivity.class);
-        myIntent.putExtra("UserID", dataModel.getID());
-        Log.i("AMR","SentID: "+dataModel.getID());
-        mContext.startActivity(myIntent);
-*/
 
     }
 
+    @NonNull
     @Override
-    public View getView(int position, View convertView, ViewGroup parent) {
+    public View getView(int position, View convertView, @NonNull ViewGroup parent) {
         // Get the data item for this position
         UserDataModel dataModel = getItem(position);
         // Check if an existing view is being reused, otherwise inflate the view
@@ -75,15 +65,11 @@ public class CustomAdapter extends ArrayAdapter<UserDataModel> implements View.O
             result = convertView;
         }
 
-        Animation animation = AnimationUtils.loadAnimation(mContext, (position > lastPosition) ? R.anim.up_from_bottom : R.anim.down_from_top);
-        result.startAnimation(animation);
-        lastPosition = position;
-
 
         viewHolder.txtName.setText(dataModel.getName());
         CustomAdapter.GetUserPicture Pic = new CustomAdapter.GetUserPicture();
         Pic.execute(dataModel.getPicLink());
-        //  Log.i("AMR","IMAGE: "+dataModel.getPicLink());
+
         // Return the completed view to render on screen
         return convertView;
     }

@@ -14,16 +14,6 @@ public class UserDataModel {
     String User_Name;
     String User_ID;
 
-/*
-    public UserDataModel(String ID ,String Picture ,String Name ) {
-
-        this.User_ID=ID;
-        this.Picture_Url=Picture;
-        this.User_Name=Name;
-
-
-    }
-*/
 
     public static UserDataModel fromJson(JSONObject jsonObject) {
         UserDataModel DummyUser = new UserDataModel();
@@ -32,6 +22,9 @@ public class UserDataModel {
             DummyUser.User_ID = jsonObject.getString("id");
             DummyUser.Picture_Url = jsonObject.getString("photourl");
             DummyUser.User_Name = jsonObject.getString("name");
+
+            Log.i("AMR", "DummyUser: " + DummyUser);
+
         } catch (JSONException e) {
             e.printStackTrace();
             return null;
@@ -44,19 +37,31 @@ public class UserDataModel {
         JSONObject UsersJson;
         ArrayList<UserDataModel> AllUsers = new ArrayList<UserDataModel>(jsonArray.length());
         // Process each result in json array, decode and convert to UserModel object
+        Log.i("AMR", "Length: " + jsonArray.length());
         for (int i = 0; i < jsonArray.length(); i++) {
+
             try {
                 UsersJson = jsonArray.getJSONObject(i);
+                //   Log.i("AMR", "Object" + i +" " + UsersJson);
             } catch (Exception e) {
                 e.printStackTrace();
                 continue;
             }
 
             UserDataModel Model = UserDataModel.fromJson(UsersJson);
-            Log.i("AMR", "Object" + i + Model.getPicLink());
+            // Log.i("AMR","MODEL B: "+Model);
+            // Log.i("AMR", "PIC" + i +" " + Model.getPicLink());
+
+            // Log.i("AMR","Iteration: "+i);
             if (Model != null) {
-                AllUsers.add(Model);
+                //   Log.i("AMR","ALL: "+AllUsers);
+                //  AllUsers.add(Model);
+                AllUsers.add(i, Model);
+                Log.i("AMR", "ModelName: " + Model.getName());
+                Log.i("AMR", "ModelID : " + Model.getID());
+                Log.i("AMR", "ModelPic : " + Model.getPicLink());
             }
+
         }
 
         return AllUsers;

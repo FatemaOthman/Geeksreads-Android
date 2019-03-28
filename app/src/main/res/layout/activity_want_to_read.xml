@@ -5,12 +5,11 @@
 
     android:layout_height="match_parent"
     android:orientation="vertical"
-    tools:context=".ReadBooksActivity" >
+    tools:context=".ReadBooksActivity">
 
     <include
         android:id="@+id/toolbar"
-        layout="@layout/toolbar">
-    </include>
+        layout="@layout/toolbar"></include>
 
     <android.support.v4.widget.SwipeRefreshLayout
         android:id="@+id/swipelayout"

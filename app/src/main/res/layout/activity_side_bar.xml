@@ -19,11 +19,11 @@
         android:layout_height="match_parent"
         android:layout_gravity="start"
 
+        android:background="@color/colorNavBackground"
         android:fitsSystemWindows="true"
         app:headerLayout="@layout/nav_header_side_bar"
         app:itemIconTint="@color/colorFont"
         app:itemTextColor="@color/colorFont"
-        android:background="@color/colorNavBackground"
         app:menu="@menu/activity_side_bar_drawer"
 
         />

@@ -3,18 +3,17 @@ package com.example.geeksreads;
 import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.AsyncTask;
+import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -43,15 +42,12 @@ import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.util.Objects;
 
-public class MyBooksShelvesActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener{
+public class MyBooksShelvesActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
 
-    /** Global Variables to Store Context of this Activity itself */
-    private Context mContext;
-
-    /** Global Public Static Variables used for Testing */
+    /**
+     * Global Public Static Variables used for Testing
+     */
     public static String sForTest;
-
-
     /* SideBar Views */
     ImageView userPhoto;
     TextView userName;
@@ -59,6 +55,10 @@ public class MyBooksShelvesActivity extends AppCompatActivity implements Navigat
     TextView booksCount;
     MenuItem FollowItem;
     MenuItem BookItem;
+    /**
+     * Global Variables to Store Context of this Activity itself
+     */
+    private Context mContext;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -109,7 +109,7 @@ public class MyBooksShelvesActivity extends AppCompatActivity implements Navigat
         JSONObject JSON = new JSONObject();
         String UrlSideBar = "http://geeksreads.000webhostapp.com/Fatema/SideBar.php";
         GetSideBarDetails getSideBarDetails = new GetSideBarDetails();
-        getSideBarDetails.execute(UrlSideBar,JSON.toString());
+        getSideBarDetails.execute(UrlSideBar, JSON.toString());
 
         Button readButton = findViewById(R.id.ReadBtn);
         Button currentlyReadingButton = findViewById(R.id.CurrentlyReadingBtn);
@@ -128,7 +128,7 @@ public class MyBooksShelvesActivity extends AppCompatActivity implements Navigat
         currentlyReadingButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent myIntent = new Intent(MyBooksShelvesActivity.this,CurrentlyReadingActivity.class);
+                Intent myIntent = new Intent(MyBooksShelvesActivity.this, CurrentlyReadingActivity.class);
                 startActivity(myIntent);
 
             }
@@ -153,14 +153,14 @@ public class MyBooksShelvesActivity extends AppCompatActivity implements Navigat
         try {
             mJSON.put("UserID", LoginActivity.sCurrentUserID);
             mJSON.put("UserToken", LoginActivity.sCurrentToken);
-        }catch (JSONException e) {
+        } catch (JSONException e) {
             e.printStackTrace();
         }
 
         /* Requesting Read Shelf Count */
         try {
             mJSON.put("ShelfName", "Read");
-        }catch (JSONException e) {
+        } catch (JSONException e) {
             e.printStackTrace();
         }
         updateReadShelf.execute(urlService, mJSON.toString());
@@ -168,7 +168,7 @@ public class MyBooksShelvesActivity extends AppCompatActivity implements Navigat
         /* Requesting Want To Read Shelf Count */
         try {
             mJSON.put("ShelfName", "WantToRead");
-        }catch (JSONException e) {
+        } catch (JSONException e) {
             e.printStackTrace();
         }
         updateWantToReadShelf.execute(urlService, mJSON.toString());
@@ -176,7 +176,7 @@ public class MyBooksShelvesActivity extends AppCompatActivity implements Navigat
         /* Requesting Currently Reading Shelf Count */
         try {
             mJSON.put("ShelfName", "CurrentlyReading");
-        }catch (JSONException e) {
+        } catch (JSONException e) {
             e.printStackTrace();
         }
         updateCurrentlyReadingShelf.execute(urlService, mJSON.toString());
@@ -238,27 +238,27 @@ public class MyBooksShelvesActivity extends AppCompatActivity implements Navigat
 
     /**
      * Class that get the data from host and Add it to its views.
-     *  The Parameters are host Url and toSend Data.
+     * The Parameters are host Url and toSend Data.
      */
     public class UpdateBookShelfCount extends AsyncTask<String, String, String> {
-        static final String REQUEST_METHOD="GET";
+        static final String REQUEST_METHOD = "GET";
         String passedString;
 
-        public UpdateBookShelfCount(String inpString)
-        {
+        public UpdateBookShelfCount(String inpString) {
             passedString = inpString;
         }
+
         @Override
         protected void onPreExecute() {
             /* Do Nothing */
         }
 
         @Override
-        protected String doInBackground(String... params){
+        protected String doInBackground(String... params) {
             String UrlString = params[0];
             String JSONString = params[1];
 
-            String result= "";
+            String result = "";
 
 
             try {
@@ -273,7 +273,7 @@ public class MyBooksShelvesActivity extends AppCompatActivity implements Navigat
                 /* A Stream object to hold the sent data to API Call */
                 OutputStream ops = http.getOutputStream();
                 BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(ops, StandardCharsets.UTF_8));
-                String data = URLEncoder.encode("Json","UTF-8")+"="+URLEncoder.encode(JSONString,"UTF-8");
+                String data = URLEncoder.encode("Json", "UTF-8") + "=" + URLEncoder.encode(JSONString, "UTF-8");
 
                 writer.write(data);
                 writer.flush();
@@ -283,9 +283,8 @@ public class MyBooksShelvesActivity extends AppCompatActivity implements Navigat
                 /* A Stream object to get the returned data from API Call */
                 InputStream ips = http.getInputStream();
                 BufferedReader reader = new BufferedReader(new InputStreamReader(ips, StandardCharsets.ISO_8859_1));
-                String line ="";
-                while ((line = reader.readLine()) != null)
-                {
+                String line = "";
+                while ((line = reader.readLine()) != null) {
                     result += line;
                 }
                 reader.close();
@@ -294,8 +293,7 @@ public class MyBooksShelvesActivity extends AppCompatActivity implements Navigat
                 return result;
 
             }
-            /* Handling Exceptions */
-            catch (MalformedURLException e) {
+            /* Handling Exceptions */ catch (MalformedURLException e) {
                 result = e.getMessage();
             } catch (IOException e) {
                 result = e.getMessage();
@@ -304,10 +302,10 @@ public class MyBooksShelvesActivity extends AppCompatActivity implements Navigat
         }
 
         @SuppressLint("SetTextI18n")
-        protected void onPostExecute(String result){ ;
+        protected void onPostExecute(String result) {
 
-            if(result==null) {
-                Toast.makeText(mContext,"Unable to connect to server", Toast.LENGTH_SHORT).show();
+            if (result == null) {
+                Toast.makeText(mContext, "Unable to connect to server", Toast.LENGTH_SHORT).show();
                 return;
             }
             try {
@@ -318,28 +316,20 @@ public class MyBooksShelvesActivity extends AppCompatActivity implements Navigat
 
                 String shelfCount = jsonObject.getString("ShelfCount");
 
-                if (shelfCount != null)
-                {
-                    if (this.passedString.equals("Read"))
-                    {
+                if (shelfCount != null) {
+                    if (this.passedString.equals("Read")) {
                         Button readBtn = findViewById(R.id.ReadBtn);
                         readBtn.setText("Read  " + shelfCount);
-                    }
-                    else if (passedString.equals("WantToRead"))
-                    {
+                    } else if (passedString.equals("WantToRead")) {
                         Button wantToReadBtn = findViewById(R.id.WantToReadBtn);
                         wantToReadBtn.setText("Want to Read  " + shelfCount);
-                    }
-                    else if (passedString.equals("CurrentlyReading"))
-                    {
+                    } else if (passedString.equals("CurrentlyReading")) {
                         Button currentlyReadingBtn = findViewById(R.id.CurrentlyReadingBtn);
                         currentlyReadingBtn.setText("Currently Reading  " + shelfCount);
                     }
                 }
             }
-            /* Catching Exceptions */
-            catch(JSONException e)
-            {
+            /* Catching Exceptions */ catch (JSONException e) {
                 e.printStackTrace();
             }
         }
@@ -362,7 +352,7 @@ public class MyBooksShelvesActivity extends AppCompatActivity implements Navigat
                 InputStream input = connection.getInputStream();
                 Bitmap myBitmap = BitmapFactory.decodeStream(input);
                 return myBitmap;
-            }catch (Exception e){
+            } catch (Exception e) {
                 // Log.d(TAG,e.getMessage());
             }
             return null;
@@ -391,10 +381,10 @@ public class MyBooksShelvesActivity extends AppCompatActivity implements Navigat
         }
 
         @Override
-        protected String doInBackground(String... params){
+        protected String doInBackground(String... params) {
             String UrlString = params[0];
             String JSONString = params[1];
-            String result= "";
+            String result = "";
 
             try {
                 //Create a URL object holding our url
@@ -406,7 +396,7 @@ public class MyBooksShelvesActivity extends AppCompatActivity implements Navigat
 
                 OutputStream ops = http.getOutputStream();
                 BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(ops, StandardCharsets.UTF_8));
-                String data = URLEncoder.encode("id","UTF-8")+"="+URLEncoder.encode(JSONString,"UTF-8");
+                String data = URLEncoder.encode("id", "UTF-8") + "=" + URLEncoder.encode(JSONString, "UTF-8");
 
                 writer.write(data);
                 writer.flush();
@@ -416,9 +406,8 @@ public class MyBooksShelvesActivity extends AppCompatActivity implements Navigat
                 //Create a new InputStreamReader
                 InputStream ips = http.getInputStream();
                 BufferedReader reader = new BufferedReader(new InputStreamReader(ips, StandardCharsets.ISO_8859_1));
-                String line ="";
-                while ((line = reader.readLine()) != null)
-                {
+                String line = "";
+                while ((line = reader.readLine()) != null) {
                     result += line;
                 }
                 reader.close();
@@ -435,9 +424,9 @@ public class MyBooksShelvesActivity extends AppCompatActivity implements Navigat
         }
 
         @SuppressLint("SetTextI18n")
-        protected void onPostExecute(String result){
-            if(result==null) {
-                Toast.makeText(mContext,"Unable to connect to server", Toast.LENGTH_SHORT).show();
+        protected void onPostExecute(String result) {
+            if (result == null) {
+                Toast.makeText(mContext, "Unable to connect to server", Toast.LENGTH_SHORT).show();
                 return;
             }
             try {
@@ -448,9 +437,7 @@ public class MyBooksShelvesActivity extends AppCompatActivity implements Navigat
                 userName.setText(jsonObject.getString("UserName"));
                 GetUserPicture Pic = new GetUserPicture();
                 Pic.execute(jsonObject.getString("photourl"));
-            }
-            catch(JSONException e)
-            {
+            } catch (JSONException e) {
                 e.printStackTrace();
             }
         }

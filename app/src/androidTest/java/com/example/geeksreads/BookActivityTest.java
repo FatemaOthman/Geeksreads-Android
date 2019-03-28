@@ -5,7 +5,7 @@ import android.support.test.rule.ActivityTestRule;
 import org.junit.Rule;
 import org.junit.Test;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
 
 public class BookActivityTest {
     @Rule
@@ -16,18 +16,18 @@ public class BookActivityTest {
     public void Test() {
 
         /* Testing getting Author of the Book right */
-        assertEquals("By: Jane Austen",BookActivity.sForTestAuthor);
+        assertEquals("By: Jane Austen", BookActivity.sForTestAuthor);
 
         /* Testing getting Title of the Book right */
-        assertEquals("Pride and Prejudice",BookActivity.sForTestTitle);
+        assertEquals("Pride and Prejudice", BookActivity.sForTestTitle);
 
         /* Testing getting Rating of the Book right */
-        assertEquals("4.25",BookActivity.sForTestRate);
+        assertEquals("4.25", BookActivity.sForTestRate);
 
         /* Testing getting Date of the Book right */
-        assertEquals("Originally Published  28 - 1 - 1813",BookActivity.sForTestDate);
+        assertEquals("Originally Published  28 - 1 - 1813", BookActivity.sForTestDate);
 
         /* Testing The finishing of all Async Tasks */
-        assertEquals("Done",BookActivity.sForTestBookActivity);
+        assertEquals("Done", BookActivity.sForTestBookActivity);
     }
 }

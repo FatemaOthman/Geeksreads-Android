@@ -7,7 +7,7 @@ import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
 
 public class SideBarActivityTest {
     @Rule
@@ -16,32 +16,31 @@ public class SideBarActivityTest {
     private SideBarActivity mActivity = null;
 
 
-
     @Before
-    public void setUp() throws Exception {
-        mActivity=menuActivityTestRule.getActivity();
+    public void setUp() {
+        mActivity = menuActivityTestRule.getActivity();
     }
 
     @Test
     public void Test() {
 
         /* Testing getting Number of Followers right */
-        assertEquals("14",SideBarActivity.forTestFollowersCount);
+        assertEquals("14", SideBarActivity.forTestFollowersCount);
 
         /* Testing getting Number of Books  right */
-        assertEquals("25",SideBarActivity.forTestBooksCount);
+        assertEquals("25", SideBarActivity.forTestBooksCount);
 
         /* Testing getting User Name of the User right */
-        assertEquals("Fatema Othman",SideBarActivity.forTestUserName);
+        assertEquals("Fatema Othman", SideBarActivity.forTestUserName);
 
 
         /* Testing getting URL of the User's Profile Pic right */
-        assertEquals("https://geeksreads.000webhostapp.com/Fatema/userPic.jpg",SideBarActivity.forTestUserPhotoURL);
+        assertEquals("https://geeksreads.000webhostapp.com/Fatema/userPic.jpg", SideBarActivity.forTestUserPhotoURL);
 
-          }
+    }
 
     @After
-    public void tearDown() throws Exception {
-        mActivity=null;
+    public void tearDown() {
+        mActivity = null;
     }
 }

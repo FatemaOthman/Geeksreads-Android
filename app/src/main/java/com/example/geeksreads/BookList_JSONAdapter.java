@@ -12,12 +12,12 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-public class BookList_JSONAdapter extends BaseAdapter{
+public class BookList_JSONAdapter extends BaseAdapter {
 
-    private JSONArray data;
     private final Context context;
+    private JSONArray data;
 
-    public  BookList_JSONAdapter(Context context,JSONArray data){
+    public BookList_JSONAdapter(Context context, JSONArray data) {
         this.data = data;
         this.context = context;
     }
@@ -28,9 +28,9 @@ public class BookList_JSONAdapter extends BaseAdapter{
 
     public Object getItem(int i) {
 
-        try{
+        try {
             return data.getJSONObject(i);
-        }catch(JSONException jse){
+        } catch (JSONException jse) {
             jse.printStackTrace();
         }
 
@@ -39,10 +39,10 @@ public class BookList_JSONAdapter extends BaseAdapter{
 
     public long getItemId(int i) {
 
-        try{
+        try {
             JSONObject object = data.getJSONObject(i);
             return object.getLong("id");
-        }catch(JSONException jse){
+        } catch (JSONException jse) {
             jse.printStackTrace();
         }
         return -1;
@@ -54,7 +54,7 @@ public class BookList_JSONAdapter extends BaseAdapter{
         View itemView;
 
         LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-        itemView = inflater.inflate(R.layout.book_template, viewGroup,false);
+        itemView = inflater.inflate(R.layout.book_template, viewGroup, false);
         try {
             TextView BookName = itemView.findViewById(R.id.BookNameTxt);
             BookName.setText(data.getJSONObject(i).getString("bookname"));
@@ -72,9 +72,7 @@ public class BookList_JSONAdapter extends BaseAdapter{
             //BookCover.getDrawable(data.getJSONObject(i).getString("value"))
 
 
-        }
-        catch (JSONException e)
-        {
+        } catch (JSONException e) {
             e.printStackTrace();
         }
         return itemView;
