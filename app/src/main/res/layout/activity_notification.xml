@@ -27,7 +27,10 @@
             <ListView
                 android:id="@+id/NotificationList"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent" />
+                android:layout_height="match_parent"
+                android:scrollbars="vertical"
+                android:verticalScrollbarPosition="right" />
+
         </android.support.v4.widget.SwipeRefreshLayout>
 
     </LinearLayout>

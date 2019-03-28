@@ -6,11 +6,11 @@
     android:layout_height="wrap_content">
 
     <ImageView
-        android:id="@+id/NotificationImage"
-        android:layout_width="184dp"
+        android:id="@+id/imageView"
+        android:layout_width="164dp"
         android:layout_height="match_parent"
         android:layout_weight="1"
-        tools:srcCompat="@android:drawable/sym_action_chat" />
+        app:srcCompat="@mipmap/logo_vertically" />
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -21,15 +21,22 @@
         <TextView
             android:id="@+id/NotificationContent"
             android:layout_width="match_parent"
-            android:layout_height="29dp"
-            android:text="TextView" />
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="0dp"
+            android:text="@string/NotificationBody"
+            android:textAlignment="viewStart"
+            android:textColor="#00000C"
+            android:textSize="16sp" />
 
         <TextView
             android:id="@+id/NotificationDate"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:ems="10" />
+            android:layout_marginTop="0dp"
+            android:text="@string/NotificationDate"
+            android:textAlignment="viewStart"
+            android:textSize="14sp" />
+
 
     </LinearLayout>
 </LinearLayout>

@@ -20,6 +20,8 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.SearchView;
@@ -130,6 +132,18 @@ public class BookActivity extends AppCompatActivity implements NavigationView.On
         bookRatings = findViewById(R.id.RatingBar);
         bookDescription = findViewById(R.id.DescriptionTxt);
         publishingDate = findViewById(R.id.PublishedOnTxt);
+
+        bookOptions.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+
+            }
+        });
 
 
         /* Creating Json Object to be send */
