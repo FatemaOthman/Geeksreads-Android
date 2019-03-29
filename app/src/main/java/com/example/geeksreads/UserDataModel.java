@@ -14,7 +14,12 @@ public class UserDataModel {
     String User_Name;
     String User_ID;
 
-
+    /**
+     * fromJson: Put Data from a single JSONOBJECT into a UserDataModel
+     *
+     * @param jsonObject
+     * @return Single User Prototype
+     */
     public static UserDataModel fromJson(JSONObject jsonObject) {
         UserDataModel DummyUser = new UserDataModel();
         // Deserialize json into object fields
@@ -33,6 +38,12 @@ public class UserDataModel {
         return DummyUser;
     }
 
+    /**
+     * fromJson: Function Takes jsonArray and divides it into
+     * several json objects to be put in the form of UserDataModel
+     * @param jsonArray
+     * @return ArrayList of Users Prototypes
+     */
     public static ArrayList<UserDataModel> fromJson(JSONArray jsonArray) {
         JSONObject UsersJson;
         ArrayList<UserDataModel> AllUsers = new ArrayList<UserDataModel>(jsonArray.length());
@@ -49,13 +60,8 @@ public class UserDataModel {
             }
 
             UserDataModel Model = UserDataModel.fromJson(UsersJson);
-            // Log.i("AMR","MODEL B: "+Model);
-            // Log.i("AMR", "PIC" + i +" " + Model.getPicLink());
 
-            // Log.i("AMR","Iteration: "+i);
             if (Model != null) {
-                //   Log.i("AMR","ALL: "+AllUsers);
-                //  AllUsers.add(Model);
                 AllUsers.add(i, Model);
                 Log.i("AMR", "ModelName: " + Model.getName());
                 Log.i("AMR", "ModelID : " + Model.getID());
@@ -67,14 +73,26 @@ public class UserDataModel {
         return AllUsers;
     }
 
+    /**
+     * getName: Gets Name of Current DataModelUser (Follower or Following)
+     * @return User_Name
+     */
     public String getName() {
         return User_Name;
     }
 
+    /**
+     * getPicLink: Gets Profile Picture Url of Current DataModelUser (Follower or Following)
+     * @return Picture_Url
+     */
     public String getPicLink() {
         return Picture_Url;
     }
 
+    /**
+     * getID: Gets ID of Current DataModelUser (Follower or Following)
+     * @return User_ID
+     */
     public String getID() {
         return User_ID;
     }

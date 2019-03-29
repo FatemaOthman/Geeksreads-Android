@@ -11,6 +11,7 @@ import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -40,6 +41,7 @@ public class Profile extends AppCompatActivity {
     TextView FollowersCount;
     TextView FollowingCount;
     TextView BooksCount;
+    Button EditProfileButton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -51,12 +53,27 @@ public class Profile extends AppCompatActivity {
         BooksCount = findViewById(R.id.NumberOfBooks);
         FollowersCount = findViewById(R.id.ActualFollowersCount);
         FollowingCount = findViewById(R.id.ActualFollowingCount);
+        EditProfileButton = findViewById(R.id.edit_profile);
 
+        /////////////////////////////////////////////////////
+        CurrentUser = getIntent().getStringExtra("UserId");
         //////////////////////////////////////////////////////
         Toolbar myToolbar = findViewById(R.id.toolbar);
         setSupportActionBar(myToolbar);
         getSupportActionBar().setTitle("Profile");
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+
+        EditProfileButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                //   Intent myIntent = new Intent(Profile.this,FollowActivity.class);
+                Intent myIntent = new Intent(Profile.this, EditProfileActivity.class);
+                myIntent.putExtra("UserID", CurrentUser);
+                startActivity(myIntent);
+            }
+        });
+
+
 
         FollowersCount.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -135,6 +152,12 @@ public class Profile extends AppCompatActivity {
             dialog.setTitle("Connection Status");
         }
 
+        /**
+         * doInBackground: Returns result string through sending and HTTP request and receiving the response.
+         *
+         * @param params
+         * @return result
+         */
         @Override
         protected String doInBackground(String... params) {
             String UrlString = params[0];
@@ -180,6 +203,16 @@ public class Profile extends AppCompatActivity {
             return result;
         }
 
+        /**
+         * onPostExecute: Takes the string result and treates it as a json object
+         * to set data of:
+         *  -Followers Count
+         *  -Following Count
+         *  -Books Count
+         *  -Profile Picture
+         *
+         * @param result
+         */
         @SuppressLint("SetTextI18n")
         protected void onPostExecute(String result) {
             if (result == null) {

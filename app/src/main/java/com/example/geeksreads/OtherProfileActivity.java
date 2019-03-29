@@ -37,6 +37,12 @@ public class OtherProfileActivity extends AppCompatActivity {
     TextView UserName;
     TextView BooksCount;
 
+    /**
+     * onCreate: Instantiate the OtherUSerProfile with data through sending an HTTP request
+     * with the UserId and receiving the response in its format.
+     *
+     * @param savedInstanceState
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -65,7 +71,10 @@ public class OtherProfileActivity extends AppCompatActivity {
 
     }
 
-
+    /**
+     * Class GetOtherUserPicture:
+     * Gets the image of the user from the JsonObject and translates it into a bitMap to be used by the ImageView.
+     */
     private class GetOtherUserPicture extends AsyncTask<String, Void, Bitmap> {
 
         @Override
@@ -155,6 +164,15 @@ public class OtherProfileActivity extends AppCompatActivity {
             return result;
         }
 
+        /**
+         * onPostExecute: Takes the string result and treates it as a json object
+         * to set data of:
+         *  -User Name
+         *  -Books Count
+         *  -Profile Picture
+         *
+         * @param result
+         */
         @SuppressLint("SetTextI18n")
         protected void onPostExecute(String result) {
             if (result == null) {

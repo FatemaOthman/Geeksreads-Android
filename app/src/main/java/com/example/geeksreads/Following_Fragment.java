@@ -59,11 +59,12 @@ public class Following_Fragment extends Fragment {
         }
         // Calling Async Task with my server url
         String UrlService = "http://geeksreads.000webhostapp.com/Amr/GetFollowers.php";
-        Log.i("AMR", UrlService);
         Following_Fragment.GetDetails MyFollowing = new GetDetails();
         MyFollowing.execute(UrlService, JSON.toString());
 
-
+        /**
+         * send ID of the user I clicked on to the OtherProfile Activity
+         */
         FollowersList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
@@ -93,6 +94,12 @@ public class Following_Fragment extends Fragment {
             dialog.setTitle("Connection Status");
         }
 
+        /**
+         * doInBackground: Returns result string through sending and HTTP request and receiving the response.
+         *
+         * @param params
+         * @return result
+         */
         @Override
         protected String doInBackground(String... params) {
             String UrlString = params[0];
@@ -143,6 +150,10 @@ public class Following_Fragment extends Fragment {
             return result;
         }
 
+        /**
+         * onPostExecute: Fill Adapter with User Data Models from the JsonArray.
+         * @param result
+         */
         @SuppressLint("SetTextI18n")
         protected void onPostExecute(String result) {
             if (result == null) {

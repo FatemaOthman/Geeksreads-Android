@@ -14,10 +14,20 @@ public class FollowActivity extends AppCompatActivity {
 
     private ViewPager mViewPager;
 
+    /**
+     * Function that returns the current user ID.
+     *
+     * @return CurrentUserID
+     */
     public static String getCurrentID() {
         return CurrentUserID;
     }
 
+
+    /**
+     * onCreate: gets viewPager and fills it with the fragments (Follower_Fragment / Following_Fragment)
+     * @param savedInstanceState
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -34,6 +44,11 @@ public class FollowActivity extends AppCompatActivity {
         tabLayout.setupWithViewPager(mViewPager);
     }
 
+    /**
+     * setupViewPager: Adds Fragments to the Follow_Adapter
+     *           then  Adds Adapter to ViewPager
+     * @param viewPager
+     */
     private void setupViewPager(ViewPager viewPager) {
         Follow_Adapter adapter = new Follow_Adapter(getSupportFragmentManager());
         adapter.addFragment(new Followers_Fragment(), "Followers");
