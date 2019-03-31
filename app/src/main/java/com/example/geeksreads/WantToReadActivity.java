@@ -40,6 +40,10 @@ public class WantToReadActivity extends AppCompatActivity {
     JSONArray data = new JSONArray();
     Context mContext;
 
+    /**
+     * @param savedInstanceState
+     * Overrided Function to decide what will appear after starting this Activity.
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -61,6 +65,9 @@ public class WantToReadActivity extends AppCompatActivity {
 
         mSwipeRefreshLayout = findViewById(R.id.WantSwipeLayout);
         mSwipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            /**
+             *  Overrided Function to decide what to do when refreshing the layout.
+             */
             @Override
             public void onRefresh() {
                 GetWanttoReadBooks performBackgroundTask = new GetWanttoReadBooks();
@@ -73,6 +80,11 @@ public class WantToReadActivity extends AppCompatActivity {
 
     }
 
+    /**
+     * @param menu
+     * @return super.onCreateOptionsMenu(menu)
+     *  Overrided Function to create the toolbar and decide what to do when click it's menu items.
+     */
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater inflater = getMenuInflater();
@@ -93,11 +105,12 @@ public class WantToReadActivity extends AppCompatActivity {
         return super.onCreateOptionsMenu(menu);
     }
 
+
     /**
-     * Class that get the data from host and Add it to its views.
-     * The Parameters are host Url and toSend Data.
+     * A Private class that extend Async Task to connect to server in background.
+     * It get the Want to Read book lists.
      */
-    public class GetWanttoReadBooks extends AsyncTask<String, Void, String> {
+    private class GetWanttoReadBooks extends AsyncTask<String, Void, String> {
         public static final String REQUEST_METHOD = "GET";
         //public static final int READ_TIMEOUT = 3000;
         //public static final int CONNECTION_TIMEOUT = 3000;

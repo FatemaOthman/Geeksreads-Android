@@ -70,6 +70,10 @@ public class BookActivity extends AppCompatActivity implements NavigationView.On
     MenuItem FollowItem;
     MenuItem BookItem;
 
+    /**
+     * @param savedInstanceState
+     * Overrided Function to decide what will appear after starting this Activity.
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -161,7 +165,9 @@ public class BookActivity extends AppCompatActivity implements NavigationView.On
 
     }
 
-
+    /**
+     * Overrided Function to decide what to do ok pressing "Back" key.
+     */
     @Override
     public void onBackPressed() {
         DrawerLayout drawer = findViewById(R.id.drawer_layout);
@@ -172,6 +178,11 @@ public class BookActivity extends AppCompatActivity implements NavigationView.On
         }
     }
 
+    /**
+     * @param menu
+     * @return super.onCreateOptionsMenu(menu)
+     *  Overrided Function to create the toolbar and decide what to do when click it's menu items.
+     */
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater inflater = getMenuInflater();
@@ -194,7 +205,11 @@ public class BookActivity extends AppCompatActivity implements NavigationView.On
         return super.onCreateOptionsMenu(menu);
     }
 
-
+    /**
+     * @param menuItem
+     * @return boolean "true"
+     * Overrided Function to create sidebar and decide what to on clicking on it's menu items.
+     */
     @Override
     public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
 

@@ -57,7 +57,10 @@ public class NotificationActivity extends AppCompatActivity implements Navigatio
     MenuItem FollowItem;
     MenuItem BookItem;
 
-
+    /**
+     * @param savedInstanceState
+     * Overrided Function to decide what will appear after starting this Activity.
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -118,6 +121,9 @@ public class NotificationActivity extends AppCompatActivity implements Navigatio
 
         mSwipeRefreshLayout = findViewById(R.id.notificationSwipeLayout);
         mSwipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            /**
+             *  Overrided Function to decide what to do when refreshing the layout.
+             */
             @Override
             public void onRefresh() {
                 GetNotificationsList performBackgroundTask = new GetNotificationsList();
@@ -130,6 +136,11 @@ public class NotificationActivity extends AppCompatActivity implements Navigatio
 
     }
 
+    /**
+     * @param menu
+     * @return super.onCreateOptionsMenu(menu)
+     *  Overrided Function to create the toolbar and decide what to do when click it's menu items.
+     */
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater inflater = getMenuInflater();
@@ -140,6 +151,9 @@ public class NotificationActivity extends AppCompatActivity implements Navigatio
         return super.onCreateOptionsMenu(menu);
     }
 
+    /**
+     * Overrided Function to decide what to do ok pressing "Back" key.
+     */
     @Override
     public void onBackPressed() {
         DrawerLayout drawer = findViewById(R.id.drawer_layout);
@@ -150,6 +164,11 @@ public class NotificationActivity extends AppCompatActivity implements Navigatio
         }
     }
 
+    /**
+     * @param menuItem
+     * @return boolean "true"
+     * Overrided Function to create sidebar and decide what to on clicking on it's menu items.
+     */
     @Override
     public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
 
@@ -174,10 +193,10 @@ public class NotificationActivity extends AppCompatActivity implements Navigatio
     }
 
     /**
-     * Class that get the data from host and Add it to its views.
-     * The Parameters are host Url and toSend Data.
+     * A Private class that extend Async Task to connect to server in background.
+     * It get user Notifications lists.
      */
-    public class GetNotificationsList extends AsyncTask<String, Void, String> {
+    private class GetNotificationsList extends AsyncTask<String, Void, String> {
         public static final String REQUEST_METHOD = "GET";
         //public static final int READ_TIMEOUT = 3000;
         //public static final int CONNECTION_TIMEOUT = 3000;
