@@ -177,8 +177,8 @@ public class ReadBooksActivity extends AppCompatActivity {
             try {
                 dialog.setMessage(result);
                 //dialog.show();
-                ListView notificationList = findViewById(R.id.NotificationList);
-                notificationList.setAdapter(new Notification_JSONAdapter(mContext, new JSONArray(result)));
+                ListView notificationList = findViewById(R.id.ReadBookList);
+                notificationList.setAdapter(new BookList_JSONAdapter(mContext, new JSONArray(result)));
             } catch (JSONException e) {
                 e.printStackTrace();
             }
