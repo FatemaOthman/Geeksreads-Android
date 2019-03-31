@@ -1,6 +1,9 @@
 package com.example.geeksreads;
 
+import android.annotation.SuppressLint;
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.widget.SwipeRefreshLayout;
@@ -15,12 +18,21 @@ import android.widget.Toast;
 
 import org.json.JSONArray;
 import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.io.BufferedReader;
+import java.io.BufferedWriter;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.OutputStream;
+import java.io.OutputStreamWriter;
 import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
 import java.net.URL;
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
+import java.util.Objects;
 
 public class ReadBooksActivity extends AppCompatActivity {
 
@@ -34,24 +46,30 @@ public class ReadBooksActivity extends AppCompatActivity {
         setContentView(R.layout.activity_read_books);
         mContext = this;
 
-        final String webService = "";
+        Toolbar myToolbar = findViewById(R.id.toolbar);
+        setSupportActionBar(myToolbar);
+        Objects.requireNonNull(getSupportActionBar()).setTitle("Read");
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
-        mSwipeRefreshLayout = findViewById(R.id.swipelayout);
+        final JSONObject jsonObject = new JSONObject();
+        try {
+            jsonObject.put("UserID", "value");
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        final String UrlService = "http://geeksreads.000webhostapp.com/Shrouk/Notifications.php";
+
+        mSwipeRefreshLayout = findViewById(R.id.ReadSwipeLayout);
         mSwipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
-                RequestTask task = new RequestTask();
-                task.execute(webService);
+                GetReadBooks performBackgroundTask = new GetReadBooks();
+                performBackgroundTask.execute(UrlService, jsonObject.toString());
             }
         });
 
-        RequestTask task = new RequestTask();
-        task.execute(webService);
-
-        Toolbar myToolbar = findViewById(R.id.toolbar);
-        setSupportActionBar(myToolbar);
-        getSupportActionBar().setTitle("Read");
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        GetReadBooks performBackgroundTask = new GetReadBooks();
+        performBackgroundTask.execute(UrlService, jsonObject.toString());
 
     }
 
@@ -63,68 +81,97 @@ public class ReadBooksActivity extends AppCompatActivity {
         SearchView searchView = (SearchView) item.getActionView();
         searchView.setMaxWidth(800);
         searchView.setQueryHint("Search books");
+        MenuItem item1 = menu.findItem(R.id.NotificationButton);
+        item1.setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
+            @Override
+            public boolean onMenuItemClick(MenuItem item) {
+                Intent mIntent = new Intent(ReadBooksActivity.this, NotificationActivity.class);
+                startActivity(mIntent);
+                return true;
+            }
+        });
+
         return super.onCreateOptionsMenu(menu);
     }
 
-    public class RequestTask extends AsyncTask<String, Void, String> {
+    /**
+     * Class that get the data from host and Add it to its views.
+     * The Parameters are host Url and toSend Data.
+     */
+    public class GetReadBooks extends AsyncTask<String, Void, String> {
         public static final String REQUEST_METHOD = "GET";
-        public static final int READ_TIMEOUT = 3000;
-        public static final int CONNECTION_TIMEOUT = 3000;
-        public Boolean internetConn = false;
+        //public static final int READ_TIMEOUT = 3000;
+        //public static final int CONNECTION_TIMEOUT = 3000;
+        AlertDialog dialog;
+
+        @Override
+        protected void onPreExecute() {
+            dialog = new AlertDialog.Builder(mContext).create();
+            dialog.setTitle("Connection Status");
+            //progress.setVisibility(View.VISIBLE);
+        }
 
         @Override
         protected String doInBackground(String... params) {
-            String stringUrl = params[0];
-            String result;
-            String inputLine;
+            String UrlString = params[0];
+            String JSONString = params[1];
+            String result = "";
+
             try {
                 //Create a URL object holding our url
-                URL myUrl = new URL(stringUrl);
-                //Create a connection
-                HttpURLConnection connection = (HttpURLConnection)
-                        myUrl.openConnection();
-                //Set methods and timeouts
-                connection.setRequestMethod(REQUEST_METHOD);
-                connection.setReadTimeout(READ_TIMEOUT);
-                connection.setConnectTimeout(CONNECTION_TIMEOUT);
+                URL url = new URL(UrlString);
+                HttpURLConnection http = (HttpURLConnection) url.openConnection();
+                http.setRequestMethod(REQUEST_METHOD);
+                http.setDoInput(true);
+                http.setDoOutput(true);
 
-                //Connect to our url
-                connection.connect();
+                OutputStream ops = http.getOutputStream();
+                BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(ops, StandardCharsets.UTF_8));
+                String data = URLEncoder.encode("id", "UTF-8") + "=" + URLEncoder.encode(JSONString, "UTF-8");
+
+                writer.write(data);
+                writer.flush();
+                writer.close();
+                ops.close();
+
                 //Create a new InputStreamReader
-                InputStreamReader streamReader = new
-                        InputStreamReader(connection.getInputStream());
-                //Create a new buffered reader and String Builder
-                BufferedReader reader = new BufferedReader(streamReader);
-                StringBuilder stringBuilder = new StringBuilder();
-                //Check if the line we are reading is not null
-                while ((inputLine = reader.readLine()) != null) {
-                    stringBuilder.append(inputLine);
+                InputStream ips = http.getInputStream();
+                BufferedReader reader = new BufferedReader(new InputStreamReader(ips, StandardCharsets.ISO_8859_1));
+                String line = "";
+                while ((line = reader.readLine()) != null) {
+                    result += line;
                 }
-                //Close our InputStream and Buffered reader
                 reader.close();
-                streamReader.close();
-                //Set our result equal to our stringBuilder
-                result = stringBuilder.toString();
+                ips.close();
+                http.disconnect();
+                return result;
+
+            } catch (MalformedURLException e) {
+                result = e.getMessage();
             } catch (IOException e) {
-                e.printStackTrace();
-                result = null;
+                result = e.getMessage();
             }
             return result;
         }
 
+        @SuppressLint("SetTextI18n")
         protected void onPostExecute(String result) {
+            //progress.setVisibility(View.GONE);
             mSwipeRefreshLayout.setRefreshing(false);
             if (result == null) {
                 Toast.makeText(mContext, "Unable to connect to server", Toast.LENGTH_SHORT).show();
                 return;
             }
             try {
-                ListView itemsList = findViewById(R.id.ReadBookList);
-                itemsList.setAdapter(new BookList_JSONAdapter(mContext, new JSONArray(result)));
+                dialog.setMessage(result);
+                //dialog.show();
+                ListView notificationList = findViewById(R.id.NotificationList);
+                notificationList.setAdapter(new Notification_JSONAdapter(mContext, new JSONArray(result)));
             } catch (JSONException e) {
                 e.printStackTrace();
             }
         }
+
     }
 
 }

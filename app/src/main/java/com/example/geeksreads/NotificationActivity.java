@@ -110,7 +110,7 @@ public class NotificationActivity extends AppCompatActivity implements Navigatio
 
         final JSONObject jsonObject = new JSONObject();
         try {
-            JSON.put("UserID", "value");
+            jsonObject.put("UserID", "value");
         } catch (JSONException e) {
             e.printStackTrace();
         }

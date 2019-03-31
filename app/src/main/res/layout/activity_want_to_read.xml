@@ -9,10 +9,10 @@
 
     <include
         android:id="@+id/toolbar"
-        layout="@layout/toolbar"></include>
+        layout="@layout/toolbar"/>
 
     <android.support.v4.widget.SwipeRefreshLayout
-        android:id="@+id/swipelayout"
+        android:id="@+id/WantSwipeLayout"
         style="@style/SwipeRefreshingLayout"
         tools:context=".ReadBooksActivity">
 
