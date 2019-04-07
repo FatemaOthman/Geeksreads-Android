@@ -118,15 +118,14 @@
                     android:layout_marginEnd="15dp"
                     android:background="@color/colorNotificationbar" />
 
-                <Spinner
+                <Button
                     android:id="@+id/OptionsDropList"
                     android:layout_width="wrap_content"
                     android:layout_height="49dp"
                     android:layout_gravity="center"
                     android:layout_marginTop="20dp"
                     android:background="#f4f1ea"
-                    android:backgroundTint="@color/colorToolbar"
-                    android:entries="@array/BookValues" />
+                    android:backgroundTint="@color/colorToolbar" />
 
                 <TextView
                     android:id="@+id/BookDescriptionTxt"

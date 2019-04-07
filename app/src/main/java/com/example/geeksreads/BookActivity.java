@@ -21,6 +21,7 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.SearchView;
@@ -56,7 +57,7 @@ public class BookActivity extends AppCompatActivity implements NavigationView.On
     TextView bookAuthor;
     TextView ratingsNumber;
     TextView reviewsNumber;
-    Spinner bookOptions;
+    Button bookOptions;
     TextView bookRatings;
     TextView bookDescription;
     TextView publishingDate;
@@ -136,18 +137,13 @@ public class BookActivity extends AppCompatActivity implements NavigationView.On
         bookDescription = findViewById(R.id.DescriptionTxt);
         publishingDate = findViewById(R.id.PublishedOnTxt);
 
-        bookOptions.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+        bookOptions.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-
-            }
-
-            @Override
-            public void onNothingSelected(AdapterView<?> parent) {
-
+            public void onClick(View v) {
+                Intent myIntent = new Intent(BookActivity.this, ChooseShelfActivity.class);
+                startActivity(myIntent);
             }
         });
-
 
         /* Creating Json Object to be send */
         JSONObject jsonObject = new JSONObject();
