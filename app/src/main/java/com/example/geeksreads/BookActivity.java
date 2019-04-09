@@ -148,7 +148,7 @@ public class BookActivity extends AppCompatActivity implements NavigationView.On
         /* Creating Json Object to be send */
         JSONObject jsonObject = new JSONObject();
         try {
-            jsonObject.put("id", "value");
+            jsonObject.put("Title", "value");
         } catch (JSONException e) {
             e.printStackTrace();
         }
@@ -338,17 +338,37 @@ public class BookActivity extends AppCompatActivity implements NavigationView.On
                 JSONObject jsonObject = new JSONObject(result);
                 bookTitle.setText(jsonObject.getString("Title"));
                 bookAuthor.setText("By: " + "" + jsonObject.getString("Author"));
-                ratingsNumber.setText(jsonObject.getString("ratingcount") + " " + "Ratings");
-                reviewsNumber.setText(jsonObject.getString("textreviewscount") + " " + "Reviews");
+                ratingsNumber.setText(jsonObject.getString("BookRating") + " " + "Ratings");
+                reviewsNumber.setText(jsonObject.getString("Pages") + " " + "Pages");
                 bookRatings.setText(jsonObject.getString("averagerating"));
-                bookDescription.setText(jsonObject.getString("bookdescription"));
-                publishingDate.setText("Originally Published" + "  " + jsonObject.getString("originalpublicationday")
-                        + " - " + jsonObject.getString("originalpublicationmonth")
-                        + " - " + jsonObject.getString("originalpublicationyear"));
+                bookDescription.setText(jsonObject.getString("Description"));
+                publishingDate.setText("Originally Published" + "  " + jsonObject.getString("Published")
+                        + " By: " + jsonObject.getString("Publisher"));
+
+                if (jsonObject.getString("ReadStatus").equals("Read"))
+                {
+                    bookOptions.setText("Read");
+                    bookOptions.setBackgroundColor(getResources().getColor(R.color.ReadColor));
+                }
+                else if (jsonObject.getString("ReadStatus").equals("Want to Read"))
+                {
+                    bookOptions.setText("Want To Read");
+                    bookOptions.setBackgroundColor(getResources().getColor(R.color.WantToReadColor));
+                }
+                else if (jsonObject.getString("ReadStatus").equals("Currently Reading"))
+                {
+                    bookOptions.setText("Currently Reading");
+                    bookOptions.setBackgroundColor(getResources().getColor(R.color.ReadingColor));
+                }
+                else
+                {
+                    bookOptions.setText("Add to shelf");
+                    bookOptions.setBackgroundColor(getResources().getColor(R.color.colorNotificationbar));
+                }
 
                 /** Start Async Task to get the image from url */
                 GetImage getCover = new GetImage();
-                getCover.execute(jsonObject.getString("photourl"));
+                getCover.execute(jsonObject.getString("Cover"));
 
                 sForTestAuthor = bookAuthor.getText().toString();
                 sForTestTitle = bookTitle.getText().toString();
@@ -360,7 +380,6 @@ public class BookActivity extends AppCompatActivity implements NavigationView.On
         }
 
     }
-
 
     /**
      * Class that get sidebar profile pic. from server

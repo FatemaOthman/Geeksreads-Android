@@ -16,7 +16,7 @@
 
         <include
             android:id="@+id/toolbar"
-            layout="@layout/toolbar"></include>
+            layout="@layout/toolbar"/>
 
         <ProgressBar
             android:id="@+id/progressBar"
@@ -120,8 +120,10 @@
 
                 <Button
                     android:id="@+id/OptionsDropList"
-                    android:layout_width="wrap_content"
-                    android:layout_height="49dp"
+                    android:layout_width="match_parent"
+                    android:layout_marginLeft="90dp"
+                    android:layout_marginRight="90dp"
+                    android:layout_height="wrap_content"
                     android:layout_gravity="center"
                     android:layout_marginTop="20dp"
                     android:background="#f4f1ea"
