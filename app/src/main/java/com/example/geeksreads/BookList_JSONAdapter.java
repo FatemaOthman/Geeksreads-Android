@@ -1,6 +1,10 @@
 package com.example.geeksreads;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.os.AsyncTask;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,14 +16,21 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.InputStream;
+import java.net.HttpURLConnection;
+import java.net.URL;
+import java.util.ArrayList;
+
 public class BookList_JSONAdapter extends BaseAdapter {
 
     private final Context context;
     private JSONArray data;
+    private ArrayList<Bitmap> Covers ;
 
     public BookList_JSONAdapter(Context context, JSONArray data) {
         this.data = data;
         this.context = context;
+        Covers = new ArrayList<>();
     }
 
     public int getCount() {
@@ -50,6 +61,7 @@ public class BookList_JSONAdapter extends BaseAdapter {
 
     // returns the view of a single row
 
+    @SuppressLint("ViewHolder")
     public View getView(int i, View view, ViewGroup viewGroup) {
         View itemView;
 
@@ -65,8 +77,11 @@ public class BookList_JSONAdapter extends BaseAdapter {
             TextView RatingNumber = itemView.findViewById(R.id.BookRatingsTxt);
             RatingNumber.setText(data.getJSONObject(i).getString("value"));
 
-            TextView BookDescription = itemView.findViewById(R.id.SomeDesc);
-            BookDescription.setText(data.getJSONObject(i).getString("value"));
+            TextView Pages = itemView.findViewById(R.id.pageNumbers);
+            Pages.setText(data.getJSONObject(i).getString("value"));
+
+            TextView BookData = itemView.findViewById(R.id.PublishData);
+            BookData.setText(data.getJSONObject(i).getString("value"));
 
             ImageView BookCover = itemView.findViewById(R.id.BookImage);
             //BookCover.getDrawable(data.getJSONObject(i).getString("value"))
@@ -76,5 +91,42 @@ public class BookList_JSONAdapter extends BaseAdapter {
             e.printStackTrace();
         }
         return itemView;
+    }
+
+    /**
+     * Class that get image from Url and Add it to ImageView.
+     * The only Parameter is the Url.
+     */
+    private class GetImage extends AsyncTask<String, Void, Bitmap> {
+
+        protected void onPreExecute() {
+            //mProgressBar.setVisibility(View.VISIBLE);
+        }
+
+        @Override
+        protected Bitmap doInBackground(String... params) {
+            try {
+                String photoUrl = params[0];
+                URL url = new URL(photoUrl);
+                HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+                connection.setDoInput(true);
+                connection.connect();
+                InputStream input = connection.getInputStream();
+                Bitmap myBitmap = BitmapFactory.decodeStream(input);
+                return myBitmap;
+            } catch (Exception e) {
+                // Log.d(TAG,e.getMessage());
+            }
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(Bitmap result) {
+            //mProgressBar.setVisibility(View.GONE);
+            //sForTestBookActivity = "Done";
+            //bookCover.setImageBitmap(result);
+            Covers.add(result);
+
+        }
     }
 }

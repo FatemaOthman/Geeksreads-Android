@@ -177,6 +177,17 @@
                     android:orientation="horizontal">
 
                     <TextView
+                        android:id="@+id/pages"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="15dp"
+                        android:layout_marginEnd="15dp"
+                        android:layout_weight="1"
+                        android:text="@string/PublishedOnString"
+                        android:textAlignment="center"
+                        android:textColor="@android:color/background_dark" />
+
+                    <TextView
                         android:id="@+id/PublishedOnTxt"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
@@ -188,6 +199,17 @@
                         android:textColor="@android:color/background_dark" />
 
                 </LinearLayout>
+
+                <TextView
+                    android:id="@+id/ISBN"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="15dp"
+                    android:layout_marginEnd="15dp"
+                    android:layout_weight="1"
+                    android:text="@string/PublishedOnString"
+                    android:textAlignment="center"
+                    android:textColor="@android:color/background_dark" />
 
                 <View
                     android:id="@+id/FifthDivider"
@@ -207,6 +229,7 @@
 
     </LinearLayout>
 
+
     <android.support.design.widget.NavigationView
         android:id="@+id/nav_view"
         android:layout_width="wrap_content"
@@ -221,6 +244,5 @@
         app:menu="@menu/activity_side_bar_drawer"
 
         />
-
 
 </android.support.v4.widget.DrawerLayout>

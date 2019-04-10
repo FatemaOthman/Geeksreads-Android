@@ -9,5 +9,7 @@ public class ChooseShelfActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_choose_shelf);
+
+        // TODO: Add Code Logic, Rating bar & Add Review Button
     }
 }

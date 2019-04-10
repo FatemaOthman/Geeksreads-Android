@@ -339,7 +339,7 @@ public class BookActivity extends AppCompatActivity implements NavigationView.On
                 bookTitle.setText(jsonObject.getString("Title"));
                 bookAuthor.setText("By: " + "" + jsonObject.getString("Author"));
                 ratingsNumber.setText(jsonObject.getString("BookRating") + " " + "Ratings");
-                reviewsNumber.setText(jsonObject.getString("Pages") + " " + "Pages");
+                reviewsNumber.setText(jsonObject.getString("textreviewscount") + " " + "Reviews");
                 bookRatings.setText(jsonObject.getString("averagerating"));
                 bookDescription.setText(jsonObject.getString("Description"));
                 publishingDate.setText("Originally Published" + "  " + jsonObject.getString("Published")
@@ -365,6 +365,9 @@ public class BookActivity extends AppCompatActivity implements NavigationView.On
                     bookOptions.setText("Add to shelf");
                     bookOptions.setBackgroundColor(getResources().getColor(R.color.colorNotificationbar));
                 }
+
+                // TODO: Add pages and ISBN
+
 
                 /** Start Async Task to get the image from url */
                 GetImage getCover = new GetImage();
