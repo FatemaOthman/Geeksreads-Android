@@ -24,7 +24,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="20dp"
-        android:text="Book Shelves"
+        android:text="@string/MyShelves"
         android:textAlignment="center"
         android:textColor="@android:color/background_dark"
         android:textSize="18sp"
@@ -40,6 +40,7 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginBottom="30dp"
         android:layout_marginTop="15dp">
 
 
@@ -51,26 +52,34 @@
             android:layout_marginRight="15dp">
 
             <RadioButton
-                android:id="@+id/radioButton"
+                android:id="@+id/radioReading"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:text="@string/CurrentlyReadingTxt" />
 
             <RadioButton
-                android:id="@+id/radioButton2"
+                android:id="@+id/radioWantRead"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:text="@string/WantToReadTxt" />
 
             <RadioButton
-                android:id="@+id/radioButton3"
+                android:id="@+id/radioRead"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:text="@string/ReadTxt" />
         </RadioGroup>
     </LinearLayout>
+
+    <Button
+        android:id="@+id/button"
+        android:layout_marginRight="70dp"
+        android:layout_marginLeft="70dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/AddReviewBtn" />
 
 </LinearLayout>

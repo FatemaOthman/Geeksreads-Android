@@ -61,7 +61,7 @@ public class WantToReadActivity extends AppCompatActivity {
         } catch (JSONException e) {
             e.printStackTrace();
         }
-        final String UrlService = "http://geeksreads.000webhostapp.com/Shrouk/Notifications.php";
+        final String UrlService = "http://geeksreads.000webhostapp.com/Shrouk/ReadingList.php";
 
         mSwipeRefreshLayout = findViewById(R.id.WantSwipeLayout);
         mSwipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
@@ -177,8 +177,8 @@ public class WantToReadActivity extends AppCompatActivity {
             try {
                 dialog.setMessage(result);
                 //dialog.show();
-                ListView notificationList = findViewById(R.id.WantToReadBookList);
-                notificationList.setAdapter(new BookList_JSONAdapter(mContext, new JSONArray(result)));
+                ListView wantToReadBookList = findViewById(R.id.WantToReadBookList);
+                wantToReadBookList.setAdapter(new BookList_JSONAdapter(mContext, new JSONArray(result)));
             } catch (JSONException e) {
                 e.printStackTrace();
             }

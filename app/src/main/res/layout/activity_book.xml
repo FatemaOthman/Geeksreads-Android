@@ -125,9 +125,8 @@
                     android:layout_marginRight="90dp"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
-                    android:layout_marginTop="20dp"
-                    android:background="#f4f1ea"
-                    android:backgroundTint="@color/colorToolbar" />
+                    android:layout_marginTop="20dp"/>
+
 
                 <TextView
                     android:id="@+id/BookDescriptionTxt"
@@ -209,6 +208,7 @@
                     android:layout_weight="1"
                     android:text="@string/PublishedOnString"
                     android:textAlignment="center"
+                    android:layout_gravity="center"
                     android:textColor="@android:color/background_dark" />
 
                 <View
@@ -220,15 +220,11 @@
                     android:layout_marginEnd="15dp"
                     android:layout_marginBottom="40dp"
                     android:background="@android:color/darker_gray" />
-
-
             </LinearLayout>
-
 
         </ScrollView>
 
     </LinearLayout>
-
 
     <android.support.design.widget.NavigationView
         android:id="@+id/nav_view"
@@ -241,8 +237,6 @@
         app:headerLayout="@layout/nav_header_side_bar"
         app:itemIconTint="@color/colorFont"
         app:itemTextColor="@color/colorFont"
-        app:menu="@menu/activity_side_bar_drawer"
-
-        />
+        app:menu="@menu/activity_side_bar_drawer"/>
 
 </android.support.v4.widget.DrawerLayout>

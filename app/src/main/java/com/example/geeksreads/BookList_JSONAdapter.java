@@ -20,6 +20,7 @@ import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Objects;
 
 public class BookList_JSONAdapter extends BaseAdapter {
 
@@ -66,22 +67,23 @@ public class BookList_JSONAdapter extends BaseAdapter {
         View itemView;
 
         LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-        itemView = inflater.inflate(R.layout.book_template, viewGroup, false);
+        itemView = Objects.requireNonNull(inflater).inflate(R.layout.book_template, viewGroup, false);
         try {
             TextView BookName = itemView.findViewById(R.id.BookNameTxt);
-            BookName.setText(data.getJSONObject(i).getString("bookname"));
+            BookName.setText(data.getJSONObject(i).getString("Title"));
+
 
             TextView AuthorName = itemView.findViewById(R.id.ByAuthorNameTxt);
-            AuthorName.setText(data.getJSONObject(i).getString("value"));
+            AuthorName.setText(String.format("By: %s", data.getJSONObject(i).getString("Author")));
 
             TextView RatingNumber = itemView.findViewById(R.id.BookRatingsTxt);
-            RatingNumber.setText(data.getJSONObject(i).getString("value"));
+            RatingNumber.setText(data.getJSONObject(i).getString("BookRating"));
 
             TextView Pages = itemView.findViewById(R.id.pageNumbers);
-            Pages.setText(data.getJSONObject(i).getString("value"));
+            Pages.setText(String.format("%s pages.", data.getJSONObject(i).getString("Pages")));
 
             TextView BookData = itemView.findViewById(R.id.PublishData);
-            BookData.setText(data.getJSONObject(i).getString("value"));
+            BookData.setText(String.format("Published on %s, By: %s", data.getJSONObject(i).getString("Published"),data.getJSONObject(i).getString("Publisher")));
 
             ImageView BookCover = itemView.findViewById(R.id.BookImage);
             //BookCover.getDrawable(data.getJSONObject(i).getString("value"))

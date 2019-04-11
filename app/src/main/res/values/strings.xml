@@ -61,6 +61,8 @@
     <string name="NotificationBody">Notification Body</string>
     <string name="NotificationDate">Notification Date</string>
     <string name="PagesNumbers"> # Pages </string>
+    <string name="AddReviewBtn"> Add Review</string>
+    <string name="MyShelves">My Book Shelves</string>
 
     <string-array name="BookValues">
         <item>Want to Read</item>

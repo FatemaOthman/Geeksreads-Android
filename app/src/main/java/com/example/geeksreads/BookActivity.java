@@ -61,6 +61,8 @@ public class BookActivity extends AppCompatActivity implements NavigationView.On
     TextView bookRatings;
     TextView bookDescription;
     TextView publishingDate;
+    TextView pageNumber;
+    TextView ISBN;
     ProgressBar mProgressBar;
 
     /* SideBar Views */
@@ -136,6 +138,8 @@ public class BookActivity extends AppCompatActivity implements NavigationView.On
         bookRatings = findViewById(R.id.RatingBar);
         bookDescription = findViewById(R.id.DescriptionTxt);
         publishingDate = findViewById(R.id.PublishedOnTxt);
+        ISBN = findViewById(R.id.ISBN);
+        pageNumber = findViewById(R.id.pages);
 
         bookOptions.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -338,12 +342,14 @@ public class BookActivity extends AppCompatActivity implements NavigationView.On
                 JSONObject jsonObject = new JSONObject(result);
                 bookTitle.setText(jsonObject.getString("Title"));
                 bookAuthor.setText("By: " + "" + jsonObject.getString("Author"));
-                ratingsNumber.setText(jsonObject.getString("BookRating") + " " + "Ratings");
+                ratingsNumber.setText(jsonObject.getString("ratingcount") + " " + "Ratings");
                 reviewsNumber.setText(jsonObject.getString("textreviewscount") + " " + "Reviews");
-                bookRatings.setText(jsonObject.getString("averagerating"));
+                bookRatings.setText(jsonObject.getString("BookRating"));
                 bookDescription.setText(jsonObject.getString("Description"));
-                publishingDate.setText("Originally Published" + "  " + jsonObject.getString("Published")
-                        + " By: " + jsonObject.getString("Publisher"));
+                pageNumber.setText(jsonObject.getString("Pages") + " pages");
+                publishingDate.setText("Published On" + "  " + jsonObject.getString("Published")
+                        + ", By: " + jsonObject.getString("Publisher"));
+                ISBN.setText("ISBN: " + jsonObject.getString("ISBN"));
 
                 if (jsonObject.getString("ReadStatus").equals("Read"))
                 {
@@ -365,8 +371,6 @@ public class BookActivity extends AppCompatActivity implements NavigationView.On
                     bookOptions.setText("Add to shelf");
                     bookOptions.setBackgroundColor(getResources().getColor(R.color.colorNotificationbar));
                 }
-
-                // TODO: Add pages and ISBN
 
 
                 /** Start Async Task to get the image from url */
