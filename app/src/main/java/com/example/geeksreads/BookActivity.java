@@ -7,6 +7,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.drawable.BitmapDrawable;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -72,6 +73,9 @@ public class BookActivity extends AppCompatActivity implements NavigationView.On
     TextView booksCount;
     MenuItem FollowItem;
     MenuItem BookItem;
+
+
+    String ImageURL;
 
     /**
      * @param savedInstanceState
@@ -145,6 +149,12 @@ public class BookActivity extends AppCompatActivity implements NavigationView.On
             @Override
             public void onClick(View v) {
                 Intent myIntent = new Intent(BookActivity.this, ChooseShelfActivity.class);
+                myIntent.putExtra("Author",bookAuthor.getText());
+                myIntent.putExtra("Title", bookTitle.getText());
+                myIntent.putExtra("Rating",bookRatings.getText());
+                myIntent.putExtra("Pages",pageNumber.getText());
+                myIntent.putExtra("published",publishingDate.getText());
+                myIntent.putExtra("cover", ImageURL);
                 startActivity(myIntent);
             }
         });
@@ -375,7 +385,8 @@ public class BookActivity extends AppCompatActivity implements NavigationView.On
 
                 /** Start Async Task to get the image from url */
                 GetImage getCover = new GetImage();
-                getCover.execute(jsonObject.getString("Cover"));
+                ImageURL = jsonObject.getString("Cover");
+                getCover.execute(ImageURL);
 
                 sForTestAuthor = bookAuthor.getText().toString();
                 sForTestTitle = bookTitle.getText().toString();

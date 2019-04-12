@@ -9,9 +9,12 @@ import android.os.Bundle;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.SearchView;
 import android.widget.Toast;
@@ -77,7 +80,7 @@ public class ReadBooksActivity extends AppCompatActivity {
 
         GetReadBooks performBackgroundTask = new GetReadBooks();
         performBackgroundTask.execute(UrlService, jsonObject.toString());
-
+        
     }
 
     /**
@@ -178,7 +181,10 @@ public class ReadBooksActivity extends AppCompatActivity {
                 dialog.setMessage(result);
                 //dialog.show();
                 ListView readBookList = findViewById(R.id.ReadBookList);
+                BookList_JSONAdapter bookList_jsonAdapter = new BookList_JSONAdapter(mContext, new JSONArray(result));
                 readBookList.setAdapter(new BookList_JSONAdapter(mContext, new JSONArray(result)));
+                readBookList.deferNotifyDataSetChanged();
+
             } catch (JSONException e) {
                 e.printStackTrace();
             }

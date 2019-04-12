@@ -5,6 +5,7 @@ import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.AsyncTask;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -27,6 +28,7 @@ public class BookList_JSONAdapter extends BaseAdapter {
     private final Context context;
     private JSONArray data;
     private ArrayList<Bitmap> Covers ;
+    ImageView BookCover;
 
     public BookList_JSONAdapter(Context context, JSONArray data) {
         this.data = data;
@@ -36,6 +38,11 @@ public class BookList_JSONAdapter extends BaseAdapter {
 
     public int getCount() {
         return data.length();
+    }
+
+    public Bitmap returnImage(int i)
+    {
+        return Covers.get(i);
     }
 
     public Object getItem(int i) {
@@ -60,39 +67,39 @@ public class BookList_JSONAdapter extends BaseAdapter {
         return -1;
     }
 
+
     // returns the view of a single row
 
     @SuppressLint("ViewHolder")
     public View getView(int i, View view, ViewGroup viewGroup) {
-        View itemView;
 
         LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-        itemView = Objects.requireNonNull(inflater).inflate(R.layout.book_template, viewGroup, false);
+        view = Objects.requireNonNull(inflater).inflate(R.layout.book_template, viewGroup, false);
         try {
-            TextView BookName = itemView.findViewById(R.id.BookNameTxt);
+            TextView BookName = view.findViewById(R.id.BookNameTxt);
             BookName.setText(data.getJSONObject(i).getString("Title"));
 
 
-            TextView AuthorName = itemView.findViewById(R.id.ByAuthorNameTxt);
+            TextView AuthorName = view.findViewById(R.id.ByAuthorNameTxt);
             AuthorName.setText(String.format("By: %s", data.getJSONObject(i).getString("Author")));
 
-            TextView RatingNumber = itemView.findViewById(R.id.BookRatingsTxt);
+            TextView RatingNumber = view.findViewById(R.id.BookRatingsTxt);
             RatingNumber.setText(data.getJSONObject(i).getString("BookRating"));
 
-            TextView Pages = itemView.findViewById(R.id.pageNumbers);
+            TextView Pages = view.findViewById(R.id.pageNumbers);
             Pages.setText(String.format("%s pages.", data.getJSONObject(i).getString("Pages")));
 
-            TextView BookData = itemView.findViewById(R.id.PublishData);
+            TextView BookData = view.findViewById(R.id.PublishData);
             BookData.setText(String.format("Published on %s, By: %s", data.getJSONObject(i).getString("Published"),data.getJSONObject(i).getString("Publisher")));
 
-            ImageView BookCover = itemView.findViewById(R.id.BookImage);
-            //BookCover.getDrawable(data.getJSONObject(i).getString("value"))
+            BookCover = view.findViewById(R.id.BookImage);
+            GetImage getCover = new GetImage();
+            getCover.execute(data.getJSONObject(i).getString("Cover"));
 
-
-        } catch (JSONException e) {
+         } catch (JSONException e) {
             e.printStackTrace();
         }
-        return itemView;
+        return view;
     }
 
     /**
@@ -126,8 +133,9 @@ public class BookList_JSONAdapter extends BaseAdapter {
         protected void onPostExecute(Bitmap result) {
             //mProgressBar.setVisibility(View.GONE);
             //sForTestBookActivity = "Done";
-            //bookCover.setImageBitmap(result);
             Covers.add(result);
+
+            Log.d("Shrouk", Integer.toString(Covers.size()));
 
         }
     }

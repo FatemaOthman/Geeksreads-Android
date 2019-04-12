@@ -26,12 +26,12 @@
         android:layout_marginTop="20dp"
         android:text="@string/MyShelves"
         android:textAlignment="center"
-        android:textColor="@android:color/background_dark"
+        android:textColor="@color/color1"
         android:textSize="18sp"
         android:textStyle="bold" />
 
     <View
-        android:id="@+id/ThirdDivider"
+        android:id="@+id/Divider"
         android:layout_width="148dp"
         android:layout_height="1dp"
         android:layout_gravity="center"
@@ -40,16 +40,18 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="30dp"
+        android:layout_marginBottom="15dp"
         android:layout_marginTop="15dp">
 
 
         <RadioGroup
+            android:id="@+id/radioGroup"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical"
             android:layout_marginLeft="15dp"
-            android:layout_marginRight="15dp">
+            android:layout_marginRight="15dp"
+            tools:ignore="UselessParent">
 
             <RadioButton
                 android:id="@+id/radioReading"
@@ -75,11 +77,22 @@
     </LinearLayout>
 
     <Button
-        android:id="@+id/button"
+        android:id="@+id/AddShelfBtn"
+        android:layout_marginRight="70dp"
+        android:layout_marginLeft="70dp"
+        android:layout_marginBottom="16dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/colorToolbar"
+        android:text="@string/AddShelf" />
+
+    <Button
+        android:id="@+id/AddReviewBtn"
         android:layout_marginRight="70dp"
         android:layout_marginLeft="70dp"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="@string/AddReviewBtn" />
+        android:background="@color/colorToolbar"
+        android:text="@string/AddReviewTxt" />
 
 </LinearLayout>
