@@ -40,11 +40,6 @@ public class BookList_JSONAdapter extends BaseAdapter {
         return data.length();
     }
 
-    public Bitmap returnImage(int i)
-    {
-        return Covers.get(i);
-    }
-
     public Object getItem(int i) {
 
         try {
@@ -76,9 +71,13 @@ public class BookList_JSONAdapter extends BaseAdapter {
         LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         view = Objects.requireNonNull(inflater).inflate(R.layout.book_template, viewGroup, false);
         try {
+
+            FixImagePosition holder = new FixImagePosition();
+            holder.position = i;
+            holder.Cover = view.findViewById(R.id.BookImage);
+
             TextView BookName = view.findViewById(R.id.BookNameTxt);
             BookName.setText(data.getJSONObject(i).getString("Title"));
-
 
             TextView AuthorName = view.findViewById(R.id.ByAuthorNameTxt);
             AuthorName.setText(String.format("By: %s", data.getJSONObject(i).getString("Author")));
@@ -93,8 +92,9 @@ public class BookList_JSONAdapter extends BaseAdapter {
             BookData.setText(String.format("Published on %s, By: %s", data.getJSONObject(i).getString("Published"),data.getJSONObject(i).getString("Publisher")));
 
             BookCover = view.findViewById(R.id.BookImage);
-            GetImage getCover = new GetImage();
-            getCover.execute(data.getJSONObject(i).getString("Cover"));
+            GetImage getCover = new GetImage(i,holder);
+            //getCover.execute(data.getJSONObject(i).getString("Cover"));
+            getCover.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR,data.getJSONObject(i).getString("Cover"));
 
          } catch (JSONException e) {
             e.printStackTrace();
@@ -107,7 +107,14 @@ public class BookList_JSONAdapter extends BaseAdapter {
      * The only Parameter is the Url.
      */
     private class GetImage extends AsyncTask<String, Void, Bitmap> {
+        private int mPosition;
+        private FixImagePosition mBookCover;
 
+        public GetImage(int position, FixImagePosition holder)
+        {
+            mPosition = position;
+            mBookCover = holder;
+        }
         protected void onPreExecute() {
             //mProgressBar.setVisibility(View.VISIBLE);
         }
@@ -134,9 +141,16 @@ public class BookList_JSONAdapter extends BaseAdapter {
             //mProgressBar.setVisibility(View.GONE);
             //sForTestBookActivity = "Done";
             Covers.add(result);
-
+            if (mBookCover.position == mPosition) {
+                mBookCover.Cover.setImageBitmap(result);
+            }
             Log.d("Shrouk", Integer.toString(Covers.size()));
 
         }
+    }
+
+    private static class FixImagePosition {
+        public ImageView Cover;
+        public int position;
     }
 }
