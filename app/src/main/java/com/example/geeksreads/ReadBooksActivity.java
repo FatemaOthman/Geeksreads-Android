@@ -14,6 +14,7 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.SearchView;
@@ -181,9 +182,17 @@ public class ReadBooksActivity extends AppCompatActivity {
                 dialog.setMessage(result);
                 //dialog.show();
                 ListView readBookList = findViewById(R.id.ReadBookList);
-                BookList_JSONAdapter bookList_jsonAdapter = new BookList_JSONAdapter(mContext, new JSONArray(result));
-                readBookList.setAdapter(new BookList_JSONAdapter(mContext, new JSONArray(result)));
+                final BookList_JSONAdapter bookListJsonAdapter = new BookList_JSONAdapter(mContext, new JSONArray(result));
+                readBookList.setAdapter(bookListJsonAdapter);
                 readBookList.deferNotifyDataSetChanged();
+                readBookList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                    @Override
+                    public void onItemClick(AdapterView<?> arg0, View arg1, int position, long arg3) {
+                        Intent intent = new Intent(ReadBooksActivity.this, BookActivity.class);
+                        intent.putExtra("BookISBN",bookListJsonAdapter.getBookISBN());
+                        startActivity(intent);
+                    }
+                });
 
             } catch (JSONException e) {
                 e.printStackTrace();

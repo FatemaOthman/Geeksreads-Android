@@ -87,6 +87,10 @@ public class BookActivity extends AppCompatActivity implements NavigationView.On
         setContentView(R.layout.activity_book);
         mContext = this;
 
+
+        Intent intent = getIntent();
+        String getISBN = intent.getStringExtra("BookISBN");
+
         /* ToolBar and SideBar Setups */
         Toolbar myToolbar = findViewById(R.id.toolbar);
         setSupportActionBar(myToolbar);
@@ -162,7 +166,7 @@ public class BookActivity extends AppCompatActivity implements NavigationView.On
         /* Creating Json Object to be send */
         JSONObject jsonObject = new JSONObject();
         try {
-            jsonObject.put("Title", "value");
+            jsonObject.put("ISBN", getISBN);
         } catch (JSONException e) {
             e.printStackTrace();
         }

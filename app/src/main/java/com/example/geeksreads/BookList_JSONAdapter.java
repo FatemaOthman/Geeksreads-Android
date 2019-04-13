@@ -27,17 +27,20 @@ public class BookList_JSONAdapter extends BaseAdapter {
 
     private final Context context;
     private JSONArray data;
-    private ArrayList<Bitmap> Covers ;
-    ImageView BookCover;
+    private String bookISBN;
 
     public BookList_JSONAdapter(Context context, JSONArray data) {
         this.data = data;
         this.context = context;
-        Covers = new ArrayList<>();
     }
 
     public int getCount() {
         return data.length();
+    }
+
+    public String getBookISBN()
+    {
+        return bookISBN;
     }
 
     public Object getItem(int i) {
@@ -55,7 +58,7 @@ public class BookList_JSONAdapter extends BaseAdapter {
 
         try {
             JSONObject object = data.getJSONObject(i);
-            return object.getLong("id");
+            return i;
         } catch (JSONException jse) {
             jse.printStackTrace();
         }
@@ -76,14 +79,19 @@ public class BookList_JSONAdapter extends BaseAdapter {
             holder.position = i;
             holder.Cover = view.findViewById(R.id.BookImage);
 
+            bookISBN = data.getJSONObject(i).getString("ISBN");
+
             TextView BookName = view.findViewById(R.id.BookNameTxt);
             BookName.setText(data.getJSONObject(i).getString("Title"));
 
             TextView AuthorName = view.findViewById(R.id.ByAuthorNameTxt);
             AuthorName.setText(String.format("By: %s", data.getJSONObject(i).getString("Author")));
 
-            TextView RatingNumber = view.findViewById(R.id.BookRatingsTxt);
-            RatingNumber.setText(data.getJSONObject(i).getString("BookRating"));
+            TextView RatingNumber = view.findViewById(R.id.ratingBar);
+            RatingNumber.setText(String.format("%s Stars", data.getJSONObject(i).getString("BookRating")));
+
+            TextView RatingCount = view.findViewById(R.id.BookRatingsTxt);
+            RatingCount.setText(String.format(" From %s", data.getJSONObject(i).getString("ratingcount")));
 
             TextView Pages = view.findViewById(R.id.pageNumbers);
             Pages.setText(String.format("%s pages.", data.getJSONObject(i).getString("Pages")));
@@ -91,9 +99,7 @@ public class BookList_JSONAdapter extends BaseAdapter {
             TextView BookData = view.findViewById(R.id.PublishData);
             BookData.setText(String.format("Published on %s, By: %s", data.getJSONObject(i).getString("Published"),data.getJSONObject(i).getString("Publisher")));
 
-            BookCover = view.findViewById(R.id.BookImage);
             GetImage getCover = new GetImage(i,holder);
-            //getCover.execute(data.getJSONObject(i).getString("Cover"));
             getCover.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR,data.getJSONObject(i).getString("Cover"));
 
          } catch (JSONException e) {
@@ -139,13 +145,9 @@ public class BookList_JSONAdapter extends BaseAdapter {
         @Override
         protected void onPostExecute(Bitmap result) {
             //mProgressBar.setVisibility(View.GONE);
-            //sForTestBookActivity = "Done";
-            Covers.add(result);
             if (mBookCover.position == mPosition) {
                 mBookCover.Cover.setImageBitmap(result);
             }
-            Log.d("Shrouk", Integer.toString(Covers.size()));
-
         }
     }
 

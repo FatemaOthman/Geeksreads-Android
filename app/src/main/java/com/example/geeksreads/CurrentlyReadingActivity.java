@@ -12,6 +12,8 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.SearchView;
 import android.widget.Toast;
@@ -178,7 +180,17 @@ public class CurrentlyReadingActivity extends AppCompatActivity {
                 dialog.setMessage(result);
                 //dialog.show();
                 ListView currentlyReadingList = findViewById(R.id.CurrentlyReadingList);
-                currentlyReadingList.setAdapter(new BookList_JSONAdapter(mContext, new JSONArray(result)));
+                final BookList_JSONAdapter bookListJsonAdapter = new BookList_JSONAdapter(mContext, new JSONArray(result));
+                currentlyReadingList.setAdapter(bookListJsonAdapter);
+                currentlyReadingList.deferNotifyDataSetChanged();
+                currentlyReadingList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                    @Override
+                    public void onItemClick(AdapterView<?> arg0, View arg1, int position, long arg3) {
+                        Intent intent = new Intent(CurrentlyReadingActivity.this, BookActivity.class);
+                        intent.putExtra("BookISBN",bookListJsonAdapter.getBookISBN());
+                        startActivity(intent);
+                    }
+                });
             } catch (JSONException e) {
                 e.printStackTrace();
             }
