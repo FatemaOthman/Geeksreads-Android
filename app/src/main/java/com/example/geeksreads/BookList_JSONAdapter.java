@@ -4,12 +4,16 @@ import android.annotation.SuppressLint;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Color;
+import android.graphics.PorterDuff;
+import android.graphics.drawable.LayerDrawable;
 import android.os.AsyncTask;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
+import android.widget.RatingBar;
 import android.widget.TextView;
 
 import org.json.JSONArray;
@@ -105,11 +109,36 @@ public class BookList_JSONAdapter extends BaseAdapter {
             TextView AuthorName = view.findViewById(R.id.ByAuthorNameTxt);
             AuthorName.setText(String.format("By: %s", data.getJSONObject(i).getString("Author")));
 
+            String Ratings = data.getJSONObject(i).getString("BookRating");
             TextView RatingNumber = view.findViewById(R.id.ratingBar);
-            RatingNumber.setText(String.format("%s Stars", data.getJSONObject(i).getString("BookRating")));
+            RatingNumber.setText(String.format("%s", Ratings));
 
             TextView RatingCount = view.findViewById(R.id.BookRatingsTxt);
-            RatingCount.setText(String.format(" From %s", data.getJSONObject(i).getString("ratingcount")));
+            RatingCount.setText(String.format("  %s Ratings", data.getJSONObject(i).getString("ratingcount")));
+
+            RatingBar bookStars = view.findViewById(R.id.bookRatingStars);
+            bookStars.setRating(Float.parseFloat(Ratings));
+            if (Float.parseFloat(Ratings) <= 1)
+            {
+                LayerDrawable stars = (LayerDrawable) bookStars.getProgressDrawable();
+                stars.getDrawable(2).setColorFilter(Color.RED, PorterDuff.Mode.SRC_ATOP);
+            }
+            else if (Float.parseFloat(Ratings) <= 2) {
+                LayerDrawable stars = (LayerDrawable) bookStars.getProgressDrawable();
+                stars.getDrawable(2).setColorFilter(Color.rgb(255,140,0), PorterDuff.Mode.SRC_ATOP);
+            }
+            else if (Float.parseFloat(Ratings) <= 3) {
+                LayerDrawable stars = (LayerDrawable) bookStars.getProgressDrawable();
+                stars.getDrawable(2).setColorFilter(Color.YELLOW, PorterDuff.Mode.SRC_ATOP);
+            }
+            else if (Float.parseFloat(Ratings) <= 4) {
+                LayerDrawable stars = (LayerDrawable) bookStars.getProgressDrawable();
+                stars.getDrawable(2).setColorFilter(Color.GREEN, PorterDuff.Mode.SRC_ATOP);
+            }
+            else if (Float.parseFloat(Ratings) <= 5) {
+                LayerDrawable stars = (LayerDrawable) bookStars.getProgressDrawable();
+                stars.getDrawable(2).setColorFilter(Color.rgb(34,139,34), PorterDuff.Mode.SRC_ATOP);
+            }
 
             TextView Pages = view.findViewById(R.id.pageNumbers);
             Pages.setText(String.format("%s pages.", data.getJSONObject(i).getString("Pages")));

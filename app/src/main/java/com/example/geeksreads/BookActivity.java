@@ -7,6 +7,9 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Color;
+import android.graphics.PorterDuff;
+import android.graphics.drawable.LayerDrawable;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -230,7 +233,7 @@ public class BookActivity extends AppCompatActivity implements NavigationView.On
 
         if (id == R.id.Home) {
 
-            Intent myIntent = new Intent(BookActivity.this, SideBarActivity.class);
+            Intent myIntent = new Intent(BookActivity.this, FeedActivity.class);
             startActivity(myIntent);
 
         } else if (id == R.id.Followers) {
@@ -358,13 +361,35 @@ public class BookActivity extends AppCompatActivity implements NavigationView.On
                 bookAuthor.setText("By: " + "" + jsonObject.getString("Author"));
                 ratingsNumber.setText(jsonObject.getString("ratingcount") + " " + "Ratings");
                 reviewsNumber.setText(jsonObject.getString("textreviewscount") + " " + "Reviews");
-                bookRatings.setText(jsonObject.getString("BookRating"));
+                String Ratings = jsonObject.getString("BookRating");
+                bookRatings.setText(Ratings);
                 bookDescription.setText(jsonObject.getString("Description"));
                 pageNumber.setText(jsonObject.getString("Pages") + " pages");
                 publishingDate.setText("Published On" + "  " + jsonObject.getString("Published")
                         + ", By: " + jsonObject.getString("Publisher"));
                 ISBN.setText("ISBN: " + jsonObject.getString("ISBN"));
-                bookStars.setRating(Float.parseFloat((String) jsonObject.getString("BookRating")));
+                bookStars.setRating(Float.parseFloat(Ratings));
+                if (Float.parseFloat(Ratings) <= 1)
+                {
+                    LayerDrawable stars = (LayerDrawable) bookStars.getProgressDrawable();
+                    stars.getDrawable(2).setColorFilter(Color.RED, PorterDuff.Mode.SRC_ATOP);
+                }
+                else if (Float.parseFloat(Ratings) <= 2) {
+                    LayerDrawable stars = (LayerDrawable) bookStars.getProgressDrawable();
+                    stars.getDrawable(2).setColorFilter(Color.rgb(255,140,0), PorterDuff.Mode.SRC_ATOP);
+                }
+                else if (Float.parseFloat(Ratings) <= 3) {
+                    LayerDrawable stars = (LayerDrawable) bookStars.getProgressDrawable();
+                    stars.getDrawable(2).setColorFilter(Color.YELLOW, PorterDuff.Mode.SRC_ATOP);
+                }
+                else if (Float.parseFloat(Ratings) <= 4) {
+                    LayerDrawable stars = (LayerDrawable) bookStars.getProgressDrawable();
+                    stars.getDrawable(2).setColorFilter(Color.GREEN, PorterDuff.Mode.SRC_ATOP);
+                }
+                else if (Float.parseFloat(Ratings) <= 5) {
+                    LayerDrawable stars = (LayerDrawable) bookStars.getProgressDrawable();
+                    stars.getDrawable(2).setColorFilter(Color.rgb(34,139,34), PorterDuff.Mode.SRC_ATOP);
+                }
 
                 if (jsonObject.getString("ReadStatus").equals("Read"))
                 {
