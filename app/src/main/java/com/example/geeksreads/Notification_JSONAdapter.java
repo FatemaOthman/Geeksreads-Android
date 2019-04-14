@@ -16,6 +16,9 @@ import org.json.JSONException;
 import java.util.Objects;
 
 
+/**
+ * Class to Adapt Notification ListView
+ */
 public class Notification_JSONAdapter extends BaseAdapter {
 
     private final Context context;
@@ -26,11 +29,18 @@ public class Notification_JSONAdapter extends BaseAdapter {
         this.context = context;
     }
 
+    /**
+     * @return Count of items in List
+     */
     @Override
     public int getCount() {
         return data.length();
     }
 
+    /**
+     * @param i : Item Position
+     * @return The item in this position
+     */
     @Override
     public Object getItem(int i) {
 
@@ -43,12 +53,22 @@ public class Notification_JSONAdapter extends BaseAdapter {
         return null;
     }
 
+    /**
+     * @param position : position of item i needed.
+     * @return the id of this item.
+     */
     @Override
     public long getItemId(int position) {
         return 0;
     }
 
 
+    /**
+     * @param i : Position of the view in list.
+     * @param view : The view I'll return to display.
+     * @param viewGroup : All the views.
+     * @return The final view to be displayed.
+     */
     @SuppressLint("ViewHolder")
     @Override
     public View getView(int i, View view, ViewGroup viewGroup) {

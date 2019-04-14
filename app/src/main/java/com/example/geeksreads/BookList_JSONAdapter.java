@@ -5,7 +5,6 @@ import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.AsyncTask;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -20,9 +19,11 @@ import org.json.JSONObject;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
-import java.util.ArrayList;
 import java.util.Objects;
 
+/**
+ * Class extends BaseAdapter to adapt the list view.
+ */
 public class BookList_JSONAdapter extends BaseAdapter {
 
     private final Context context;
@@ -34,15 +35,25 @@ public class BookList_JSONAdapter extends BaseAdapter {
         this.context = context;
     }
 
+    /**
+     * @return Number of items in the list.
+     */
     public int getCount() {
         return data.length();
     }
 
+    /**
+     * @return Book ISBN to get the book itself on clicking.
+     */
     public String getBookISBN()
     {
         return bookISBN;
     }
 
+    /**
+     * @param i : Position of the item in list.
+     * @return The Object in this position.
+     */
     public Object getItem(int i) {
 
         try {
@@ -50,14 +61,18 @@ public class BookList_JSONAdapter extends BaseAdapter {
         } catch (JSONException jse) {
             jse.printStackTrace();
         }
-
         return null;
     }
 
+    /**
+     * @param i : Position of item in list
+     * @return The ID of this item.
+     */
     public long getItemId(int i) {
 
         try {
             JSONObject object = data.getJSONObject(i);
+            object.get("ID");
             return i;
         } catch (JSONException jse) {
             jse.printStackTrace();
@@ -65,9 +80,12 @@ public class BookList_JSONAdapter extends BaseAdapter {
         return -1;
     }
 
-
-    // returns the view of a single row
-
+    /**
+     * @param i : Position of the view in list.
+     * @param view : The view I'll return to display.
+     * @param viewGroup : All the views.
+     * @return The final view to be displayed.
+     */
     @SuppressLint("ViewHolder")
     public View getView(int i, View view, ViewGroup viewGroup) {
 
@@ -112,6 +130,7 @@ public class BookList_JSONAdapter extends BaseAdapter {
      * Class that get image from Url and Add it to ImageView.
      * The only Parameter is the Url.
      */
+    @SuppressLint("StaticFieldLeak")
     private class GetImage extends AsyncTask<String, Void, Bitmap> {
         private int mPosition;
         private FixImagePosition mBookCover;
@@ -120,9 +139,6 @@ public class BookList_JSONAdapter extends BaseAdapter {
         {
             mPosition = position;
             mBookCover = holder;
-        }
-        protected void onPreExecute() {
-            //mProgressBar.setVisibility(View.VISIBLE);
         }
 
         @Override
@@ -134,8 +150,7 @@ public class BookList_JSONAdapter extends BaseAdapter {
                 connection.setDoInput(true);
                 connection.connect();
                 InputStream input = connection.getInputStream();
-                Bitmap myBitmap = BitmapFactory.decodeStream(input);
-                return myBitmap;
+                return BitmapFactory.decodeStream(input);
             } catch (Exception e) {
                 // Log.d(TAG,e.getMessage());
             }
@@ -144,13 +159,16 @@ public class BookList_JSONAdapter extends BaseAdapter {
 
         @Override
         protected void onPostExecute(Bitmap result) {
-            //mProgressBar.setVisibility(View.GONE);
             if (mBookCover.position == mPosition) {
                 mBookCover.Cover.setImageBitmap(result);
             }
         }
     }
 
+    /**
+     * A Class to fix the image position in list.
+     * The AsyncTask is slow comparing with the list fetching.
+     */
     private static class FixImagePosition {
         public ImageView Cover;
         public int position;

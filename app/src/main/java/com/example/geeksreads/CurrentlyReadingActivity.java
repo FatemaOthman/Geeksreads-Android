@@ -83,7 +83,7 @@ public class CurrentlyReadingActivity extends AppCompatActivity {
     }
 
     /**
-     * @param menu
+     * @param menu Toolbar menu Object
      * @return super.onCreateOptionsMenu(menu)
      *  Overrided Function to create the toolbar and decide what to do when click it's menu items.
      */
@@ -112,6 +112,7 @@ public class CurrentlyReadingActivity extends AppCompatActivity {
      * A Private class that extend Async Task to connect to server in background.
      * It get the Currently Reading book lists.
      */
+    @SuppressLint("StaticFieldLeak")
     private class GetCurrentlyReadingBooks extends AsyncTask<String, Void, String> {
         public static final String REQUEST_METHOD = "GET";
         //public static final int READ_TIMEOUT = 3000;
@@ -151,7 +152,7 @@ public class CurrentlyReadingActivity extends AppCompatActivity {
                 //Create a new InputStreamReader
                 InputStream ips = http.getInputStream();
                 BufferedReader reader = new BufferedReader(new InputStreamReader(ips, StandardCharsets.ISO_8859_1));
-                String line = "";
+                String line;
                 while ((line = reader.readLine()) != null) {
                     result += line;
                 }

@@ -1,5 +1,6 @@
 package com.example.geeksreads;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -19,6 +20,7 @@ import android.widget.Toast;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.util.Objects;
 
 public class ChooseShelfActivity extends AppCompatActivity {
 
@@ -26,15 +28,20 @@ public class ChooseShelfActivity extends AppCompatActivity {
     Context mContext;
     String shelfID;
 
+    /**
+     * @param savedInstanceState
+     * Overrided Function to decide what will appear after starting this Activity.
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_choose_shelf);
         mContext = this;
 
+        /* ToolBar Initializations */
         Toolbar myToolbar = findViewById(R.id.toolbar);
         setSupportActionBar(myToolbar);
-        getSupportActionBar().setTitle("Add o my shelves");
+        Objects.requireNonNull(getSupportActionBar()).setTitle("Add o my shelves");
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         myToolbar.setNavigationOnClickListener(new View.OnClickListener() {
             @Override
@@ -43,7 +50,7 @@ public class ChooseShelfActivity extends AppCompatActivity {
             }
         });
 
-
+        /* Get the values from BookActivity */
         Intent intent = getIntent();
         String bookAuthorPassed = intent.getStringExtra("Author");
         String bookTitlePassed = intent.getStringExtra("Title");
@@ -52,7 +59,7 @@ public class ChooseShelfActivity extends AppCompatActivity {
         String publishedDatePassed = intent.getStringExtra("published");
         String bookCoverURL = intent.getStringExtra("cover");
 
-
+        /* Get views from layout by IDs */
         TextView BookName = findViewById(R.id.BookNameTxt);
         TextView AuthorName = findViewById(R.id.ByAuthorNameTxt);
         TextView RatingNumber = findViewById(R.id.BookRatingsTxt);
@@ -67,6 +74,7 @@ public class ChooseShelfActivity extends AppCompatActivity {
         bookImage = findViewById(R.id.BookImage);
         bookImage.setBackgroundColor(getResources().getColor(R.color.colorToolbar));
 
+        /* Set the values got from Book */
         BookName.setText(bookTitlePassed);
         AuthorName.setText(bookAuthorPassed);
         RatingNumber.setText(bookRatingPassed);
@@ -75,6 +83,7 @@ public class ChooseShelfActivity extends AppCompatActivity {
         GetImage getCover = new GetImage();
         getCover.execute(bookCoverURL);
 
+        /* On Adding to shelf Button Listener */
         addShelf.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -102,6 +111,7 @@ public class ChooseShelfActivity extends AppCompatActivity {
             }
         });
 
+        /* on Add Review button click listener */
         addReview.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -115,11 +125,8 @@ public class ChooseShelfActivity extends AppCompatActivity {
      * Class that get image from Url and Add it to ImageView.
      * The only Parameter is the Url.
      */
+    @SuppressLint("StaticFieldLeak")
     private class GetImage extends AsyncTask<String, Void, Bitmap> {
-
-        protected void onPreExecute() {
-            //mProgressBar.setVisibility(View.VISIBLE);
-        }
 
         @Override
         protected Bitmap doInBackground(String... params) {
@@ -130,8 +137,7 @@ public class ChooseShelfActivity extends AppCompatActivity {
                 connection.setDoInput(true);
                 connection.connect();
                 InputStream input = connection.getInputStream();
-                Bitmap myBitmap = BitmapFactory.decodeStream(input);
-                return myBitmap;
+                return BitmapFactory.decodeStream(input);
             } catch (Exception e) {
                 // Log.d(TAG,e.getMessage());
             }
@@ -141,7 +147,6 @@ public class ChooseShelfActivity extends AppCompatActivity {
         @Override
         protected void onPostExecute(Bitmap result) {
             bookImage.setImageBitmap(result);
-
         }
     }
 }

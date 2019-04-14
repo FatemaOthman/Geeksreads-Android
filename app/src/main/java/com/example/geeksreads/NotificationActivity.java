@@ -137,7 +137,7 @@ public class NotificationActivity extends AppCompatActivity implements Navigatio
     }
 
     /**
-     * @param menu
+     * @param menu : Toolbar menu object.
      * @return super.onCreateOptionsMenu(menu)
      *  Overrided Function to create the toolbar and decide what to do when click it's menu items.
      */
@@ -165,7 +165,7 @@ public class NotificationActivity extends AppCompatActivity implements Navigatio
     }
 
     /**
-     * @param menuItem
+     * @param menuItem : Items of Toolbar menu.
      * @return boolean "true"
      * Overrided Function to create sidebar and decide what to on clicking on it's menu items.
      */
@@ -196,6 +196,7 @@ public class NotificationActivity extends AppCompatActivity implements Navigatio
      * A Private class that extend Async Task to connect to server in background.
      * It get user Notifications lists.
      */
+    @SuppressLint("StaticFieldLeak")
     private class GetNotificationsList extends AsyncTask<String, Void, String> {
         public static final String REQUEST_METHOD = "GET";
         //public static final int READ_TIMEOUT = 3000;
@@ -235,7 +236,7 @@ public class NotificationActivity extends AppCompatActivity implements Navigatio
                 //Create a new InputStreamReader
                 InputStream ips = http.getInputStream();
                 BufferedReader reader = new BufferedReader(new InputStreamReader(ips, StandardCharsets.ISO_8859_1));
-                String line = "";
+                String line;
                 while ((line = reader.readLine()) != null) {
                     result += line;
                 }
@@ -276,6 +277,7 @@ public class NotificationActivity extends AppCompatActivity implements Navigatio
     /**
      * Class that get sidebar profile pic. from server
      */
+    @SuppressLint("StaticFieldLeak")
     private class GetUserPicture extends AsyncTask<String, Void, Bitmap> {
 
         @Override
@@ -287,8 +289,7 @@ public class NotificationActivity extends AppCompatActivity implements Navigatio
                 connection.setDoInput(true);
                 connection.connect();
                 InputStream input = connection.getInputStream();
-                Bitmap myBitmap = BitmapFactory.decodeStream(input);
-                return myBitmap;
+                return BitmapFactory.decodeStream(input);
             } catch (Exception e) {
                 // Log.d(TAG,e.getMessage());
             }
@@ -305,6 +306,7 @@ public class NotificationActivity extends AppCompatActivity implements Navigatio
     /**
      * Class that get sidebar Data from server
      */
+    @SuppressLint("StaticFieldLeak")
     private class GetSideBarDetails extends AsyncTask<String, Void, String> {
         static final String REQUEST_METHOD = "GET";
         //public static final int READ_TIMEOUT = 3000;
@@ -343,7 +345,7 @@ public class NotificationActivity extends AppCompatActivity implements Navigatio
                 //Create a new InputStreamReader
                 InputStream ips = http.getInputStream();
                 BufferedReader reader = new BufferedReader(new InputStreamReader(ips, StandardCharsets.ISO_8859_1));
-                String line = "";
+                String line;
                 while ((line = reader.readLine()) != null) {
                     result += line;
                 }

@@ -9,13 +9,11 @@ import android.os.Bundle;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
-import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.SearchView;
 import android.widget.Toast;
@@ -85,7 +83,7 @@ public class ReadBooksActivity extends AppCompatActivity {
     }
 
     /**
-     * @param menu
+     * @param menu : Toolbar menu Object
      * @return super.onCreateOptionsMenu(menu)
      *  Overrided Function to create the toolbar and decide what to do when click it's menu items.
      */
@@ -114,6 +112,7 @@ public class ReadBooksActivity extends AppCompatActivity {
      * A Private class that extend Async Task to connect to server in background.
      * It get the Read book lists.
      */
+    @SuppressLint("StaticFieldLeak")
     private class GetReadBooks extends AsyncTask<String, Void, String> {
         public static final String REQUEST_METHOD = "GET";
         //public static final int READ_TIMEOUT = 3000;
@@ -153,7 +152,7 @@ public class ReadBooksActivity extends AppCompatActivity {
                 //Create a new InputStreamReader
                 InputStream ips = http.getInputStream();
                 BufferedReader reader = new BufferedReader(new InputStreamReader(ips, StandardCharsets.ISO_8859_1));
-                String line = "";
+                String line;
                 while ((line = reader.readLine()) != null) {
                     result += line;
                 }

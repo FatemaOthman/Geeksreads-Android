@@ -7,7 +7,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.graphics.drawable.BitmapDrawable;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -21,12 +20,10 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.SearchView;
-import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -65,6 +62,7 @@ public class BookActivity extends AppCompatActivity implements NavigationView.On
     TextView pageNumber;
     TextView ISBN;
     ProgressBar mProgressBar;
+    String ImageURL;
 
     /* SideBar Views */
     ImageView userPhoto;
@@ -74,8 +72,6 @@ public class BookActivity extends AppCompatActivity implements NavigationView.On
     MenuItem FollowItem;
     MenuItem BookItem;
 
-
-    String ImageURL;
 
     /**
      * @param savedInstanceState
@@ -193,7 +189,7 @@ public class BookActivity extends AppCompatActivity implements NavigationView.On
     }
 
     /**
-     * @param menu
+     * @param menu : Menu object in the toolbar
      * @return super.onCreateOptionsMenu(menu)
      *  Overrided Function to create the toolbar and decide what to do when click it's menu items.
      */
@@ -220,7 +216,7 @@ public class BookActivity extends AppCompatActivity implements NavigationView.On
     }
 
     /**
-     * @param menuItem
+     * @param menuItem : item in menu of the toolbar
      * @return boolean "true"
      * Overrided Function to create sidebar and decide what to on clicking on it's menu items.
      */
@@ -251,6 +247,7 @@ public class BookActivity extends AppCompatActivity implements NavigationView.On
      * Class that get image from Url and Add it to ImageView.
      * The only Parameter is the Url.
      */
+    @SuppressLint("StaticFieldLeak")
     private class GetImage extends AsyncTask<String, Void, Bitmap> {
 
         protected void onPreExecute() {
@@ -266,8 +263,7 @@ public class BookActivity extends AppCompatActivity implements NavigationView.On
                 connection.setDoInput(true);
                 connection.connect();
                 InputStream input = connection.getInputStream();
-                Bitmap myBitmap = BitmapFactory.decodeStream(input);
-                return myBitmap;
+                return BitmapFactory.decodeStream(input);
             } catch (Exception e) {
                 // Log.d(TAG,e.getMessage());
             }
@@ -287,6 +283,7 @@ public class BookActivity extends AppCompatActivity implements NavigationView.On
      * Class that get the data from host and Add it to its views.
      * The Parameters are host Url and toSend Data.
      */
+    @SuppressLint("StaticFieldLeak")
     private class GetBookDetails extends AsyncTask<String, Void, String> {
         public static final String REQUEST_METHOD = "GET";
         AlertDialog dialog;
@@ -324,7 +321,7 @@ public class BookActivity extends AppCompatActivity implements NavigationView.On
                 //Create a new InputStreamReader
                 InputStream ips = http.getInputStream();
                 BufferedReader reader = new BufferedReader(new InputStreamReader(ips, StandardCharsets.ISO_8859_1));
-                String line = "";
+                String line;
                 while ((line = reader.readLine()) != null) {
                     result += line;
                 }
@@ -352,7 +349,7 @@ public class BookActivity extends AppCompatActivity implements NavigationView.On
                 dialog.setMessage("Done");
                 //dialog.show();
 
-                /** Get Json Object from server and preview results on Layout views */
+                /* Get Json Object from server and preview results on Layout views */
                 JSONObject jsonObject = new JSONObject(result);
                 bookTitle.setText(jsonObject.getString("Title"));
                 bookAuthor.setText("By: " + "" + jsonObject.getString("Author"));
@@ -387,7 +384,7 @@ public class BookActivity extends AppCompatActivity implements NavigationView.On
                 }
 
 
-                /** Start Async Task to get the image from url */
+                /* Start Async Task to get the image from url */
                 GetImage getCover = new GetImage();
                 ImageURL = jsonObject.getString("Cover");
                 getCover.execute(ImageURL);
@@ -406,6 +403,7 @@ public class BookActivity extends AppCompatActivity implements NavigationView.On
     /**
      * Class that get sidebar profile pic. from server
      */
+    @SuppressLint("StaticFieldLeak")
     private class GetUserPicture extends AsyncTask<String, Void, Bitmap> {
 
         @Override
@@ -417,8 +415,7 @@ public class BookActivity extends AppCompatActivity implements NavigationView.On
                 connection.setDoInput(true);
                 connection.connect();
                 InputStream input = connection.getInputStream();
-                Bitmap myBitmap = BitmapFactory.decodeStream(input);
-                return myBitmap;
+                return BitmapFactory.decodeStream(input);
             } catch (Exception e) {
                 // Log.d(TAG,e.getMessage());
             }
@@ -435,6 +432,7 @@ public class BookActivity extends AppCompatActivity implements NavigationView.On
     /**
      * Class that get sidebar Data from server
      */
+    @SuppressLint("StaticFieldLeak")
     private class GetSideBarDetails extends AsyncTask<String, Void, String> {
         static final String REQUEST_METHOD = "GET";
         //public static final int READ_TIMEOUT = 3000;
@@ -473,7 +471,7 @@ public class BookActivity extends AppCompatActivity implements NavigationView.On
                 //Create a new InputStreamReader
                 InputStream ips = http.getInputStream();
                 BufferedReader reader = new BufferedReader(new InputStreamReader(ips, StandardCharsets.ISO_8859_1));
-                String line = "";
+                String line;
                 while ((line = reader.readLine()) != null) {
                     result += line;
                 }
@@ -510,7 +508,6 @@ public class BookActivity extends AppCompatActivity implements NavigationView.On
         }
 
     }
-
 
 }
 
