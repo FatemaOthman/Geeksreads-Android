@@ -12,13 +12,13 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         android:usesCleartextTraffic="true">
-        <activity android:name=".AuthorActivity"></activity>
+        <activity android:name=".BookActivity"></activity>
         <activity android:name=".ChooseShelfActivity" />
         <activity android:name=".SideBarActivity" />
         <activity android:name=".NotificationActivity" />
         <activity android:name=".Profile" />
         <activity android:name=".SignupActivity" />
-        <activity android:name=".BookActivity">
+        <activity android:name=".AuthorActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
