@@ -12,7 +12,8 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         android:usesCleartextTraffic="true">
-        <activity android:name=".AuthorActivity"></activity>
+        <activity android:name=".FeedActivity"></activity>
+        <activity android:name=".AuthorActivity" />
         <activity android:name=".ChooseShelfActivity" />
         <activity android:name=".SideBarActivity" />
         <activity android:name=".NotificationActivity" />
