@@ -12,7 +12,8 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         android:usesCleartextTraffic="true">
-        <activity android:name=".ChooseShelfActivity"/>
+        <activity android:name=".AuthorActivity"></activity>
+        <activity android:name=".ChooseShelfActivity" />
         <activity android:name=".SideBarActivity" />
         <activity android:name=".NotificationActivity" />
         <activity android:name=".Profile" />
@@ -26,7 +27,7 @@
                 <action android:name="android.intent.action.VIEW" />
             </intent-filter>
         </activity>
-        <activity android:name=".MyBooksShelvesActivity"/>
+        <activity android:name=".MyBooksShelvesActivity" />
         <activity android:name=".EditProfileActivity" />
         <activity
             android:name=".OtherProfileActivity"
@@ -41,7 +42,7 @@
             android:windowSoftInputMode="adjustPan" />
         <activity
             android:name=".ChangePasswordActivity"
-            android:parentActivityName=".EditProfileActivity"/>
+            android:parentActivityName=".EditProfileActivity" />
         <activity
             android:name=".ReadBooksActivity"
             android:parentActivityName=".MyBooksShelvesActivity" />
