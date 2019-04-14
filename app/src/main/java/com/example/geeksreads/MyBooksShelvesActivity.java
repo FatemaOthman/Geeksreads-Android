@@ -224,7 +224,7 @@ public class MyBooksShelvesActivity extends AppCompatActivity implements Navigat
 
         if (id == R.id.Home) {
 
-            Intent myIntent = new Intent(MyBooksShelvesActivity.this, SideBarActivity.class);
+            Intent myIntent = new Intent(MyBooksShelvesActivity.this, FeedActivity.class);
             startActivity(myIntent);
 
         } else if (id == R.id.Followers) {

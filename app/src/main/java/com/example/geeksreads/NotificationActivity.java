@@ -176,7 +176,7 @@ public class NotificationActivity extends AppCompatActivity implements Navigatio
 
         if (id == R.id.Home) {
 
-            Intent myIntent = new Intent(NotificationActivity.this, SideBarActivity.class);
+            Intent myIntent = new Intent(NotificationActivity.this, FeedActivity.class);
             startActivity(myIntent);
 
         } else if (id == R.id.Followers) {

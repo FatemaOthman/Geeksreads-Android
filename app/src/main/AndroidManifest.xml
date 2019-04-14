@@ -19,8 +19,9 @@
         <activity android:name=".SideBarActivity" />
         <activity android:name=".NotificationActivity" />
         <activity android:name=".Profile" />
+        <activity android:name=".BookActivity" />
         <activity android:name=".SignupActivity" />
-        <activity android:name=".BookActivity">
+        <activity android:name=".FeedActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

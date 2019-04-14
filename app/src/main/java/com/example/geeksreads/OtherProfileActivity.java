@@ -8,12 +8,22 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
+import android.support.design.widget.NavigationView;
+import android.support.v4.view.GravityCompat;
+import android.support.v4.widget.DrawerLayout;
+import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.ListView;
+import android.widget.SearchView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -33,9 +43,10 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
+import java.util.Objects;
 
 
-public class OtherProfileActivity extends AppCompatActivity {
+public class OtherProfileActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener{
     public static String aForTestUserName = "";
     public static String aForTestBooksCount = "";
 
@@ -45,6 +56,15 @@ public class OtherProfileActivity extends AppCompatActivity {
     TextView BooksCount;
     ListView BookShelf;
     Button FollowButton;
+
+    /* SideBar Views */
+    ImageView userPhoto;
+    TextView userName;
+    TextView followersCount;
+    TextView booksCount;
+    MenuItem FollowItem;
+    MenuItem BookItem;
+
     /**
      * onCreate: Instantiate the OtherUSerProfile with data through sending an HTTP request
      * with the UserId and receiving the response in its format.
@@ -56,6 +76,49 @@ public class OtherProfileActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.other_profile);
         mContext = this;
+
+        /* ToolBar and SideBar Setups */
+        Toolbar myToolbar = findViewById(R.id.toolbar);
+        setSupportActionBar(myToolbar);
+        Objects.requireNonNull(getSupportActionBar()).setDisplayShowTitleEnabled(false);
+        DrawerLayout drawer = findViewById(R.id.drawer_layout);
+        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(this, drawer, myToolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
+        drawer.addDrawerListener(toggle);
+        toggle.syncState();
+        NavigationView navigationView = findViewById(R.id.nav_view);
+        navigationView.setNavigationItemSelectedListener(this);
+        /* Getting All views by id from SideBar Layout */
+        Menu menu = navigationView.getMenu();
+        MenuItem itemFollower = menu.findItem(R.id.Followers);
+        followersCount = (TextView) itemFollower.getActionView();
+        FollowItem = menu.findItem(R.id.Followers);
+        followersCount.setTextColor(getResources().getColor(R.color.white));
+        MenuItem itemBook = menu.findItem(R.id.MyBooks);
+        booksCount = (TextView) itemBook.getActionView();
+        booksCount.setTextColor(getResources().getColor(R.color.white));
+        BookItem = menu.findItem(R.id.MyBooks);
+        /* Get Header Items */
+        View mHeader = navigationView.getHeaderView(0);
+        userName = mHeader.findViewById(R.id.UserNameTxt);
+        userPhoto = mHeader.findViewById(R.id.UserPhoto);
+        userName.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent mIntent = new Intent(OtherProfileActivity.this, Profile.class);
+                startActivity(mIntent);
+            }
+        });
+        userPhoto.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent mIntent = new Intent(OtherProfileActivity.this, Profile.class);
+                startActivity(mIntent);
+            }
+        });
+        JSONObject mJSON = new JSONObject();
+        String UrlSideBar = "http://geeksreads.000webhostapp.com/Fatema/SideBar.php";
+        GetSideBarDetails getSideBarDetails = new GetSideBarDetails();
+        getSideBarDetails.execute(UrlSideBar, mJSON.toString());
 
 
         OtherUserPhoto = findViewById(R.id.UserProfilePhoto);
@@ -69,10 +132,10 @@ public class OtherProfileActivity extends AppCompatActivity {
         String ID;
         try {
             ID = getIntent().getStringExtra("UserId");
-            JSON.put("UserId", ID);
+            JSON.put("FollowId", ID);
             //TODO: Remove the following hardcoded ID line when merging.
             ID = "value";
-            jsonObject.put("UserId", ID);
+            jsonObject.put("FollowId", ID);
         } catch (JSONException e) {
             e.printStackTrace();
         }
@@ -97,6 +160,75 @@ public class OtherProfileActivity extends AppCompatActivity {
         });
 
 
+    }
+
+
+    /**
+     * Overrided Function to decide what to do ok pressing "Back" key.
+     */
+    @Override
+    public void onBackPressed() {
+        DrawerLayout drawer = findViewById(R.id.drawer_layout);
+        if (drawer.isDrawerOpen(GravityCompat.START)) {
+            drawer.closeDrawer(GravityCompat.START);
+        } else {
+            super.onBackPressed();
+        }
+    }
+
+    /**
+     * @param menu : Menu object in the toolbar
+     * @return super.onCreateOptionsMenu(menu)
+     *  Overrided Function to create the toolbar and decide what to do when click it's menu items.
+     */
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.search_menu, menu);
+        MenuItem item = menu.findItem(R.id.menuSearch);
+        SearchView searchView = (SearchView) item.getActionView();
+        searchView.setIconifiedByDefault(false);
+        searchView.setMaxWidth(800);
+        searchView.setQueryHint("Search books");
+        searchView.setBackgroundColor(getResources().getColor(R.color.white));
+        MenuItem item1 = menu.findItem(R.id.NotificationButton);
+        item1.setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
+            @Override
+            public boolean onMenuItemClick(MenuItem item) {
+                Intent mIntent = new Intent(OtherProfileActivity.this, NotificationActivity.class);
+                startActivity(mIntent);
+                return true;
+            }
+        });
+        return super.onCreateOptionsMenu(menu);
+    }
+
+    /**
+     * @param menuItem : item in menu of the toolbar
+     * @return boolean "true"
+     * Overrided Function to create sidebar and decide what to on clicking on it's menu items.
+     */
+    @Override
+    public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
+
+        int id = menuItem.getItemId();
+
+        if (id == R.id.Home) {
+
+            Intent myIntent = new Intent(OtherProfileActivity.this, FeedActivity.class);
+            startActivity(myIntent);
+
+        } else if (id == R.id.Followers) {
+            Intent myIntent = new Intent(OtherProfileActivity.this, FollowActivity.class);
+            startActivity(myIntent);
+
+        } else if (id == R.id.MyBooks) {
+            Intent myIntent = new Intent(OtherProfileActivity.this, MyBooksShelvesActivity.class);
+            startActivity(myIntent);
+        }
+        DrawerLayout drawer = findViewById(R.id.drawer_layout);
+        drawer.closeDrawer(GravityCompat.START);
+        return true;
     }
 
     /**
@@ -161,7 +293,7 @@ public class OtherProfileActivity extends AppCompatActivity {
 
                 OutputStream ops = http.getOutputStream();
                 BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(ops, StandardCharsets.UTF_8));
-                String data = URLEncoder.encode("UserId", "UTF-8") + "=" + URLEncoder.encode(JSONString, "UTF-8");
+                String data = URLEncoder.encode("FollowId", "UTF-8") + "=" + URLEncoder.encode(JSONString, "UTF-8");
 
                 writer.write(data);
                 writer.flush();
@@ -323,5 +455,113 @@ public class OtherProfileActivity extends AppCompatActivity {
 
     }
     ///////////////////////////////////////////////////
+    /**
+     * Class that get sidebar profile pic. from server
+     */
+    @SuppressLint("StaticFieldLeak")
+    private class GetPicture extends AsyncTask<String, Void, Bitmap> {
+
+        @Override
+        protected Bitmap doInBackground(String... params) {
+            try {
+                String photoUrl = params[0];
+                URL url = new URL(photoUrl);
+                HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+                connection.setDoInput(true);
+                connection.connect();
+                InputStream input = connection.getInputStream();
+                return BitmapFactory.decodeStream(input);
+            } catch (Exception e) {
+                // Log.d(TAG,e.getMessage());
+            }
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(Bitmap result) {
+            userPhoto.setImageBitmap(result);
+
+        }
+    }
+
+    /**
+     * Class that get sidebar Data from server
+     */
+    @SuppressLint("StaticFieldLeak")
+    private class GetSideBarDetails extends AsyncTask<String, Void, String> {
+        static final String REQUEST_METHOD = "GET";
+        //public static final int READ_TIMEOUT = 3000;
+        //public static final int CONNECTION_TIMEOUT = 3000;
+        AlertDialog dialog;
+
+        @Override
+        protected void onPreExecute() {
+            dialog = new AlertDialog.Builder(mContext).create();
+            dialog.setTitle("Connection Status");
+        }
+
+        @Override
+        protected String doInBackground(String... params) {
+            String UrlString = params[0];
+            String JSONString = params[1];
+            String result = "";
+
+            try {
+                //Create a URL object holding our url
+                URL url = new URL(UrlString);
+                HttpURLConnection http = (HttpURLConnection) url.openConnection();
+                http.setRequestMethod(REQUEST_METHOD);
+                http.setDoInput(true);
+                http.setDoOutput(true);
+
+                OutputStream ops = http.getOutputStream();
+                BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(ops, StandardCharsets.UTF_8));
+                String data = URLEncoder.encode("id", "UTF-8") + "=" + URLEncoder.encode(JSONString, "UTF-8");
+
+                writer.write(data);
+                writer.flush();
+                writer.close();
+                ops.close();
+
+                //Create a new InputStreamReader
+                InputStream ips = http.getInputStream();
+                BufferedReader reader = new BufferedReader(new InputStreamReader(ips, StandardCharsets.ISO_8859_1));
+                String line;
+                while ((line = reader.readLine()) != null) {
+                    result += line;
+                }
+                reader.close();
+                ips.close();
+                http.disconnect();
+                return result;
+
+            } catch (MalformedURLException e) {
+                result = e.getMessage();
+            } catch (IOException e) {
+                result = e.getMessage();
+            }
+            return result;
+        }
+
+        @SuppressLint("SetTextI18n")
+        protected void onPostExecute(String result) {
+            if (result == null) {
+                Toast.makeText(mContext, "Unable to connect to server", Toast.LENGTH_SHORT).show();
+                return;
+            }
+            try {
+
+                JSONObject jsonObject = new JSONObject(result);
+                FollowItem.setTitle("Followers   " + jsonObject.getString("Followers"));
+                BookItem.setTitle("My Books   " + jsonObject.getString("CountBooks"));
+                userName.setText(jsonObject.getString("UserName"));
+                GetPicture Pic = new GetPicture();
+                Pic.execute(jsonObject.getString("photourl"));
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+        }
+
+    }
 }
 

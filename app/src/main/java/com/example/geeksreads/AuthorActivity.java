@@ -221,7 +221,7 @@ public class AuthorActivity extends AppCompatActivity implements NavigationView.
 
         if (id == R.id.Home) {
 
-            Intent myIntent = new Intent(AuthorActivity.this, SideBarActivity.class);
+            Intent myIntent = new Intent(AuthorActivity.this, FeedActivity.class);
             startActivity(myIntent);
 
         } else if (id == R.id.Followers) {
