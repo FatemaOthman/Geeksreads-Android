@@ -23,6 +23,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
+import android.widget.RatingBar;
 import android.widget.SearchView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -61,6 +62,7 @@ public class BookActivity extends AppCompatActivity implements NavigationView.On
     TextView publishingDate;
     TextView pageNumber;
     TextView ISBN;
+    RatingBar bookStars;
     ProgressBar mProgressBar;
     String ImageURL;
 
@@ -143,6 +145,7 @@ public class BookActivity extends AppCompatActivity implements NavigationView.On
         bookDescription = findViewById(R.id.DescriptionTxt);
         publishingDate = findViewById(R.id.PublishedOnTxt);
         ISBN = findViewById(R.id.ISBN);
+        bookStars = findViewById(R.id.BookRatingStars);
         pageNumber = findViewById(R.id.pages);
 
         bookOptions.setOnClickListener(new View.OnClickListener() {
@@ -361,6 +364,7 @@ public class BookActivity extends AppCompatActivity implements NavigationView.On
                 publishingDate.setText("Published On" + "  " + jsonObject.getString("Published")
                         + ", By: " + jsonObject.getString("Publisher"));
                 ISBN.setText("ISBN: " + jsonObject.getString("ISBN"));
+                bookStars.setRating(Float.parseFloat((String) jsonObject.getString("BookRating")));
 
                 if (jsonObject.getString("ReadStatus").equals("Read"))
                 {

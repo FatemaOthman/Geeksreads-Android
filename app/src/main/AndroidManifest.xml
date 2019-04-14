@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     package="com.example.geeksreads">
 
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
@@ -11,9 +12,9 @@
         android:roundIcon="@mipmap/logo_vertically"
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
-        android:usesCleartextTraffic="true">
-        <activity android:name=".FeedActivity"></activity>
-        <activity android:name=".AuthorActivity" />
+        android:usesCleartextTraffic="true"
+        tools:ignore="AllowBackup">
+        <activity android:name=".AuthorActivity"/>
         <activity android:name=".ChooseShelfActivity" />
         <activity android:name=".SideBarActivity" />
         <activity android:name=".NotificationActivity" />
