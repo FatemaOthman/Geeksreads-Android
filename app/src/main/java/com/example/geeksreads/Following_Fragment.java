@@ -8,7 +8,6 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AlertDialog;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -72,7 +71,6 @@ public class Following_Fragment extends Fragment {
                 final UserDataModel dataModel = dataModels.get(position);
 
                 Intent myIntent = new Intent(getActivity(), OtherProfileActivity.class);
-                Log.i("AMR", "SentID: " + dataModel.getID());
                 myIntent.putExtra("UserId", dataModel.getID());
                 startActivity(myIntent);
 
@@ -135,7 +133,6 @@ public class Following_Fragment extends Fragment {
                 reader.close();
                 ips.close();
                 http.disconnect();
-                //Log.i("AMR","RES: "+result);
                 return result;
 
             } catch (MalformedURLException e) {
@@ -163,9 +160,7 @@ public class Following_Fragment extends Fragment {
             try {
 
                 JSONArray jsonArr = new JSONArray(result);
-
                 dataModels = UserDataModel.fromJson(jsonArr);
-                //Data is sent and passed correctly inside the model.
                 FollowingAdapter = new CustomAdapter(dataModels, mContext.getApplicationContext());
                 FollowersList.setAdapter(FollowingAdapter);
                 FollowingAdapter.notifyDataSetChanged();

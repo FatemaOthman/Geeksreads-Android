@@ -5,7 +5,6 @@ import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.AsyncTask;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -20,7 +19,6 @@ import org.json.JSONObject;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
-import java.util.ArrayList;
 import java.util.Objects;
 
 public class BookList_JSONAdapter extends BaseAdapter {
@@ -144,7 +142,6 @@ public class BookList_JSONAdapter extends BaseAdapter {
 
         @Override
         protected void onPostExecute(Bitmap result) {
-            //mProgressBar.setVisibility(View.GONE);
             if (mBookCover.position == mPosition) {
                 mBookCover.Cover.setImageBitmap(result);
             }

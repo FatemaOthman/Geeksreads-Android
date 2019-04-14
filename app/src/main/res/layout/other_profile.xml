@@ -77,13 +77,13 @@
             android:textAlignment="center" />
 
         <Button
-            android:id="@+id/Follow_Unfollow"
-            android:layout_width="wrap_content"
-            android:layout_height="26dp"
+            android:id="@+id/FollowButton"
+            android:layout_width="112dp"
+            android:layout_height="30dp"
+            android:layout_marginTop="25dp"
             android:background="@color/color0"
             android:clickable="true"
             android:contentDescription="@string/FollowUnfollow"
-            android:drawableStart="@mipmap/ic_launcher_round"
             android:drawablePadding="6dp"
             android:focusable="true"
             android:gravity="start"
@@ -92,16 +92,18 @@
 
     </LinearLayout>
 
-    <android.support.v4.widget.SwipeRefreshLayout
-        android:id="@+id/swipelayout"
-        style="@style/SwipeRefreshingLayout"
-        tools:context=".Profile">
 
         <ListView
-            android:id="@+id/MyBookList"
+            android:id="@+id/OtherUserBookList"
             android:layout_width="match_parent"
-            android:layout_height="match_parent" />
-    </android.support.v4.widget.SwipeRefreshLayout>
+            android:layout_height="match_parent"
+            android:gravity="center" />
 
+    <!--
+    <include
+        android:id="@+id/OtherWantToRead"
+        layout="@layout/activity_want_to_read">
 
+    </include>
+-->
 </LinearLayout>

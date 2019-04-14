@@ -48,12 +48,11 @@ public class UserDataModel {
         JSONObject UsersJson;
         ArrayList<UserDataModel> AllUsers = new ArrayList<UserDataModel>(jsonArray.length());
         // Process each result in json array, decode and convert to UserModel object
-        Log.i("AMR", "Length: " + jsonArray.length());
         for (int i = 0; i < jsonArray.length(); i++) {
 
             try {
                 UsersJson = jsonArray.getJSONObject(i);
-                //   Log.i("AMR", "Object" + i +" " + UsersJson);
+
             } catch (Exception e) {
                 e.printStackTrace();
                 continue;
@@ -63,9 +62,6 @@ public class UserDataModel {
 
             if (Model != null) {
                 AllUsers.add(i, Model);
-                Log.i("AMR", "ModelName: " + Model.getName());
-                Log.i("AMR", "ModelID : " + Model.getID());
-                Log.i("AMR", "ModelPic : " + Model.getPicLink());
             }
 
         }
