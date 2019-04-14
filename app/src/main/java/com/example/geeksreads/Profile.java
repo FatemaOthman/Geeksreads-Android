@@ -95,8 +95,15 @@ public class Profile extends AppCompatActivity {
         });
 
 
-        //In my code here, I am not sending any data to the backend:
+        //In my code here, I am sending the user ID to the backend:
         JSONObject JSON = new JSONObject();
+
+        try {
+
+            JSON.put("UserId", CurrentUser);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
 
         // Calling Async Task with my server url
         String UrlService = "http://geeksreads.000webhostapp.com/Amr/UserProfile.php";
