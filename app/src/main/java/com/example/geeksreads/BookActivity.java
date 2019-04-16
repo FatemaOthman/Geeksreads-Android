@@ -51,7 +51,7 @@ import java.util.Objects;
 
 public class BookActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
 
-    public static String sForTestAuthor, sForTestTitle, sForTestRate, sForTestDate, sForTestBookActivity;
+    public static String sForTestBookActivity;
     /* BookActivity Views */
     ImageView bookCover;
     Context mContext;
@@ -158,6 +158,7 @@ public class BookActivity extends AppCompatActivity implements NavigationView.On
                 myIntent.putExtra("Author",bookAuthor.getText());
                 myIntent.putExtra("Title", bookTitle.getText());
                 myIntent.putExtra("Rating",bookRatings.getText());
+                myIntent.putExtra("RatingNumber",ratingsNumber.getText());
                 myIntent.putExtra("Pages",pageNumber.getText());
                 myIntent.putExtra("published",publishingDate.getText());
                 myIntent.putExtra("cover", ImageURL);
@@ -418,10 +419,6 @@ public class BookActivity extends AppCompatActivity implements NavigationView.On
                 ImageURL = jsonObject.getString("Cover");
                 getCover.execute(ImageURL);
 
-                sForTestAuthor = bookAuthor.getText().toString();
-                sForTestTitle = bookTitle.getText().toString();
-                sForTestRate = bookRatings.getText().toString();
-                sForTestDate = publishingDate.getText().toString();
             } catch (JSONException e) {
                 e.printStackTrace();
             }

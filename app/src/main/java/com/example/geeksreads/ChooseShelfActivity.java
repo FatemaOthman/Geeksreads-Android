@@ -14,6 +14,7 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
+import android.widget.RatingBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -55,6 +56,7 @@ public class ChooseShelfActivity extends AppCompatActivity {
         String bookAuthorPassed = intent.getStringExtra("Author");
         String bookTitlePassed = intent.getStringExtra("Title");
         String bookRatingPassed = intent.getStringExtra("Rating");
+        String bookRatingNumberPassed = intent.getStringExtra("RatingNumber");
         String pageNumbersPassed = intent.getStringExtra("Pages");
         String publishedDatePassed = intent.getStringExtra("published");
         String bookCoverURL = intent.getStringExtra("cover");
@@ -63,10 +65,12 @@ public class ChooseShelfActivity extends AppCompatActivity {
         TextView BookName = findViewById(R.id.BookNameTxt);
         TextView AuthorName = findViewById(R.id.ByAuthorNameTxt);
         TextView RatingNumber = findViewById(R.id.BookRatingsTxt);
+        TextView Rating = findViewById(R.id.ratingBar);
         TextView Pages = findViewById(R.id.pageNumbers);
         TextView BookData = findViewById(R.id.PublishData);
         Button addShelf = findViewById(R.id.AddShelfBtn);
         Button addReview = findViewById(R.id.AddReviewBtn);
+        RatingBar bookStars = findViewById(R.id.bookRatingStars);
         final RadioGroup ShelfChoosed= findViewById(R.id.radioGroup);
         final RadioButton readRadio = findViewById(R.id.radioRead);
         final RadioButton readingRadio = findViewById(R.id.radioReading);
@@ -77,9 +81,11 @@ public class ChooseShelfActivity extends AppCompatActivity {
         /* Set the values got from Book */
         BookName.setText(bookTitlePassed);
         AuthorName.setText(bookAuthorPassed);
-        RatingNumber.setText(bookRatingPassed);
+        Rating.setText(bookRatingPassed);
+        RatingNumber.setText(bookRatingNumberPassed);
         Pages.setText(pageNumbersPassed);
         BookData.setText(publishedDatePassed);
+        bookStars.setRating(Float.parseFloat(bookRatingPassed));
         GetImage getCover = new GetImage();
         getCover.execute(bookCoverURL);
 
