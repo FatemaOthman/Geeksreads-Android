@@ -49,7 +49,7 @@ import java.util.List;
 import java.util.Objects;
 
 public class AuthorActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener{
-
+    public static String sForTestAuthorName, sForTestAuthorRate, sForTestAuthorNumOfRates,sForTestAuthorNumOfReviews, sForTestAuthorPicURL, sForTestNumOfBooks,sFortTestFollowStatus, sForTestAuthorDescription;
     RecyclerView recyclerView;
     RecyclerView.Adapter adapter;
     private List<BookItem> list;
@@ -61,9 +61,10 @@ public class AuthorActivity extends AppCompatActivity implements NavigationView.
     RatingBar AuthorRatingBar;
     TextView AuthorDescription;
     TextView AuthorNumsOfRating;
+    TextView AuthorNumsOfReviews;
     String ImageURL;
     Button followingState;
-    boolean Follow=true;
+    static boolean Follow=true;
 
     /* SideBar Views */
     ImageView userPhoto;
@@ -134,21 +135,13 @@ public class AuthorActivity extends AppCompatActivity implements NavigationView.
         AuthorDescription = findViewById(R.id.AuthorDesc);
         AuthorPhoto = findViewById(R.id.AuthorPhoto);
         AuthorNumsOfRating=findViewById(R.id.NumsOfRatingAuthor);
+        AuthorNumsOfReviews=findViewById(R.id.NumsOfReviewsAuthor);
         followingState=findViewById(R.id.Follow);
         followingState.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+               Follow= (authorFollowUnFollow(Follow,followingState)=="true")?true:false;
 
-                //code here ...
-                if(Follow==true) {
-                    followingState.setText("Follow");
-                    Follow=false;
-                }
-                else
-                {
-                    followingState.setText("Following");
-                    Follow=true;
-                }
 
             }
         });
@@ -235,6 +228,27 @@ public class AuthorActivity extends AppCompatActivity implements NavigationView.
         DrawerLayout drawer = findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
         return true;
+    }
+
+    /*
+    * authorFollowUnFollow: gets called whenever follow/unfollow button is pressed, is supposed to change following status
+    *
+    * @param followingState : Button View to change its text depending on Follow parameter
+    * @return boolean representing the new following state after the click action is done
+     */
+    public static String authorFollowUnFollow( boolean Follow,Button followingState)
+    {
+        if(Follow==true) {
+            followingState.setText("Follow");
+            Follow=false;
+        }
+        else
+        {
+            followingState.setText("Following");
+            Follow=true;
+        }
+        return Follow == true?"true":"false";
+
     }
 
 
@@ -344,16 +358,18 @@ public class AuthorActivity extends AppCompatActivity implements NavigationView.
                 JSONObject jsonObject = new JSONObject(result);
 
                 AuthorName.setText(jsonObject.getString("name"));
-                AuthorNumsOfRating.setText(jsonObject.getString("numofrates")+"  ratings.");
+                AuthorNumsOfRating.setText(jsonObject.getString("numofrates")+" ratings.");
 
                 AuthorRating.setText(jsonObject.getString("rate"));
                 AuthorRatingBar.setRating(Float.parseFloat((String)jsonObject.getString("rate")));
                 AuthorDescription.setText(jsonObject.getString("disc"));
+                NumOfBooks.setText("Author of "+jsonObject.getString("numofbooks")+" books.");
+                AuthorNumsOfReviews.setText(jsonObject.getString("numofreviews")+" reviews.");
 
 
                 if(jsonObject.getString("followed").equals("true"))
                 {
-                    followingState.setText("Followed");
+                    followingState.setText("Following");
                     Follow=true;
                 }
                 else {
@@ -365,6 +381,15 @@ public class AuthorActivity extends AppCompatActivity implements NavigationView.
                 GetImage getAuthorPic = new GetImage();
                 ImageURL = jsonObject.getString("authorpicurl");
                 getAuthorPic.execute(ImageURL);
+
+                sForTestAuthorName=(String)AuthorName.getText();
+                sForTestAuthorNumOfRates=(String) AuthorNumsOfRating.getText();
+                sForTestNumOfBooks=(String) NumOfBooks.getText();
+                sForTestAuthorDescription =(String) AuthorDescription.getText();
+                sForTestAuthorPicURL=ImageURL;
+                sFortTestFollowStatus=followingState.getText().toString();
+                sForTestAuthorRate=AuthorRating.getText().toString();
+                sForTestAuthorNumOfReviews=AuthorNumsOfReviews.getText().toString();
                 JSONArray array=jsonObject.getJSONArray("authorbooks");
                 for(int i=0;i<array.length();i++)
                 {

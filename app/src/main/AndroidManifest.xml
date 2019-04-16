@@ -14,14 +14,14 @@
         android:theme="@style/AppTheme"
         android:usesCleartextTraffic="true"
         tools:ignore="AllowBackup">
-        <activity android:name=".AuthorActivity"/>
+        <activity android:name=".FeedActivity"/>
         <activity android:name=".ChooseShelfActivity" />
         <activity android:name=".SideBarActivity" />
         <activity android:name=".NotificationActivity" />
         <activity android:name=".Profile" />
         <activity android:name=".BookActivity" />
         <activity android:name=".SignupActivity" />
-        <activity android:name=".FeedActivity">
+        <activity android:name=".AuthorActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

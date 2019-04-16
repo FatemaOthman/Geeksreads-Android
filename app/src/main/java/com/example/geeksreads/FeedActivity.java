@@ -46,6 +46,7 @@ import java.util.List;
 import java.util.Objects;
 
 public class FeedActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener{
+
     RecyclerView recyclerView;
     RecyclerView.Adapter adapter;
     private List<FeedItem> list;

@@ -92,11 +92,15 @@ public class BookAdapter extends RecyclerView.Adapter<BookAdapter.ViewHolder>{
 
 
     }
-
+    /**
+     * getItemCount: How many items are in the data set represented by this Adapter.
+     * @return Number of Items.
+     * */
     @Override
     public int getItemCount() {
         return bookItemList.size();
     }
+
 
     public  class ViewHolder extends RecyclerView.ViewHolder{
         public TextView textViewBookName;
