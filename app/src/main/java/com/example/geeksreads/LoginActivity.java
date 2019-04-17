@@ -5,6 +5,7 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
@@ -58,12 +59,24 @@ public class LoginActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
 
-        /*For Displaying the toolbar on the top of Login Layout */
+        /*For Displaying the toolbar on the top of Login Layout  */
         Toolbar myToolbar = findViewById(R.id.toolbar);
         setSupportActionBar(myToolbar);
         Objects.requireNonNull(getSupportActionBar()).setTitle("Login");
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         mContext = this;
+
+        /* Too Act as logged in and re-direct to newsFeed */
+
+       /* SharedPreferences sp;
+        sp = getSharedPreferences("login",MODE_PRIVATE);
+        sp.edit().putBoolean("logged",true).apply();
+
+        if(sp.getBoolean("logged",false)){
+            Intent myIntent = new Intent(LoginActivity.this, FeedActivity.class);
+            startActivity(myIntent);
+        } */
+
 
         /* Getting Text boxes and Buttons from the layout */
         Button loginButton = findViewById(R.id.LoginBtn);
@@ -203,7 +216,7 @@ public class LoginActivity extends AppCompatActivity {
                                 sCurrentUserID = jsonObject.getString("UserID");
 
                                 /* Go to Next Activity Layout */
-                                Intent myIntent = new Intent(LoginActivity.this, SideBarActivity.class);
+                                Intent myIntent = new Intent(LoginActivity.this, FeedActivity.class);
                                 startActivity(myIntent);
                             } else {
                                 /* If Login didn't succeed, Stay Here in the same Activity and Do Nothing */

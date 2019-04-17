@@ -95,6 +95,12 @@ public class BookActivity extends AppCompatActivity implements NavigationView.On
         /* ToolBar and SideBar Setups */
         Toolbar myToolbar = findViewById(R.id.toolbar);
         setSupportActionBar(myToolbar);
+        myToolbar.setNavigationOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                finish();
+            }
+        });
         Objects.requireNonNull(getSupportActionBar()).setDisplayShowTitleEnabled(false);
         DrawerLayout drawer = findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(this, drawer, myToolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
@@ -165,6 +171,15 @@ public class BookActivity extends AppCompatActivity implements NavigationView.On
                 startActivity(myIntent);
             }
         });
+
+        bookAuthor.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent myIntent = new Intent(BookActivity.this, AuthorActivity.class);
+                startActivity(myIntent);
+            }
+        });
+
 
         /* Creating Json Object to be send */
         JSONObject jsonObject = new JSONObject();

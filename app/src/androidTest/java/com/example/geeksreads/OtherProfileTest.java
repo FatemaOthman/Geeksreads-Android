@@ -24,7 +24,7 @@ public class OtherProfileTest {
         assertEquals("Amr", OtherProfileActivity.aForTestUserName);
 
         /* Testing getting Title of the Book right */
-        assertEquals("12", OtherProfileActivity.aForTestBooksCount);
+        assertEquals("5", OtherProfileActivity.aForTestBooksCount);
 
     }
 
@@ -36,7 +36,7 @@ public class OtherProfileTest {
         assertEquals("Fatema", OtherProfileActivity.aForTestUserName);
 
         /* Testing getting number of Books right */
-        assertEquals("15", OtherProfileActivity.aForTestBooksCount);
+        assertEquals("5", OtherProfileActivity.aForTestBooksCount);
 
     }
 }

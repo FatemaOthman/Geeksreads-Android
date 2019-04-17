@@ -19,7 +19,7 @@ public class LoginTest {
 
     @Test
     /* User Didn't write a valid Email */
-    public void Test_1() {
+    public void Test_UserDidntWriteValidEmail() {
         onView(withId(R.id.EmailTxt))
                 .perform(typeText("mahmoud_1@live"), closeSoftKeyboard());
         onView(withId(R.id.PasswordTxt))
@@ -31,7 +31,7 @@ public class LoginTest {
 
     @Test
     /* User Didn't write a password */
-    public void Test_2() {
+    public void Test_UserDidntWritePassword() {
         onView(withId(R.id.EmailTxt))
                 .perform(typeText("mahmoud_1@live.com"), closeSoftKeyboard());
         onView(withId(R.id.PasswordTxt))
@@ -43,7 +43,7 @@ public class LoginTest {
 
     @Test
     /* User Didn't Verify Account Yet */
-    public void Test_3() {
+    public void Test_UserDidntVerifyAccount() {
         onView(withId(R.id.EmailTxt))
                 .perform(typeText("mahmoud_1@live.com"), closeSoftKeyboard());
         onView(withId(R.id.PasswordTxt))
@@ -55,7 +55,7 @@ public class LoginTest {
 
     @Test
     /* User entered a wrong password or email */
-    public void Test_4() {
+    public void Test_UserEnteredWrongEmailOrPassword() {
         onView(withId(R.id.EmailTxt))
                 .perform(typeText("mahmoud_2@live.com"), closeSoftKeyboard());
         onView(withId(R.id.PasswordTxt))
@@ -67,11 +67,11 @@ public class LoginTest {
 
     @Test
     /* User logged in successfully */
-    public void Test_5() {
+    public void Test_UserEnteredCorrectEmailAndPassword() {
         onView(withId(R.id.EmailTxt))
-                .perform(typeText("mahmoud_2@live.com"), closeSoftKeyboard());
+                .perform(typeText("mahmoud_morsy@live.com"), closeSoftKeyboard());
         onView(withId(R.id.PasswordTxt))
-                .perform(typeText("Mah1142019"), closeSoftKeyboard());
+                .perform(typeText("Mahmoud123456789"), closeSoftKeyboard());
         onView(withId(R.id.LoginBtn)).perform(click());
 
         assertEquals("Login Succeeded", LoginActivity.sForTest);
@@ -79,7 +79,7 @@ public class LoginTest {
 
     @Test
     /* Other error occurred in Login */
-    public void Test_6() {
+    public void Test_UnknownErrorOccurred() {
         onView(withId(R.id.EmailTxt))
                 .perform(typeText("mahmoud_3@live.com"), closeSoftKeyboard());
         onView(withId(R.id.PasswordTxt))

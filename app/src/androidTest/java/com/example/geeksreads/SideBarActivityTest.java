@@ -34,7 +34,7 @@ public class SideBarActivityTest {
 
         /* Testing getting User Name of the User right */
 
-        onView(withId(R.id.UserNameTxt)).check(ViewAssertions.matches(withText("Fatema Othman")));
+        onView(withId(R.id.UserNameTxt)).check(ViewAssertions.matches(withText("Mahmoud Morsy")));
 
         /* Testing getting Number of Followers right */
         assertEquals("14", SideBarActivity.forTestFollowersCount);
@@ -44,7 +44,7 @@ public class SideBarActivityTest {
         assertEquals("25", SideBarActivity.forTestBooksCount);
 
         /* Testing getting URL of the User's Profile Pic right */
-        assertEquals("https://geeksreads.000webhostapp.com/Fatema/userPic.jpg", SideBarActivity.forTestUserPhotoURL);
+        assertEquals("https://geeksreads.000webhostapp.com/LoggedInUser/PP.jpg", SideBarActivity.forTestUserPhotoURL);
 
 
     }

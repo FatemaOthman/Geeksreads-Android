@@ -19,7 +19,7 @@ public class SignupActivityTest {
 
     @Test
     /* Username less than 3 characters */
-    public void Test_1() {
+    public void Test_UsernameLessThanThreeChars() {
         onView(withId(R.id.UserNameTxt))
                 .perform(typeText("Ab"), closeSoftKeyboard());
         onView(withId(R.id.EmailTxt))
@@ -36,7 +36,7 @@ public class SignupActivityTest {
 
     @Test
     /* Email is not valid */
-    public void Test_2() {
+    public void Test_UserEmailIsNotValid() {
         onView(withId(R.id.UserNameTxt))
                 .perform(typeText("MahmoudMorsy"), closeSoftKeyboard());
         onView(withId(R.id.EmailTxt))
@@ -53,7 +53,7 @@ public class SignupActivityTest {
 
     @Test
     /* Password is less than 6 characters */
-    public void Test_3() {
+    public void Test_UserEnteredPasswordLessThanSixChars() {
         onView(withId(R.id.UserNameTxt))
                 .perform(typeText("MahmoudMorsy"), closeSoftKeyboard());
         onView(withId(R.id.EmailTxt))
@@ -70,7 +70,7 @@ public class SignupActivityTest {
 
     @Test
     /* Password has no numbers */
-    public void Test_4() {
+    public void Test_UserEnteredPasswordWithoutNumbers() {
         onView(withId(R.id.UserNameTxt))
                 .perform(typeText("MahmoudMorsy"), closeSoftKeyboard());
         onView(withId(R.id.EmailTxt))
@@ -87,7 +87,7 @@ public class SignupActivityTest {
 
     @Test
     /* Password has no lower case letters */
-    public void Test_5() {
+    public void Test_UserEnteredPasswordWithNoLowerCaseLetters() {
         onView(withId(R.id.UserNameTxt))
                 .perform(typeText("MahmoudMorsy"), closeSoftKeyboard());
         onView(withId(R.id.EmailTxt))
@@ -104,7 +104,7 @@ public class SignupActivityTest {
 
     @Test
     /* Password has no upper case letters */
-    public void Test_6() {
+    public void Test_UserEnteredPasswordWithNoUpperCaseLetters() {
         onView(withId(R.id.UserNameTxt))
                 .perform(typeText("MahmoudMorsy"), closeSoftKeyboard());
         onView(withId(R.id.EmailTxt))
@@ -121,7 +121,7 @@ public class SignupActivityTest {
 
     @Test
     /* Passwords don't match */
-    public void Test_7() {
+    public void Test_PasswordAndConfirmPasswordDidntMatch() {
         onView(withId(R.id.UserNameTxt))
                 .perform(typeText("MahmoudMorsy"), closeSoftKeyboard());
         onView(withId(R.id.EmailTxt))
@@ -138,7 +138,7 @@ public class SignupActivityTest {
 
     @Test
     /* Creating account and Waiting Email Verification */
-    public void Test_8() {
+    public void Test_CreatingAccountAndWaitingEmailVerification() {
         onView(withId(R.id.UserNameTxt))
                 .perform(typeText("MahmoudMorsy"), closeSoftKeyboard());
         onView(withId(R.id.EmailTxt))
@@ -155,7 +155,7 @@ public class SignupActivityTest {
 
     @Test
     /* Creating account but User is already registered */
-    public void Test_9() {
+    public void Test_UserAlreadyRegistered() {
         onView(withId(R.id.UserNameTxt))
                 .perform(typeText("MahmoudMorsy"), closeSoftKeyboard());
         onView(withId(R.id.EmailTxt))
@@ -172,7 +172,7 @@ public class SignupActivityTest {
 
     @Test
     /* Creating account and an error occurred */
-    public void Test_10() {
+    public void Test_UnexpectedErrorOccurred() {
         onView(withId(R.id.UserNameTxt))
                 .perform(typeText("MahmoudMorsy"), closeSoftKeyboard());
         onView(withId(R.id.EmailTxt))

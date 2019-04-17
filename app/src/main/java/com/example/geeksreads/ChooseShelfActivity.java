@@ -42,7 +42,7 @@ public class ChooseShelfActivity extends AppCompatActivity {
         /* ToolBar Initializations */
         Toolbar myToolbar = findViewById(R.id.toolbar);
         setSupportActionBar(myToolbar);
-        Objects.requireNonNull(getSupportActionBar()).setTitle("Add o my shelves");
+        Objects.requireNonNull(getSupportActionBar()).setTitle("Add to my shelves");
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         myToolbar.setNavigationOnClickListener(new View.OnClickListener() {
             @Override
@@ -102,17 +102,17 @@ public class ChooseShelfActivity extends AppCompatActivity {
                 {
                     if (readRadio.isChecked())
                     {
-                        shelfID = "0";
+                        shelfID = "Read Books Shelf";
                     }
                     else if (readingRadio.isChecked())
                     {
-                        shelfID = "1";
+                        shelfID = "Currently Reading Books Shelf";
                     }
                     else if (wantRadio.isChecked())
                     {
-                        shelfID = "2";
+                        shelfID = "Want To Read Books Shelf";
                     }
-                    Toast.makeText(mContext,"You choosed shelf id " + shelfID, Toast.LENGTH_SHORT).show();
+                    Toast.makeText(mContext,"You chose " + shelfID, Toast.LENGTH_SHORT).show();
                 }
             }
         });

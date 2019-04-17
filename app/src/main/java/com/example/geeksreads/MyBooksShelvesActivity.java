@@ -47,7 +47,15 @@ public class MyBooksShelvesActivity extends AppCompatActivity implements Navigat
     /**
      * Global Public Static Variables used for Testing
      */
-    public static String sForTest;
+    public static String sForTest_Read;
+    /**
+     * Global Public Static Variables used for Testing
+     */
+    public static String sForTest_CurrentlyReading;
+    /**
+     * Global Public Static Variables used for Testing
+     */
+    public static String sForTest_WantToRead;
     /* SideBar Views */
     ImageView userPhoto;
     TextView userName;
@@ -312,7 +320,7 @@ public class MyBooksShelvesActivity extends AppCompatActivity implements Navigat
                 /* Creating a JSON Object to parse the data in */
                 final JSONObject jsonObject = new JSONObject(result);
 
-                sForTest = jsonObject.getString("ShelfCount");
+                //sForTest = jsonObject.getString("ShelfCount");
 
                 String shelfCount = jsonObject.getString("ShelfCount");
 
@@ -320,12 +328,15 @@ public class MyBooksShelvesActivity extends AppCompatActivity implements Navigat
                     if (this.passedString.equals("Read")) {
                         Button readBtn = findViewById(R.id.ReadBtn);
                         readBtn.setText("Read  " + shelfCount);
+                        sForTest_Read = "Read  " + shelfCount;
                     } else if (passedString.equals("WantToRead")) {
                         Button wantToReadBtn = findViewById(R.id.WantToReadBtn);
                         wantToReadBtn.setText("Want to Read  " + shelfCount);
+                        sForTest_WantToRead = "Want to Read  " + shelfCount;
                     } else if (passedString.equals("CurrentlyReading")) {
                         Button currentlyReadingBtn = findViewById(R.id.CurrentlyReadingBtn);
                         currentlyReadingBtn.setText("Currently Reading  " + shelfCount);
+                        sForTest_CurrentlyReading = "Currently Reading  " + shelfCount;
                     }
                 }
             }

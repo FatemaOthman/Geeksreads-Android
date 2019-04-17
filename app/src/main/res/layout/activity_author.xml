@@ -171,6 +171,7 @@
 
         android:background="@color/colorNavBackground"
         android:fitsSystemWindows="true"
+        android:visibility="gone"
         app:headerLayout="@layout/nav_header_side_bar"
         app:itemIconTint="@color/colorFont"
         app:itemTextColor="@color/colorFont"
