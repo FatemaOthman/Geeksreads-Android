@@ -38,7 +38,6 @@ import java.io.OutputStreamWriter;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 
 public class Profile extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener{
@@ -171,6 +170,7 @@ public class Profile extends AppCompatActivity implements NavigationView.OnNavig
         }
 
         // Calling Async Task with my server url
+        //TODO: Change link of UrlService
         String UrlService = "http://geeksreads.000webhostapp.com/Amr/UserProfile.php";
         Profile.GetProfileDetails MyProfile = new Profile.GetProfileDetails();
         MyProfile.execute(UrlService, mJSON.toString());
@@ -298,6 +298,8 @@ public class Profile extends AppCompatActivity implements NavigationView.OnNavig
          * @param params
          * @return result
          */
+
+        /*
         @Override
         protected String doInBackground(String... params) {
             String UrlString = params[0];
@@ -342,7 +344,73 @@ public class Profile extends AppCompatActivity implements NavigationView.OnNavig
             }
             return result;
         }
+        */
+        //////////////////////////////////////////////////////////////////////////////////////////
+        @Override
+        protected String doInBackground(String... params) {
+            String UrlString = params[0];
+            String JSONString = params[1];
+            String result = "";
 
+            try {
+                /* Create a URL object holding our url */
+                URL url = new URL(UrlString);
+                /* Create an HTTP Connection and adjust its options */
+                HttpURLConnection http = (HttpURLConnection) url.openConnection();
+                http.setRequestMethod(REQUEST_METHOD);
+                http.setDoInput(true);
+                http.setDoOutput(true);
+                http.setRequestProperty("content-type", "application/json");
+
+                /* A Stream object to hold the sent data to API Call */
+                OutputStream ops = http.getOutputStream();
+                BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(ops, StandardCharsets.UTF_8));
+                //String data = URLEncoder.encode(JSONString, "UTF-8");
+                String data = JSONString;
+
+                writer.write(data);
+                writer.flush();
+                writer.close();
+                ops.close();
+                switch (String.valueOf(http.getResponseCode())) {
+                    case "200":
+                        /* A Stream object to get the returned data from API Call */
+                        InputStream ips = http.getInputStream();
+                        BufferedReader reader = new BufferedReader(new InputStreamReader(ips, StandardCharsets.ISO_8859_1));
+                        String line = "";
+                        //boolean started = false;
+                        while ((line = reader.readLine()) != null) {
+                            //   if ()
+                            result += line;
+                        }
+                        reader.close();
+                        ips.close();
+                        break;
+                    case "400":
+                        result = "{\"ReturnMsg\":\"Invalid email or password.\"}";
+                        break;
+                    case "401":
+                        result = "{\"ReturnMsg\":\"Your account has not been verified.\"}";
+                        break;
+                    default:
+                        break;
+                }
+
+
+                http.disconnect();
+                return result;
+
+            }
+            /* Handling Exceptions */ catch (MalformedURLException e) {
+                result = e.getMessage();
+            } catch (IOException e) {
+                result = e.getMessage();
+            }
+            return result;
+        }
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////
         /**
          * onPostExecute: Takes the string result and treates it as a json object
          * to set data of:
@@ -430,35 +498,55 @@ public class Profile extends AppCompatActivity implements NavigationView.OnNavig
             String result = "";
 
             try {
-                //Create a URL object holding our url
+                /* Create a URL object holding our url */
                 URL url = new URL(UrlString);
+                /* Create an HTTP Connection and adjust its options */
                 HttpURLConnection http = (HttpURLConnection) url.openConnection();
                 http.setRequestMethod(REQUEST_METHOD);
                 http.setDoInput(true);
                 http.setDoOutput(true);
+                http.setRequestProperty("content-type", "application/json");
 
+                /* A Stream object to hold the sent data to API Call */
                 OutputStream ops = http.getOutputStream();
                 BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(ops, StandardCharsets.UTF_8));
-                String data = URLEncoder.encode("id", "UTF-8") + "=" + URLEncoder.encode(JSONString, "UTF-8");
+                //String data = URLEncoder.encode(JSONString, "UTF-8");
+                String data = JSONString;
 
                 writer.write(data);
                 writer.flush();
                 writer.close();
                 ops.close();
-
-                //Create a new InputStreamReader
-                InputStream ips = http.getInputStream();
-                BufferedReader reader = new BufferedReader(new InputStreamReader(ips, StandardCharsets.ISO_8859_1));
-                String line;
-                while ((line = reader.readLine()) != null) {
-                    result += line;
+                switch (String.valueOf(http.getResponseCode())) {
+                    case "200":
+                        /* A Stream object to get the returned data from API Call */
+                        InputStream ips = http.getInputStream();
+                        BufferedReader reader = new BufferedReader(new InputStreamReader(ips, StandardCharsets.ISO_8859_1));
+                        String line = "";
+                        //boolean started = false;
+                        while ((line = reader.readLine()) != null) {
+                            //   if ()
+                            result += line;
+                        }
+                        reader.close();
+                        ips.close();
+                        break;
+                    case "400":
+                        result = "{\"ReturnMsg\":\"Invalid email or password.\"}";
+                        break;
+                    case "401":
+                        result = "{\"ReturnMsg\":\"Your account has not been verified.\"}";
+                        break;
+                    default:
+                        break;
                 }
-                reader.close();
-                ips.close();
+
+
                 http.disconnect();
                 return result;
 
-            } catch (MalformedURLException e) {
+            }
+            /* Handling Exceptions */ catch (MalformedURLException e) {
                 result = e.getMessage();
             } catch (IOException e) {
                 result = e.getMessage();

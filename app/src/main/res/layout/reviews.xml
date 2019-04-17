@@ -25,11 +25,16 @@
     <View
         android:id="@+id/DividerReviews"
         android:layout_width="match_parent"
-        android:layout_height="7dp"
-        android:layout_marginTop="20dp"
+        android:layout_height="5dp"
+        android:layout_marginTop="10dp"
         android:background="@color/colorToolbar"
         android:backgroundTint="@color/colorToolbar"
         android:showDividers="middle" />
+
+    <ListView
+        android:id="@+id/ReviewsList"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
 
 
 </LinearLayout>
