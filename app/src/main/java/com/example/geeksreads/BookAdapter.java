@@ -27,14 +27,24 @@ public class BookAdapter extends RecyclerView.Adapter<BookAdapter.ViewHolder>{
         this.bookItemList = bookItemList;
         this.context = context;
     }
-
+    /**
+     *onCreateViewHolder: Called when RecyclerView needs a new RecyclerView.ViewHolder of the given type to represent an item.
+     * @param parent
+     * @param viewType
+     * @return ViewHolder : A new ViewHolder that holds a View of the given view type
+     * */
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View v = LayoutInflater.from(parent.getContext())
                 .inflate(R.layout.author_books_list_item,parent,false);
         return new ViewHolder(v);
     }
-
+    /**
+    * onBindViewHolder: Called by RecyclerView to display the data at the specified position.
+    * @param  holder
+    * @param  position
+    * @return void
+     */
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         final BookItem bookitem = bookItemList.get(position);

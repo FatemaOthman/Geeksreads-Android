@@ -128,6 +128,8 @@ public class AuthorActivity extends AppCompatActivity implements NavigationView.
         GetSideBarDetails getSideBarDetails = new GetSideBarDetails();
         getSideBarDetails.execute(UrlSideBar, JSON.toString());
 
+
+        /*Getting All views by id from AuthorActivity Layout*/
         AuthorName = findViewById(R.id.AuthorName);
         NumOfBooks = findViewById(R.id.NumberOfBooks);
         AuthorRating = findViewById(R.id.AuthorRating);
@@ -137,10 +139,13 @@ public class AuthorActivity extends AppCompatActivity implements NavigationView.
         AuthorNumsOfRating=findViewById(R.id.NumsOfRatingAuthor);
         AuthorNumsOfReviews=findViewById(R.id.NumsOfReviewsAuthor);
         followingState=findViewById(R.id.Follow);
+
+        /*Setting onClickListener for following button*/
         followingState.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-               Follow= (authorFollowUnFollow(Follow,followingState)=="true")?true:false;
+               Follow= (authorFollowUnFollow(Follow)=="Following")?true:false;
+               followingState.setText(authorFollowUnFollow(Follow));
 
 
             }
@@ -230,24 +235,15 @@ public class AuthorActivity extends AppCompatActivity implements NavigationView.
         return true;
     }
 
-    /*
+    /**
     * authorFollowUnFollow: gets called whenever follow/unfollow button is pressed, is supposed to change following status
-    *
-    * @param followingState : Button View to change its text depending on Follow parameter
-    * @return boolean representing the new following state after the click action is done
+    * @param Follow :boolean representing the following status
+
+    * @return String representing the new following state after the click action is done
      */
-    public static String authorFollowUnFollow( boolean Follow,Button followingState)
+    public static String authorFollowUnFollow( boolean Follow)
     {
-        if(Follow==true) {
-            followingState.setText("Follow");
-            Follow=false;
-        }
-        else
-        {
-            followingState.setText("Following");
-            Follow=true;
-        }
-        return Follow == true?"true":"false";
+        return Follow==false?"Following":"Follow";
 
     }
 
@@ -400,7 +396,7 @@ public class AuthorActivity extends AppCompatActivity implements NavigationView.
                             o.getString("bookrate"),
                             o.getString("numofrates"),
                             o.getString("coverurl"),
-                            "Read"//o.getString("readingstate")
+                            o.getString("readingstatus")
                     );
                     list.add(B);
                 }

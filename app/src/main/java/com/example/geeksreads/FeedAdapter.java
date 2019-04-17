@@ -23,6 +23,12 @@ public class FeedAdapter extends RecyclerView.Adapter<FeedAdapter.ViewHolder> {
         this.feedItemList = feedItemList;
         this.context = context;
     }
+    /**
+     *onCreateViewHolder: Called when RecyclerView needs a new RecyclerView.ViewHolder of the given type to represent an Feed item.
+     * @param parent
+     * @param viewType
+     * @return ViewHolder : A new ViewHolder that holds a View of the given view type
+     * */
 
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
@@ -30,7 +36,12 @@ public class FeedAdapter extends RecyclerView.Adapter<FeedAdapter.ViewHolder> {
                 .inflate(R.layout.feed_list_item, parent, false);
         return new ViewHolder(v);
     }
-
+    /**
+     * onBindViewHolder: Called by RecyclerView to display the data at the specified position.
+     * @param  holder
+     * @param  position
+     * @return void
+     */
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         FeedItem feeditem = feedItemList.get(position);
@@ -40,7 +51,10 @@ public class FeedAdapter extends RecyclerView.Adapter<FeedAdapter.ViewHolder> {
                 .load(feeditem.getNotifierPicURL())
                 .into(holder.imageViewPostPic);
     }
-
+    /**
+     * getItemCount: How many items are in the data set represented by this Adapter.
+     * @return Number of Items.
+     * */
     @Override
     public int getItemCount() {
         return feedItemList.size();
