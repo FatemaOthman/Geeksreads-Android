@@ -32,6 +32,7 @@ public class LoginTest {
     @Test
     /* User Didn't write a password */
     public void Test_UserDidntWritePassword() {
+
         onView(withId(R.id.EmailTxt))
                 .perform(typeText("mahmoud_1@live.com"), closeSoftKeyboard());
         onView(withId(R.id.PasswordTxt))

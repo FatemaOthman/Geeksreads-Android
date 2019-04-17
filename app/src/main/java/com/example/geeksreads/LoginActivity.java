@@ -10,6 +10,7 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -25,6 +26,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
+import java.net.ContentHandlerFactory;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -54,6 +56,26 @@ public class LoginActivity extends AppCompatActivity {
     /**
      * Function for Starting Logic Actions after Creating the Layout
      */
+    enum verificationErrorType
+    {
+        NO_ERRORS,
+        INVALID_EMAIL,
+        INVALID_PASSWORD
+    }
+    private static verificationErrorType verifyStaticCredentials(String userEmail, String userPassword)
+    {
+        /* If the user entered an invalid Email Address */
+        if (!userEmail.matches(".+[@].+[.].+")) {
+            return verificationErrorType.INVALID_EMAIL;
+        }
+        /* If the user entered an empty Password */
+        else if (userPassword.isEmpty()) {
+            return verificationErrorType.INVALID_PASSWORD;
+        }
+        else {
+            return verificationErrorType.NO_ERRORS;
+        }
+    }
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -94,12 +116,12 @@ public class LoginActivity extends AppCompatActivity {
                 loginPasswordStr = loginPassword.getText().toString();
 
                 /* If the user entered an invalid Email Address */
-                if (!loginEmailStr.matches(".+[@].+[.].+")) {
+                if (verifyStaticCredentials(loginEmailStr, loginPasswordStr) == verificationErrorType.INVALID_EMAIL) {
                     loginMail.setError("Please enter a valid Email");
                     sForTest = "Please enter a valid Email";
                 }
                 /* If the user entered an empty Password */
-                else if (loginPasswordStr.isEmpty()) {
+                else if (verifyStaticCredentials(loginEmailStr, loginPasswordStr) == verificationErrorType.INVALID_PASSWORD) {
                     loginPassword.setError("Please enter your Geeksreads Login Password");
                     sForTest = "Please enter your Geeksreads Login Password";
                 }
@@ -114,7 +136,7 @@ public class LoginActivity extends AppCompatActivity {
                     }
 
                     /* URL For Login API */
-                    String urlService = "http://geeksreads.000webhostapp.com/Morsy/Signin.php";
+                    String urlService = "https://geeksreads.herokuapp.com/api/auth/signin";
 
                     /* Creating a new instance of Sign in Class */
                     SignIn signIn = new SignIn();
@@ -130,7 +152,7 @@ public class LoginActivity extends AppCompatActivity {
      * The Parameters are host Url and toSend Data.
      */
     public class SignIn extends AsyncTask<String, Void, String> {
-        static final String REQUEST_METHOD = "GET";
+        static final String REQUEST_METHOD = "POST";
         JSONObject mJSON = new JSONObject();
 
         @Override
@@ -152,26 +174,44 @@ public class LoginActivity extends AppCompatActivity {
                 http.setRequestMethod(REQUEST_METHOD);
                 http.setDoInput(true);
                 http.setDoOutput(true);
+                http.setRequestProperty("content-type", "application/json");
 
                 /* A Stream object to hold the sent data to API Call */
                 OutputStream ops = http.getOutputStream();
                 BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(ops, StandardCharsets.UTF_8));
-                String data = URLEncoder.encode("Json", "UTF-8") + "=" + URLEncoder.encode(JSONString, "UTF-8");
+                //String data = URLEncoder.encode(JSONString, "UTF-8");
+                String data = JSONString;
 
                 writer.write(data);
                 writer.flush();
                 writer.close();
                 ops.close();
-
-                /* A Stream object to get the returned data from API Call */
-                InputStream ips = http.getInputStream();
-                BufferedReader reader = new BufferedReader(new InputStreamReader(ips, StandardCharsets.ISO_8859_1));
-                String line = "";
-                while ((line = reader.readLine()) != null) {
-                    result += line;
+                switch (String.valueOf(http.getResponseCode()))
+                {
+                    case "200":
+                        /* A Stream object to get the returned data from API Call */
+                        InputStream ips = http.getInputStream();
+                        BufferedReader reader = new BufferedReader(new InputStreamReader(ips, StandardCharsets.ISO_8859_1));
+                        String line = "";
+                        //boolean started = false;
+                        while ((line = reader.readLine()) != null) {
+                            //   if ()
+                            result += line;
+                        }
+                        reader.close();
+                        ips.close();
+                        break;
+                    case "400":
+                        result = "{\"ReturnMsg\":\"Invalid email or password.\"}";
+                        break;
+                    case "401":
+                        result = "{\"ReturnMsg\":\"Your account has not been verified.\"}";
+                        break;
+                    default:
+                        break;
                 }
-                reader.close();
-                ips.close();
+
+
                 http.disconnect();
                 return result;
 
@@ -205,21 +245,22 @@ public class LoginActivity extends AppCompatActivity {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         try {
-                            if (jsonObject.getString("ReturnMsg").contains("Login Succeeded")) {
+                            if (jsonObject.getString("ReturnMsg").contains("Successful")) {
                                 final EditText Email = findViewById((R.id.EmailTxt));
                                 final EditText Password = findViewById(R.id.PasswordTxt);
                                 Email.setText("");
                                 Password.setText("");
 
                                 /* Storing returned Token and User ID */
-                                sCurrentToken = jsonObject.getString("ReturnToken");
-                                sCurrentUserID = jsonObject.getString("UserID");
+                                sCurrentToken = jsonObject.getString("Token");
+                                sCurrentUserID = jsonObject.getString("UserId");
 
                                 /* Go to Next Activity Layout */
                                 Intent myIntent = new Intent(LoginActivity.this, FeedActivity.class);
                                 startActivity(myIntent);
                             } else {
                                 /* If Login didn't succeed, Stay Here in the same Activity and Do Nothing */
+                                //Toast.makeText(mContext, "You have entered a wrong username or password!", Toast.LENGTH_SHORT).show();
                             }
                         } catch (JSONException e) {
                             e.printStackTrace();

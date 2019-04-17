@@ -135,7 +135,7 @@ public class SignupActivity extends AppCompatActivity {
                         e.printStackTrace();
                     }
                     /* URL For Sign up API */
-                    String urlService = "http://geeksreads.000webhostapp.com/Morsy/Signup.php";
+                    String urlService = "https://geeksreads.herokuapp.com/api/users/signup";
 
                     /* Creating a new instance of Sign up Class */
                     signUp signUp = new signUp();
@@ -152,7 +152,7 @@ public class SignupActivity extends AppCompatActivity {
      * The Parameters are host Url and toSend Data.
      */
     public class signUp extends AsyncTask<String, Void, String> {
-        static final String REQUEST_METHOD = "GET";
+        static final String REQUEST_METHOD = "POST";
 
         @Override
         protected void onPreExecute() {
@@ -173,25 +173,42 @@ public class SignupActivity extends AppCompatActivity {
                 http.setRequestMethod(REQUEST_METHOD);
                 http.setDoInput(true);
                 http.setDoOutput(true);
+                http.setRequestProperty("content-type", "application/json");
                 /* A Stream object to hold the sent data to API Call */
                 OutputStream ops = http.getOutputStream();
                 BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(ops, StandardCharsets.UTF_8));
-                String data = URLEncoder.encode("Json", "UTF-8") + "=" + URLEncoder.encode(JSONString, "UTF-8");
+                String data = JSONString;
 
                 writer.write(data);
                 writer.flush();
                 writer.close();
                 ops.close();
 
-                /* A Stream object to get the returned data from API Call */
-                InputStream ips = http.getInputStream();
-                BufferedReader reader = new BufferedReader(new InputStreamReader(ips, StandardCharsets.ISO_8859_1));
-                String line = "";
-                while ((line = reader.readLine()) != null) {
-                    result += line;
+                switch (String.valueOf(http.getResponseCode()))
+                {
+                    case "200":
+                        /* A Stream object to get the returned data from API Call */
+                        InputStream ips = http.getInputStream();
+                        BufferedReader reader = new BufferedReader(new InputStreamReader(ips, StandardCharsets.ISO_8859_1));
+                        String line = "";
+                        //boolean started = false;
+                        while ((line = reader.readLine()) != null) {
+                            //   if ()
+                            result += line;
+                        }
+                        reader.close();
+                        ips.close();
+                        break;
+                    case "400":
+                        result = "{\"ReturnMsg\":\"User already registered.\"}";
+                        break;
+                    default:
+                        break;
                 }
-                reader.close();
-                ips.close();
+
+                /* A Stream object to get the returned data from API Call */
+                //http.getResponseMessage();
+
                 http.disconnect();
                 return result;
             }
