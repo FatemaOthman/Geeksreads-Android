@@ -237,9 +237,9 @@ public class AuthorActivity extends AppCompatActivity implements NavigationView.
 
     /**
     * authorFollowUnFollow: gets called whenever follow/unfollow button is pressed, is supposed to change following status
-    * @param Follow :bolean representing the following status
+    * @param Follow :boolean representing the following status
 
-    * @return boolean representing the new following state after the click action is done
+    * @return String representing the new following state after the click action is done
      */
     public static String authorFollowUnFollow( boolean Follow)
     {
