@@ -21,7 +21,7 @@
         <activity android:name=".Profile" />
         <activity android:name=".BookActivity" />
         <activity android:name=".SignupActivity" />
-        <activity android:name=".AuthorActivity">
+        <activity android:name=".LoginActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -39,7 +39,7 @@
             android:name=".FollowActivity"
             android:parentActivityName=".Profile" />
         <activity
-            android:name=".LoginActivity"
+            android:name=".AuthorActivity"
             android:isScrollContainer="true"
             android:parentActivityName=".SignupActivity"
             android:windowSoftInputMode="adjustPan" />

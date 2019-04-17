@@ -166,6 +166,15 @@ public class BookActivity extends AppCompatActivity implements NavigationView.On
             }
         });
 
+        bookAuthor.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent myIntent = new Intent(BookActivity.this, AuthorActivity.class);
+                startActivity(myIntent);
+            }
+        });
+
+
         /* Creating Json Object to be send */
         JSONObject jsonObject = new JSONObject();
         try {
