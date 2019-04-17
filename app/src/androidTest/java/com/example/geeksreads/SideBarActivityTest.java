@@ -22,13 +22,9 @@ public class SideBarActivityTest {
     @Rule
     public ActivityTestRule<SideBarActivity> menuActivityTestRule =
             new ActivityTestRule<SideBarActivity>(SideBarActivity.class);
-    private SideBarActivity mActivity = null;
 
 
-    @Before
-    public void setUp() {
-        mActivity = menuActivityTestRule.getActivity();
-    }
+
 
     @Test
     public void Test() {
@@ -53,10 +49,6 @@ public class SideBarActivityTest {
 
     }
 
-    @After
-    public void tearDown() {
-        mActivity = null;
-    }
 
 
 }
