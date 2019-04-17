@@ -60,6 +60,10 @@ public class Profile extends AppCompatActivity implements NavigationView.OnNavig
     MenuItem FollowItem;
     MenuItem BookItem;
 
+    public static String getCurrentID() {
+        return CurrentUser;
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -482,7 +486,4 @@ public class Profile extends AppCompatActivity implements NavigationView.OnNavig
         }
 
     }
-
-
-
 }

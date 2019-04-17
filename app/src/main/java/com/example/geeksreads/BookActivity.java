@@ -11,8 +11,10 @@ import android.graphics.Color;
 import android.graphics.PorterDuff;
 import android.graphics.drawable.LayerDrawable;
 import android.os.AsyncTask;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.annotation.RequiresApi;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
@@ -82,6 +84,7 @@ public class BookActivity extends AppCompatActivity implements NavigationView.On
      * @param savedInstanceState
      * Overrided Function to decide what will appear after starting this Activity.
      */
+    @RequiresApi(api = Build.VERSION_CODES.KITKAT)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -317,6 +320,7 @@ public class BookActivity extends AppCompatActivity implements NavigationView.On
             mProgressBar.setVisibility(View.VISIBLE);
         }
 
+        @RequiresApi(api = Build.VERSION_CODES.KITKAT)
         @Override
         protected String doInBackground(String... params) {
             String UrlString = params[0];
@@ -486,6 +490,7 @@ public class BookActivity extends AppCompatActivity implements NavigationView.On
             dialog.setTitle("Connection Status");
         }
 
+        @RequiresApi(api = Build.VERSION_CODES.KITKAT)
         @Override
         protected String doInBackground(String... params) {
             String UrlString = params[0];

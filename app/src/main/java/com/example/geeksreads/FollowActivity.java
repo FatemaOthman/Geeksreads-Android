@@ -71,4 +71,6 @@ public class FollowActivity extends AppCompatActivity {
         adapter.addFragment(new Following_Fragment(), "Following");
         viewPager.setAdapter(adapter);
     }
+
+
 }

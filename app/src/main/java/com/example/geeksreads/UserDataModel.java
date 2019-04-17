@@ -1,7 +1,5 @@
 package com.example.geeksreads;
 
-import android.util.Log;
-
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -28,7 +26,6 @@ public class UserDataModel {
             DummyUser.Picture_Url = jsonObject.getString("photourl");
             DummyUser.User_Name = jsonObject.getString("name");
 
-            Log.i("AMR", "DummyUser: " + DummyUser);
 
         } catch (JSONException e) {
             e.printStackTrace();

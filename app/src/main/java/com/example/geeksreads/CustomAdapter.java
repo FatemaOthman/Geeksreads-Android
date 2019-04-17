@@ -21,10 +21,9 @@ import java.util.ArrayList;
 public class CustomAdapter extends ArrayAdapter<UserDataModel> implements View.OnClickListener {
 
     Context mContext;
-    private ViewHolder viewHolder; // view lookup cache stored in tag
     private ArrayList<UserDataModel> dataSet;
 
-    public CustomAdapter(ArrayList<UserDataModel> data, Context context) {
+    CustomAdapter(ArrayList<UserDataModel> data, Context context) {
         super(context, R.layout.single_follow, data);
         this.dataSet = data;
         this.mContext = context;
@@ -47,6 +46,8 @@ public class CustomAdapter extends ArrayAdapter<UserDataModel> implements View.O
         FixImagePosition holder = new FixImagePosition();
 
 
+        // view lookup cache stored in tag
+        ViewHolder viewHolder;
         if (convertView == null) {
 
 
@@ -67,7 +68,7 @@ public class CustomAdapter extends ArrayAdapter<UserDataModel> implements View.O
         }
 
 
-
+        assert dataModel != null;
         viewHolder.txtName.setText(dataModel.getName());
         CustomAdapter.GetImage Pic = new CustomAdapter.GetImage(position, holder);
         Pic.execute(dataModel.getPicLink());
@@ -83,7 +84,7 @@ public class CustomAdapter extends ArrayAdapter<UserDataModel> implements View.O
     }
 
     private static class FixImagePosition {
-        public ImageView Cover;
+        ImageView Cover;
         public int position;
     }
 
@@ -95,7 +96,7 @@ public class CustomAdapter extends ArrayAdapter<UserDataModel> implements View.O
         private int mPosition;
         private FixImagePosition mBookCover;
 
-        public GetImage(int position, FixImagePosition holder) {
+        GetImage(int position, FixImagePosition holder) {
             mPosition = position;
             mBookCover = holder;
         }

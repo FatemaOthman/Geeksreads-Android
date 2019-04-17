@@ -15,6 +15,7 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -121,24 +122,26 @@ public class OtherProfileActivity extends AppCompatActivity implements Navigatio
                 startActivity(mIntent);
             }
         });
+
         JSONObject mJSON = new JSONObject();
         String UrlSideBar = "http://geeksreads.000webhostapp.com/Fatema/SideBar.php";
         GetSideBarDetails getSideBarDetails = new GetSideBarDetails();
         getSideBarDetails.execute(UrlSideBar, mJSON.toString());
 
-
+        ///////////////////////////////////////////////////////
         OtherUserPhoto = findViewById(R.id.UserProfilePhoto);
         UserName = findViewById(R.id.OtherUserName);
         BooksCount = findViewById(R.id.OtherNumberBooks);
         BookShelf = findViewById(R.id.OtherUserBookList);
         FollowButton = findViewById(R.id.FollowButton);
-        //In my code here, I am not sending any data to the backend:
+
         JSONObject JSON = new JSONObject();
         final JSONObject jsonObject = new JSONObject();
         String ID;
         try {
-            ID = getIntent().getStringExtra("UserId");
+            ID = getIntent().getStringExtra("FollowId");
             JSON.put("FollowId", ID);
+
             //TODO: Remove the following hardcoded ID line when merging.
             ID = "value";
             jsonObject.put("FollowId", ID);
@@ -150,6 +153,7 @@ public class OtherProfileActivity extends AppCompatActivity implements Navigatio
         String UrlService = "http://geeksreads.000webhostapp.com/Amr/OtherUserProfile.php";
         OtherProfileActivity.GetOtherProfileDetails MyProfile = new OtherProfileActivity.GetOtherProfileDetails();
         MyProfile.execute(UrlService, JSON.toString());
+
         /////////////////////////////////////////////////////
 
         final String SecondUrlService = "http://geeksreads.000webhostapp.com/Shrouk/ReadingList.php";
@@ -157,29 +161,40 @@ public class OtherProfileActivity extends AppCompatActivity implements Navigatio
         TheBooks.execute(SecondUrlService, jsonObject.toString());
         /////////////////////////////////////////////////////
 
+        final String FollowRequest = "http://geeksreads.000webhostapp.com/Amr/Follow.php";
+        final String UnFollowRequest = "http://geeksreads.000webhostapp.com/Amr/UnFollow.php";
+
+        final JSONObject FollowJson = new JSONObject();
+        try {
+            ID = getIntent().getStringExtra("FollowId");
+            FollowJson.put("myuserId", ID);
+            ID = getIntent().getStringExtra("FollowId");
+            FollowJson.put("userId_tobefollowed", ID);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+
+
         FollowButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                //TODO: Implement the function that handles the requests for follow/unfollow action.
 
+                if (FollowButton.getText().toString().equals("Un-Follow")) {
+
+                    OtherProfileActivity.UnFollowUser TestObject = new OtherProfileActivity.UnFollowUser();
+                    TestObject.execute(UnFollowRequest, FollowJson.toString());
+
+                } else {
+
+                    OtherProfileActivity.FollowUser TestObject = new OtherProfileActivity.FollowUser();
+                    TestObject.execute(FollowRequest, FollowJson.toString());
+
+                }
             }
         });
 
 
-    }
-
-
-    /**
-     * Overrided Function to decide what to do ok pressing "Back" key.
-     */
-    @Override
-    public void onBackPressed() {
-        DrawerLayout drawer = findViewById(R.id.drawer_layout);
-        if (drawer.isDrawerOpen(GravityCompat.START)) {
-            drawer.closeDrawer(GravityCompat.START);
-        } else {
-            super.onBackPressed();
-        }
     }
 
     /**
@@ -194,7 +209,7 @@ public class OtherProfileActivity extends AppCompatActivity implements Navigatio
         MenuItem item = menu.findItem(R.id.menuSearch);
         SearchView searchView = (SearchView) item.getActionView();
         searchView.setIconifiedByDefault(false);
-        searchView.setMaxWidth(800);
+        searchView.setMaxWidth(750);
         searchView.setQueryHint("Search books");
         searchView.setBackgroundColor(getResources().getColor(R.color.white));
         MenuItem item1 = menu.findItem(R.id.NotificationButton);
@@ -207,6 +222,201 @@ public class OtherProfileActivity extends AppCompatActivity implements Navigatio
             }
         });
         return super.onCreateOptionsMenu(menu);
+    }
+
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    public class UnFollowUser extends AsyncTask<String, Void, String> {
+        public static final String REQUEST_METHOD = "POST";
+
+        AlertDialog dialog;
+
+        @Override
+        protected void onPreExecute() {
+            dialog = new AlertDialog.Builder(mContext).create();
+            dialog.setTitle("Connection Status");
+        }
+
+        @Override
+        protected String doInBackground(String... params) {
+            String UrlString = params[0];
+            String JSONString = params[1];
+            String result = "";
+
+            try {
+                //Create a URL object holding our url
+                URL url = new URL(UrlString);
+                HttpURLConnection http = (HttpURLConnection) url.openConnection();
+                http.setRequestMethod(REQUEST_METHOD);
+                http.setDoInput(true);
+                http.setDoOutput(true);
+
+                OutputStream ops = http.getOutputStream();
+                BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(ops, StandardCharsets.UTF_8));
+                String data = URLEncoder.encode("myuserId", "UTF-8") + "=" + URLEncoder.encode(JSONString, "UTF-8");
+                writer.write(data);
+                writer.flush();
+                writer.close();
+                ops.close();
+
+
+                /////////////////////////////////////////
+                //Create a new InputStreamReader
+                InputStream ips = http.getInputStream();
+                BufferedReader reader = new BufferedReader(new InputStreamReader(ips, StandardCharsets.ISO_8859_1));
+                String line = "";
+                while ((line = reader.readLine()) != null) {
+                    result += line;
+                }
+                reader.close();
+                ips.close();
+                http.disconnect();
+
+                return result;
+
+            } catch (MalformedURLException e) {
+                result = e.getMessage();
+            } catch (IOException e) {
+                result = e.getMessage();
+            }
+            return result;
+        }
+
+        /**
+         * onPostExecute: Takes the string result and treates it as a json object
+         * to set data of:
+         * -Follow Button
+         *
+         * @param result : The result containing all the passed data from backend.
+         */
+        @SuppressLint("SetTextI18n")
+        protected void onPostExecute(String result) {
+            if (result == null) {
+                Toast.makeText(mContext, "Unable to connect to server", Toast.LENGTH_SHORT).show();
+                return;
+            }
+            try {
+                dialog.setMessage("Done");
+                //dialog.show();
+
+
+                JSONObject jsonObject = new JSONObject(result);
+                //  Log.i("AMR","Result: "+result);
+
+                if (jsonObject.getString("Follow").equals("true"))
+                    FollowButton.setText("Follow");
+                else
+                    FollowButton.setText("Un-Follow");
+
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+        }
+
+    }
+
+
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    /**
+     * Overrided Function to decide what to do ok pressing "Back" key.
+     */
+    @Override
+    public void onBackPressed() {
+        DrawerLayout drawer = findViewById(R.id.drawer_layout);
+        if (drawer.isDrawerOpen(GravityCompat.START)) {
+            drawer.closeDrawer(GravityCompat.START);
+        } else {
+            super.onBackPressed();
+        }
+    }
+
+    public class FollowUser extends AsyncTask<String, Void, String> {
+        public static final String REQUEST_METHOD = "POST";
+
+        AlertDialog dialog;
+
+        @Override
+        protected void onPreExecute() {
+            dialog = new AlertDialog.Builder(mContext).create();
+            dialog.setTitle("Connection Status");
+        }
+
+        @Override
+        protected String doInBackground(String... params) {
+            String UrlString = params[0];
+            String JSONString = params[1];
+            String result = "";
+
+            try {
+                //Create a URL object holding our url
+                URL url = new URL(UrlString);
+                HttpURLConnection http = (HttpURLConnection) url.openConnection();
+                http.setRequestMethod(REQUEST_METHOD);
+                http.setDoInput(true);
+                http.setDoOutput(true);
+
+                OutputStream ops = http.getOutputStream();
+                BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(ops, StandardCharsets.UTF_8));
+                String data = URLEncoder.encode("myuserId", "UTF-8") + "=" + URLEncoder.encode(JSONString, "UTF-8");
+                writer.write(data);
+                writer.flush();
+
+                writer.close();
+                ops.close();
+
+
+                /////////////////////////////////////////
+                //Create a new InputStreamReader
+                InputStream ips = http.getInputStream();
+                BufferedReader reader = new BufferedReader(new InputStreamReader(ips, StandardCharsets.ISO_8859_1));
+                String line = "";
+                while ((line = reader.readLine()) != null) {
+                    result += line;
+                }
+                reader.close();
+                ips.close();
+                http.disconnect();
+
+                return result;
+
+            } catch (MalformedURLException e) {
+                result = e.getMessage();
+            } catch (IOException e) {
+                result = e.getMessage();
+            }
+            return result;
+        }
+
+        /**
+         * onPostExecute: Takes the string result and treates it as a json object
+         * to set data of:
+         * -Follow Button
+         *
+         * @param result : The result containing all the passed data from backend.
+         */
+        @SuppressLint("SetTextI18n")
+        protected void onPostExecute(String result) {
+            if (result == null) {
+                Toast.makeText(mContext, "Unable to connect to server", Toast.LENGTH_SHORT).show();
+                return;
+            }
+            try {
+                dialog.setMessage("Done");
+                //dialog.show();
+
+                Log.i("TEST", "Result: " + result);
+                JSONObject jsonObject = new JSONObject(result);
+
+                if (jsonObject.getString("Follow").equals("true"))
+                    FollowButton.setText("Un-Follow");
+                else
+                    FollowButton.setText("Follow");
+
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+        }
+
     }
 
     /**
@@ -266,7 +476,6 @@ public class OtherProfileActivity extends AppCompatActivity implements Navigatio
 
         }
     }
-
 
     /**
      * Class that get the data from host and Add it to its views.
@@ -350,16 +559,17 @@ public class OtherProfileActivity extends AppCompatActivity implements Navigatio
 
 
                 JSONObject jsonObject = new JSONObject(result);
-
+                //  Log.i("AMR","Result: "+result);
                 OtherProfileActivity.GetOtherUserPicture Pic = new OtherProfileActivity.GetOtherUserPicture();
                 Pic.execute(jsonObject.getString("photourl"));
 
                 UserName.setText(jsonObject.getString("UserNameData"));
                 aForTestUserName = UserName.getText().toString();
+                // Log.i("TEST","USERNAME"+aForTestUserName);
                 BooksCount.setText(jsonObject.getString("CountBooks") + " " + "Books");
                 aForTestBooksCount = BooksCount.getText().toString();
 
-                if (jsonObject.getString("FollowStatus").equals("True"))
+                if (jsonObject.getString("FollowStatus").equals("true"))
                     FollowButton.setText("Un-Follow");
                 else
                     FollowButton.setText("Follow");

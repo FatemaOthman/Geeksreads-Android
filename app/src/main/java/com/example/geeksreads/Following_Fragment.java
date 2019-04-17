@@ -49,6 +49,7 @@ public class Following_Fragment extends Fragment {
         mContext = getContext();
         dataModels = new ArrayList<>();
 
+        final String CurrentUser = FollowActivity.getCurrentID();
         //In my code here, I am sending the id of the user
         JSONObject JSON = new JSONObject();
         try {
@@ -71,9 +72,9 @@ public class Following_Fragment extends Fragment {
                 final UserDataModel dataModel = dataModels.get(position);
 
                 Intent myIntent = new Intent(getActivity(), OtherProfileActivity.class);
-                myIntent.putExtra("UserId", dataModel.getID());
+                myIntent.putExtra("UserId", CurrentUser);
+                myIntent.putExtra("FollowId", dataModel.getID());
                 startActivity(myIntent);
-
             }
         });
 

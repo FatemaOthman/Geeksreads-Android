@@ -9,7 +9,6 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AlertDialog;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -40,7 +39,6 @@ public class Followers_Fragment extends Fragment {
     ListView FollowersList;
     Context mContext;
     ArrayList<UserDataModel> dataModels;
-    private CustomAdapter FollowerAdapter;
 
     @Nullable
     @Override
@@ -50,7 +48,7 @@ public class Followers_Fragment extends Fragment {
         ///////////////////////////////////////////////////////////////////////
         mContext = getContext();
         dataModels = new ArrayList<>();
-
+        final String CurrentUser = FollowActivity.getCurrentID();
         //In my code here, I am sending the id of the user
         JSONObject JSON = new JSONObject();
         try {
@@ -60,7 +58,6 @@ public class Followers_Fragment extends Fragment {
         }
         // Calling Async Task with my server url
         String UrlService = "http://geeksreads.000webhostapp.com/Amr/GetFollowers.php";
-        Log.i("AMR", UrlService);
         Followers_Fragment.GetDetails MyFollowers = new GetDetails();
         MyFollowers.execute(UrlService, JSON.toString());
 
@@ -72,8 +69,8 @@ public class Followers_Fragment extends Fragment {
                 final UserDataModel dataModel = dataModels.get(position);
 
                 Intent myIntent = new Intent(getActivity(), OtherProfileActivity.class);
-                Log.i("AMR", "SentID: " + dataModel.getID());
-                myIntent.putExtra("UserId", dataModel.getID());
+                myIntent.putExtra("UserId", CurrentUser);
+                myIntent.putExtra("FollowId", dataModel.getID());
                 startActivity(myIntent);
 
             }
@@ -156,9 +153,9 @@ public class Followers_Fragment extends Fragment {
 
                 dataModels = UserDataModel.fromJson(jsonArr);
                 //Data is sent and passed correctly inside the model.
-                FollowerAdapter = new CustomAdapter(dataModels, mContext.getApplicationContext());
-                FollowersList.setAdapter(FollowerAdapter);
-                FollowerAdapter.notifyDataSetChanged();
+                CustomAdapter followerAdapter = new CustomAdapter(dataModels, mContext.getApplicationContext());
+                FollowersList.setAdapter(followerAdapter);
+                followerAdapter.notifyDataSetChanged();
             } catch (JSONException e) {
                 e.printStackTrace();
             }
