@@ -77,6 +77,12 @@ public class Profile extends AppCompatActivity implements NavigationView.OnNavig
         //////////////////////////////////////////////////////
         Toolbar myToolbar = findViewById(R.id.toolbar);
         setSupportActionBar(myToolbar);
+        myToolbar.setNavigationOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                finish();
+            }
+        });
         getSupportActionBar().setTitle("Profile");
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         DrawerLayout drawer = findViewById(R.id.drawer_layout);
