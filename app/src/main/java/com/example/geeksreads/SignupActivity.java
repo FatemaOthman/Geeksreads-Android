@@ -51,6 +51,48 @@ public class SignupActivity extends AppCompatActivity {
      */
     private Context mContext;
 
+    /* Enum for all types of validation errors in sign up data */
+    enum signUpValidationErrors
+    {
+        INVALID_USERNAME_LENGTH,
+        INVALID_EMAIL,
+        NEW_PASSWORD_LESS_THAN_SIX_CHARS,
+        NEW_PASSWORD_HAS_NO_NUMBERS,
+        NEW_PASSWORD_HAS_NO_LOWERCASE,
+        NEW_PASSWORD_HAS_NO_UPPERCASE,
+        NEW_PASSWORD_DONT_MATCH,
+        NO_ERRORS,
+    }
+
+    /* Function to check the validity of Data sent to Sign Up API */
+    signUpValidationErrors validateSignUpData(String fullNameStr, String emailStr, String passwordStr, String confPasswordStr)
+    {
+        /* If the user entered an invalid Username */
+        if (fullNameStr.length() < 3 || fullNameStr.length() > 50) {
+            return signUpValidationErrors.INVALID_USERNAME_LENGTH;
+        }
+        /* If the user entered an invalid Email Address */
+        else if (!emailStr.matches(".+[@].+[.].+")) {
+            return signUpValidationErrors.INVALID_EMAIL;
+        }
+        /* If the user entered an invalid Password */
+        else if (passwordStr.length() < 6) {
+            return signUpValidationErrors.NEW_PASSWORD_LESS_THAN_SIX_CHARS;
+        } else if (!passwordStr.matches(".*[0-9].*")) {
+            return signUpValidationErrors.NEW_PASSWORD_HAS_NO_NUMBERS;
+        } else if (!passwordStr.matches(".*[a-z].*")) {
+            return signUpValidationErrors.NEW_PASSWORD_HAS_NO_LOWERCASE;
+        } else if (!passwordStr.matches(".*[A-Z].*")) {
+            return signUpValidationErrors.NEW_PASSWORD_HAS_NO_UPPERCASE;
+        } else if (!passwordStr.equals(confPasswordStr)) {
+            return signUpValidationErrors.NEW_PASSWORD_DONT_MATCH;
+        }
+        /* If the user entered a valid username, email and password */
+        else {
+            return signUpValidationErrors.NO_ERRORS;
+        }
+    }
+
     /**
      * Function for Starting Logic Actions after Creating the Layout
      */
@@ -86,62 +128,68 @@ public class SignupActivity extends AppCompatActivity {
                 fullNameStr = fullName.getText().toString();
                 emailStr = email.getText().toString();
                 passwordStr = password.getText().toString();
+                String confPasswordStr = confPassword.getText().toString();
 
-                /* If the user entered an invalid Username */
-                if (fullNameStr.length() < 3 || fullNameStr.length() > 50) {
-                    fullName.setError("Username length should be 3 characters minimum and 50 characters maximum");
-                    sForTest = "Username length should be 3 characters minimum and 50 characters maximum";
-                }
-                /* If the user entered an invalid Email Address */
-                else if (!emailStr.matches(".+[@].+[.].+")) {
-                    email.setError("Please enter a valid Email");
-                    sForTest = "Please enter a valid Email";
-                }
-                /* If the user entered an invalid Password */
-                else if (passwordStr.length() < 6) {
-                    password.setError("Password should be 6 characters or more");
-                    password.setText("");
-                    confPassword.setText("");
-                    sForTest = "Password should be 6 characters or more";
-                } else if (!passwordStr.matches(".*[0-9].*")) {
-                    password.setError("Password should contain numbers");
-                    password.setText("");
-                    confPassword.setText("");
-                    sForTest = "Password should contain numbers";
-                } else if (!passwordStr.matches(".*[a-z].*")) {
-                    password.setError("Password should contain lower case letters");
-                    password.setText("");
-                    confPassword.setText("");
-                    sForTest = "Password should contain lower case letters";
-                } else if (!passwordStr.matches(".*[A-Z].*")) {
-                    password.setError("Password should contain upper case letters");
-                    password.setText("");
-                    confPassword.setText("");
-                    sForTest = "Password should contain upper case letters";
-                } else if (!passwordStr.equals(confPassword.getText().toString())) {
-                    confPassword.setError("Passwords don't match");
-                    password.setText("");
-                    confPassword.setText("");
-                    sForTest = "Passwords don't match";
-                }
-                /* If the user entered a valid username, email and password */
-                else {
-                    JSONObject JSON = new JSONObject();
-                    try {
-                        JSON.put("UserName", fullNameStr);
-                        JSON.put("UserEmail", emailStr);
-                        JSON.put("UserPassword", passwordStr);
-                    } catch (JSONException e) {
-                        e.printStackTrace();
-                    }
-                    /* URL For Sign up API */
-                    String urlService = "https://geeksreads.herokuapp.com/api/users/signup";
+                signUpValidationErrors signUpValidationError = validateSignUpData(fullNameStr, emailStr, passwordStr, confPasswordStr);
 
-                    /* Creating a new instance of Sign up Class */
-                    signUp signUp = new signUp();
-                    signUp.execute(urlService, JSON.toString());
-                }
+                switch (signUpValidationError)
+                {
+                    case INVALID_USERNAME_LENGTH:
+                        fullName.setError("Username length should be 3 characters minimum and 50 characters maximum");
+                        sForTest = "Username length should be 3 characters minimum and 50 characters maximum";
+                        break;
+                    case INVALID_EMAIL:
+                        email.setError("Please enter a valid Email");
+                        sForTest = "Please enter a valid Email";
+                        break;
+                    case NEW_PASSWORD_LESS_THAN_SIX_CHARS:
+                        password.setError("Password should be 6 characters or more");
+                        password.setText("");
+                        confPassword.setText("");
+                        sForTest = "Password should be 6 characters or more";
+                        break;
+                    case NEW_PASSWORD_HAS_NO_NUMBERS:
+                        password.setError("Password should contain numbers");
+                        password.setText("");
+                        confPassword.setText("");
+                        sForTest = "Password should contain numbers";
+                        break;
+                    case NEW_PASSWORD_HAS_NO_LOWERCASE:
+                        password.setError("Password should contain lower case letters");
+                        password.setText("");
+                        confPassword.setText("");
+                        sForTest = "Password should contain lower case letters";
+                        break;
+                    case NEW_PASSWORD_HAS_NO_UPPERCASE:
+                        password.setError("Password should contain upper case letters");
+                        password.setText("");
+                        confPassword.setText("");
+                        sForTest = "Password should contain upper case letters";
+                        break;
+                    case NEW_PASSWORD_DONT_MATCH:
+                        confPassword.setError("Passwords don't match");
+                        password.setText("");
+                        confPassword.setText("");
+                        sForTest = "Passwords don't match";
+                        break;
+                    case NO_ERRORS:
+                    default:
+                        JSONObject JSON = new JSONObject();
+                        try {
+                            JSON.put("UserName", fullNameStr);
+                            JSON.put("UserEmail", emailStr);
+                            JSON.put("UserPassword", passwordStr);
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                        /* URL For Sign up API */
+                        String urlService = "https://geeksreads.herokuapp.com/api/users/signup";
 
+                        /* Creating a new instance of Sign up Class */
+                        signUp signUp = new signUp();
+                        signUp.execute(urlService, JSON.toString());
+                        break;
+                }
             }
         });
 
@@ -193,7 +241,6 @@ public class SignupActivity extends AppCompatActivity {
                         String line = "";
                         //boolean started = false;
                         while ((line = reader.readLine()) != null) {
-                            //   if ()
                             result += line;
                         }
                         reader.close();

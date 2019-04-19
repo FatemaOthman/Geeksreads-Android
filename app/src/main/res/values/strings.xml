@@ -275,4 +275,5 @@
         <item>Zimbabwe</item>
     </string-array>
     <string name="title_activity_feed">FeedActivity</string>
+    <string name="SignOutTxt">Thank you for using Geekreads. You have been signed out. To Log in again, press the Login button and to create a new account, press Sign up button.</string>
 </resources>

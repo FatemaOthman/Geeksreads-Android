@@ -38,6 +38,10 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.Objects;
 
 public class EditProfileActivity extends AppCompatActivity {
@@ -46,17 +50,74 @@ public class EditProfileActivity extends AppCompatActivity {
      * Global Public Static Variables used for Testing
      */
     public static String sForTest;
+
+    /**
+     * Global Public Static Variables used for Testing Email Verification Step
+     */
+    public static String sForTest_OriginalEmail;
+
     /**
      * Global Variables to Store Context of this Activity itself
      */
     private Context mContext;
 
+    /* Function to check the validity of the input date string with a format of DD/MM/YYYY and before 5 Years*/
+    public boolean isThisDateValid(String dateToValidate) {
+
+        String dateFormat = "DD/MM/YYYY";
+        SimpleDateFormat sdf = new SimpleDateFormat(dateFormat);
+        sdf.setLenient(false);
+        try {
+            // if not valid, it will throw ParseException
+            Date date = sdf.parse(dateToValidate);
+
+            // current date minus 5 years
+            Calendar currentDateBefore5Years = Calendar.getInstance();
+            currentDateBefore5Years.add(Calendar.YEAR, -5);
+
+            if (date.after(currentDateBefore5Years.getTime())) {
+                //ok everything is fine, date in range
+                return false;
+            } else {
+                return true;
+            }
+
+        } catch (ParseException e) {
+
+            e.printStackTrace();
+            return false;
+        }
+    }
+
+    enum editProfileValidationErrors
+    {
+        INVALID_USERNAME_LENGTH,
+        INVALID_EMAIL,
+        INVALID_BIRTH_DATE,
+        NO_ERRORS
+    }
+
+    /* Function to check the validity of inputs to Edit User API */
+    editProfileValidationErrors validateEditProfileData(String userNameStr, String emailStr, String birthDateStr)
+    {
+        /* If the user entered an invalid Username */
+        if (userNameStr.length() < 3 || userNameStr.length() > 50) {
+            return editProfileValidationErrors.INVALID_USERNAME_LENGTH;
+        }
+        /* If the user entered an invalid Email Address */
+        else if (!emailStr.matches(".+[@].+[.].+")) {
+            return editProfileValidationErrors.INVALID_EMAIL;
+        }
+        else if (isThisDateValid(birthDateStr)) {
+            return editProfileValidationErrors.INVALID_BIRTH_DATE;
+        }
+        /* If the user entered a valid username, email and password */
+        else {
+            return editProfileValidationErrors.NO_ERRORS;
+        }
+    }
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        // TODO Change the below two lines after integration
-        LoginActivity.sCurrentUserID = "iiiidddd1142019";
-        LoginActivity.sCurrentToken = "xYzAbCdToKeN";
-
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_edit_profile);
 
@@ -72,28 +133,16 @@ public class EditProfileActivity extends AppCompatActivity {
         });
 
         mContext = this;
-
-        JSONObject mJSON = new JSONObject();
-        try {
-            mJSON.put("UserID", LoginActivity.sCurrentUserID);
-            mJSON.put("UserToken", LoginActivity.sCurrentToken);
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-
-        /* URL For Login API */
-        String urlService = "http://geeksreads.000webhostapp.com/Morsy/GetProfileDetails.php";
+        /* URL For Get Current User Info API */
+        String urlService = "https://geeksreads.herokuapp.com/api/users/me";
 
         /* Creating a new instance of Sign in Class */
         GetProfileData getProfileData = new GetProfileData();
-        getProfileData.execute(urlService, mJSON.toString());
+        getProfileData.execute(urlService, "");
 
-        final EditText fullNameTxt = findViewById(R.id.FullNameTxt);
         final EditText userNameTxt = findViewById(R.id.UserNameTxt);
         final EditText emailAddressTxt = findViewById(R.id.EmailAddressTxt);
         final EditText birthDateTxt = findViewById(R.id.BirthDate);
-        final Spinner countryList = findViewById(R.id.CountryList);
-        final Spinner genderList = findViewById(R.id.GenderList);
 
         Button changePassword = findViewById(R.id.ChangePasswordBtn);
 
@@ -110,56 +159,48 @@ public class EditProfileActivity extends AppCompatActivity {
         saveChange.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                String fullNameStr = fullNameTxt.getText().toString();
                 String emailStr = emailAddressTxt.getText().toString();
                 String userNameStr = userNameTxt.getText().toString();
                 String birthDateStr = birthDateTxt.getText().toString();
-                String countryStr = countryList.getSelectedItem().toString();
-                String genderStr = genderList.getSelectedItem().toString();
 
-                fullNameTxt.setError(null);
                 emailAddressTxt.setError(null);
                 userNameTxt.setError(null);
                 birthDateTxt.setError(null);
-                /* If the user entered an invalid Username */
-                if (userNameStr.length() < 3 || userNameStr.length() > 50) {
-                    userNameTxt.setError("Username length should be 3 characters minimum and 50 characters maximum");
-                    //sForTest = "Username length should be 3 characters minimum and 50 characters maximum";
-                }
-                /* If the user entered an invalid Email Address */
-                else if (!emailStr.matches(".+[@].+[.].+")) {
-                    emailAddressTxt.setError("Please enter a valid email");
-                    //sForTest = "Please enter a valid Email";
-                }
-                /* If the user entered an invalid Full Name */
-                else if (fullNameStr.length() < 5 || fullNameStr.length() > 100) {
-                    fullNameTxt.setError("Full name should be 5 characters minimum and 100 characters maximum");
-                    //sForTest = "Please enter a valid Email";
-                } else if (!birthDateStr.matches("[0-9]+[/][0-9]+[/][1][9][0-9][0-9]")) {
-                    birthDateTxt.setError("Please enter a valid date");
-                }
-                /* If the user entered a valid username, email and password */
-                else {
-                    JSONObject JSON = new JSONObject();
-                    try {
-                        JSON.put("UserID", LoginActivity.sCurrentUserID);
-                        JSON.put("UserToken", LoginActivity.sCurrentToken);
-                        JSON.put("FullName", fullNameStr);
-                        JSON.put("UserName", userNameStr);
-                        JSON.put("EmailAddress", emailStr);
-                        JSON.put("Gender", genderStr);
-                        JSON.put("Country", countryStr);
-                        JSON.put("BirthDate", birthDateStr);
 
-                    } catch (JSONException e) {
-                        e.printStackTrace();
-                    }
-                    /* URL For Sign up API */
-                    String urlService = "http://geeksreads.000webhostapp.com/Morsy/SetProfileDetails.php";
+                editProfileValidationErrors editProfileValidationError = validateEditProfileData(userNameStr, emailStr, birthDateStr);
 
-                    /* Creating a new instance of Sign up Class */
-                    SaveProfileData saveProfileData = new SaveProfileData();
-                    saveProfileData.execute(urlService, JSON.toString());
+                switch(editProfileValidationError)
+                {
+                    case INVALID_USERNAME_LENGTH:
+                        userNameTxt.setError("Username length should be 3 characters minimum and 50 characters maximum!");
+                        sForTest = "Username length should be 3 characters minimum and 50 characters maximum!";
+                        break;
+                    case INVALID_EMAIL:
+                        emailAddressTxt.setError("Please enter a valid email!");
+                        sForTest = "Please enter a valid email!";
+                        break;
+                    case INVALID_BIRTH_DATE:
+                        birthDateTxt.setError("Please enter a valid date!");
+                        sForTest = "Please enter a valid date!";
+                        break;
+                    case NO_ERRORS:
+                        JSONObject JSON = new JSONObject();
+                        try {
+                            JSON.put("NewUserName", userNameStr);
+                            //JSON.put("NewUserEmailAddress", emailStr);
+                            JSON.put("NewUserBirthDate", birthDateStr);
+                            //JSON.put("NewUserPhoto", userPhotoUrl); //todo upload photo
+
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                        /* URL For Update Current User Data API */
+                        String urlService = "https://geeksreads.herokuapp.com/api/users/update";
+
+                        /* Creating a new instance of Sign up Class */
+                        SaveProfileData saveProfileData = new SaveProfileData();
+                        saveProfileData.execute(urlService, JSON.toString());
+                        break;
                 }
             }
         });
@@ -240,26 +281,35 @@ public class EditProfileActivity extends AppCompatActivity {
                 http.setRequestMethod(REQUEST_METHOD);
                 http.setDoInput(true);
                 http.setDoOutput(true);
+                http.setRequestProperty("x-auth-token", LoginActivity.sCurrentToken);
 
                 /* A Stream object to hold the sent data to API Call */
                 OutputStream ops = http.getOutputStream();
                 BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(ops, StandardCharsets.UTF_8));
-                String data = URLEncoder.encode("Json", "UTF-8") + "=" + URLEncoder.encode(JSONString, "UTF-8");
-
-                writer.write(data);
+                writer.write("");
                 writer.flush();
                 writer.close();
                 ops.close();
 
-                /* A Stream object to get the returned data from API Call */
-                InputStream ips = http.getInputStream();
-                BufferedReader reader = new BufferedReader(new InputStreamReader(ips, StandardCharsets.ISO_8859_1));
-                String line = "";
-                while ((line = reader.readLine()) != null) {
-                    result += line;
+                switch (String.valueOf(http.getResponseCode()))
+                {
+                    case "200":
+                        /* A Stream object to get the returned data from API Call */
+                        InputStream ips = http.getInputStream();
+                        BufferedReader reader = new BufferedReader(new InputStreamReader(ips, StandardCharsets.ISO_8859_1));
+                        String line = "";
+                        //boolean started = false;
+                        while ((line = reader.readLine()) != null) {
+                            result += line;
+                        }
+                        reader.close();
+                        ips.close();
+                        break;
+                    default:
+                        result = "{\"ReturnMsg\":\"An Error Occurred!\"}";
+                        break;
                 }
-                reader.close();
-                ips.close();
+
                 http.disconnect();
                 return result;
 
@@ -282,35 +332,14 @@ public class EditProfileActivity extends AppCompatActivity {
                 /* Creating a JSON Object to parse the data in */
                 final JSONObject jsonObject = new JSONObject(result);
 
-                EditText fullNameTxt = findViewById(R.id.FullNameTxt);
                 EditText userNameTxt = findViewById(R.id.UserNameTxt);
                 EditText emailAddressTxt = findViewById(R.id.EmailAddressTxt);
                 EditText birthDateTxt = findViewById(R.id.BirthDate);
-                Spinner countryList = findViewById(R.id.CountryList);
-                Spinner genderList = findViewById(R.id.GenderList);
 
-                fullNameTxt.setText(jsonObject.getString("FullName"));
                 userNameTxt.setText(jsonObject.getString("UserName"));
                 emailAddressTxt.setText(jsonObject.getString("EmailAddress"));
+                sForTest_OriginalEmail = jsonObject.getString("EmailAddress");
                 birthDateTxt.setText(jsonObject.getString("BirthDate"));
-
-                String compareValue = jsonObject.getString("Country");
-                ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(mContext, R.array.Countries, android.R.layout.simple_spinner_item);
-                adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-                countryList.setAdapter(adapter);
-                if (compareValue != null) {
-                    int spinnerPosition = adapter.getPosition(compareValue);
-                    countryList.setSelection(spinnerPosition);
-                }
-
-                compareValue = jsonObject.getString("Gender");
-                ArrayAdapter<CharSequence> adapter2 = ArrayAdapter.createFromResource(mContext, R.array.Gender, android.R.layout.simple_spinner_item);
-                adapter2.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-                genderList.setAdapter(adapter2);
-                if (compareValue != null) {
-                    int spinnerPosition = adapter.getPosition(compareValue);
-                    genderList.setSelection(spinnerPosition);
-                }
 
                 GetPicture Pic = new GetPicture();
                 Pic.execute(jsonObject.getString("PhotoUrl"));
@@ -323,7 +352,7 @@ public class EditProfileActivity extends AppCompatActivity {
     }
 
     private class SaveProfileData extends AsyncTask<String, Void, String> {
-        static final String REQUEST_METHOD = "GET";
+        static final String REQUEST_METHOD = "POST";
         JSONObject mJSON = new JSONObject();
 
         @Override
@@ -345,29 +374,48 @@ public class EditProfileActivity extends AppCompatActivity {
                 http.setRequestMethod(REQUEST_METHOD);
                 http.setDoInput(true);
                 http.setDoOutput(true);
-
+                http.setRequestProperty("x-auth-token", LoginActivity.sCurrentToken);
                 /* A Stream object to hold the sent data to API Call */
                 OutputStream ops = http.getOutputStream();
                 BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(ops, StandardCharsets.UTF_8));
-                String data = URLEncoder.encode("Json", "UTF-8") + "=" + URLEncoder.encode(JSONString, "UTF-8");
+                String data = JSONString;
 
                 writer.write(data);
                 writer.flush();
                 writer.close();
                 ops.close();
+                switch (String.valueOf(http.getResponseCode()))
+                {
+                    case "200":
+                        /* A Stream object to get the returned data from API Call */
+                        InputStream ips = http.getInputStream();
+                        BufferedReader reader = new BufferedReader(new InputStreamReader(ips, StandardCharsets.ISO_8859_1));
+                        String line = "";
+                        //boolean started = false;
+                        while ((line = reader.readLine()) != null) {
+                            result += line;
+                        }
+                        reader.close();
+                        ips.close();
+                        if (result.contains("verification"))
+                        {
+                            result = "{\"ReturnMsg\":\"Your changes are saved successfully and a verification email has been sent to your new email address!\"}";
+                        }
+                        else if (result.contains("successfully"))
+                        {
+                            result = "{\"ReturnMsg\":\"Your changes are saved successfully!\"}";
+                        }
+                        else
+                        {
 
-                /* A Stream object to get the returned data from API Call */
-                InputStream ips = http.getInputStream();
-                BufferedReader reader = new BufferedReader(new InputStreamReader(ips, StandardCharsets.ISO_8859_1));
-                String line = "";
-                while ((line = reader.readLine()) != null) {
-                    result += line;
+                        }
+                        break;
+                    default:
+                        result = "{\"ReturnMsg\":\"An error occurred while saving your changes!\"}";
+                        break;
                 }
-                reader.close();
-                ips.close();
                 http.disconnect();
                 return result;
-
             }
             /* Handling Exceptions */ catch (MalformedURLException e) {
                 result = e.getMessage();
@@ -387,29 +435,27 @@ public class EditProfileActivity extends AppCompatActivity {
             try {
                 /* Creating a JSON Object to parse the data in */
                 final JSONObject jsonObject = new JSONObject(result);
-
-                if (jsonObject.getString("ReturnMsg").equals("Your changes are saved successfully")) {
-                    Toast.makeText(mContext, "Your changes are saved successfully", Toast.LENGTH_SHORT).show();
-                } else if (jsonObject.getString("ReturnMsg").contains("A verification email has been sent")) {
+                sForTest = jsonObject.getString("ReturnMsg");
+                if (jsonObject.getString("ReturnMsg").contains("verification")) {
                     dialog.setMessage(jsonObject.getString("ReturnMsg"));
                     dialog.setPositiveButton("OK", new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
-                            /* Go to Next Activity Layout */
-                            Intent myIntent = new Intent(EditProfileActivity.this, MyBooksShelvesActivity.class);
+                            /* Go to Sign out Activity Layout */
+                            Intent myIntent = new Intent(EditProfileActivity.this, SignOutActivity.class);
                             startActivity(myIntent);
                         }
                     });
                     dialog.show();
-                } else {
-                    Toast.makeText(mContext, "An Error Occurred", Toast.LENGTH_SHORT).show();
+                }
+                else
+                {
+                    Toast.makeText(mContext, jsonObject.getString("ReturnMsg"), Toast.LENGTH_SHORT).show();
                 }
             }
             /* Catching Exceptions */ catch (JSONException e) {
                 e.printStackTrace();
             }
         }
-
     }
-
 }

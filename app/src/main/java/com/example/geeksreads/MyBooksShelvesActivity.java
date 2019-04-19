@@ -319,9 +319,6 @@ public class MyBooksShelvesActivity extends AppCompatActivity implements Navigat
             try {
                 /* Creating a JSON Object to parse the data in */
                 final JSONObject jsonObject = new JSONObject(result);
-
-                //sForTest = jsonObject.getString("ShelfCount");
-
                 String shelfCount = jsonObject.getString("ShelfCount");
 
                 if (shelfCount != null) {

@@ -30,20 +30,6 @@
                 tools:srcCompat="@tools:sample/avatars" />
 
             <EditText
-                android:id="@+id/FullNameTxt"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="30dp"
-                android:layout_marginLeft="0dp"
-                android:layout_marginTop="0dp"
-                android:layout_marginEnd="30dp"
-                android:layout_marginRight="0dp"
-                android:layout_marginBottom="0dp"
-                android:ems="10"
-                android:hint="@string/FullNameHint"
-                android:inputType="textPersonName" />
-
-            <EditText
                 android:id="@+id/UserNameTxt"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -84,30 +70,6 @@
                 android:ems="10"
                 android:hint="@string/BirthDateHint"
                 android:inputType="date" />
-
-            <Spinner
-                android:id="@+id/CountryList"
-                android:layout_width="match_parent"
-                android:layout_height="45dp"
-                android:layout_marginStart="30dp"
-                android:layout_marginLeft="0dp"
-                android:layout_marginTop="0dp"
-                android:layout_marginEnd="30dp"
-                android:layout_marginRight="0dp"
-                android:layout_marginBottom="0dp"
-                android:entries="@array/Countries" />
-
-            <Spinner
-                android:id="@+id/GenderList"
-                android:layout_width="match_parent"
-                android:layout_height="45dp"
-                android:layout_marginStart="30dp"
-                android:layout_marginLeft="0dp"
-                android:layout_marginTop="0dp"
-                android:layout_marginEnd="30dp"
-                android:layout_marginRight="0dp"
-                android:layout_marginBottom="10dp"
-                android:entries="@array/Gender" />
 
             <Button
                 android:id="@+id/ChangePasswordBtn"

@@ -42,11 +42,41 @@ public class ChangePasswordActivity extends AppCompatActivity {
      */
     private Context mContext;
 
+    /* Enum which specifies the kinds of errors that might come from verifyChangePassword function */
+    enum changePasswordErrors
+    {
+        NO_ERRORS,
+        OLD_PASSWORD_EMPTY,
+        NEW_PASSWORD_LESS_THAN_SIX_CHARS,
+        NEW_PASSWORD_HAS_NO_NUMBERS,
+        NEW_PASSWORD_HAS_NO_LOWERCASE,
+        NEW_PASSWORD_HAS_NO_UPPERCASE,
+        NEW_PASSWORD_DONT_MATCH,
+        NEW_PASSWORD_EQUAL_OLD
+    }
+    /* Function to check the input old password and new password to verify the validity of them */
+    changePasswordErrors verifyChangePassword(String oldPasswordStr, String newPasswordStr, String confNewPasswordStr)
+    {
+        if (oldPasswordStr.isEmpty()) {
+            return changePasswordErrors.OLD_PASSWORD_EMPTY;
+        } else if (newPasswordStr.length() < 6) {
+            return changePasswordErrors.NEW_PASSWORD_LESS_THAN_SIX_CHARS;
+        } else if (!newPasswordStr.matches(".*[0-9].*")) {
+            return changePasswordErrors.NEW_PASSWORD_HAS_NO_NUMBERS;
+        } else if (!newPasswordStr.matches(".*[a-z].*")) {
+            return changePasswordErrors.NEW_PASSWORD_HAS_NO_LOWERCASE;
+        } else if (!newPasswordStr.matches(".*[A-Z].*")) {
+            return changePasswordErrors.NEW_PASSWORD_HAS_NO_UPPERCASE;
+        } else if (!newPasswordStr.equals(confNewPasswordStr)) {
+            return changePasswordErrors.NEW_PASSWORD_DONT_MATCH;
+        } else if (oldPasswordStr.equals(newPasswordStr)) {
+            return changePasswordErrors.NEW_PASSWORD_EQUAL_OLD;
+        } else {
+            return changePasswordErrors.NO_ERRORS;
+        }
+    }
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        //TODO Remove the below two lines after integration
-        LoginActivity.sCurrentUserID = "iiiidddd1142019";
-        LoginActivity.sCurrentToken = "xYzAbCdToKeN";
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_change_password);
@@ -80,54 +110,64 @@ public class ChangePasswordActivity extends AppCompatActivity {
                 String newPasswordStr = newPasswordTxt.getText().toString();
                 String confNewPasswordStr = confNewPasswordTxt.getText().toString();
 
-                if (oldPasswordStr.isEmpty()) {
-                    oldPasswordTxt.setError("Please enter your old password");
-                } else if (newPasswordStr.length() < 6) {
-                    newPasswordTxt.setError("Password should be 6 characters or more");
-                    newPasswordTxt.setText("");
-                    confNewPasswordTxt.setText("");
-                    sForTest = "Password should be 6 characters or more";
-                } else if (!newPasswordStr.matches(".*[0-9].*")) {
-                    newPasswordTxt.setError("Password should contain numbers");
-                    newPasswordTxt.setText("");
-                    confNewPasswordTxt.setText("");
-                    sForTest = "Password should contain numbers";
-                } else if (!newPasswordStr.matches(".*[a-z].*")) {
-                    newPasswordTxt.setError("Password should contain lower case letters");
-                    newPasswordTxt.setText("");
-                    confNewPasswordTxt.setText("");
-                    sForTest = "Password should contain lower case letters";
-                } else if (!newPasswordStr.matches(".*[A-Z].*")) {
-                    newPasswordTxt.setError("Password should contain upper case letters");
-                    newPasswordTxt.setText("");
-                    confNewPasswordTxt.setText("");
-                    sForTest = "Password should contain upper case letters";
-                } else if (!newPasswordStr.equals(confNewPasswordStr)) {
-                    confNewPasswordTxt.setError("Passwords don't match");
-                    newPasswordTxt.setText("");
-                    confNewPasswordTxt.setText("");
-                    sForTest = "Passwords don't match";
-                } else if (oldPasswordStr.equals(newPasswordStr)) {
-                    newPasswordTxt.setError("New password cannot be the same old password");
-                    sForTest = "New password cannot be the same old password";
-                } else {
-                    JSONObject mJSON = new JSONObject();
-                    try {
-                        mJSON.put("UserID", LoginActivity.sCurrentUserID);
-                        mJSON.put("UserToken", LoginActivity.sCurrentToken);
-                        mJSON.put("UserPassword", oldPasswordStr);
-                        mJSON.put("NewPassword", newPasswordStr);
-                    } catch (JSONException e) {
-                        e.printStackTrace();
-                    }
+                changePasswordErrors changePasswordError = verifyChangePassword(oldPasswordStr, newPasswordStr, confNewPasswordStr);
+                switch(changePasswordError)
+                {
+                    case OLD_PASSWORD_EMPTY:
+                        oldPasswordTxt.setError("Please enter your old password");
+                        sForTest = "Please enter your old password";
+                        break;
+                    case NEW_PASSWORD_LESS_THAN_SIX_CHARS:
+                        newPasswordTxt.setError("Password should be 6 characters or more");
+                        newPasswordTxt.setText("");
+                        confNewPasswordTxt.setText("");
+                        sForTest = "Password should be 6 characters or more";
+                        break;
+                    case NEW_PASSWORD_HAS_NO_NUMBERS:
+                        newPasswordTxt.setError("Password should contain numbers");
+                        newPasswordTxt.setText("");
+                        confNewPasswordTxt.setText("");
+                        sForTest = "Password should contain numbers";
+                        break;
+                    case NEW_PASSWORD_HAS_NO_LOWERCASE:
+                        newPasswordTxt.setError("Password should contain lower case letters");
+                        newPasswordTxt.setText("");
+                        confNewPasswordTxt.setText("");
+                        sForTest = "Password should contain lower case letters";
+                        break;
+                    case NEW_PASSWORD_HAS_NO_UPPERCASE:
+                        newPasswordTxt.setError("Password should contain upper case letters");
+                        newPasswordTxt.setText("");
+                        confNewPasswordTxt.setText("");
+                        sForTest = "Password should contain upper case letters";
+                        break;
+                    case NEW_PASSWORD_DONT_MATCH:
+                        confNewPasswordTxt.setError("Passwords don't match");
+                        newPasswordTxt.setText("");
+                        confNewPasswordTxt.setText("");
+                        sForTest = "Passwords don't match";
+                        break;
+                    case NEW_PASSWORD_EQUAL_OLD:
+                        newPasswordTxt.setError("New password cannot be the same old password");
+                        sForTest = "New password cannot be the same old password";
+                        break;
+                    case NO_ERRORS:
+                    default:
+                        JSONObject mJSON = new JSONObject();
+                        try {
+                            mJSON.put("OldUserPassword", oldPasswordStr);
+                            mJSON.put("NewUserPassword", newPasswordStr);
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
 
-                    /* URL For Login API */
-                    String urlService = "http://geeksreads.000webhostapp.com/Morsy/ChangePassword.php";
+                        /* URL For Change Password API */
+                        String urlService = "https://geeksreads.herokuapp.com/api/users/changepassword";
 
-                    /* Creating a new instance of Sign in Class */
-                    ChangePassword changePassword = new ChangePassword();
-                    changePassword.execute(urlService, mJSON.toString());
-
+                        /* Creating a new instance of Sign in Class */
+                        ChangePassword changePassword = new ChangePassword();
+                        changePassword.execute(urlService, mJSON.toString());
+                        break;
                 }
             }
         });
@@ -151,7 +191,7 @@ public class ChangePasswordActivity extends AppCompatActivity {
      * The Parameters are host Url and toSend Data.
      */
     public class ChangePassword extends AsyncTask<String, Void, String> {
-        static final String REQUEST_METHOD = "GET";
+        static final String REQUEST_METHOD = "POST";
         JSONObject mJSON = new JSONObject();
 
         @Override
@@ -173,26 +213,45 @@ public class ChangePasswordActivity extends AppCompatActivity {
                 http.setRequestMethod(REQUEST_METHOD);
                 http.setDoInput(true);
                 http.setDoOutput(true);
+                http.setRequestProperty("x-auth-token", LoginActivity.sCurrentToken);
 
                 /* A Stream object to hold the sent data to API Call */
                 OutputStream ops = http.getOutputStream();
                 BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(ops, StandardCharsets.UTF_8));
-                String data = URLEncoder.encode("Json", "UTF-8") + "=" + URLEncoder.encode(JSONString, "UTF-8");
+                String data = JSONString;
 
                 writer.write(data);
                 writer.flush();
                 writer.close();
                 ops.close();
+                switch (String.valueOf(http.getResponseCode()))
+                {
+                    case "200":
+                        result = "{\"ReturnMsg\":\"Password changed successfully!\"}";
+                        break;
+                    default:
+                        /* A Stream object to get the returned data from API Call */
+                        InputStream ips = http.getInputStream();
+                        BufferedReader reader = new BufferedReader(new InputStreamReader(ips, StandardCharsets.ISO_8859_1));
+                        String line = "";
+                        //boolean started = false;
+                        while ((line = reader.readLine()) != null) {
+                            result += line;
+                        }
+                        reader.close();
+                        ips.close();
+                        if (result.contains("New password cannot be the same old password"))
+                        {
+                            result = "{\"ReturnMsg\":\"New password cannot be the same old password!\"}";
+                        }
+                        else if (result.contains("Wrong Old Password"))
+                        {
+                            result = "{\"ReturnMsg\":\"You entered a wrong old password!\"}";
+                        }
 
-                /* A Stream object to get the returned data from API Call */
-                InputStream ips = http.getInputStream();
-                BufferedReader reader = new BufferedReader(new InputStreamReader(ips, StandardCharsets.ISO_8859_1));
-                String line = "";
-                while ((line = reader.readLine()) != null) {
-                    result += line;
+                        break;
                 }
-                reader.close();
-                ips.close();
+
                 http.disconnect();
                 return result;
 
@@ -217,13 +276,11 @@ public class ChangePasswordActivity extends AppCompatActivity {
 
                 sForTest = jsonObject.getString("ReturnMsg");
 
-                if (jsonObject.getString("ReturnMsg").equals("Your new password is saved successfully")) {
-                    Toast.makeText(mContext, "Your new password is saved successfully", Toast.LENGTH_SHORT).show();
+                if (jsonObject.getString("ReturnMsg").contains("successfully")) {
+                    Toast.makeText(mContext, jsonObject.getString("ReturnMsg"), Toast.LENGTH_SHORT).show();
                     finish();
-                } else if (jsonObject.getString("ReturnMsg").equals("You cannot use the same password again")) {
-                    Toast.makeText(mContext, "You cannot use the same password again", Toast.LENGTH_SHORT).show();
                 } else {
-                    Toast.makeText(mContext, "An error occurred", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(mContext, jsonObject.getString("ReturnMsg"), Toast.LENGTH_SHORT).show();
                 }
             }
             /* Catching Exceptions */ catch (JSONException e) {
