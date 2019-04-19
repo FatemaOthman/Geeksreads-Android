@@ -62,7 +62,7 @@ public class LoginActivity extends AppCompatActivity {
         INVALID_EMAIL,
         INVALID_PASSWORD
     }
-    private static verificationErrorType verifyStaticCredentials(String userEmail, String userPassword)
+    public static verificationErrorType verifyStaticCredentials(String userEmail, String userPassword)
     {
         /* If the user entered an invalid Email Address */
         if (!userEmail.matches(".+[@].+[.].+")) {

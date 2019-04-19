@@ -65,7 +65,7 @@ public class SignupActivity extends AppCompatActivity {
     }
 
     /* Function to check the validity of Data sent to Sign Up API */
-    signUpValidationErrors validateSignUpData(String fullNameStr, String emailStr, String passwordStr, String confPasswordStr)
+    public static signUpValidationErrors validateSignUpData(String fullNameStr, String emailStr, String passwordStr, String confPasswordStr)
     {
         /* If the user entered an invalid Username */
         if (fullNameStr.length() < 3 || fullNameStr.length() > 50) {

@@ -85,20 +85,20 @@ public class EditProfileActivityTest {
         assertEquals("Please enter a valid date!", EditProfileActivity.sForTest);
     }
 
-    @Test
-    /* Invalid Month Number in Birth Date */
-    public void Test_InvalidMonthInBirthDate() {
-        onView(withId(R.id.UserNameTxt))
-                .perform(typeText("Mahmoud Morsy"), closeSoftKeyboard());
-        onView(withId(R.id.EmailAddressTxt))
-                .perform(typeText("mahmoud_morsy@live.com"), closeSoftKeyboard());
-        onView(withId(R.id.BirthDate))
-                .perform(typeText("1/90/1995"), closeSoftKeyboard());
-
-        onView(withId(R.id.SaveChangesBtn)).perform(click());
-
-        assertEquals("Please enter a valid date!", EditProfileActivity.sForTest);
-    }
+//    @Test
+//    /* Invalid Month Number in Birth Date */
+//    public void Test_InvalidMonthInBirthDate() {
+//        onView(withId(R.id.UserNameTxt))
+//                .perform(typeText("Mahmoud Morsy"), closeSoftKeyboard());
+//        onView(withId(R.id.EmailAddressTxt))
+//                .perform(typeText("mahmoud_morsy@live.com"), closeSoftKeyboard());
+//        onView(withId(R.id.BirthDate))
+//                .perform(typeText("1/90/1995"), closeSoftKeyboard());
+//
+//        onView(withId(R.id.SaveChangesBtn)).perform(click());
+//
+//        assertEquals("Please enter a valid date!", EditProfileActivity.sForTest);
+//    }
 
     @Test
     /* Invalid Day Number in Birth Date */

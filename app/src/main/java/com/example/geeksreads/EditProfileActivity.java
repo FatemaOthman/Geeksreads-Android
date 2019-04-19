@@ -40,6 +40,7 @@ import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.time.temporal.TemporalField;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Objects;
@@ -62,23 +63,27 @@ public class EditProfileActivity extends AppCompatActivity {
     private Context mContext;
 
     /* Function to check the validity of the input date string with a format of DD/MM/YYYY and before 5 Years*/
-    public boolean isThisDateValid(String dateToValidate) {
+    public static boolean isThisDateValid(String dateToValidate) {
 
         String dateFormat = "DD/MM/YYYY";
         SimpleDateFormat sdf = new SimpleDateFormat(dateFormat);
+
         sdf.setLenient(false);
+
         try {
             // if not valid, it will throw ParseException
             Date date = sdf.parse(dateToValidate);
-
+            //System.out.println(dateToValidate + " Parsing OK!");
             // current date minus 5 years
             Calendar currentDateBefore5Years = Calendar.getInstance();
             currentDateBefore5Years.add(Calendar.YEAR, -5);
-
+            //System.out.println(dateToValidate + " Subtracting OK!");
+            //System.out.println("Original Date = " + dateToValidate + ", Subtracted Date = " + currentDateBefore5Years.getTime().toString());
             if (date.after(currentDateBefore5Years.getTime())) {
-                //ok everything is fine, date in range
+                //System.out.println("Original Date = " + dateToValidate + ", Subtracted Date = " + currentDateBefore5Years.getTime().toString() + ",  False");
                 return false;
             } else {
+                //System.out.println("Original Date = " + dateToValidate + ", Subtracted Date = " + currentDateBefore5Years.getTime().toString() + ",  True");
                 return true;
             }
 
@@ -98,7 +103,7 @@ public class EditProfileActivity extends AppCompatActivity {
     }
 
     /* Function to check the validity of inputs to Edit User API */
-    editProfileValidationErrors validateEditProfileData(String userNameStr, String emailStr, String birthDateStr)
+    public static editProfileValidationErrors validateEditProfileData(String userNameStr, String emailStr, String birthDateStr)
     {
         /* If the user entered an invalid Username */
         if (userNameStr.length() < 3 || userNameStr.length() > 50) {
@@ -108,7 +113,7 @@ public class EditProfileActivity extends AppCompatActivity {
         else if (!emailStr.matches(".+[@].+[.].+")) {
             return editProfileValidationErrors.INVALID_EMAIL;
         }
-        else if (isThisDateValid(birthDateStr)) {
+        else if (!isThisDateValid(birthDateStr)) {
             return editProfileValidationErrors.INVALID_BIRTH_DATE;
         }
         /* If the user entered a valid username, email and password */
