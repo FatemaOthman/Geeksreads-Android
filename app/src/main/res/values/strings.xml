@@ -64,6 +64,7 @@
     <string name="AddReviewTxt"> Add Review</string>
     <string name="AddShelf"> Add </string>
     <string name="MyShelves">My Book Shelves</string>
+    <string name="AddReviewString">Ask anything about the book</string>
 
     <string-array name="BookValues">
         <item>Want to Read</item>
