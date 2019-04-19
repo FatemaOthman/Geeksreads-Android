@@ -55,7 +55,7 @@ public class ChangePasswordActivity extends AppCompatActivity {
         NEW_PASSWORD_EQUAL_OLD
     }
     /* Function to check the input old password and new password to verify the validity of them */
-    changePasswordErrors verifyChangePassword(String oldPasswordStr, String newPasswordStr, String confNewPasswordStr)
+    public static changePasswordErrors verifyChangePassword(String oldPasswordStr, String newPasswordStr, String confNewPasswordStr)
     {
         if (oldPasswordStr.isEmpty()) {
             return changePasswordErrors.OLD_PASSWORD_EMPTY;
