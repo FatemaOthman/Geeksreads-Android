@@ -149,11 +149,10 @@ public class MyBooksShelvesActivity extends AppCompatActivity implements Navigat
 
         UpdateBookShelfCount updateReadShelf = new UpdateBookShelfCount(LoginActivity.sCurrentToken);
 
-        /* URL For Login API */
-        String urlService = "http://geeksreads.000webhostapp.com/Morsy/GetBookShelf.php";
+        /* URL For Get Shelves Count API */
+        String urlService = "https://geeksreads.herokuapp.com/api/users/ShelvesCount";
 
         updateReadShelf.execute(urlService);
-
     }
 
 
@@ -214,7 +213,7 @@ public class MyBooksShelvesActivity extends AppCompatActivity implements Navigat
      * The Parameters are host Url and toSend Data.
      */
     public class UpdateBookShelfCount extends AsyncTask<String, String, String> {
-        static final String REQUEST_METHOD = "GET";
+        static final String REQUEST_METHOD = "POST";
         String userToken;
 
         public UpdateBookShelfCount(String userToken) {
@@ -239,12 +238,14 @@ public class MyBooksShelvesActivity extends AppCompatActivity implements Navigat
                 http.setRequestMethod(REQUEST_METHOD);
                 http.setDoInput(true);
                 http.setDoOutput(true);
-                http.setRequestProperty("x-auth-token", this.userToken);
+                http.setRequestProperty("content-type", "application/json");
 
                 /* A Stream object to hold the sent data to API Call */
                 OutputStream ops = http.getOutputStream();
                 BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(ops, StandardCharsets.UTF_8));
-                writer.write("");
+                JSONObject newJson = new JSONObject();
+                newJson.put("token", userToken);
+                writer.write(newJson.toString());
                 writer.flush();
                 writer.close();
                 ops.close();
@@ -277,6 +278,8 @@ public class MyBooksShelvesActivity extends AppCompatActivity implements Navigat
                 result = e.getMessage();
             } catch (IOException e) {
                 result = e.getMessage();
+            } catch (JSONException e) {
+                e.printStackTrace();
             }
             return result;
         }
