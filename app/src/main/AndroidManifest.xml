@@ -22,7 +22,8 @@
         <activity android:name=".Profile" />
         <activity android:name=".BookActivity" />
         <activity android:name=".LoginActivity" />
-        <activity android:name=".SignupActivity">
+        <activity android:name=".Reviews">
+
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -30,6 +31,9 @@
 
                 <action android:name="android.intent.action.VIEW" />
             </intent-filter>
+        </activity>
+        <activity android:name=".SignupActivity">
+
         </activity>
         <activity android:name=".MyBooksShelvesActivity" />
         <activity android:name=".EditProfileActivity" />

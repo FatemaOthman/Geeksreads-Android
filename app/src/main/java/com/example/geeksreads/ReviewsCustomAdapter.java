@@ -12,6 +12,8 @@ import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.example.geeksreads.views.ExpandableTextView;
+
 import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
@@ -24,7 +26,7 @@ public class ReviewsCustomAdapter extends ArrayAdapter<ReviewDataModel> implemen
     private ArrayList<ReviewDataModel> dataSet;
 
     ReviewsCustomAdapter(ArrayList<ReviewDataModel> data, Context context) {
-        super(context, R.layout.reviews, data);
+        super(context, R.layout.post_item_list_view, data);
         this.dataSet = data;
         this.mContext = context;
 
@@ -76,12 +78,16 @@ public class ReviewsCustomAdapter extends ArrayAdapter<ReviewDataModel> implemen
         assert dataModel != null;
         viewHolder.Details.setText(dataModel.getReviewText());
         viewHolder.UserName.setText(dataModel.getUserName());
+        viewHolder.NLikes.setText(dataModel.getNLikes());
+        viewHolder.NComments.setText(dataModel.getNComments());
+        viewHolder.ReviewID = dataModel.getReviewID();
 
         ReviewsCustomAdapter.GetBookCoverImage CoverPic = new ReviewsCustomAdapter.GetBookCoverImage(position, holder);
         CoverPic.execute(dataModel.getBookCoverPicture());
 
         ReviewsCustomAdapter.GetUserImage UserPic = new ReviewsCustomAdapter.GetUserImage(position, holder);
         UserPic.execute(dataModel.getUserProfilePicture());
+
 
         // Return the completed view to render on screen
         return convertView;
@@ -91,10 +97,12 @@ public class ReviewsCustomAdapter extends ArrayAdapter<ReviewDataModel> implemen
     private static class ViewHolder {
         ImageView UserPicInfo;
         ImageView BookCoverPicture;
-        TextView Details;
+        ExpandableTextView Details;
         TextView UserName;
         TextView NLikes;
         TextView NComments;
+        String ReviewID;
+        String UserWhoWroteID;
     }
 
     private static class FixImagePosition {
