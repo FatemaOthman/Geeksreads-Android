@@ -8,13 +8,14 @@ import java.util.ArrayList;
 
 public class ReviewDataModel {
 
-
+    private String ReviewID;
     private String BookCoverPicture;
     private String UserProfilePicture;
     private String UserName;
     private String NLikes;
     private String NComments;
     private String ReviewText;
+    private String UserWhoWroteID;
 
     /**
      * fromJson: Put Data from a single JSONOBJECT into a UserDataModel
@@ -33,6 +34,8 @@ public class ReviewDataModel {
             DummyUser.NLikes = jsonObject.getString("likes");
             DummyUser.NComments = jsonObject.getString("NumberComments");
             DummyUser.ReviewText = jsonObject.getString("body");
+            DummyUser.ReviewID = jsonObject.getString("ReviewID");
+            DummyUser.UserWhoWroteID = jsonObject.getString("UserWhoWroteID");
         } catch (JSONException e) {
             e.printStackTrace();
             return null;
@@ -125,6 +128,25 @@ public class ReviewDataModel {
      */
     String getUserName() {
         return UserName;
+    }
+
+    /**
+     * getReviewID: Gets Id of current Review
+     *
+     * @return ReviewID
+     */
+    String getReviewID() {
+        return ReviewID;
+    }
+
+
+    /**
+     * getUserwhoWroteID: Gets Id of user who wrote the review
+     *
+     * @return UserwhoWroteID
+     */
+    String getUserWhoWroteID() {
+        return UserWhoWroteID;
     }
 
 }

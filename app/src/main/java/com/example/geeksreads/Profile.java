@@ -360,18 +360,16 @@ public class Profile extends AppCompatActivity implements NavigationView.OnNavig
                 http.setRequestMethod(REQUEST_METHOD);
                 http.setDoInput(true);
                 http.setDoOutput(true);
-                http.setRequestProperty("content-type", "application/json");
+                http.setRequestProperty("x-auth-token", LoginActivity.sCurrentToken);
 
                 /* A Stream object to hold the sent data to API Call */
                 OutputStream ops = http.getOutputStream();
                 BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(ops, StandardCharsets.UTF_8));
-                //String data = URLEncoder.encode(JSONString, "UTF-8");
-                String data = JSONString;
-
-                writer.write(data);
+                writer.write("");
                 writer.flush();
                 writer.close();
                 ops.close();
+
                 switch (String.valueOf(http.getResponseCode())) {
                     case "200":
                         /* A Stream object to get the returned data from API Call */
@@ -380,22 +378,15 @@ public class Profile extends AppCompatActivity implements NavigationView.OnNavig
                         String line = "";
                         //boolean started = false;
                         while ((line = reader.readLine()) != null) {
-                            //   if ()
                             result += line;
                         }
                         reader.close();
                         ips.close();
                         break;
-                    case "400":
-                        result = "{\"ReturnMsg\":\"Invalid email or password.\"}";
-                        break;
-                    case "401":
-                        result = "{\"ReturnMsg\":\"Your account has not been verified.\"}";
-                        break;
                     default:
+                        result = "{\"ReturnMsg\":\"An Error Occurred!\"}";
                         break;
                 }
-
 
                 http.disconnect();
                 return result;

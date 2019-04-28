@@ -15,7 +15,6 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -42,7 +41,6 @@ import java.io.OutputStreamWriter;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.util.Objects;
 
@@ -243,37 +241,55 @@ public class OtherProfileActivity extends AppCompatActivity implements Navigatio
             String result = "";
 
             try {
-                //Create a URL object holding our url
+                /* Create a URL object holding our url */
                 URL url = new URL(UrlString);
+                /* Create an HTTP Connection and adjust its options */
                 HttpURLConnection http = (HttpURLConnection) url.openConnection();
                 http.setRequestMethod(REQUEST_METHOD);
                 http.setDoInput(true);
                 http.setDoOutput(true);
+                http.setRequestProperty("content-type", "application/json");
 
+                /* A Stream object to hold the sent data to API Call */
                 OutputStream ops = http.getOutputStream();
                 BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(ops, StandardCharsets.UTF_8));
-                String data = URLEncoder.encode("myuserId", "UTF-8") + "=" + URLEncoder.encode(JSONString, "UTF-8");
+                //String data = URLEncoder.encode(JSONString, "UTF-8");
+                String data = JSONString;
+
                 writer.write(data);
                 writer.flush();
                 writer.close();
                 ops.close();
-
-
-                /////////////////////////////////////////
-                //Create a new InputStreamReader
-                InputStream ips = http.getInputStream();
-                BufferedReader reader = new BufferedReader(new InputStreamReader(ips, StandardCharsets.ISO_8859_1));
-                String line = "";
-                while ((line = reader.readLine()) != null) {
-                    result += line;
+                switch (String.valueOf(http.getResponseCode())) {
+                    case "200":
+                        /* A Stream object to get the returned data from API Call */
+                        InputStream ips = http.getInputStream();
+                        BufferedReader reader = new BufferedReader(new InputStreamReader(ips, StandardCharsets.ISO_8859_1));
+                        String line = "";
+                        //boolean started = false;
+                        while ((line = reader.readLine()) != null) {
+                            //   if ()
+                            result += line;
+                        }
+                        reader.close();
+                        ips.close();
+                        break;
+                    case "400":
+                        result = "{\"ReturnMsg\":\"Invalid email or password.\"}";
+                        break;
+                    case "401":
+                        result = "{\"ReturnMsg\":\"Your account has not been verified.\"}";
+                        break;
+                    default:
+                        break;
                 }
-                reader.close();
-                ips.close();
-                http.disconnect();
 
+
+                http.disconnect();
                 return result;
 
-            } catch (MalformedURLException e) {
+            }
+            /* Handling Exceptions */ catch (MalformedURLException e) {
                 result = e.getMessage();
             } catch (IOException e) {
                 result = e.getMessage();
@@ -348,38 +364,46 @@ public class OtherProfileActivity extends AppCompatActivity implements Navigatio
             String result = "";
 
             try {
-                //Create a URL object holding our url
+                /* Create a URL object holding our url */
                 URL url = new URL(UrlString);
+                /* Create an HTTP Connection and adjust its options */
                 HttpURLConnection http = (HttpURLConnection) url.openConnection();
                 http.setRequestMethod(REQUEST_METHOD);
                 http.setDoInput(true);
                 http.setDoOutput(true);
+                http.setRequestProperty("x-auth-token", LoginActivity.sCurrentToken);
 
+                /* A Stream object to hold the sent data to API Call */
                 OutputStream ops = http.getOutputStream();
                 BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(ops, StandardCharsets.UTF_8));
-                String data = URLEncoder.encode("myuserId", "UTF-8") + "=" + URLEncoder.encode(JSONString, "UTF-8");
-                writer.write(data);
+                writer.write("");
                 writer.flush();
-
                 writer.close();
                 ops.close();
 
-
-                /////////////////////////////////////////
-                //Create a new InputStreamReader
-                InputStream ips = http.getInputStream();
-                BufferedReader reader = new BufferedReader(new InputStreamReader(ips, StandardCharsets.ISO_8859_1));
-                String line = "";
-                while ((line = reader.readLine()) != null) {
-                    result += line;
+                switch (String.valueOf(http.getResponseCode())) {
+                    case "200":
+                        /* A Stream object to get the returned data from API Call */
+                        InputStream ips = http.getInputStream();
+                        BufferedReader reader = new BufferedReader(new InputStreamReader(ips, StandardCharsets.ISO_8859_1));
+                        String line = "";
+                        //boolean started = false;
+                        while ((line = reader.readLine()) != null) {
+                            result += line;
+                        }
+                        reader.close();
+                        ips.close();
+                        break;
+                    default:
+                        result = "{\"ReturnMsg\":\"An Error Occurred!\"}";
+                        break;
                 }
-                reader.close();
-                ips.close();
-                http.disconnect();
 
+                http.disconnect();
                 return result;
 
-            } catch (MalformedURLException e) {
+            }
+            /* Handling Exceptions */ catch (MalformedURLException e) {
                 result = e.getMessage();
             } catch (IOException e) {
                 result = e.getMessage();
@@ -404,7 +428,6 @@ public class OtherProfileActivity extends AppCompatActivity implements Navigatio
                 dialog.setMessage("Done");
                 //dialog.show();
 
-                Log.i("TEST", "Result: " + result);
                 JSONObject jsonObject = new JSONObject(result);
 
                 if (jsonObject.getString("Follow").equals("true"))
@@ -630,18 +653,16 @@ public class OtherProfileActivity extends AppCompatActivity implements Navigatio
                 http.setRequestMethod(REQUEST_METHOD);
                 http.setDoInput(true);
                 http.setDoOutput(true);
-                http.setRequestProperty("content-type", "application/json");
+                http.setRequestProperty("x-auth-token", LoginActivity.sCurrentToken);
 
                 /* A Stream object to hold the sent data to API Call */
                 OutputStream ops = http.getOutputStream();
                 BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(ops, StandardCharsets.UTF_8));
-                //String data = URLEncoder.encode(JSONString, "UTF-8");
-                String data = JSONString;
-
-                writer.write(data);
+                writer.write("");
                 writer.flush();
                 writer.close();
                 ops.close();
+
                 switch (String.valueOf(http.getResponseCode())) {
                     case "200":
                         /* A Stream object to get the returned data from API Call */
@@ -650,22 +671,15 @@ public class OtherProfileActivity extends AppCompatActivity implements Navigatio
                         String line = "";
                         //boolean started = false;
                         while ((line = reader.readLine()) != null) {
-                            //   if ()
                             result += line;
                         }
                         reader.close();
                         ips.close();
                         break;
-                    case "400":
-                        result = "{\"ReturnMsg\":\"Invalid email or password.\"}";
-                        break;
-                    case "401":
-                        result = "{\"ReturnMsg\":\"Your account has not been verified.\"}";
-                        break;
                     default:
+                        result = "{\"ReturnMsg\":\"An Error Occurred!\"}";
                         break;
                 }
-
 
                 http.disconnect();
                 return result;
