@@ -54,8 +54,7 @@
                 android:layout_marginRight="0dp"
                 android:layout_marginBottom="20dp"
                 android:ems="10"
-                android:hint="@string/BirthDateHint"
-                android:inputType="date" />
+                android:hint="@string/BirthDateHint" />
 
             <Button
                 android:id="@+id/ChangePasswordBtn"
