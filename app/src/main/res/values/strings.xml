@@ -279,4 +279,6 @@
     <string name="SignOutTxt">Thank you for using Geekreads. You have been signed out. To Log in again, press the Login button and to create a new account, press Sign up button.</string>
     <string name="otpHint">Verification Code</string>
     <string name="SaveChangedPassword">Save New Password</string>
+    <string name="OrForgetPassword">"Or if you forgot your password, please click "</string>
+    <string name="ForgetPassword">Forget Password</string>
 </resources>
