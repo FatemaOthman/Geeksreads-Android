@@ -255,6 +255,10 @@ public class LoginActivity extends AppCompatActivity {
                                 sCurrentToken = jsonObject.getString("Token");
                                 sCurrentUserID = jsonObject.getString("UserId");
 
+                                /* Start Notifications Service */
+                                Intent service = new Intent(LoginActivity.this, NotificationService.class);
+                                startService(service);
+
                                 /* Go to Next Activity Layout */
                                 Intent myIntent = new Intent(LoginActivity.this, FeedActivity.class);
                                 startActivity(myIntent);
