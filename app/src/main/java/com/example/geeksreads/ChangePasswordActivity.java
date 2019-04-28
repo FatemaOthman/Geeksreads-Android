@@ -31,7 +31,7 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
-
+import java.HelpingFunctions;
 public class ChangePasswordActivity extends AppCompatActivity {
 
     /**
@@ -156,8 +156,15 @@ public class ChangePasswordActivity extends AppCompatActivity {
                     default:
                         JSONObject mJSON = new JSONObject();
                         try {
-                            mJSON.put("token", LoginActivity.sCurrentToken);
 
+                            /* Encrypting Old Password into MD5 */
+                            oldPasswordStr = HelpingFunctions.getMD5Encryption(oldPasswordStr);
+
+                            /* Encrypting New Password into MD5 */
+                            newPasswordStr = HelpingFunctions.getMD5Encryption(newPasswordStr);
+
+                            /* Adding Necessary User Data into JSON Object that will be sent */
+                            mJSON.put("token", LoginActivity.sCurrentToken);
                             mJSON.put("OldUserPassword", oldPasswordStr);
                             mJSON.put("NewUserPassword", newPasswordStr);
                             Log.w("Mahmoud0", mJSON.toString());

@@ -33,6 +33,7 @@ import java.net.URL;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.util.Objects;
+import java.HelpingFunctions;
 
 public class LoginActivity extends AppCompatActivity {
     /**
@@ -129,6 +130,10 @@ public class LoginActivity extends AppCompatActivity {
                 else {
                     JSONObject mJSON = new JSONObject();
                     try {
+                        /* Encrypting User Password into MD5 */
+                        loginPasswordStr = HelpingFunctions.getMD5Encryption(loginPasswordStr);
+
+                        /* Adding needed parameters for Login API */
                         mJSON.put("UserEmail", loginEmailStr);
                         mJSON.put("UserPassword", loginPasswordStr);
                     } catch (JSONException e) {

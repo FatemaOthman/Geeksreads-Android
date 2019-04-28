@@ -28,7 +28,7 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
-
+import java.HelpingFunctions;
 public class SignupActivity extends AppCompatActivity {
     /**
      * Global Public Static Variables used for Testing
@@ -176,6 +176,10 @@ public class SignupActivity extends AppCompatActivity {
                     default:
                         JSONObject JSON = new JSONObject();
                         try {
+                            /* Encrypting User Password */
+                            passwordStr = HelpingFunctions.getMD5Encryption(passwordStr);
+
+                            /* Adding API Parameters into JSON Object */
                             JSON.put("UserName", fullNameStr);
                             JSON.put("UserEmail", emailStr);
                             JSON.put("UserPassword", passwordStr);
