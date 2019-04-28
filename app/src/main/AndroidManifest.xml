@@ -14,7 +14,8 @@
         android:theme="@style/AppTheme"
         android:usesCleartextTraffic="true"
         tools:ignore="AllowBackup">
-        <activity android:name=".SignOutActivity"></activity>
+        <activity android:name=".ForgetPasswordActivity"></activity>
+        <activity android:name=".SignOutActivity" />
         <activity android:name=".FeedActivity" />
         <activity android:name=".ChooseShelfActivity" />
         <activity android:name=".SideBarActivity" />
