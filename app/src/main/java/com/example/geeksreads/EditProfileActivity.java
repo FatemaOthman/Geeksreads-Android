@@ -146,7 +146,6 @@ public class EditProfileActivity extends AppCompatActivity {
         getProfileData.execute(urlService, "");
 
         final EditText userNameTxt = findViewById(R.id.UserNameTxt);
-        final EditText emailAddressTxt = findViewById(R.id.EmailAddressTxt);
         final EditText birthDateTxt = findViewById(R.id.BirthDate);
 
         Button changePassword = findViewById(R.id.ChangePasswordBtn);
@@ -164,15 +163,13 @@ public class EditProfileActivity extends AppCompatActivity {
         saveChange.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                String emailStr = emailAddressTxt.getText().toString();
                 String userNameStr = userNameTxt.getText().toString();
                 String birthDateStr = birthDateTxt.getText().toString();
 
-                emailAddressTxt.setError(null);
                 userNameTxt.setError(null);
                 birthDateTxt.setError(null);
 
-                editProfileValidationErrors editProfileValidationError = validateEditProfileData(userNameStr, emailStr, birthDateStr);
+                editProfileValidationErrors editProfileValidationError = validateEditProfileData(userNameStr, "STUB@STUB.COM", birthDateStr);
 
                 switch(editProfileValidationError)
                 {
@@ -181,7 +178,6 @@ public class EditProfileActivity extends AppCompatActivity {
                         sForTest = "Username length should be 3 characters minimum and 50 characters maximum!";
                         break;
                     case INVALID_EMAIL:
-                        emailAddressTxt.setError("Please enter a valid email!");
                         sForTest = "Please enter a valid email!";
                         break;
                     case INVALID_BIRTH_DATE:
@@ -192,7 +188,6 @@ public class EditProfileActivity extends AppCompatActivity {
                         JSONObject JSON = new JSONObject();
                         try {
                             JSON.put("NewUserName", userNameStr);
-                            //JSON.put("NewUserEmailAddress", emailStr);
                             JSON.put("NewUserBirthDate", birthDateStr);
                             //JSON.put("NewUserPhoto", userPhotoUrl); //todo upload photo
 
@@ -338,12 +333,9 @@ public class EditProfileActivity extends AppCompatActivity {
                 final JSONObject jsonObject = new JSONObject(result);
 
                 EditText userNameTxt = findViewById(R.id.UserNameTxt);
-                EditText emailAddressTxt = findViewById(R.id.EmailAddressTxt);
                 EditText birthDateTxt = findViewById(R.id.BirthDate);
 
                 userNameTxt.setText(jsonObject.getString("UserName"));
-                emailAddressTxt.setText(jsonObject.getString("EmailAddress"));
-                sForTest_OriginalEmail = jsonObject.getString("EmailAddress");
                 birthDateTxt.setText(jsonObject.getString("BirthDate"));
 
                 GetPicture Pic = new GetPicture();
