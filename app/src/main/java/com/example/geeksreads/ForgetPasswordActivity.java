@@ -26,7 +26,7 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import java.util.Objects;
-
+import java.HelpingFunctions;
 
 public class ForgetPasswordActivity extends AppCompatActivity {
     /**
@@ -146,6 +146,10 @@ public class ForgetPasswordActivity extends AppCompatActivity {
                     default:
                         JSONObject JSON = new JSONObject();
                         try {
+                            /* Encrypting New Password into MD5 Format */
+                            newPasswordStr = HelpingFunctions.getMD5Encryption(newPasswordStr);
+
+                            /* Adding API parameters into JSON String */
                             JSON.put("VerificationCode", verificationCodeStr);
                             JSON.put("NewPassword", newPasswordStr);
                         } catch (JSONException e) {
