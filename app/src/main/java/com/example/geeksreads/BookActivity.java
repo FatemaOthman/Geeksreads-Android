@@ -22,6 +22,7 @@ import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.text.format.DateFormat;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -35,6 +36,11 @@ import android.widget.SearchView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import org.apache.http.HttpResponse;
+import org.apache.http.client.HttpClient;
+import org.apache.http.client.methods.HttpGet;
+import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.util.EntityUtils;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -151,8 +157,8 @@ public class BookActivity extends AppCompatActivity implements NavigationView.On
         });
         JSONObject JSON = new JSONObject();
         String UrlSideBar = "http://geeksreads.000webhostapp.com/Fatema/SideBar.php";
-        GetSideBarDetails getSideBarDetails = new GetSideBarDetails();
-        getSideBarDetails.execute(UrlSideBar, JSON.toString());
+       // GetSideBarDetails getSideBarDetails = new GetSideBarDetails();
+       // getSideBarDetails.execute(UrlSideBar, JSON.toString());
 
 
         /* Getting All views by id from Book Layout */
@@ -224,27 +230,22 @@ public class BookActivity extends AppCompatActivity implements NavigationView.On
                     } catch (JSONException e) {
                         e.printStackTrace();
                     }
-                    String UrlService = "http://geeksreads.000webhostapp.com/Shrouk/BookDetails.php";
-                    AddReviewTask addReviewTask = new AddReviewTask();
-                    addReviewTask.execute(UrlService, ReviewObject.toString());
+                    String UrlService = "https://geeksreads.herokuapp.com/api/books/id";
+                   // AddReviewTask addReviewTask = new AddReviewTask();
+                    //addReviewTask.execute(UrlService, ReviewObject.toString());
                 }
             }
         });
 
 
         /* Creating Json Object to be send */
-        JSONObject jsonObject = new JSONObject();
-        try {
-            jsonObject.put("ISBN", getISBN);
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
 
+        String Book_ID = "5c9114a0d345b4a65637eacc";
         /* Calling Async Task with my server url */
-        String UrlService = "http://geeksreads.000webhostapp.com/Shrouk/BookDetails.php";
+        String UrlService = "https://geeksreads.herokuapp.com/api/books/id?book_id=5c9114a0d345b4a65637eacc";
         mProgressBar.setVisibility(View.VISIBLE);
         GetBookDetails getBookDetails = new GetBookDetails();
-        getBookDetails.execute(UrlService, jsonObject.toString());
+        getBookDetails.execute(UrlService, Book_ID);
 
     }
 
@@ -360,7 +361,7 @@ public class BookActivity extends AppCompatActivity implements NavigationView.On
     private class GetBookDetails extends AsyncTask<String, Void, String> {
         public static final String REQUEST_METHOD = "GET";
         AlertDialog dialog;
-        boolean TaskSuccess = false;
+        boolean TaskSuccess = true;
 
         @Override
         protected void onPreExecute() {
@@ -373,57 +374,33 @@ public class BookActivity extends AppCompatActivity implements NavigationView.On
         @Override
         protected String doInBackground(String... params) {
             String UrlString = params[0];
-            String JSONString = params[1];
+            String bookID = params[1];
             String result = "";
 
+            UrlString = UrlString + "?Json =" + params[1];
+            HttpClient httpclient = new DefaultHttpClient();
+            HttpGet httpget = new HttpGet(UrlString);
+
+            HttpResponse response = null;
+            String server_response = null;
             try {
-                //Create a URL object holding our url
-                URL url = new URL(UrlString);
-                HttpURLConnection http = (HttpURLConnection) url.openConnection();
-                http.setRequestMethod(REQUEST_METHOD);
-                http.setDoInput(true);
-                http.setDoOutput(true);
-                http.setRequestProperty("content-type", "application/json");
-
-
-                OutputStream ops = http.getOutputStream();
-                BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(ops, StandardCharsets.UTF_8));
-                String data = URLEncoder.encode("id", "UTF-8") + "=" + URLEncoder.encode(JSONString, "UTF-8");
-
-                writer.write(data);
-                writer.flush();
-                writer.close();
-                ops.close();
-
-                switch (String.valueOf(http.getResponseCode()))
-                {
-                    case "200":
-                        /* A Stream object to get the returned data from API Call */
-                        InputStream ips = http.getInputStream();
-                        BufferedReader reader = new BufferedReader(new InputStreamReader(ips, StandardCharsets.ISO_8859_1));
-                        String line;
-                        while ((line = reader.readLine()) != null) {
-                            result += line;
-                        }
-                        reader.close();
-                        ips.close();
-                        TaskSuccess = true;
-                        break;
-                    case "400":
-                        TaskSuccess = false;
-                        result = "{\"Book-not-found\":\"The Book was not found.\"}";
-                        break;
-                    default:
-                        break;
-                }
-                http.disconnect();
-                return result;
-
-            } catch (MalformedURLException e) {
-                result = e.getMessage();
+                response = httpclient.execute(httpget);
             } catch (IOException e) {
-                result = e.getMessage();
+                e.printStackTrace();
             }
+
+            if (response.getStatusLine().getStatusCode() == 200) {
+                try {
+                    server_response = EntityUtils.toString(response.getEntity());
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+                Log.d("Server response", server_response);
+            } else {
+                Log.d("Server response", "Failed to get server response");
+            }
+
+            result = server_response;
             return result;
         }
 
@@ -435,17 +412,18 @@ public class BookActivity extends AppCompatActivity implements NavigationView.On
                 return;
             }
             try {
-                dialog.setMessage("Done");
+                dialog.setMessage(result);
                 //dialog.show();
+                Log.d("response ",result);
                 JSONObject jsonObject = new JSONObject(result);
                 if (TaskSuccess) {
                     /* Get Json Object from server and preview results on Layout views */
                     bookTitle.setText(jsonObject.getString("Title"));
                     bookAuthor.setText("By: " + "" + jsonObject.getString("Author"));
                     AuthorID = jsonObject.getString("AuthorId");
-                    BookID = jsonObject.getString("bookId");
-                    ratingsNumber.setText(jsonObject.getString("ratingcount") + " " + "Ratings");
-                    reviewsNumber.setText(jsonObject.getString("textreviewscount") + " " + "Reviews");
+                    BookID = jsonObject.getString("BookId");
+                    //ratingsNumber.setText(jsonObject.getString("ratingcount") + " " + "Ratings");
+                    //reviewsNumber.setText(jsonObject.getString("textreviewscount") + " " + "Reviews");
                     String Ratings = jsonObject.getString("BookRating");
                     bookRatings.setText(Ratings);
                     bookDescription.setText(jsonObject.getString("Description"));
