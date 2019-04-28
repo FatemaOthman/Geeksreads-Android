@@ -6,6 +6,7 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -155,14 +156,17 @@ public class ChangePasswordActivity extends AppCompatActivity {
                     default:
                         JSONObject mJSON = new JSONObject();
                         try {
+                            mJSON.put("token", LoginActivity.sCurrentToken);
+
                             mJSON.put("OldUserPassword", oldPasswordStr);
                             mJSON.put("NewUserPassword", newPasswordStr);
+                            Log.w("Mahmoud0", mJSON.toString());
                         } catch (JSONException e) {
                             e.printStackTrace();
                         }
 
                         /* URL For Change Password API */
-                        String urlService = "https://geeksreads.herokuapp.com/api/users/changepassword";
+                        String urlService = "https://geeksreads.herokuapp.com/api/users/UpdateUserPassword";
 
                         /* Creating a new instance of Sign in Class */
                         ChangePassword changePassword = new ChangePassword();
@@ -213,7 +217,7 @@ public class ChangePasswordActivity extends AppCompatActivity {
                 http.setRequestMethod(REQUEST_METHOD);
                 http.setDoInput(true);
                 http.setDoOutput(true);
-                http.setRequestProperty("x-auth-token", LoginActivity.sCurrentToken);
+                http.setRequestProperty("content-type", "application/json");
 
                 /* A Stream object to hold the sent data to API Call */
                 OutputStream ops = http.getOutputStream();
@@ -224,6 +228,8 @@ public class ChangePasswordActivity extends AppCompatActivity {
                 writer.flush();
                 writer.close();
                 ops.close();
+                Log.w("Mahmoud1", String.valueOf(http.getResponseCode()));
+
                 switch (String.valueOf(http.getResponseCode()))
                 {
                     case "200":
@@ -231,22 +237,30 @@ public class ChangePasswordActivity extends AppCompatActivity {
                         break;
                     default:
                         /* A Stream object to get the returned data from API Call */
-                        InputStream ips = http.getInputStream();
+                        InputStream ips = http.getErrorStream();
                         BufferedReader reader = new BufferedReader(new InputStreamReader(ips, StandardCharsets.ISO_8859_1));
                         String line = "";
-                        //boolean started = false;
                         while ((line = reader.readLine()) != null) {
                             result += line;
                         }
+                        Log.w("Mahmoud2", result);
                         reader.close();
                         ips.close();
-                        if (result.contains("New password cannot be the same old password"))
+                        if (result.contains("User Doesn't Exist"))
                         {
-                            result = "{\"ReturnMsg\":\"New password cannot be the same old password!\"}";
+                            result = "{\"ReturnMsg\":\"An Error Occurred!\"}";
                         }
-                        else if (result.contains("Wrong Old Password"))
+                        else if (result.contains("Access denied. No token provided."))
+                        {
+                            result = "{\"ReturnMsg\":\"An Error Occurred!\"}";
+                        }
+                        else if (result.contains("Invalid Old password."))
                         {
                             result = "{\"ReturnMsg\":\"You entered a wrong old password!\"}";
+                        }
+                        else
+                        {
+                            result = "{\"ReturnMsg\":\"An Error Occurred!\"}";
                         }
 
                         break;
@@ -256,12 +270,15 @@ public class ChangePasswordActivity extends AppCompatActivity {
                 return result;
 
             }
-            /* Handling Exceptions */ catch (MalformedURLException e) {
+            /* Handling Exceptions */
+            catch (MalformedURLException e) {
                 result = e.getMessage();
             } catch (IOException e) {
                 result = e.getMessage();
             }
+            Log.w("Mahmoud3", result);
             return result;
+
         }
 
         @SuppressLint("SetTextI18n")
@@ -284,6 +301,7 @@ public class ChangePasswordActivity extends AppCompatActivity {
                 }
             }
             /* Catching Exceptions */ catch (JSONException e) {
+                Toast.makeText(mContext, "An Error Occurred!", Toast.LENGTH_SHORT).show();
                 e.printStackTrace();
             }
         }
