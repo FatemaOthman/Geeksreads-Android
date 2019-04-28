@@ -1,11 +1,14 @@
 package com.example.geeksreads;
 
 import android.annotation.SuppressLint;
+import android.app.AlertDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.AsyncTask;
+import android.os.Build;
+import android.support.annotation.RequiresApi;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
@@ -18,9 +21,23 @@ import android.widget.RatingBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.OutputStream;
+import java.io.OutputStreamWriter;
 import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
 import java.net.URL;
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Objects;
 
 public class ChooseShelfActivity extends AppCompatActivity {
@@ -60,6 +77,7 @@ public class ChooseShelfActivity extends AppCompatActivity {
         String pageNumbersPassed = intent.getStringExtra("Pages");
         String publishedDatePassed = intent.getStringExtra("published");
         String bookCoverURL = intent.getStringExtra("cover");
+        final String getBookID = intent.getStringExtra("bookID");
 
         /* Get views from layout by IDs */
         TextView BookName = findViewById(R.id.BookNameTxt);
@@ -113,6 +131,17 @@ public class ChooseShelfActivity extends AppCompatActivity {
                         shelfID = "Want To Read Books Shelf";
                     }
                     Toast.makeText(mContext,"You chose " + shelfID, Toast.LENGTH_SHORT).show();
+
+                    JSONObject ReviewObject = new JSONObject();
+                    try {
+                        ReviewObject.put("userId", LoginActivity.sCurrentUserID);
+                        ReviewObject.put("bookId", getBookID);
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                    String UrlService = "http://geeksreads.000webhostapp.com/Shrouk/BookDetails.php";
+                    AddShelfTask addShelfTask = new AddShelfTask();
+                    addShelfTask.execute(UrlService, ReviewObject.toString());
                 }
             }
         });
@@ -125,7 +154,6 @@ public class ChooseShelfActivity extends AppCompatActivity {
             }
         });
     }
-
 
     /**
      * Class that get image from Url and Add it to ImageView.
@@ -153,6 +181,101 @@ public class ChooseShelfActivity extends AppCompatActivity {
         @Override
         protected void onPostExecute(Bitmap result) {
             bookImage.setImageBitmap(result);
+        }
+    }
+
+    @SuppressLint("StaticFieldLeak")
+    private class AddShelfTask extends AsyncTask<String, Void, String> {
+        static final String REQUEST_METHOD = "GET";
+        //public static final int READ_TIMEOUT = 3000;
+        //public static final int CONNECTION_TIMEOUT = 3000;
+        AlertDialog dialog;
+        boolean TaskSuccess = false;
+
+        @Override
+        protected void onPreExecute() {
+            dialog = new AlertDialog.Builder(mContext).create();
+            dialog.setTitle("Connection Status");
+        }
+
+        @RequiresApi(api = Build.VERSION_CODES.KITKAT)
+        @Override
+        protected String doInBackground(String... params) {
+            String UrlString = params[0];
+            String JSONString = params[1];
+            String result = "";
+
+            try {
+                //Create a URL object holding our url
+                URL url = new URL(UrlString);
+                HttpURLConnection http = (HttpURLConnection) url.openConnection();
+                http.setRequestMethod(REQUEST_METHOD);
+                http.setDoInput(true);
+                http.setDoOutput(true);
+                http.setRequestProperty("content-type", "application/json");
+
+                OutputStream ops = http.getOutputStream();
+                BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(ops, StandardCharsets.UTF_8));
+                String data = URLEncoder.encode("id", "UTF-8") + "=" + URLEncoder.encode(JSONString, "UTF-8");
+
+                writer.write(data);
+                writer.flush();
+                writer.close();
+                ops.close();
+
+                switch (String.valueOf(http.getResponseCode()))
+                {
+                    case "200":
+                        /* A Stream object to get the returned data from API Call */
+                        InputStream ips = http.getInputStream();
+                        BufferedReader reader = new BufferedReader(new InputStreamReader(ips, StandardCharsets.ISO_8859_1));
+                        String line;
+                        while ((line = reader.readLine()) != null) {
+                            result += line;
+                        }
+                        reader.close();
+                        ips.close();
+                        TaskSuccess = true;
+                        break;
+                    case "400":
+                        TaskSuccess = false;
+                        result = "";
+                        break;
+                    default:
+                        break;
+                }
+                http.disconnect();
+                return result;
+
+            } catch (MalformedURLException e) {
+                result = e.getMessage();
+            } catch (IOException e) {
+                result = e.getMessage();
+            }
+            return result;
+        }
+
+        @SuppressLint("SetTextI18n")
+        protected void onPostExecute(String result) {
+            if (result == null) {
+                Toast.makeText(mContext, "Unable to connect to server", Toast.LENGTH_SHORT).show();
+                return;
+            }
+            try {
+                JSONObject jsonObject = new JSONObject(result);
+
+                if( TaskSuccess) {
+                    if (jsonObject.getString("AddedReviewSuc").equals("true")) {
+                        Toast.makeText(mContext, "Review Added", Toast.LENGTH_SHORT).show();
+                    }
+                }
+                else
+                {
+
+                }
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
         }
     }
 }
