@@ -9,7 +9,7 @@ import android.widget.Toast;
 public class NotificationService extends Service {
 
     void showPushNotification(){
-        Toast.makeText(this, "Notification !!", Toast.LENGTH_SHORT).show();
+//        Toast.makeText(this, "Notification !!", Toast.LENGTH_SHORT).show();
     }
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {

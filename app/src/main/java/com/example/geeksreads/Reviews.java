@@ -5,14 +5,22 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.os.AsyncTask;
+import android.os.Build;
 import android.os.Bundle;
+import android.support.annotation.RequiresApi;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import org.apache.http.HttpResponse;
+import org.apache.http.client.HttpClient;
+import org.apache.http.client.methods.HttpGet;
+import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.util.EntityUtils;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -27,6 +35,7 @@ import java.io.OutputStreamWriter;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 
@@ -48,17 +57,16 @@ public class Reviews extends AppCompatActivity {
         //Don't forget to check with Sherouk that the BookName is passed.
         BookNameForReview.setText("Pride And Prejudice");
         //    BookNameForReview.setText(getIntent().getStringExtra("BookName"));
-        final JSONObject jsonObject = new JSONObject();
-        try {
-            jsonObject.put("UserID", "value");
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
 
-        final String UrlService = "http://geeksreads.000webhostapp.com/Amr/ReviewList.php";
+        final String UrlService = "https://geeksreads.herokuapp.com/api/reviews/getrev?UserId="+"5cb6067bd42e9b00173fa1fc"+"&"+
+                "bookId"+"5c911452bbfd1717b8a7a169"+"&"+"userName="+"n";
 
+        /*
+           final String UrlService = "https://geeksreads.herokuapp.com/api/reviews/getrev?UserId="+Profile.CurrentUser+"&"+
+                "bookId"+getIntent().getStringExtra("BookID")+"&"+"userName="+getIntent().getStringExtra("userName");
+        */
         Reviews.GetAllReviews performBackgroundTask = new Reviews.GetAllReviews();
-        performBackgroundTask.execute(UrlService, jsonObject.toString());
+        performBackgroundTask.execute(UrlService);
 
 
         ReviewList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -95,61 +103,38 @@ public class Reviews extends AppCompatActivity {
          * @return result
          */
 
+
+
+        @RequiresApi(api = Build.VERSION_CODES.KITKAT)
         @Override
         protected String doInBackground(String... params) {
             String UrlString = params[0];
-            String JSONString = params[1];
             String result = "";
 
+            HttpClient httpclient = new DefaultHttpClient();
+            HttpGet httpget = new HttpGet(UrlString);
+            HttpResponse response = null;
+            String server_response = null;
             try {
-                /* Create a URL object holding our url */
-                URL url = new URL(UrlString);
-                /* Create an HTTP Connection and adjust its options */
-                HttpURLConnection http = (HttpURLConnection) url.openConnection();
-                http.setRequestMethod(REQUEST_METHOD);
-                http.setDoInput(true);
-                http.setDoOutput(true);
-                http.setRequestProperty("x-auth-token", LoginActivity.sCurrentToken);
-
-                /* A Stream object to hold the sent data to API Call */
-                OutputStream ops = http.getOutputStream();
-                BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(ops, StandardCharsets.UTF_8));
-                writer.write("");
-                writer.flush();
-                writer.close();
-                ops.close();
-
-                switch (String.valueOf(http.getResponseCode())) {
-                    case "200":
-                        /* A Stream object to get the returned data from API Call */
-                        InputStream ips = http.getInputStream();
-                        BufferedReader reader = new BufferedReader(new InputStreamReader(ips, StandardCharsets.ISO_8859_1));
-                        String line = "";
-                        //boolean started = false;
-                        while ((line = reader.readLine()) != null) {
-                            result += line;
-                        }
-                        reader.close();
-                        ips.close();
-                        break;
-                    default:
-                        result = "{\"ReturnMsg\":\"An Error Occurred!\"}";
-                        break;
-                }
-
-                http.disconnect();
-                return result;
-
-            }
-            /* Handling Exceptions */ catch (MalformedURLException e) {
-                result = e.getMessage();
+                response = httpclient.execute(httpget);
             } catch (IOException e) {
-                result = e.getMessage();
+                e.printStackTrace();
             }
+
+            if (response.getStatusLine().getStatusCode() == 200) {
+                try {
+                    server_response = EntityUtils.toString(response.getEntity());
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+                Log.d("Server response", server_response);
+            } else {
+                Log.d("Server response", "Failed to get server response");
+            }
+
+            result = server_response;
             return result;
         }
-
-
         /////////////////////////////////////////////////////////////////////////////////////////
 
         @SuppressLint("SetTextI18n")
@@ -163,7 +148,7 @@ public class Reviews extends AppCompatActivity {
 
                 dialog.setMessage(result);
                 //dialog.show();
-
+                Log.d("Test",result);
                 JSONArray jsonArr = new JSONArray(result);
                 dataModels = ReviewDataModel.fromJson(jsonArr);
                 final ReviewsCustomAdapter ReviewAdapter = new ReviewsCustomAdapter(dataModels, mContext);

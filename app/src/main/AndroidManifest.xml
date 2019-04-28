@@ -19,11 +19,14 @@
         <activity android:name=".ChooseShelfActivity" />
         <activity android:name=".SideBarActivity" />
         <activity android:name=".NotificationActivity" />
-        <activity android:name=".Profile" />
-        <activity android:name=".Reviews" />
-        <activity android:name=".LoginActivity" />
-        <activity android:name=".BookActivity">
+        <activity android:name=".Profile" >
 
+
+        </activity>
+        <activity android:name=".Reviews">
+
+        </activity>
+        <activity android:name=".LoginActivity" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -32,10 +35,16 @@
                 <action android:name="android.intent.action.VIEW" />
             </intent-filter>
         </activity>
+        <activity android:name=".BookActivity">
+
+        </activity>
         <activity android:name=".SignupActivity">
 
         </activity>
         <activity android:name=".MyBooksShelvesActivity" />
+        <activity android:name=".Comments">
+
+        </activity>
         <activity android:name=".EditProfileActivity" />
         <activity
             android:name=".OtherProfileActivity"

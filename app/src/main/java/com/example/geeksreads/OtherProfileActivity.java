@@ -15,6 +15,7 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -139,10 +140,12 @@ public class OtherProfileActivity extends AppCompatActivity implements Navigatio
         try {
             ID = getIntent().getStringExtra("FollowId");
             JSON.put("FollowId", ID);
-
             //TODO: Remove the following hardcoded ID line when merging.
             ID = "value";
             jsonObject.put("FollowId", ID);
+
+            jsonObject.put("ShelfName","Read");
+
         } catch (JSONException e) {
             e.printStackTrace();
         }
@@ -159,12 +162,12 @@ public class OtherProfileActivity extends AppCompatActivity implements Navigatio
         TheBooks.execute(SecondUrlService, jsonObject.toString());
         /////////////////////////////////////////////////////
 
-        final String FollowRequest = "http://geeksreads.000webhostapp.com/Amr/Follow.php";
-        final String UnFollowRequest = "http://geeksreads.000webhostapp.com/Amr/UnFollow.php";
+        final String FollowRequest = "https://geeksreads.herokuapp.com/api/users/Follow";
+        final String UnFollowRequest = "https://geeksreads.herokuapp.com/api/users/unFollow";
 
         final JSONObject FollowJson = new JSONObject();
         try {
-            ID = getIntent().getStringExtra("FollowId");
+            ID = LoginActivity.sCurrentUserID;
             FollowJson.put("myuserId", ID);
             ID = getIntent().getStringExtra("FollowId");
             FollowJson.put("userId_tobefollowed", ID);
@@ -253,7 +256,6 @@ public class OtherProfileActivity extends AppCompatActivity implements Navigatio
                 /* A Stream object to hold the sent data to API Call */
                 OutputStream ops = http.getOutputStream();
                 BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(ops, StandardCharsets.UTF_8));
-                //String data = URLEncoder.encode(JSONString, "UTF-8");
                 String data = JSONString;
 
                 writer.write(data);
@@ -597,15 +599,12 @@ public class OtherProfileActivity extends AppCompatActivity implements Navigatio
                 dialog.setMessage("Done");
                 //dialog.show();
 
-
                 JSONObject jsonObject = new JSONObject(result);
-                //  Log.i("AMR","Result: "+result);
                 OtherProfileActivity.GetOtherUserPicture Pic = new OtherProfileActivity.GetOtherUserPicture();
                 Pic.execute(jsonObject.getString("photourl"));
 
                 UserName.setText(jsonObject.getString("UserNameData"));
                 aForTestUserName = UserName.getText().toString();
-                // Log.i("TEST","USERNAME"+aForTestUserName);
                 BooksCount.setText(jsonObject.getString("CountBooks") + " " + "Books");
                 aForTestBooksCount = BooksCount.getText().toString();
 
@@ -837,7 +836,6 @@ public class OtherProfileActivity extends AppCompatActivity implements Navigatio
                 return;
             }
             try {
-
                 JSONObject jsonObject = new JSONObject(result);
                 FollowItem.setTitle("Followers   " + jsonObject.getString("Followers"));
                 BookItem.setTitle("My Books   " + jsonObject.getString("CountBooks"));

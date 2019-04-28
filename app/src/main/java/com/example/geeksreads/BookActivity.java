@@ -242,7 +242,7 @@ public class BookActivity extends AppCompatActivity implements NavigationView.On
 
         String Book_ID = "5c9114a0d345b4a65637eacc";
         /* Calling Async Task with my server url */
-        String UrlService = "https://geeksreads.herokuapp.com/api/books/id?book_id=5c9114a0d345b4a65637eacc";
+        String UrlService = "https://geeksreads.herokuapp.com/api/books/id";
         mProgressBar.setVisibility(View.VISIBLE);
         GetBookDetails getBookDetails = new GetBookDetails();
         getBookDetails.execute(UrlService, Book_ID);
