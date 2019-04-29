@@ -120,26 +120,26 @@ public class ChooseShelfActivity extends AppCompatActivity {
                 {
                     if (readRadio.isChecked())
                     {
-                        shelfID = "Read Books Shelf";
+                        shelfID = "Read";
                     }
                     else if (readingRadio.isChecked())
                     {
-                        shelfID = "Currently Reading Books Shelf";
+                        shelfID = "Reading";
                     }
                     else if (wantRadio.isChecked())
                     {
-                        shelfID = "Want To Read Books Shelf";
+                        shelfID = "WantToRead";
                     }
-                    Toast.makeText(mContext,"You chose " + shelfID, Toast.LENGTH_SHORT).show();
 
                     JSONObject ReviewObject = new JSONObject();
                     try {
-                        ReviewObject.put("userId", LoginActivity.sCurrentUserID);
+                        ReviewObject.put("x-auth-token", LoginActivity.sCurrentToken);
                         ReviewObject.put("bookId", getBookID);
+                        ReviewObject.put("ShelfType", shelfID);
                     } catch (JSONException e) {
                         e.printStackTrace();
                     }
-                    String UrlService = "http://geeksreads.000webhostapp.com/Shrouk/BookDetails.php";
+                    String UrlService = "https://geeksreads.herokuapp.com/api/users/Shelf/AddToShelf";
                     AddShelfTask addShelfTask = new AddShelfTask();
                     addShelfTask.execute(UrlService, ReviewObject.toString());
                 }
@@ -186,7 +186,7 @@ public class ChooseShelfActivity extends AppCompatActivity {
 
     @SuppressLint("StaticFieldLeak")
     private class AddShelfTask extends AsyncTask<String, Void, String> {
-        static final String REQUEST_METHOD = "GET";
+        static final String REQUEST_METHOD = "POST";
         //public static final int READ_TIMEOUT = 3000;
         //public static final int CONNECTION_TIMEOUT = 3000;
         AlertDialog dialog;
@@ -238,8 +238,15 @@ public class ChooseShelfActivity extends AppCompatActivity {
                         TaskSuccess = true;
                         break;
                     case "400":
+                        InputStream es = http.getErrorStream();
+                        BufferedReader readers = new BufferedReader(new InputStreamReader(es, StandardCharsets.ISO_8859_1));
+                        String lines;
+                        while ((lines = readers.readLine()) != null) {
+                            result += lines;
+                        }
+                        readers.close();
+                        es.close();
                         TaskSuccess = false;
-                        result = "";
                         break;
                     default:
                         break;
@@ -265,13 +272,11 @@ public class ChooseShelfActivity extends AppCompatActivity {
                 JSONObject jsonObject = new JSONObject(result);
 
                 if( TaskSuccess) {
-                    if (jsonObject.getString("AddedReviewSuc").equals("true")) {
-                        Toast.makeText(mContext, "Review Added", Toast.LENGTH_SHORT).show();
-                    }
+                    Toast.makeText(mContext, jsonObject.getString("ReturnMsg"), Toast.LENGTH_SHORT).show();
                 }
                 else
                 {
-
+                    Toast.makeText(mContext, "error", Toast.LENGTH_SHORT).show();
                 }
             } catch (JSONException e) {
                 e.printStackTrace();

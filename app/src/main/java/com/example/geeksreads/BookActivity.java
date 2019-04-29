@@ -109,7 +109,7 @@ public class BookActivity extends AppCompatActivity implements NavigationView.On
 
 
         Intent intent = getIntent();
-        String getISBN = intent.getStringExtra("BookISBN");
+        String getID = intent.getStringExtra("BookID");
 
         /* ToolBar and SideBar Setups */
         Toolbar myToolbar = findViewById(R.id.toolbar);
@@ -239,10 +239,9 @@ public class BookActivity extends AppCompatActivity implements NavigationView.On
 
 
         /* Creating Json Object to be send */
-
         String Book_ID = "5c9114a0d345b4a65637eacc";
         /* Calling Async Task with my server url */
-        String UrlService = "https://geeksreads.herokuapp.com/api/books/id?book_id=5c9114a0d345b4a65637eacc";
+        String UrlService = "https://geeksreads.herokuapp.com/api/books/id";
         mProgressBar.setVisibility(View.VISIBLE);
         GetBookDetails getBookDetails = new GetBookDetails();
         getBookDetails.execute(UrlService, Book_ID);
@@ -377,7 +376,7 @@ public class BookActivity extends AppCompatActivity implements NavigationView.On
             String bookID = params[1];
             String result = "";
 
-            UrlString = UrlString + "?Json =" + params[1];
+            UrlString = UrlString + "?book_id=" + bookID;
             HttpClient httpclient = new DefaultHttpClient();
             HttpGet httpget = new HttpGet(UrlString);
 
@@ -422,8 +421,8 @@ public class BookActivity extends AppCompatActivity implements NavigationView.On
                     bookAuthor.setText("By: " + "" + jsonObject.getString("Author"));
                     AuthorID = jsonObject.getString("AuthorId");
                     BookID = jsonObject.getString("BookId");
-                    //ratingsNumber.setText(jsonObject.getString("ratingcount") + " " + "Ratings");
-                    //reviewsNumber.setText(jsonObject.getString("textreviewscount") + " " + "Reviews");
+                    ratingsNumber.setText(jsonObject.getString("ratingcount") + " " + "Ratings");
+                    reviewsNumber.setText(jsonObject.getString("textreviewscount") + " " + "Reviews");
                     String Ratings = jsonObject.getString("BookRating");
                     bookRatings.setText(Ratings);
                     bookDescription.setText(jsonObject.getString("Description"));

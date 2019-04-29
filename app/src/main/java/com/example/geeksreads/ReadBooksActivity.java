@@ -59,12 +59,11 @@ public class ReadBooksActivity extends AppCompatActivity {
 
         final JSONObject jsonObject = new JSONObject();
         try {
-            jsonObject.put("userId", LoginActivity.sCurrentUserID);
-            jsonObject.put("shelfName", "Read");
+            jsonObject.put("x-auth-token", LoginActivity.sCurrentToken);
         } catch (JSONException e) {
             e.printStackTrace();
         }
-        final String UrlService = "http://geeksreads.000webhostapp.com/Shrouk/ReadingList.php";
+        final String UrlService = "https://geeksreads.herokuapp.com/api/Users/Shelf/GetUserReadDetails";
 
         mSwipeRefreshLayout = findViewById(R.id.ReadSwipeLayout);
         mSwipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
@@ -189,7 +188,7 @@ public class ReadBooksActivity extends AppCompatActivity {
                     @Override
                     public void onItemClick(AdapterView<?> arg0, View arg1, int position, long arg3) {
                         Intent intent = new Intent(ReadBooksActivity.this, BookActivity.class);
-                        intent.putExtra("BookISBN",bookListJsonAdapter.getBookISBN());
+                        intent.putExtra("BookID",bookListJsonAdapter.getBookID());
                         startActivity(intent);
                     }
                 });

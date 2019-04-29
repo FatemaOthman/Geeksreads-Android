@@ -4,13 +4,12 @@ import android.app.Service;
 import android.content.Intent;
 import android.os.IBinder;
 import android.support.annotation.Nullable;
-import android.widget.Toast;
+
 
 public class NotificationService extends Service {
 
     void showPushNotification(){
-        Toast.makeText(this, "Notification !!", Toast.LENGTH_SHORT).show();
-    }
+            }
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
         Runnable r = new Runnable() {

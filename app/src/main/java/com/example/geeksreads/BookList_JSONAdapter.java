@@ -32,7 +32,7 @@ public class BookList_JSONAdapter extends BaseAdapter {
 
     private final Context context;
     private JSONArray data;
-    private String bookISBN;
+    private String bookID;
 
     public BookList_JSONAdapter(Context context, JSONArray data) {
         this.data = data;
@@ -49,9 +49,9 @@ public class BookList_JSONAdapter extends BaseAdapter {
     /**
      * @return Book ISBN to get the book itself on clicking.
      */
-    public String getBookISBN()
+    public String getBookID()
     {
-        return bookISBN;
+        return bookID;
     }
 
     /**
@@ -101,7 +101,7 @@ public class BookList_JSONAdapter extends BaseAdapter {
             holder.position = i;
             holder.Cover = view.findViewById(R.id.BookImage);
 
-            bookISBN = data.getJSONObject(i).getString("ISBN");
+            bookID = data.getJSONObject(i).getString("ID");
 
             TextView BookName = view.findViewById(R.id.BookNameTxt);
             BookName.setText(data.getJSONObject(i).getString("Title"));
