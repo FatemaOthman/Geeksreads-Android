@@ -44,6 +44,7 @@ import org.apache.http.util.EntityUtils;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.UserSessionManager;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.IOException;
@@ -220,20 +221,22 @@ public class BookActivity extends AppCompatActivity implements NavigationView.On
                 {
                     JSONObject ReviewObject = new JSONObject();
                     try {
-                        ReviewObject.put("userId", LoginActivity.sCurrentUserID);
-                        ReviewObject.put("bookId", BookID);
+                        //ReviewObject.put("token", UserSessionManager.getUserToken());
+                        ReviewObject.put("UserId", LoginActivity.sCurrentUserID);
+                        ReviewObject.put("BookId", BookID);
                         ReviewObject.put("reviewBody", Review.getText());
                         Calendar calendar = Calendar.getInstance();
-                        SimpleDateFormat format = new SimpleDateFormat("yyyy / MM / dd ");
+                        SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ssZ");
                         ReviewObject.put("reviewDate", format.format(calendar.getTime()));
-                        ReviewObject.put("Rate",bookRating.getRating());
+                        ReviewObject.put("rating",bookRating.getRating());
+                        Log.d("Body", ReviewObject.toString());
 
                     } catch (JSONException e) {
                         e.printStackTrace();
                     }
-                    String UrlService = "https://geeksreads.herokuapp.com/api/books/id";
-                   // AddReviewTask addReviewTask = new AddReviewTask();
-                    //addReviewTask.execute(UrlService, ReviewObject.toString());
+                    String UrlService = "https://geeksreads.herokuapp.com/api/reviews/add";
+                    AddReviewTask addReviewTask = new AddReviewTask();
+                    addReviewTask.execute(UrlService, ReviewObject.toString());
                 }
             }
         });
@@ -598,7 +601,7 @@ public class BookActivity extends AppCompatActivity implements NavigationView.On
      */
     @SuppressLint("StaticFieldLeak")
     private class AddReviewTask extends AsyncTask<String, Void, String> {
-        static final String REQUEST_METHOD = "GET";
+        static final String REQUEST_METHOD = "POST";
         //public static final int READ_TIMEOUT = 3000;
         //public static final int CONNECTION_TIMEOUT = 3000;
         AlertDialog dialog;
@@ -628,13 +631,12 @@ public class BookActivity extends AppCompatActivity implements NavigationView.On
 
                 OutputStream ops = http.getOutputStream();
                 BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(ops, StandardCharsets.UTF_8));
-                String data = URLEncoder.encode("id", "UTF-8") + "=" + URLEncoder.encode(JSONString, "UTF-8");
-
-                writer.write(data);
+                writer.write(JSONString);
                 writer.flush();
                 writer.close();
                 ops.close();
 
+                Log.d("ResponseCode: " , String.valueOf(http.getResponseCode()) );
                 switch (String.valueOf(http.getResponseCode()))
                 {
                     case "200":
@@ -651,7 +653,14 @@ public class BookActivity extends AppCompatActivity implements NavigationView.On
                         break;
                     case "400":
                         TaskSuccess = false;
-                        result = "";
+                        InputStream es = http.getErrorStream();
+                        BufferedReader ereader = new BufferedReader(new InputStreamReader(es, StandardCharsets.ISO_8859_1));
+                        String eline;
+                        while ((eline = ereader.readLine()) != null) {
+                            result += eline;
+                        }
+                        ereader.close();
+                        es.close();
                         break;
                     default:
                         break;
@@ -664,6 +673,7 @@ public class BookActivity extends AppCompatActivity implements NavigationView.On
             } catch (IOException e) {
                 result = e.getMessage();
             }
+            Log.d("Result:" , result);
             return result;
         }
 
@@ -674,8 +684,8 @@ public class BookActivity extends AppCompatActivity implements NavigationView.On
                 return;
             }
             try {
+                Log.d("Result:" , result);
                 JSONObject jsonObject = new JSONObject(result);
-
                 if( TaskSuccess) {
                     if (jsonObject.getString("AddedReviewSuc").equals("true")) {
                         Toast.makeText(mContext, "Review Added", Toast.LENGTH_SHORT).show();

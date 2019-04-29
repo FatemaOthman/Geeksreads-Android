@@ -90,7 +90,6 @@ public class ChooseShelfActivity extends AppCompatActivity {
         TextView Pages = findViewById(R.id.pageNumbers);
         TextView BookData = findViewById(R.id.PublishData);
         Button addShelf = findViewById(R.id.AddShelfBtn);
-        Button addReview = findViewById(R.id.AddReviewBtn);
         RatingBar bookStars = findViewById(R.id.bookRatingStars);
         final RadioGroup ShelfChoosed= findViewById(R.id.radioGroup);
         final RadioButton readRadio = findViewById(R.id.radioRead);
@@ -173,14 +172,6 @@ public class ChooseShelfActivity extends AppCompatActivity {
                     AddShelfTask addShelfTask = new AddShelfTask();
                     addShelfTask.execute(UrlService, ReviewObject.toString());
                 }
-            }
-        });
-
-        /* on Add Review button click listener */
-        addReview.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Toast.makeText(mContext,"Redirect to Add Reviews ACtivity", Toast.LENGTH_SHORT).show();
             }
         });
     }
