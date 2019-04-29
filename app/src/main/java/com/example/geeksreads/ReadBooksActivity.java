@@ -9,6 +9,7 @@ import android.os.Bundle;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -22,6 +23,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.UserSessionManager;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.IOException;
@@ -59,11 +61,11 @@ public class ReadBooksActivity extends AppCompatActivity {
 
         final JSONObject jsonObject = new JSONObject();
         try {
-            jsonObject.put("x-auth-token", LoginActivity.sCurrentToken);
+            jsonObject.put("token", UserSessionManager.getUserToken());
         } catch (JSONException e) {
             e.printStackTrace();
         }
-        final String UrlService = "https://geeksreads.herokuapp.com/api/Users/Shelf/GetUserReadDetails";
+        final String UrlService = "https://geeksreads.herokuapp.com/api/Users/GetUserReadDetails";
 
         mSwipeRefreshLayout = findViewById(R.id.ReadSwipeLayout);
         mSwipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
@@ -78,6 +80,7 @@ public class ReadBooksActivity extends AppCompatActivity {
         });
 
         GetReadBooks performBackgroundTask = new GetReadBooks();
+        Log.d("Body", jsonObject.toString());
         performBackgroundTask.execute(UrlService, jsonObject.toString());
         
     }
@@ -114,7 +117,7 @@ public class ReadBooksActivity extends AppCompatActivity {
      */
     @SuppressLint("StaticFieldLeak")
     private class GetReadBooks extends AsyncTask<String, Void, String> {
-        public static final String REQUEST_METHOD = "GET";
+        public static final String REQUEST_METHOD = "POST";
         //public static final int READ_TIMEOUT = 3000;
         //public static final int CONNECTION_TIMEOUT = 3000;
         AlertDialog dialog;
@@ -139,11 +142,12 @@ public class ReadBooksActivity extends AppCompatActivity {
                 http.setRequestMethod(REQUEST_METHOD);
                 http.setDoInput(true);
                 http.setDoOutput(true);
+                http.setRequestProperty("content-type", "application/json");
 
                 OutputStream ops = http.getOutputStream();
                 BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(ops, StandardCharsets.UTF_8));
-                String data = URLEncoder.encode("id", "UTF-8") + "=" + URLEncoder.encode(JSONString, "UTF-8");
-
+                //String data = URLEncoder.encode("id", "UTF-8") + "=" + URLEncoder.encode(JSONString, "UTF-8");
+                String data = JSONString;
                 writer.write(data);
                 writer.flush();
                 writer.close();
@@ -180,8 +184,9 @@ public class ReadBooksActivity extends AppCompatActivity {
             try {
                 dialog.setMessage(result);
                 //dialog.show();
+                JSONObject jsonObject = new JSONObject(result);
                 ListView readBookList = findViewById(R.id.ReadBookList);
-                final BookList_JSONAdapter bookListJsonAdapter = new BookList_JSONAdapter(mContext, new JSONArray(result));
+                final BookList_JSONAdapter bookListJsonAdapter = new BookList_JSONAdapter(mContext, new JSONArray(jsonObject.getString("ReadData")));
                 readBookList.setAdapter(bookListJsonAdapter);
                 readBookList.deferNotifyDataSetChanged();
                 readBookList.setOnItemClickListener(new AdapterView.OnItemClickListener() {

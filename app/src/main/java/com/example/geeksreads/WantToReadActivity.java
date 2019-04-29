@@ -22,6 +22,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.UserSessionManager;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.IOException;
@@ -59,11 +60,11 @@ public class WantToReadActivity extends AppCompatActivity {
 
         final JSONObject jsonObject = new JSONObject();
         try {
-            jsonObject.put("token", LoginActivity.sCurrentToken);
+            jsonObject.put("token", UserSessionManager.getUserToken());
         } catch (JSONException e) {
             e.printStackTrace();
         }
-        final String UrlService = "https://geeksreads.herokuapp.com/api/Users/Shelf/GetUserWantToReadDetails";
+        final String UrlService = "https://geeksreads.herokuapp.com/api/Users/GetUserWantToReadDetails";
 
         mSwipeRefreshLayout = findViewById(R.id.WantSwipeLayout);
         mSwipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
@@ -114,7 +115,7 @@ public class WantToReadActivity extends AppCompatActivity {
      */
     @SuppressLint("StaticFieldLeak")
     private class GetWanttoReadBooks extends AsyncTask<String, Void, String> {
-        public static final String REQUEST_METHOD = "GET";
+        public static final String REQUEST_METHOD = "POST";
         //public static final int READ_TIMEOUT = 3000;
         //public static final int CONNECTION_TIMEOUT = 3000;
         AlertDialog dialog;
@@ -199,7 +200,7 @@ public class WantToReadActivity extends AppCompatActivity {
                 //dialog.show();
                 JSONObject jsonObject = new JSONObject(result);
                 ListView wantToReadBookList = findViewById(R.id.WantToReadBookList);
-                final BookList_JSONAdapter bookListJsonAdapter = new BookList_JSONAdapter(mContext, new JSONArray(jsonObject.getJSONArray("WantToReadData")));
+                final BookList_JSONAdapter bookListJsonAdapter = new BookList_JSONAdapter(mContext, new JSONArray(jsonObject.getString("WantToReadData")));
                 wantToReadBookList.setAdapter(bookListJsonAdapter);
                 wantToReadBookList.deferNotifyDataSetChanged();
                 wantToReadBookList.setOnItemClickListener(new AdapterView.OnItemClickListener() {

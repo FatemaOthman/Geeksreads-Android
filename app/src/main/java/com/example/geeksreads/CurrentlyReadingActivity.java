@@ -9,6 +9,7 @@ import android.os.Bundle;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -22,6 +23,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.UserSessionManager;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.IOException;
@@ -59,11 +61,11 @@ public class CurrentlyReadingActivity extends AppCompatActivity {
 
         final JSONObject jsonObject = new JSONObject();
         try {
-            jsonObject.put("token", LoginActivity.sCurrentToken);
+            jsonObject.put("token", UserSessionManager.getUserToken());
         } catch (JSONException e) {
             e.printStackTrace();
         }
-        final String UrlService = "https://geeksreads.herokuapp.com/api/Users/Shelf/GetUserReadingDetails";
+        final String UrlService = "https://geeksreads.herokuapp.com/api/Users/GetUserReadingDetails";
 
         mSwipeRefreshLayout = findViewById(R.id.CurrentlySwipeLayout);
         mSwipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
@@ -78,7 +80,7 @@ public class CurrentlyReadingActivity extends AppCompatActivity {
         });
 
         GetCurrentlyReadingBooks performBackgroundTask = new GetCurrentlyReadingBooks();
-        performBackgroundTask.execute(UrlService, jsonObject.toString());
+        performBackgroundTask.execute(UrlService,jsonObject.toString());
 
     }
 
@@ -114,7 +116,7 @@ public class CurrentlyReadingActivity extends AppCompatActivity {
      */
     @SuppressLint("StaticFieldLeak")
     private class GetCurrentlyReadingBooks extends AsyncTask<String, Void, String> {
-        public static final String REQUEST_METHOD = "GET";
+        public static final String REQUEST_METHOD = "POST";
         //public static final int READ_TIMEOUT = 3000;
         //public static final int CONNECTION_TIMEOUT = 3000;
         AlertDialog dialog;
@@ -142,8 +144,8 @@ public class CurrentlyReadingActivity extends AppCompatActivity {
 
                 OutputStream ops = http.getOutputStream();
                 BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(ops, StandardCharsets.UTF_8));
-                 String data = URLEncoder.encode("Json", "UTF-8") + "=" + URLEncoder.encode(JSONString, "UTF-8");
-                //String data = JSONString;
+                //String data = URLEncoder.encode("Json", "UTF-8") + "=" + URLEncoder.encode(JSONString, "UTF-8");
+                String data = JSONString;
                 writer.write(data);
                 writer.flush();
                 writer.close();
@@ -197,9 +199,10 @@ public class CurrentlyReadingActivity extends AppCompatActivity {
             }
             try {
                 dialog.setMessage(result);
-                dialog.show();
+                //dialog.show();
+                JSONObject jsonObject = new JSONObject(result);
                 ListView currentlyReadingList = findViewById(R.id.CurrentlyReadingList);
-                final BookList_JSONAdapter bookListJsonAdapter = new BookList_JSONAdapter(mContext, new JSONArray(result));
+                final BookList_JSONAdapter bookListJsonAdapter = new BookList_JSONAdapter(mContext, new JSONArray(jsonObject.getString("ReadingData")));
                 currentlyReadingList.setAdapter(bookListJsonAdapter);
                 currentlyReadingList.deferNotifyDataSetChanged();
                 currentlyReadingList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -211,6 +214,7 @@ public class CurrentlyReadingActivity extends AppCompatActivity {
                     }
                 });
             } catch (JSONException e) {
+                Toast.makeText(mContext, "Unable to get Shelf Data from server", Toast.LENGTH_SHORT).show();
                 e.printStackTrace();
             }
         }

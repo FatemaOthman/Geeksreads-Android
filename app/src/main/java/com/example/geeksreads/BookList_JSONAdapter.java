@@ -8,6 +8,7 @@ import android.graphics.Color;
 import android.graphics.PorterDuff;
 import android.graphics.drawable.LayerDrawable;
 import android.os.AsyncTask;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -101,13 +102,13 @@ public class BookList_JSONAdapter extends BaseAdapter {
             holder.position = i;
             holder.Cover = view.findViewById(R.id.BookImage);
 
-            bookID = data.getJSONObject(i).getString("ID");
+            bookID = data.getJSONObject(i).getString("BookId");
 
             TextView BookName = view.findViewById(R.id.BookNameTxt);
             BookName.setText(data.getJSONObject(i).getString("Title"));
 
             TextView AuthorName = view.findViewById(R.id.ByAuthorNameTxt);
-            AuthorName.setText(String.format("By: %s", data.getJSONObject(i).getString("Author")));
+            AuthorName.setText(String.format("By: %s", data.getJSONObject(i).getString("AuthorName")));
 
             String Ratings = data.getJSONObject(i).getString("BookRating");
             TextView RatingNumber = view.findViewById(R.id.ratingBar);
@@ -118,7 +119,7 @@ public class BookList_JSONAdapter extends BaseAdapter {
 
             RatingBar bookStars = view.findViewById(R.id.bookRatingStars);
             bookStars.setRating(Float.parseFloat(Ratings));
-            if (Float.parseFloat(Ratings) <= 1)
+            if (Float.parseFloat(Ratings) == 1)
             {
                 LayerDrawable stars = (LayerDrawable) bookStars.getProgressDrawable();
                 stars.getDrawable(2).setColorFilter(Color.RED, PorterDuff.Mode.SRC_ATOP);
