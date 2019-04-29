@@ -59,12 +59,11 @@ public class CurrentlyReadingActivity extends AppCompatActivity {
 
         final JSONObject jsonObject = new JSONObject();
         try {
-            jsonObject.put("userId", LoginActivity.sCurrentUserID);
-            jsonObject.put("shelfName", "CurrentlyReading");
+            jsonObject.put("token", LoginActivity.sCurrentToken);
         } catch (JSONException e) {
             e.printStackTrace();
         }
-        final String UrlService = "http://geeksreads.000webhostapp.com/Shrouk/ReadingList.php";
+        final String UrlService = "https://geeksreads.herokuapp.com/api/Users/Shelf/GetUserReadingDetails";
 
         mSwipeRefreshLayout = findViewById(R.id.CurrentlySwipeLayout);
         mSwipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
@@ -134,31 +133,49 @@ public class CurrentlyReadingActivity extends AppCompatActivity {
             String result = "";
 
             try {
-                //Create a URL object holding our url
                 URL url = new URL(UrlString);
                 HttpURLConnection http = (HttpURLConnection) url.openConnection();
                 http.setRequestMethod(REQUEST_METHOD);
                 http.setDoInput(true);
                 http.setDoOutput(true);
+                http.setRequestProperty("content-type", "application/json");
 
                 OutputStream ops = http.getOutputStream();
                 BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(ops, StandardCharsets.UTF_8));
-                String data = URLEncoder.encode("id", "UTF-8") + "=" + URLEncoder.encode(JSONString, "UTF-8");
-
+                 String data = URLEncoder.encode("Json", "UTF-8") + "=" + URLEncoder.encode(JSONString, "UTF-8");
+                //String data = JSONString;
                 writer.write(data);
                 writer.flush();
                 writer.close();
                 ops.close();
 
-                //Create a new InputStreamReader
-                InputStream ips = http.getInputStream();
-                BufferedReader reader = new BufferedReader(new InputStreamReader(ips, StandardCharsets.ISO_8859_1));
-                String line;
-                while ((line = reader.readLine()) != null) {
-                    result += line;
+                switch (String.valueOf(http.getResponseCode()))
+                {
+                    case "200":
+                        /* A Stream object to get the returned data from API Call */
+                        InputStream ips = http.getInputStream();
+                        BufferedReader reader = new BufferedReader(new InputStreamReader(ips, StandardCharsets.ISO_8859_1));
+                        String line = "";
+                        //boolean started = false;
+                        while ((line = reader.readLine()) != null) {
+                            //   if ()
+                            result += line;
+                        }
+                        reader.close();
+                        ips.close();
+                        break;
+                    case "400":
+                        InputStream es = http.getErrorStream();
+                        BufferedReader ereader = new BufferedReader(new InputStreamReader(es, StandardCharsets.ISO_8859_1));
+                        String eline = "";
+                        while ((eline = ereader.readLine()) != null) {
+                            result += eline;
+                        }
+                        break;
+                    default:
+                        break;
                 }
-                reader.close();
-                ips.close();
+
                 http.disconnect();
                 return result;
 
@@ -180,7 +197,7 @@ public class CurrentlyReadingActivity extends AppCompatActivity {
             }
             try {
                 dialog.setMessage(result);
-                //dialog.show();
+                dialog.show();
                 ListView currentlyReadingList = findViewById(R.id.CurrentlyReadingList);
                 final BookList_JSONAdapter bookListJsonAdapter = new BookList_JSONAdapter(mContext, new JSONArray(result));
                 currentlyReadingList.setAdapter(bookListJsonAdapter);
@@ -189,7 +206,7 @@ public class CurrentlyReadingActivity extends AppCompatActivity {
                     @Override
                     public void onItemClick(AdapterView<?> arg0, View arg1, int position, long arg3) {
                         Intent intent = new Intent(CurrentlyReadingActivity.this, BookActivity.class);
-                        intent.putExtra("BookISBN",bookListJsonAdapter.getBookISBN());
+                        intent.putExtra("BookID",bookListJsonAdapter.getBookID());
                         startActivity(intent);
                     }
                 });
