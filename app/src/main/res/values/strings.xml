@@ -20,7 +20,7 @@
     <string name="DisplayNameHint">Display Name</string>
     <string name="PasswordHint">Password</string>
     <string name="EmailHint">Email Address</string>
-    <string name="BirthDateHint">Birth Date</string>
+    <string name="BirthDateHint">Birth Date Month/Day/Year</string>
     <string name="ChangePasswordBtnTxt">Change Password</string>
     <string name="SaveChangesBtnTxt">Save Changes</string>
     <string name="SignUpHeaderTxt">Create a new account in geeksreads</string>
@@ -277,4 +277,9 @@
     </string-array>
     <string name="title_activity_feed">FeedActivity</string>
     <string name="SignOutTxt">Thank you for using Geekreads. You have been signed out. To Log in again, press the Login button and to create a new account, press Sign up button.</string>
+    <string name="otpHint">Verification Code</string>
+    <string name="SaveChangedPassword">Save New Password</string>
+    <string name="OrForgetPassword">"If you forgot your password, "</string>
+    <string name="ForgetPassword">Click Here</string>
+    <string name="OrSignUpTxt">"Or to create a new account, "</string>
 </resources>

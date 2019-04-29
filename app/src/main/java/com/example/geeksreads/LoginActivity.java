@@ -1,5 +1,7 @@
 package com.example.geeksreads;
 
+import android.accounts.Account;
+import android.accounts.AccountManager;
 import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.content.Context;
@@ -19,6 +21,7 @@ import android.widget.Toast;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.UserSessionManager;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.IOException;
@@ -33,6 +36,7 @@ import java.net.URL;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.util.Objects;
+import java.HelpingFunctions;
 
 public class LoginActivity extends AppCompatActivity {
     /**
@@ -77,7 +81,36 @@ public class LoginActivity extends AppCompatActivity {
         }
     }
     @Override
+    public void onBackPressed()
+    {
+        String from = getIntent().getStringExtra("FROM");
+        if (from.equals("SIGNUP") || from.equals("SIGNOUT"))
+        {
+            super.onBackPressed();
+        }
+        else
+        {
+            /* Go to Next Activity Layout */
+            Intent myIntent = new Intent(LoginActivity.this, SignupActivity.class);
+            myIntent.putExtra("FROM", "SIGNIN");
+            myIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK|Intent.FLAG_ACTIVITY_NEW_TASK);
+            startActivity(myIntent);
+        }
+
+    }
+    @Override
     protected void onCreate(Bundle savedInstanceState) {
+        /* If user is already logged in, Skip and go to Main Activity */
+        mContext = this;
+        UserSessionManager.Initialize(mContext);
+        UserSessionManager.UserSessionState currentUserState = UserSessionManager.getCurrentState();
+        if (currentUserState == UserSessionManager.UserSessionState.USER_LOGGED_IN)
+        {
+            /* Go to Next Activity Layout */
+            Intent myIntent = new Intent(LoginActivity.this, FeedActivity.class);
+            myIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK|Intent.FLAG_ACTIVITY_NEW_TASK);
+            startActivity(myIntent);
+        }
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
 
@@ -86,18 +119,6 @@ public class LoginActivity extends AppCompatActivity {
         setSupportActionBar(myToolbar);
         Objects.requireNonNull(getSupportActionBar()).setTitle("Login");
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        mContext = this;
-
-        /* Too Act as logged in and re-direct to newsFeed */
-
-       /* SharedPreferences sp;
-        sp = getSharedPreferences("login",MODE_PRIVATE);
-        sp.edit().putBoolean("logged",true).apply();
-
-        if(sp.getBoolean("logged",false)){
-            Intent myIntent = new Intent(LoginActivity.this, FeedActivity.class);
-            startActivity(myIntent);
-        } */
 
 
         /* Getting Text boxes and Buttons from the layout */
@@ -105,6 +126,11 @@ public class LoginActivity extends AppCompatActivity {
         final EditText loginMail = findViewById(R.id.EmailTxt);
         final EditText loginPassword = findViewById(R.id.PasswordTxt);
 
+        if (currentUserState == UserSessionManager.UserSessionState.USER_DATA_AVAILABLE_BUT_NOT_LOGGED_IN)
+        {
+            loginMail.setText(UserSessionManager.getUserEmail());
+            loginPassword.setText(UserSessionManager.getHashedPassword());
+        }
 
         /* Function Handler for Clicking on Login Button, to Start Checking input Field
            and Sending JSON String to the Backend Login API
@@ -129,6 +155,18 @@ public class LoginActivity extends AppCompatActivity {
                 else {
                     JSONObject mJSON = new JSONObject();
                     try {
+                        if (UserSessionManager.getCurrentState() == UserSessionManager.UserSessionState.NO_DATA
+                        || !loginPasswordStr.equals(UserSessionManager.getHashedPassword()))
+                        {
+                            /* Encrypting User Password into MD5 */
+                            loginPasswordStr = HelpingFunctions.getMD5Encryption(loginPasswordStr);
+                        }
+                        else
+                        {
+                            /* No Change, it's already encrypted! */
+                        }
+
+                        /* Adding needed parameters for Login API */
                         mJSON.put("UserEmail", loginEmailStr);
                         mJSON.put("UserPassword", loginPasswordStr);
                     } catch (JSONException e) {
@@ -142,6 +180,69 @@ public class LoginActivity extends AppCompatActivity {
                     SignIn signIn = new SignIn();
                     signIn.execute(urlService, mJSON.toString());
                 }
+            }
+        });
+
+        Button forgetPasswordButton = findViewById(R.id.OrForgetBtn);
+        /* Function Handler for Clicking on Sign up Button, to Start Checking input Fields
+           and Sending JSON String to the Backend Sign up API
+         */
+        forgetPasswordButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                final String emailStr = loginMail.getText().toString();
+
+                verificationErrorType signUpValidationError = verifyStaticCredentials(emailStr, "sTUBpass123");
+
+                switch (signUpValidationError)
+                {
+                    case INVALID_EMAIL:
+                        loginMail.setError("Please enter a valid Email to Reset your password!");
+                        sForTest = "Please enter a valid Email to Reset your password!";
+                        break;
+                    case NO_ERRORS:
+                    default:
+                        AlertDialog.Builder dialog = new AlertDialog.Builder(mContext);
+                        dialog.setMessage("Are you sure you want to reset password for this email " + emailStr + "?");
+                        dialog.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                JSONObject JSON = new JSONObject();
+                                try {
+                                    JSON.put("UserEmail", emailStr);
+                                } catch (JSONException e) {
+                                    e.printStackTrace();
+                                }
+                                /* URL For Forget password API */
+                                String urlService = "https://geeksreads.herokuapp.com/api/users/forgetpassword";
+
+                                /* Creating a new instance of Sign up Class */
+                                forgetPassword forgetPasswordObj = new forgetPassword();
+                                forgetPasswordObj.execute(urlService, JSON.toString());
+                            }
+                        });
+                        dialog.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                /* Do Nothing and Stay here in the same layout */
+                            }
+                        });
+                        dialog.show();
+
+                        break;
+                }
+            }
+        });
+
+        Button signupButton = findViewById(R.id.OrSignUpBtn);
+        signupButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                /* Go to Next Activity Layout */
+                Intent myIntent = new Intent(LoginActivity.this, SignupActivity.class);
+                myIntent.putExtra("FROM", "SIGNIN");
+                myIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK|Intent.FLAG_ACTIVITY_NEW_TASK);
+                startActivity(myIntent);
             }
         });
 
@@ -255,12 +356,12 @@ public class LoginActivity extends AppCompatActivity {
                                 sCurrentToken = jsonObject.getString("Token");
                                 sCurrentUserID = jsonObject.getString("UserId");
 
-                                /* Start Notifications Service */
-                                Intent service = new Intent(LoginActivity.this, NotificationService.class);
-                                startService(service);
+                                // Save User Data
+                                UserSessionManager.saveUserData(loginEmailStr, loginPasswordStr, sCurrentToken);
 
                                 /* Go to Next Activity Layout */
                                 Intent myIntent = new Intent(LoginActivity.this, FeedActivity.class);
+                                myIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK|Intent.FLAG_ACTIVITY_NEW_TASK);
                                 startActivity(myIntent);
                             } else {
                                 /* If Login didn't succeed, Stay Here in the same Activity and Do Nothing */
@@ -274,6 +375,107 @@ public class LoginActivity extends AppCompatActivity {
 
                 dialog.show();
 
+            }
+            /* Catching Exceptions */ catch (JSONException e) {
+                e.printStackTrace();
+            }
+        }
+
+    }
+
+    /**
+     * Class that get the data from host and Add it to its views.
+     * The Parameters are host Url and toSend Data.
+     */
+    public class forgetPassword extends AsyncTask<String, Void, String> {
+        static final String REQUEST_METHOD = "POST";
+
+        @Override
+        protected void onPreExecute() {
+            /* Do Nothing */
+        }
+
+        @Override
+        protected String doInBackground(String... params) {
+            String UrlString = params[0];
+            String JSONString = params[1];
+            String result = "";
+
+            try {
+                /* Create a URL object holding our url */
+                URL url = new URL(UrlString);
+                /* Create an HTTP Connection and adjust its options */
+                HttpURLConnection http = (HttpURLConnection) url.openConnection();
+                http.setRequestMethod(REQUEST_METHOD);
+                http.setDoInput(true);
+                http.setDoOutput(true);
+                http.setRequestProperty("content-type", "application/json");
+                /* A Stream object to hold the sent data to API Call */
+                OutputStream ops = http.getOutputStream();
+                BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(ops, StandardCharsets.UTF_8));
+                String data = JSONString;
+
+                writer.write(data);
+                writer.flush();
+                writer.close();
+                ops.close();
+
+                switch (String.valueOf(http.getResponseCode()))
+                {
+                    case "200":
+                        result = "{\"ReturnMsg\":\"A verification code has been sent to your email address!\"}";
+                        break;
+                    case "400":
+                        result = "{\"ReturnMsg\":\"This email is not registered before!.\"}";
+                        break;
+                    default:
+                        break;
+                }
+
+                http.disconnect();
+                return result;
+            }
+            /* Handling Exceptions */ catch (MalformedURLException e) {
+                result = e.getMessage();
+            } catch (IOException e) {
+                result = e.getMessage();
+            }
+            return result;
+        }
+
+        @SuppressLint("SetTextI18n")
+        protected void onPostExecute(String result) {
+            if (result == null) {
+                Toast.makeText(mContext, "Unable to connect to server", Toast.LENGTH_SHORT).show();
+                return;
+            }
+            try {
+                /* Creating a JSON Object to parse the data in */
+                final JSONObject jsonObject = new JSONObject(result);
+
+                /* Creating an Alert Dialog to Show Sign up Results to User */
+                AlertDialog.Builder dialog = new AlertDialog.Builder(mContext);
+                dialog.setTitle("Reset Password");
+                dialog.setMessage(jsonObject.getString("ReturnMsg"));
+                sForTest = jsonObject.getString("ReturnMsg");
+
+                dialog.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        try {
+                            if (jsonObject.getString("ReturnMsg").contains("verification")) {
+                                /* Go to Next Activity Layout */
+                                Intent myIntent = new Intent(LoginActivity.this, ForgetPasswordActivity.class);
+                                startActivity(myIntent);
+                            } else {
+                                /* If forget password didn't succeed, Stay Here in the same Activity and Do Nothing */
+                            }
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                });
+                dialog.show();
             }
             /* Catching Exceptions */ catch (JSONException e) {
                 e.printStackTrace();

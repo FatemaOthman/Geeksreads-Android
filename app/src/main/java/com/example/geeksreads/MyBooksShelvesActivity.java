@@ -28,6 +28,7 @@ import android.widget.Toast;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.UserSessionManager;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.IOException;
@@ -43,7 +44,6 @@ import java.nio.charset.StandardCharsets;
 import java.util.Objects;
 
 public class MyBooksShelvesActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
-
     /**
      * Global Public Static Variables used for Testing
      */
@@ -70,9 +70,6 @@ public class MyBooksShelvesActivity extends AppCompatActivity implements Navigat
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        //TODO Remove the below two lines after integration
-        LoginActivity.sCurrentUserID = "iiiidddd1142019";
-        LoginActivity.sCurrentToken = "xYzAbCdToKeN";
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_my_books_shelves);
         mContext = this;
@@ -150,45 +147,12 @@ public class MyBooksShelvesActivity extends AppCompatActivity implements Navigat
             }
         });
 
-        UpdateBookShelfCount updateReadShelf = new UpdateBookShelfCount("Read");
-        UpdateBookShelfCount updateWantToReadShelf = new UpdateBookShelfCount("WantToRead");
-        UpdateBookShelfCount updateCurrentlyReadingShelf = new UpdateBookShelfCount("CurrentlyReading");
+        UpdateBookShelfCount updateReadShelf = new UpdateBookShelfCount(UserSessionManager.getUserToken());
 
-        /* URL For Login API */
-        String urlService = "http://geeksreads.000webhostapp.com/Morsy/GetBookShelf.php";
+        /* URL For Get Shelves Count API */
+        String urlService = "https://geeksreads.herokuapp.com/api/users/ShelvesCount";
 
-        JSONObject mJSON = new JSONObject();
-        try {
-            mJSON.put("UserID", LoginActivity.sCurrentUserID);
-            mJSON.put("UserToken", LoginActivity.sCurrentToken);
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-
-        /* Requesting Read Shelf Count */
-        try {
-            mJSON.put("ShelfName", "Read");
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-        updateReadShelf.execute(urlService, mJSON.toString());
-
-        /* Requesting Want To Read Shelf Count */
-        try {
-            mJSON.put("ShelfName", "WantToRead");
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-        updateWantToReadShelf.execute(urlService, mJSON.toString());
-
-        /* Requesting Currently Reading Shelf Count */
-        try {
-            mJSON.put("ShelfName", "CurrentlyReading");
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-        updateCurrentlyReadingShelf.execute(urlService, mJSON.toString());
-
+        updateReadShelf.execute(urlService);
     }
 
 
@@ -239,6 +203,11 @@ public class MyBooksShelvesActivity extends AppCompatActivity implements Navigat
             Intent myIntent = new Intent(MyBooksShelvesActivity.this, FollowActivity.class);
             startActivity(myIntent);
         }
+        else if (id == R.id.Signout) {
+            Intent myIntent = new Intent(MyBooksShelvesActivity.this, SignOutActivity.class);
+            myIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK|Intent.FLAG_ACTIVITY_NEW_TASK);
+            startActivity(myIntent);
+        }
         DrawerLayout drawer = findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
         return true;
@@ -249,11 +218,11 @@ public class MyBooksShelvesActivity extends AppCompatActivity implements Navigat
      * The Parameters are host Url and toSend Data.
      */
     public class UpdateBookShelfCount extends AsyncTask<String, String, String> {
-        static final String REQUEST_METHOD = "GET";
-        String passedString;
+        static final String REQUEST_METHOD = "POST";
+        String userToken;
 
-        public UpdateBookShelfCount(String inpString) {
-            passedString = inpString;
+        public UpdateBookShelfCount(String userToken) {
+            this.userToken = userToken;
         }
 
         @Override
@@ -264,11 +233,8 @@ public class MyBooksShelvesActivity extends AppCompatActivity implements Navigat
         @Override
         protected String doInBackground(String... params) {
             String UrlString = params[0];
-            String JSONString = params[1];
 
             String result = "";
-
-
             try {
                 /* Create a URL object holding our url */
                 URL url = new URL(UrlString);
@@ -277,26 +243,38 @@ public class MyBooksShelvesActivity extends AppCompatActivity implements Navigat
                 http.setRequestMethod(REQUEST_METHOD);
                 http.setDoInput(true);
                 http.setDoOutput(true);
+                http.setRequestProperty("content-type", "application/json");
 
                 /* A Stream object to hold the sent data to API Call */
                 OutputStream ops = http.getOutputStream();
                 BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(ops, StandardCharsets.UTF_8));
-                String data = URLEncoder.encode("Json", "UTF-8") + "=" + URLEncoder.encode(JSONString, "UTF-8");
-
-                writer.write(data);
+                JSONObject newJson = new JSONObject();
+                newJson.put("token", userToken);
+                writer.write(newJson.toString());
                 writer.flush();
                 writer.close();
                 ops.close();
 
                 /* A Stream object to get the returned data from API Call */
-                InputStream ips = http.getInputStream();
-                BufferedReader reader = new BufferedReader(new InputStreamReader(ips, StandardCharsets.ISO_8859_1));
-                String line = "";
-                while ((line = reader.readLine()) != null) {
-                    result += line;
+                switch (String.valueOf(http.getResponseCode()))
+                {
+                    case "200":
+                        /* A Stream object to get the returned data from API Call */
+                        InputStream ips = http.getInputStream();
+                        BufferedReader reader = new BufferedReader(new InputStreamReader(ips, StandardCharsets.ISO_8859_1));
+                        String line = "";
+                        while ((line = reader.readLine()) != null) {
+                            result += line;
+                        }
+                        reader.close();
+                        ips.close();
+                        break;
+                    case "400":
+                        result = "{\"ReturnMsg\":\"Error Occurred.\"}";
+                        break;
+                    default:
+                        break;
                 }
-                reader.close();
-                ips.close();
                 http.disconnect();
                 return result;
 
@@ -305,6 +283,8 @@ public class MyBooksShelvesActivity extends AppCompatActivity implements Navigat
                 result = e.getMessage();
             } catch (IOException e) {
                 result = e.getMessage();
+            } catch (JSONException e) {
+                e.printStackTrace();
             }
             return result;
         }
@@ -319,26 +299,24 @@ public class MyBooksShelvesActivity extends AppCompatActivity implements Navigat
             try {
                 /* Creating a JSON Object to parse the data in */
                 final JSONObject jsonObject = new JSONObject(result);
-                String shelfCount = jsonObject.getString("ShelfCount");
+                String readCount = jsonObject.getString("NoOfRead");
+                String wantToReadCount = jsonObject.getString("NoOfWantToRead");
+                String readingCount = jsonObject.getString("NoOfReading");
 
-                if (shelfCount != null) {
-                    if (this.passedString.equals("Read")) {
-                        Button readBtn = findViewById(R.id.ReadBtn);
-                        readBtn.setText("Read  " + shelfCount);
-                        sForTest_Read = "Read  " + shelfCount;
-                    } else if (passedString.equals("WantToRead")) {
-                        Button wantToReadBtn = findViewById(R.id.WantToReadBtn);
-                        wantToReadBtn.setText("Want to Read  " + shelfCount);
-                        sForTest_WantToRead = "Want to Read  " + shelfCount;
-                    } else if (passedString.equals("CurrentlyReading")) {
-                        Button currentlyReadingBtn = findViewById(R.id.CurrentlyReadingBtn);
-                        currentlyReadingBtn.setText("Currently Reading  " + shelfCount);
-                        sForTest_CurrentlyReading = "Currently Reading  " + shelfCount;
-                    }
-                }
+                Button readBtn = findViewById(R.id.ReadBtn);
+                Button wantToReadBtn = findViewById(R.id.WantToReadBtn);
+                Button currentlyReadingBtn = findViewById(R.id.CurrentlyReadingBtn);
+
+                readBtn.setText("Read  " + readCount);
+                sForTest_Read = "Read  " + readCount;
+                wantToReadBtn.setText("Want to Read  " + wantToReadCount);
+                sForTest_WantToRead = "Want to Read  " + wantToReadCount;
+                currentlyReadingBtn.setText("Currently Reading  " + readingCount);
+                sForTest_CurrentlyReading = "Currently Reading  " + readingCount;
             }
             /* Catching Exceptions */ catch (JSONException e) {
                 e.printStackTrace();
+                Toast.makeText(mContext, "Error in loading shelves data", Toast.LENGTH_SHORT).show();
             }
         }
 

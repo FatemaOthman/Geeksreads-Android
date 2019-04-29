@@ -7,10 +7,15 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.icu.text.DateFormat;
+
+import java.UserSessionManager;
+import java.text.SimpleDateFormat;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -39,7 +44,6 @@ import java.net.URL;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.time.temporal.TemporalField;
 import java.util.Calendar;
 import java.util.Date;
@@ -65,11 +69,11 @@ public class EditProfileActivity extends AppCompatActivity {
     /* Function to check the validity of the input date string with a format of DD/MM/YYYY and before 5 Years*/
     public static boolean isThisDateValid(String dateToValidate) {
 
-        String dateFormat = "DD/MM/YYYY";
-        SimpleDateFormat sdf = new SimpleDateFormat(dateFormat);
 
+        Log.w("DATTEEEE", dateToValidate);
+        SimpleDateFormat sdf = new SimpleDateFormat("mm/dd/yyyy");
         sdf.setLenient(false);
-
+        Log.w("DATTEEEE", dateToValidate);
         try {
             // if not valid, it will throw ParseException
             Date date = sdf.parse(dateToValidate);
@@ -81,8 +85,10 @@ public class EditProfileActivity extends AppCompatActivity {
             //System.out.println("Original Date = " + dateToValidate + ", Subtracted Date = " + currentDateBefore5Years.getTime().toString());
             if (date.after(currentDateBefore5Years.getTime())) {
                 //System.out.println("Original Date = " + dateToValidate + ", Subtracted Date = " + currentDateBefore5Years.getTime().toString() + ",  False");
+                Log.w("DATTEEEE", "FALSE");
                 return false;
             } else {
+                Log.w("DATTEEEE", "TRUE");
                 //System.out.println("Original Date = " + dateToValidate + ", Subtracted Date = " + currentDateBefore5Years.getTime().toString() + ",  True");
                 return true;
             }
@@ -143,10 +149,17 @@ public class EditProfileActivity extends AppCompatActivity {
 
         /* Creating a new instance of Sign in Class */
         GetProfileData getProfileData = new GetProfileData();
-        getProfileData.execute(urlService, "");
+        JSONObject getDataJson = new JSONObject();
+        try {
+            Log.w("MahmoudTOKEN", UserSessionManager.getUserToken());
+            getDataJson.put("token", UserSessionManager.getUserToken());
+            Log.w("Mahmoud___", getDataJson.toString());
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        getProfileData.execute(urlService, getDataJson.toString());
 
         final EditText userNameTxt = findViewById(R.id.UserNameTxt);
-        final EditText emailAddressTxt = findViewById(R.id.EmailAddressTxt);
         final EditText birthDateTxt = findViewById(R.id.BirthDate);
 
         Button changePassword = findViewById(R.id.ChangePasswordBtn);
@@ -164,15 +177,13 @@ public class EditProfileActivity extends AppCompatActivity {
         saveChange.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                String emailStr = emailAddressTxt.getText().toString();
                 String userNameStr = userNameTxt.getText().toString();
                 String birthDateStr = birthDateTxt.getText().toString();
 
-                emailAddressTxt.setError(null);
                 userNameTxt.setError(null);
                 birthDateTxt.setError(null);
 
-                editProfileValidationErrors editProfileValidationError = validateEditProfileData(userNameStr, emailStr, birthDateStr);
+                editProfileValidationErrors editProfileValidationError = validateEditProfileData(userNameStr, "STUB@STUB.COM", birthDateStr);
 
                 switch(editProfileValidationError)
                 {
@@ -181,7 +192,6 @@ public class EditProfileActivity extends AppCompatActivity {
                         sForTest = "Username length should be 3 characters minimum and 50 characters maximum!";
                         break;
                     case INVALID_EMAIL:
-                        emailAddressTxt.setError("Please enter a valid email!");
                         sForTest = "Please enter a valid email!";
                         break;
                     case INVALID_BIRTH_DATE:
@@ -191,8 +201,8 @@ public class EditProfileActivity extends AppCompatActivity {
                     case NO_ERRORS:
                         JSONObject JSON = new JSONObject();
                         try {
+                            JSON.put("token", UserSessionManager.getUserToken());
                             JSON.put("NewUserName", userNameStr);
-                            //JSON.put("NewUserEmailAddress", emailStr);
                             JSON.put("NewUserBirthDate", birthDateStr);
                             //JSON.put("NewUserPhoto", userPhotoUrl); //todo upload photo
 
@@ -264,7 +274,7 @@ public class EditProfileActivity extends AppCompatActivity {
     }
 
     private class GetProfileData extends AsyncTask<String, Void, String> {
-        static final String REQUEST_METHOD = "GET";
+        static final String REQUEST_METHOD = "POST";
         JSONObject mJSON = new JSONObject();
 
         @Override
@@ -277,7 +287,7 @@ public class EditProfileActivity extends AppCompatActivity {
             String UrlString = params[0];
             String JSONString = params[1];
             String result = "";
-
+            Log.w("Mahmoud12", JSONString);
             try {
                 /* Create a URL object holding our url */
                 URL url = new URL(UrlString);
@@ -286,16 +296,16 @@ public class EditProfileActivity extends AppCompatActivity {
                 http.setRequestMethod(REQUEST_METHOD);
                 http.setDoInput(true);
                 http.setDoOutput(true);
-                http.setRequestProperty("x-auth-token", LoginActivity.sCurrentToken);
+                http.setRequestProperty("content-type", "application/json");
 
                 /* A Stream object to hold the sent data to API Call */
                 OutputStream ops = http.getOutputStream();
                 BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(ops, StandardCharsets.UTF_8));
-                writer.write("");
+                writer.write(JSONString);
                 writer.flush();
                 writer.close();
                 ops.close();
-
+                Log.w("Mahmoud12000", String.valueOf(http.getResponseCode()));
                 switch (String.valueOf(http.getResponseCode()))
                 {
                     case "200":
@@ -309,6 +319,7 @@ public class EditProfileActivity extends AppCompatActivity {
                         }
                         reader.close();
                         ips.close();
+                        Log.w("Mahmoud13", result);
                         break;
                     default:
                         result = "{\"ReturnMsg\":\"An Error Occurred!\"}";
@@ -317,13 +328,13 @@ public class EditProfileActivity extends AppCompatActivity {
 
                 http.disconnect();
                 return result;
-
             }
             /* Handling Exceptions */ catch (MalformedURLException e) {
                 result = e.getMessage();
             } catch (IOException e) {
                 result = e.getMessage();
             }
+            Log.w("Mahmoud14", result);
             return result;
         }
 
@@ -334,20 +345,47 @@ public class EditProfileActivity extends AppCompatActivity {
                 return;
             }
             try {
-                /* Creating a JSON Object to parse the data in */
-                final JSONObject jsonObject = new JSONObject(result);
+                if (result.equals("{\"ReturnMsg\":\"An Error Occurred!\"}"))
+                {
+                    Toast.makeText(mContext,"An Error Occurred!", Toast.LENGTH_SHORT).show();
+                }
+                else
+                {
+                    /* Creating a JSON Object to parse the data in */
+                    final JSONObject jsonObject = new JSONObject(result);
 
-                EditText userNameTxt = findViewById(R.id.UserNameTxt);
-                EditText emailAddressTxt = findViewById(R.id.EmailAddressTxt);
-                EditText birthDateTxt = findViewById(R.id.BirthDate);
+                    EditText userNameTxt = findViewById(R.id.UserNameTxt);
+                    EditText birthDateTxt = findViewById(R.id.BirthDate);
 
-                userNameTxt.setText(jsonObject.getString("UserName"));
-                emailAddressTxt.setText(jsonObject.getString("EmailAddress"));
-                sForTest_OriginalEmail = jsonObject.getString("EmailAddress");
-                birthDateTxt.setText(jsonObject.getString("BirthDate"));
+                    userNameTxt.setText(jsonObject.getString("UserName"));
+                    String bD = jsonObject.getString("UserBirthDate");
+                    /* Remove Time */
+                    bD = bD.substring(0, bD.indexOf('T'));
+                    /* Take Year */
+                    String Year = bD.substring(0, bD.indexOf('-'));
+                    /* Remove From First until First Dash */
+                    bD = bD.substring(bD.indexOf('-')+1);
 
-                GetPicture Pic = new GetPicture();
-                Pic.execute(jsonObject.getString("PhotoUrl"));
+                    /* Take Month */
+                    String Month = bD.substring(0, bD.indexOf('-'));
+                    /* Remove From First until Second Dash */
+                    bD = bD.substring(bD.indexOf('-')+1);
+
+                    /* Take Day */
+                    String Day = bD;
+                    String finalDate = Day + "/" + Month + "/" + Year;
+                    Log.w("FINALDATEEE", finalDate);
+                    birthDateTxt.setText(finalDate);
+                    if (!jsonObject.getString("Photo").equals(""))
+                    {
+                        GetPicture Pic = new GetPicture();
+                        Pic.execute(jsonObject.getString("Photo"));
+                    }
+                    else
+                    {
+                        /* Do Nothing */
+                    }
+                }
             }
             /* Catching Exceptions */ catch (JSONException e) {
                 e.printStackTrace();
@@ -379,7 +417,7 @@ public class EditProfileActivity extends AppCompatActivity {
                 http.setRequestMethod(REQUEST_METHOD);
                 http.setDoInput(true);
                 http.setDoOutput(true);
-                http.setRequestProperty("x-auth-token", LoginActivity.sCurrentToken);
+                http.setRequestProperty("content-type", "application/json");
                 /* A Stream object to hold the sent data to API Call */
                 OutputStream ops = http.getOutputStream();
                 BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(ops, StandardCharsets.UTF_8));
@@ -392,28 +430,7 @@ public class EditProfileActivity extends AppCompatActivity {
                 switch (String.valueOf(http.getResponseCode()))
                 {
                     case "200":
-                        /* A Stream object to get the returned data from API Call */
-                        InputStream ips = http.getInputStream();
-                        BufferedReader reader = new BufferedReader(new InputStreamReader(ips, StandardCharsets.ISO_8859_1));
-                        String line = "";
-                        //boolean started = false;
-                        while ((line = reader.readLine()) != null) {
-                            result += line;
-                        }
-                        reader.close();
-                        ips.close();
-                        if (result.contains("verification"))
-                        {
-                            result = "{\"ReturnMsg\":\"Your changes are saved successfully and a verification email has been sent to your new email address!\"}";
-                        }
-                        else if (result.contains("successfully"))
-                        {
-                            result = "{\"ReturnMsg\":\"Your changes are saved successfully!\"}";
-                        }
-                        else
-                        {
-
-                        }
+                        result = "{\"ReturnMsg\":\"Your changes are saved successfully!\"}";
                         break;
                     default:
                         result = "{\"ReturnMsg\":\"An error occurred while saving your changes!\"}";
@@ -441,22 +458,11 @@ public class EditProfileActivity extends AppCompatActivity {
                 /* Creating a JSON Object to parse the data in */
                 final JSONObject jsonObject = new JSONObject(result);
                 sForTest = jsonObject.getString("ReturnMsg");
-                if (jsonObject.getString("ReturnMsg").contains("verification")) {
-                    dialog.setMessage(jsonObject.getString("ReturnMsg"));
-                    dialog.setPositiveButton("OK", new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialog, int which) {
-                            /* Go to Sign out Activity Layout */
-                            Intent myIntent = new Intent(EditProfileActivity.this, SignOutActivity.class);
-                            startActivity(myIntent);
-                        }
-                    });
-                    dialog.show();
-                }
-                else
-                {
-                    Toast.makeText(mContext, jsonObject.getString("ReturnMsg"), Toast.LENGTH_SHORT).show();
-                }
+
+                Toast.makeText(mContext, jsonObject.getString("ReturnMsg"), Toast.LENGTH_SHORT).show();
+
+                finish();
+
             }
             /* Catching Exceptions */ catch (JSONException e) {
                 e.printStackTrace();

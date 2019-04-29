@@ -15,6 +15,8 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Base64;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -124,9 +126,10 @@ public class Profile extends AppCompatActivity implements NavigationView.OnNavig
         });
         JSONObject JSON = new JSONObject();
         String UrlSideBar = "http://geeksreads.000webhostapp.com/Fatema/SideBar.php";
+        /*
         GetSideBarDetails getSideBarDetails = new GetSideBarDetails();
         getSideBarDetails.execute(UrlSideBar, JSON.toString());
-
+        */
         EditProfileButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -164,14 +167,14 @@ public class Profile extends AppCompatActivity implements NavigationView.OnNavig
 
         try {
 
-            mJSON.put("UserId", CurrentUser);
+            mJSON.put("token", LoginActivity.sCurrentToken);
         } catch (JSONException e) {
             e.printStackTrace();
         }
 
         // Calling Async Task with my server url
-        //TODO: Change link of UrlService
-        String UrlService = "http://geeksreads.000webhostapp.com/Amr/UserProfile.php";
+
+        String UrlService = "https://geeksreads.herokuapp.com/api/users/me";
         Profile.GetProfileDetails MyProfile = new Profile.GetProfileDetails();
         MyProfile.execute(UrlService, mJSON.toString());
 
@@ -241,6 +244,11 @@ public class Profile extends AppCompatActivity implements NavigationView.OnNavig
             Intent myIntent = new Intent(Profile.this, MyBooksShelvesActivity.class);
             startActivity(myIntent);
         }
+        else if (id == R.id.Signout) {
+            Intent myIntent = new Intent(Profile.this, SignOutActivity.class);
+            myIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK|Intent.FLAG_ACTIVITY_NEW_TASK);
+            startActivity(myIntent);
+        }
         DrawerLayout drawer = findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
         return true;
@@ -282,7 +290,7 @@ public class Profile extends AppCompatActivity implements NavigationView.OnNavig
      * The Parameters are host Url and toSend Data.
      */
     public class GetProfileDetails extends AsyncTask<String, Void, String> {
-        public static final String REQUEST_METHOD = "GET";
+        public static final String REQUEST_METHOD = "POST";
 
         AlertDialog dialog;
 
@@ -316,7 +324,7 @@ public class Profile extends AppCompatActivity implements NavigationView.OnNavig
 
                 OutputStream ops = http.getOutputStream();
                 BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(ops, StandardCharsets.UTF_8));
-                String data = URLEncoder.encode("UserId", "UTF-8") + "=" + URLEncoder.encode(JSONString, "UTF-8");
+                String data = URLEncoder.encode("Json", "UTF-8") + "=" + URLEncoder.encode(JSONString, "UTF-8");
 
                 writer.write(data);
                 writer.flush();
@@ -360,12 +368,12 @@ public class Profile extends AppCompatActivity implements NavigationView.OnNavig
                 http.setRequestMethod(REQUEST_METHOD);
                 http.setDoInput(true);
                 http.setDoOutput(true);
-                http.setRequestProperty("x-auth-token", LoginActivity.sCurrentToken);
-
+                http.setRequestProperty("content-type", "application/json");
+                Log.d("Test","CurrentToken: "+ LoginActivity.sCurrentToken);
                 /* A Stream object to hold the sent data to API Call */
                 OutputStream ops = http.getOutputStream();
                 BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(ops, StandardCharsets.UTF_8));
-                writer.write("");
+                writer.write(JSONString);
                 writer.flush();
                 writer.close();
                 ops.close();
@@ -384,6 +392,7 @@ public class Profile extends AppCompatActivity implements NavigationView.OnNavig
                         ips.close();
                         break;
                     default:
+                        Log.d("Test","String.valueOf(http.getResponseCode()): "+ String.valueOf(http.getResponseCode()));
                         result = "{\"ReturnMsg\":\"An Error Occurred!\"}";
                         break;
                 }
@@ -421,13 +430,19 @@ public class Profile extends AppCompatActivity implements NavigationView.OnNavig
             try {
 
                 JSONObject jsonObject = new JSONObject(result);
-                FollowersCount.setText(jsonObject.getString("Followers"));
-                FollowingCount.setText(jsonObject.getString("Following"));
-                BooksCount.setText(jsonObject.getString("CountBooks") + " " + "Books");
-                Profile.GetUserPicture Pic = new Profile.GetUserPicture();
-                Pic.execute(jsonObject.getString("photourl"));
+                Log.d("Test","Result: "+result);
+                FollowersCount.setText(jsonObject.getString("NoOfFollowers"));
+                FollowingCount.setText(jsonObject.getString("NoOfFollowings"));
+                //TODO: Add GetSHelvesCount function to get number of books.
+                //BooksCount.setText(jsonObject.getString("CountBooks") + " " + "Books");
 
-                ForTestProfilePicture = jsonObject.getString("photourl");
+               // Profile.GetUserPicture Pic = new Profile.GetUserPicture();
+               // Pic.execute(jsonObject.getString("Photo"));
+                byte[] decodedString = Base64.decode(jsonObject.getString("Photo"), Base64.DEFAULT);
+                Bitmap decodedByte = BitmapFactory.decodeByteArray(decodedString, 0, decodedString.length);
+                userPhoto.setImageBitmap(decodedByte);
+
+                //ForTestProfilePicture = jsonObject.getString("Photo");
                 ForTestFollowersCount = FollowersCount.getText().toString();
                 ForTestFollowingCount = FollowingCount.getText().toString();
             } catch (JSONException e) {

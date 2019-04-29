@@ -16,6 +16,7 @@ import android.widget.Toast;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.UserSessionManager;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.IOException;
@@ -28,7 +29,7 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
-
+import java.HelpingFunctions;
 public class SignupActivity extends AppCompatActivity {
     /**
      * Global Public Static Variables used for Testing
@@ -93,11 +94,54 @@ public class SignupActivity extends AppCompatActivity {
         }
     }
 
+    @Override
+    public void onBackPressed()
+    {
+        if (!getIntent().getStringExtra("FROM").equals("SIGNOUT"))
+        {
+            this.moveTaskToBack(true);
+        }
+        else
+        {
+            super.onBackPressed();
+        }
+    }
     /**
      * Function for Starting Logic Actions after Creating the Layout
      */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        /* If user is already logged in, Skip and go to Main Activity */
+        mContext = this;
+        UserSessionManager.Initialize(mContext);
+        if (!getIntent().getStringExtra("FROM").equals("SIGNIN") && !getIntent().getStringExtra("FROM").equals("SIGNOUT"))
+        {
+            UserSessionManager.UserSessionState currentUserState = UserSessionManager.getCurrentState();
+            if (currentUserState == UserSessionManager.UserSessionState.USER_LOGGED_IN)
+            {
+                /* Go to Next Activity Layout */
+                Intent myIntent = new Intent(SignupActivity.this, FeedActivity.class);
+                myIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK|Intent.FLAG_ACTIVITY_NEW_TASK);
+                startActivity(myIntent);
+            }
+            else if (currentUserState == UserSessionManager.UserSessionState.USER_DATA_AVAILABLE_BUT_NOT_LOGGED_IN)
+            {
+                /* Go to Next Activity Layout */
+                Intent myIntent = new Intent(SignupActivity.this, LoginActivity.class);
+                myIntent.putExtra("FROM", "SIGNUP");
+                startActivity(myIntent);
+            }
+            else
+            {
+                /* Stay Here */
+            }
+        }
+        else
+        {
+            /* Stay Here */
+        }
+
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_signup);
 
@@ -106,11 +150,10 @@ public class SignupActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 Intent myIntent = new Intent(SignupActivity.this, LoginActivity.class);
+                myIntent.putExtra("FROM", "SIGNUP");
                 startActivity(myIntent);
             }
         });
-
-        mContext = this;
 
         /* Getting Text boxes and Buttons from the layout */
         final EditText fullName = findViewById(R.id.UserNameTxt);
@@ -176,6 +219,10 @@ public class SignupActivity extends AppCompatActivity {
                     default:
                         JSONObject JSON = new JSONObject();
                         try {
+                            /* Encrypting User Password */
+                            passwordStr = HelpingFunctions.getMD5Encryption(passwordStr);
+
+                            /* Adding API Parameters into JSON Object */
                             JSON.put("UserName", fullNameStr);
                             JSON.put("UserEmail", emailStr);
                             JSON.put("UserPassword", passwordStr);
@@ -192,6 +239,7 @@ public class SignupActivity extends AppCompatActivity {
                 }
             }
         });
+
 
     }
 
@@ -299,6 +347,7 @@ public class SignupActivity extends AppCompatActivity {
 
                                 /* Go to Next Activity Layout */
                                 Intent myIntent = new Intent(SignupActivity.this, LoginActivity.class);
+                                myIntent.putExtra("FROM", "SIGNUP");
                                 startActivity(myIntent);
                             } else {
                                 /* If Sign up didn't succeed, Stay Here in the same Activity and Do Nothing */
@@ -316,4 +365,6 @@ public class SignupActivity extends AppCompatActivity {
         }
 
     }
+
+
 }

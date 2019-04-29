@@ -6,15 +6,13 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 
-public class ReviewDataModel {
+public class CommentDataModel {
 
-    private String ReviewID;
-    private String BookCoverPicture;
+    private String CommentID;
     private String UserProfilePicture;
     private String UserName;
     private String NLikes;
-    private String NComments;
-    private String ReviewText;
+    private String CommentText;
     private String UserWhoWroteID;
 
     /**
@@ -23,19 +21,17 @@ public class ReviewDataModel {
      * @param jsonObject
      * @return Single User Prototype
      */
-    private static ReviewDataModel fromJson(JSONObject jsonObject) {
-        ReviewDataModel DummyUser = new ReviewDataModel();
+    private static CommentDataModel fromJson(JSONObject jsonObject) {
+        CommentDataModel DummyUser = new CommentDataModel();
         // Deserialize json into object fields
         try {
             //TODO: Check with backend the missing data!
-            DummyUser.BookCoverPicture = jsonObject.getString("photo");
-            DummyUser.UserProfilePicture = jsonObject.getString("photo");
-            DummyUser.UserName = jsonObject.getString("userName");
-            DummyUser.NLikes = jsonObject.getString("likesCount");
-         // DummyUser.NComments = jsonObject.getString("commentsCount");
-            DummyUser.ReviewText = jsonObject.getString("reviewBody");
-            DummyUser.ReviewID = jsonObject.getString("reviewId");
-            DummyUser.UserWhoWroteID = jsonObject.getString("userId");
+            DummyUser.UserProfilePicture = jsonObject.getString("UserPicLink");
+            DummyUser.UserName = jsonObject.getString("username");
+            DummyUser.NLikes = jsonObject.getString("likes");
+            DummyUser.CommentText = jsonObject.getString("body");
+            DummyUser.CommentID = jsonObject.getString("CommentID");
+            DummyUser.UserWhoWroteID = jsonObject.getString("UserWhoWroteID");
         } catch (JSONException e) {
             e.printStackTrace();
             return null;
@@ -51,9 +47,9 @@ public class ReviewDataModel {
      * @param jsonArray
      * @return ArrayList of Users Prototypes
      */
-    public static ArrayList<ReviewDataModel> fromJson(JSONArray jsonArray) {
+    public static ArrayList<CommentDataModel> fromJson(JSONArray jsonArray) {
         JSONObject UsersJson;
-        ArrayList<ReviewDataModel> AllUsers = new ArrayList<>(jsonArray.length());
+        ArrayList<CommentDataModel> AllUsers = new ArrayList<>(jsonArray.length());
         // Process each result in json array, decode and convert to UserModel object
         for (int i = 0; i < jsonArray.length(); i++) {
 
@@ -65,7 +61,7 @@ public class ReviewDataModel {
                 continue;
             }
 
-            ReviewDataModel Model = ReviewDataModel.fromJson(UsersJson);
+            CommentDataModel Model = CommentDataModel.fromJson(UsersJson);
 
             if (Model != null) {
                 AllUsers.add(i, Model);
@@ -74,15 +70,6 @@ public class ReviewDataModel {
         }
 
         return AllUsers;
-    }
-
-    /**
-     * getName: Gets Name of Current DataModelUser (Follower or Following)
-     *
-     * @return User_Name
-     */
-    String getBookCoverPicture() {
-        return BookCoverPicture;
     }
 
     /**
@@ -95,7 +82,7 @@ public class ReviewDataModel {
     }
 
     /**
-     * getNLikes: Gets Number of Likes of Current Review
+     * getNLikes: Gets Number of Likes of Current Comment
      *
      * @return NLikes
      */
@@ -104,44 +91,35 @@ public class ReviewDataModel {
     }
 
     /**
-     * getNComments: Gets Number of comments of Current Review
+     * getCommentText: Gets Text of Current Comment
      *
-     * @return NComments
+     * @return CommentText
      */
-    String getNComments() {
-        return NComments;
+    String getCommentText() {
+        return CommentText;
     }
 
     /**
-     * getReviewText: Gets Text of Current Review
+     * getUserName: Gets Text of Current Comment
      *
-     * @return ReviewText
-     */
-    String getReviewText() {
-        return ReviewText;
-    }
-
-    /**
-     * getUserName: Gets Text of Current Review
-     *
-     * @return ReviewText
+     * @return CommentText
      */
     String getUserName() {
         return UserName;
     }
 
     /**
-     * getReviewID: Gets Id of current Review
+     * getCommentID: Gets Id of current Comment
      *
-     * @return ReviewID
+     * @return CommentID
      */
-    String getReviewID() {
-        return ReviewID;
+    String getCommentID() {
+        return CommentID;
     }
 
 
     /**
-     * getUserwhoWroteID: Gets Id of user who wrote the review
+     * getUserwhoWroteID: Gets Id of user who wrote the Comment
      *
      * @return UserwhoWroteID
      */

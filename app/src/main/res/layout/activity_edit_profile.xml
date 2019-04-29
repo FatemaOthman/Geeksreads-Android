@@ -44,20 +44,6 @@
                 android:inputType="textPersonName" />
 
             <EditText
-                android:id="@+id/EmailAddressTxt"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="30dp"
-                android:layout_marginLeft="0dp"
-                android:layout_marginTop="0dp"
-                android:layout_marginEnd="30dp"
-                android:layout_marginRight="0dp"
-                android:layout_marginBottom="0dp"
-                android:ems="10"
-                android:hint="@string/EmailHint"
-                android:inputType="textEmailAddress" />
-
-            <EditText
                 android:id="@+id/BirthDate"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -66,10 +52,9 @@
                 android:layout_marginTop="0dp"
                 android:layout_marginEnd="30dp"
                 android:layout_marginRight="0dp"
-                android:layout_marginBottom="0dp"
+                android:layout_marginBottom="20dp"
                 android:ems="10"
-                android:hint="@string/BirthDateHint"
-                android:inputType="date" />
+                android:hint="@string/BirthDateHint" />
 
             <Button
                 android:id="@+id/ChangePasswordBtn"

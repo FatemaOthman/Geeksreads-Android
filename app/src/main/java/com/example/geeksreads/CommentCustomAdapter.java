@@ -23,13 +23,12 @@ import java.net.URL;
 import java.util.ArrayList;
 
 
-public class ReviewsCustomAdapter extends ArrayAdapter<ReviewDataModel> implements View.OnClickListener {
-
+public class CommentCustomAdapter  extends ArrayAdapter<CommentDataModel> implements View.OnClickListener {
     Context mContext;
-    private ArrayList<ReviewDataModel> dataSet;
+    private ArrayList<CommentDataModel> dataSet;
 
-    ReviewsCustomAdapter(ArrayList<ReviewDataModel> data, Context context) {
-        super(context, R.layout.post_item_list_view, data);
+    CommentCustomAdapter(ArrayList<CommentDataModel> data, Context context) {
+        super(context, R.layout.comment_list_item, data);
         this.dataSet = data;
         this.mContext = context;
 
@@ -41,55 +40,49 @@ public class ReviewsCustomAdapter extends ArrayAdapter<ReviewDataModel> implemen
 
     }
 
+
     @NonNull
     @Override
     public View getView(int position, View convertView, @NonNull ViewGroup parent) {
         // Get the data item for this position
-        final ReviewDataModel dataModel = getItem(position);
+        final CommentDataModel dataModel = getItem(position);
         // Check if an existing view is being reused, otherwise inflate the view
 
-        FixImagePosition holder = new FixImagePosition();
+        CommentCustomAdapter.FixImagePosition holder = new CommentCustomAdapter.FixImagePosition();
 
 
         // view lookup cache stored in tag
-        ViewHolder viewHolder;
+        CommentCustomAdapter.ViewHolder viewHolder;
         if (convertView == null) {
 
 
-            viewHolder = new ViewHolder();
+            viewHolder = new CommentCustomAdapter.ViewHolder();
             LayoutInflater inflater = LayoutInflater.from(getContext());
-            convertView = inflater.inflate(R.layout.post_item_list_view, parent, false);
+            convertView = inflater.inflate(R.layout.comment_list_item, parent, false);
 
             holder.position = position;
 
-            viewHolder.BookCoverPicture = convertView.findViewById(R.id.postImageView);
             viewHolder.UserPicInfo = convertView.findViewById(R.id.authorImageView);
             viewHolder.Details = convertView.findViewById(R.id.detailsTextView);
             viewHolder.UserName = convertView.findViewById(R.id.titleTextView);
             viewHolder.NLikes = convertView.findViewById(R.id.likeCounterTextView);
-            viewHolder.NComments = convertView.findViewById(R.id.commentsCountTextView);
 
             holder.Cover = viewHolder.UserPicInfo;
-            holder.BookC = viewHolder.BookCoverPicture;
 
             convertView.setTag(viewHolder);
         } else {
-            viewHolder = (ViewHolder) convertView.getTag();
+            viewHolder = (CommentCustomAdapter.ViewHolder) convertView.getTag();
         }
 
 
         assert dataModel != null;
-        viewHolder.Details.setText(dataModel.getReviewText());
+        viewHolder.Details.setText(dataModel.getCommentText());
         viewHolder.UserName.setText(dataModel.getUserName());
         viewHolder.NLikes.setText(dataModel.getNLikes());
-        viewHolder.NComments.setText(dataModel.getNComments());
-        viewHolder.ReviewID = dataModel.getReviewID();
+        viewHolder.ReviewID = dataModel.getCommentID();
         viewHolder.UserWhoWroteID = dataModel.getUserWhoWroteID();
 
-        ReviewsCustomAdapter.GetBookCoverImage CoverPic = new ReviewsCustomAdapter.GetBookCoverImage(position, holder);
-        CoverPic.execute(dataModel.getBookCoverPicture());
-
-        ReviewsCustomAdapter.GetUserImage UserPic = new ReviewsCustomAdapter.GetUserImage(position, holder);
+        CommentCustomAdapter.GetUserImage UserPic = new CommentCustomAdapter.GetUserImage(position, holder);
         UserPic.execute(dataModel.getUserProfilePicture());
 
         viewHolder.UserPicInfo.setOnClickListener(
@@ -98,23 +91,10 @@ public class ReviewsCustomAdapter extends ArrayAdapter<ReviewDataModel> implemen
                     public void onClick(View view) {
                         Intent myIntent = new Intent(mContext, OtherProfileActivity.class);
                         myIntent.putExtra("FollowId", dataModel.getUserWhoWroteID());
-                        Log.d("Test","USer who wrote Review: "+dataModel.getUserWhoWroteID());
                         mContext.startActivity(myIntent);
                     }
                 }
         );
-
-        viewHolder.NComments.setOnClickListener(
-                new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
-                        Intent myIntent = new Intent(mContext, Comments.class);
-                        myIntent.putExtra("ReviewId", dataModel.getReviewID());
-                        mContext.startActivity(myIntent);
-                    }
-                }
-        );
-
 
 
         // Return the completed view to render on screen
@@ -124,11 +104,9 @@ public class ReviewsCustomAdapter extends ArrayAdapter<ReviewDataModel> implemen
     // View lookup cache
     private static class ViewHolder {
         ImageView UserPicInfo;
-        ImageView BookCoverPicture;
         ExpandableTextView Details;
         TextView UserName;
         TextView NLikes;
-        TextView NComments;
         String ReviewID;
         String UserWhoWroteID;
     }
@@ -136,7 +114,6 @@ public class ReviewsCustomAdapter extends ArrayAdapter<ReviewDataModel> implemen
     private static class FixImagePosition {
         public int position;
         ImageView Cover;
-        ImageView BookC;
     }
 
     /**
@@ -146,9 +123,9 @@ public class ReviewsCustomAdapter extends ArrayAdapter<ReviewDataModel> implemen
     @SuppressLint("StaticFieldLeak")
     private class GetUserImage extends AsyncTask<String, Void, Bitmap> {
         private int mPosition;
-        private FixImagePosition mUserCover;
+        private CommentCustomAdapter.FixImagePosition mUserCover;
 
-        GetUserImage(int position, FixImagePosition holder) {
+        GetUserImage(int position, CommentCustomAdapter.FixImagePosition holder) {
             mPosition = position;
             mUserCover = holder;
         }
@@ -180,49 +157,4 @@ public class ReviewsCustomAdapter extends ArrayAdapter<ReviewDataModel> implemen
             }
         }
     }
-
-    /**
-     * Class that get image from Url and Add it to ImageView.
-     * The only Parameter is the Url.
-     */
-    @SuppressLint("StaticFieldLeak")
-    private class GetBookCoverImage extends AsyncTask<String, Void, Bitmap> {
-        private int mPosition;
-        private FixImagePosition mUserCover;
-
-        GetBookCoverImage(int position, FixImagePosition holder) {
-            mPosition = position;
-            mUserCover = holder;
-        }
-
-        protected void onPreExecute() {
-            //mProgressBar.setVisibility(View.VISIBLE);
-        }
-
-        @Override
-        protected Bitmap doInBackground(String... params) {
-            try {
-                String photoUrl = params[0];
-                URL url = new URL(photoUrl);
-                HttpURLConnection connection = (HttpURLConnection) url.openConnection();
-                connection.setDoInput(true);
-                connection.connect();
-                InputStream input = connection.getInputStream();
-                return BitmapFactory.decodeStream(input);
-            } catch (Exception e) {
-                // Log.d(TAG,e.getMessage());
-            }
-            return null;
-        }
-
-        @Override
-        protected void onPostExecute(Bitmap result) {
-            if (mUserCover.position == mPosition) {
-                mUserCover.BookC.setImageBitmap(result);
-            }
-        }
-    }
-
-
 }
-
