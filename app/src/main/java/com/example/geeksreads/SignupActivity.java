@@ -16,6 +16,7 @@ import android.widget.Toast;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.UserSessionManager;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.IOException;
@@ -98,6 +99,27 @@ public class SignupActivity extends AppCompatActivity {
      */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        /* If user is already logged in, Skip and go to Main Activity */
+        mContext = this;
+        UserSessionManager.Initialize(mContext);
+        UserSessionManager.UserSessionState currentUserState = UserSessionManager.getCurrentState();
+        if (currentUserState == UserSessionManager.UserSessionState.USER_LOGGED_IN)
+        {
+            /* Go to Next Activity Layout */
+            Intent myIntent = new Intent(SignupActivity.this, FeedActivity.class);
+            startActivity(myIntent);
+        }
+        else if (currentUserState == UserSessionManager.UserSessionState.USER_DATA_AVAILABLE_BUT_NOT_LOGGED_IN)
+        {
+            /* Go to Next Activity Layout */
+            Intent myIntent = new Intent(SignupActivity.this, LoginActivity.class);
+            startActivity(myIntent);
+        }
+        else
+        {
+            /* Stay Here */
+        }
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_signup);
 
@@ -109,8 +131,6 @@ public class SignupActivity extends AppCompatActivity {
                 startActivity(myIntent);
             }
         });
-
-        mContext = this;
 
         /* Getting Text boxes and Buttons from the layout */
         final EditText fullName = findViewById(R.id.UserNameTxt);
