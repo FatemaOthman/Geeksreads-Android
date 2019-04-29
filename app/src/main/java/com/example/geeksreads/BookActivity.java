@@ -21,11 +21,14 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.text.format.DateFormat;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.RatingBar;
@@ -33,6 +36,11 @@ import android.widget.SearchView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import org.apache.http.HttpResponse;
+import org.apache.http.client.HttpClient;
+import org.apache.http.client.methods.HttpGet;
+import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.util.EntityUtils;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -48,6 +56,9 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.Objects;
 
 
@@ -61,15 +72,20 @@ public class BookActivity extends AppCompatActivity implements NavigationView.On
     TextView bookAuthor;
     TextView ratingsNumber;
     TextView reviewsNumber;
-    Button bookOptions;
     TextView bookRatings;
     TextView bookDescription;
     TextView publishingDate;
     TextView pageNumber;
     TextView ISBN;
+    EditText Review;
+    Button bookOptions;
+    Button AddReview;
     RatingBar bookStars;
+    RatingBar bookRating;
     ProgressBar mProgressBar;
     String ImageURL;
+    String AuthorID;
+    String BookID;
 
     /* SideBar Views */
     ImageView userPhoto;
@@ -141,8 +157,8 @@ public class BookActivity extends AppCompatActivity implements NavigationView.On
         });
         JSONObject JSON = new JSONObject();
         String UrlSideBar = "http://geeksreads.000webhostapp.com/Fatema/SideBar.php";
-        GetSideBarDetails getSideBarDetails = new GetSideBarDetails();
-        getSideBarDetails.execute(UrlSideBar, JSON.toString());
+       // GetSideBarDetails getSideBarDetails = new GetSideBarDetails();
+       // getSideBarDetails.execute(UrlSideBar, JSON.toString());
 
 
         /* Getting All views by id from Book Layout */
@@ -159,6 +175,9 @@ public class BookActivity extends AppCompatActivity implements NavigationView.On
         ISBN = findViewById(R.id.ISBN);
         bookStars = findViewById(R.id.BookRatingStars);
         pageNumber = findViewById(R.id.pages);
+        AddReview = findViewById(R.id.AddReview);
+        bookRating = findViewById(R.id.ratingBook);
+        Review = findViewById(R.id.Review);
 
         bookOptions.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -170,6 +189,7 @@ public class BookActivity extends AppCompatActivity implements NavigationView.On
                 myIntent.putExtra("RatingNumber",ratingsNumber.getText());
                 myIntent.putExtra("Pages",pageNumber.getText());
                 myIntent.putExtra("published",publishingDate.getText());
+                myIntent.putExtra("bookID",BookID);
                 myIntent.putExtra("cover", ImageURL);
                 startActivity(myIntent);
             }
@@ -179,24 +199,53 @@ public class BookActivity extends AppCompatActivity implements NavigationView.On
             @Override
             public void onClick(View v) {
                 Intent myIntent = new Intent(BookActivity.this, AuthorActivity.class);
+                myIntent.putExtra("AuthorID",AuthorID);
                 startActivity(myIntent);
+            }
+        });
+
+        AddReview.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(bookRating.getRating() <= 0)
+                {
+                    Toast.makeText(mContext, "You have to rate before Adding a review.", Toast.LENGTH_SHORT).show();
+                }
+                else if(Review.getText().toString().equals(""))
+                {
+                    Toast.makeText(mContext, "Your review is empty", Toast.LENGTH_SHORT).show();
+                }
+                else
+                {
+                    JSONObject ReviewObject = new JSONObject();
+                    try {
+                        ReviewObject.put("userId", LoginActivity.sCurrentUserID);
+                        ReviewObject.put("bookId", BookID);
+                        ReviewObject.put("reviewBody", Review.getText());
+                        Calendar calendar = Calendar.getInstance();
+                        SimpleDateFormat format = new SimpleDateFormat("yyyy / MM / dd ");
+                        ReviewObject.put("reviewDate", format.format(calendar.getTime()));
+                        ReviewObject.put("Rate",bookRating.getRating());
+
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                    String UrlService = "https://geeksreads.herokuapp.com/api/books/id";
+                   // AddReviewTask addReviewTask = new AddReviewTask();
+                    //addReviewTask.execute(UrlService, ReviewObject.toString());
+                }
             }
         });
 
 
         /* Creating Json Object to be send */
-        JSONObject jsonObject = new JSONObject();
-        try {
-            jsonObject.put("ISBN", getISBN);
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
 
+        String Book_ID = "5c9114a0d345b4a65637eacc";
         /* Calling Async Task with my server url */
-        String UrlService = "http://geeksreads.000webhostapp.com/Shrouk/BookDetails.php";
+        String UrlService = "https://geeksreads.herokuapp.com/api/books/id";
         mProgressBar.setVisibility(View.VISIBLE);
         GetBookDetails getBookDetails = new GetBookDetails();
-        getBookDetails.execute(UrlService, jsonObject.toString());
+        getBookDetails.execute(UrlService, Book_ID);
 
     }
 
@@ -317,6 +366,7 @@ public class BookActivity extends AppCompatActivity implements NavigationView.On
     private class GetBookDetails extends AsyncTask<String, Void, String> {
         public static final String REQUEST_METHOD = "GET";
         AlertDialog dialog;
+        boolean TaskSuccess = true;
 
         @Override
         protected void onPreExecute() {
@@ -329,43 +379,33 @@ public class BookActivity extends AppCompatActivity implements NavigationView.On
         @Override
         protected String doInBackground(String... params) {
             String UrlString = params[0];
-            String JSONString = params[1];
+            String bookID = params[1];
             String result = "";
 
+            UrlString = UrlString + "?Json =" + params[1];
+            HttpClient httpclient = new DefaultHttpClient();
+            HttpGet httpget = new HttpGet(UrlString);
+
+            HttpResponse response = null;
+            String server_response = null;
             try {
-                //Create a URL object holding our url
-                URL url = new URL(UrlString);
-                HttpURLConnection http = (HttpURLConnection) url.openConnection();
-                http.setRequestMethod(REQUEST_METHOD);
-                http.setDoInput(true);
-                http.setDoOutput(true);
-
-                OutputStream ops = http.getOutputStream();
-                BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(ops, StandardCharsets.UTF_8));
-                String data = URLEncoder.encode("id", "UTF-8") + "=" + URLEncoder.encode(JSONString, "UTF-8");
-
-                writer.write(data);
-                writer.flush();
-                writer.close();
-                ops.close();
-
-                //Create a new InputStreamReader
-                InputStream ips = http.getInputStream();
-                BufferedReader reader = new BufferedReader(new InputStreamReader(ips, StandardCharsets.ISO_8859_1));
-                String line;
-                while ((line = reader.readLine()) != null) {
-                    result += line;
-                }
-                reader.close();
-                ips.close();
-                http.disconnect();
-                return result;
-
-            } catch (MalformedURLException e) {
-                result = e.getMessage();
+                response = httpclient.execute(httpget);
             } catch (IOException e) {
-                result = e.getMessage();
+                e.printStackTrace();
             }
+
+            if (response.getStatusLine().getStatusCode() == 200) {
+                try {
+                    server_response = EntityUtils.toString(response.getEntity());
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+                Log.d("Server response", server_response);
+            } else {
+                Log.d("Server response", "Failed to get server response");
+            }
+
+            result = server_response;
             return result;
         }
 
@@ -377,77 +417,72 @@ public class BookActivity extends AppCompatActivity implements NavigationView.On
                 return;
             }
             try {
-                dialog.setMessage("Done");
+                dialog.setMessage(result);
                 //dialog.show();
-
-                /* Get Json Object from server and preview results on Layout views */
+                Log.d("response ",result);
                 JSONObject jsonObject = new JSONObject(result);
-                bookTitle.setText(jsonObject.getString("Title"));
-                bookAuthor.setText("By: " + "" + jsonObject.getString("Author"));
-                ratingsNumber.setText(jsonObject.getString("ratingcount") + " " + "Ratings");
-                reviewsNumber.setText(jsonObject.getString("textreviewscount") + " " + "Reviews");
-                String Ratings = jsonObject.getString("BookRating");
-                bookRatings.setText(Ratings);
-                bookDescription.setText(jsonObject.getString("Description"));
-                pageNumber.setText(jsonObject.getString("Pages") + " pages");
-                publishingDate.setText("Published On" + "  " + jsonObject.getString("Published")
-                        + ", By: " + jsonObject.getString("Publisher"));
-                ISBN.setText("ISBN: " + jsonObject.getString("ISBN"));
-                bookStars.setRating(Float.parseFloat(Ratings));
-                if (Float.parseFloat(Ratings) <= 1)
-                {
-                    LayerDrawable stars = (LayerDrawable) bookStars.getProgressDrawable();
-                    stars.getDrawable(2).setColorFilter(Color.RED, PorterDuff.Mode.SRC_ATOP);
-                }
-                else if (Float.parseFloat(Ratings) <= 2) {
-                    LayerDrawable stars = (LayerDrawable) bookStars.getProgressDrawable();
-                    stars.getDrawable(2).setColorFilter(Color.rgb(255,140,0), PorterDuff.Mode.SRC_ATOP);
-                }
-                else if (Float.parseFloat(Ratings) <= 3) {
-                    LayerDrawable stars = (LayerDrawable) bookStars.getProgressDrawable();
-                    stars.getDrawable(2).setColorFilter(Color.YELLOW, PorterDuff.Mode.SRC_ATOP);
-                }
-                else if (Float.parseFloat(Ratings) <= 4) {
-                    LayerDrawable stars = (LayerDrawable) bookStars.getProgressDrawable();
-                    stars.getDrawable(2).setColorFilter(Color.GREEN, PorterDuff.Mode.SRC_ATOP);
-                }
-                else if (Float.parseFloat(Ratings) <= 5) {
-                    LayerDrawable stars = (LayerDrawable) bookStars.getProgressDrawable();
-                    stars.getDrawable(2).setColorFilter(Color.rgb(34,139,34), PorterDuff.Mode.SRC_ATOP);
-                }
+                if (TaskSuccess) {
+                    /* Get Json Object from server and preview results on Layout views */
+                    bookTitle.setText(jsonObject.getString("Title"));
+                    bookAuthor.setText("By: " + "" + jsonObject.getString("Author"));
+                    AuthorID = jsonObject.getString("AuthorId");
+                    BookID = jsonObject.getString("BookId");
+                    //ratingsNumber.setText(jsonObject.getString("ratingcount") + " " + "Ratings");
+                    //reviewsNumber.setText(jsonObject.getString("textreviewscount") + " " + "Reviews");
+                    String Ratings = jsonObject.getString("BookRating");
+                    bookRatings.setText(Ratings);
+                    bookDescription.setText(jsonObject.getString("Description"));
+                    pageNumber.setText(jsonObject.getString("Pages") + " pages");
+                    publishingDate.setText("Published On" + "  " + jsonObject.getString("Published")
+                            + ", By: " + jsonObject.getString("Publisher"));
+                    ISBN.setText("ISBN: " + jsonObject.getString("ISBN"));
+                    bookStars.setRating(Float.parseFloat(Ratings));
+                    if (Float.parseFloat(Ratings) <= 1) {
+                        LayerDrawable stars = (LayerDrawable) bookStars.getProgressDrawable();
+                        stars.getDrawable(2).setColorFilter(Color.RED, PorterDuff.Mode.SRC_ATOP);
+                    } else if (Float.parseFloat(Ratings) <= 2) {
+                        LayerDrawable stars = (LayerDrawable) bookStars.getProgressDrawable();
+                        stars.getDrawable(2).setColorFilter(Color.rgb(255, 140, 0), PorterDuff.Mode.SRC_ATOP);
+                    } else if (Float.parseFloat(Ratings) <= 3) {
+                        LayerDrawable stars = (LayerDrawable) bookStars.getProgressDrawable();
+                        stars.getDrawable(2).setColorFilter(Color.YELLOW, PorterDuff.Mode.SRC_ATOP);
+                    } else if (Float.parseFloat(Ratings) <= 4) {
+                        LayerDrawable stars = (LayerDrawable) bookStars.getProgressDrawable();
+                        stars.getDrawable(2).setColorFilter(Color.GREEN, PorterDuff.Mode.SRC_ATOP);
+                    } else if (Float.parseFloat(Ratings) <= 5) {
+                        LayerDrawable stars = (LayerDrawable) bookStars.getProgressDrawable();
+                        stars.getDrawable(2).setColorFilter(Color.rgb(34, 139, 34), PorterDuff.Mode.SRC_ATOP);
+                    }
 
-                if (jsonObject.getString("ReadStatus").equals("Read"))
-                {
-                    bookOptions.setText("Read");
-                    bookOptions.setBackgroundColor(getResources().getColor(R.color.ReadColor));
-                }
-                else if (jsonObject.getString("ReadStatus").equals("Want to Read"))
-                {
-                    bookOptions.setText("Want To Read");
-                    bookOptions.setBackgroundColor(getResources().getColor(R.color.WantToReadColor));
-                }
-                else if (jsonObject.getString("ReadStatus").equals("Currently Reading"))
-                {
-                    bookOptions.setText("Currently Reading");
-                    bookOptions.setBackgroundColor(getResources().getColor(R.color.ReadingColor));
+                    if (jsonObject.getString("ReadStatus").equals("Read")) {
+                        bookOptions.setText("Read");
+                        bookOptions.setBackgroundColor(getResources().getColor(R.color.ReadColor));
+                    } else if (jsonObject.getString("ReadStatus").equals("Want to Read")) {
+                        bookOptions.setText("Want To Read");
+                        bookOptions.setBackgroundColor(getResources().getColor(R.color.WantToReadColor));
+                    } else if (jsonObject.getString("ReadStatus").equals("Currently Reading")) {
+                        bookOptions.setText("Currently Reading");
+                        bookOptions.setBackgroundColor(getResources().getColor(R.color.ReadingColor));
+                    } else {
+                        bookOptions.setText("Add to shelf");
+                        bookOptions.setBackgroundColor(getResources().getColor(R.color.colorNotificationbar));
+                    }
+
+
+                    /* Start Async Task to get the image from url */
+                    GetImage getCover = new GetImage();
+                    ImageURL = jsonObject.getString("Cover");
+                    getCover.execute(ImageURL);
                 }
                 else
                 {
-                    bookOptions.setText("Add to shelf");
-                    bookOptions.setBackgroundColor(getResources().getColor(R.color.colorNotificationbar));
+                    dialog.setMessage(jsonObject.getString("Book-not-found"));
                 }
 
-
-                /* Start Async Task to get the image from url */
-                GetImage getCover = new GetImage();
-                ImageURL = jsonObject.getString("Cover");
-                getCover.execute(ImageURL);
-
-            } catch (JSONException e) {
+            } catch(JSONException e){
                 e.printStackTrace();
             }
         }
-
     }
 
     /**
@@ -557,8 +592,105 @@ public class BookActivity extends AppCompatActivity implements NavigationView.On
                 e.printStackTrace();
             }
         }
-
     }
 
+
+    /**
+     * Class that get sidebar Data from server
+     */
+    @SuppressLint("StaticFieldLeak")
+    private class AddReviewTask extends AsyncTask<String, Void, String> {
+        static final String REQUEST_METHOD = "GET";
+        //public static final int READ_TIMEOUT = 3000;
+        //public static final int CONNECTION_TIMEOUT = 3000;
+        AlertDialog dialog;
+        boolean TaskSuccess = false;
+
+        @Override
+        protected void onPreExecute() {
+            dialog = new AlertDialog.Builder(mContext).create();
+            dialog.setTitle("Connection Status");
+        }
+
+        @RequiresApi(api = Build.VERSION_CODES.KITKAT)
+        @Override
+        protected String doInBackground(String... params) {
+            String UrlString = params[0];
+            String JSONString = params[1];
+            String result = "";
+
+            try {
+                //Create a URL object holding our url
+                URL url = new URL(UrlString);
+                HttpURLConnection http = (HttpURLConnection) url.openConnection();
+                http.setRequestMethod(REQUEST_METHOD);
+                http.setDoInput(true);
+                http.setDoOutput(true);
+                http.setRequestProperty("content-type", "application/json");
+
+                OutputStream ops = http.getOutputStream();
+                BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(ops, StandardCharsets.UTF_8));
+                String data = URLEncoder.encode("id", "UTF-8") + "=" + URLEncoder.encode(JSONString, "UTF-8");
+
+                writer.write(data);
+                writer.flush();
+                writer.close();
+                ops.close();
+
+                switch (String.valueOf(http.getResponseCode()))
+                {
+                    case "200":
+                        /* A Stream object to get the returned data from API Call */
+                        InputStream ips = http.getInputStream();
+                        BufferedReader reader = new BufferedReader(new InputStreamReader(ips, StandardCharsets.ISO_8859_1));
+                        String line;
+                        while ((line = reader.readLine()) != null) {
+                            result += line;
+                        }
+                        reader.close();
+                        ips.close();
+                        TaskSuccess = true;
+                        break;
+                    case "400":
+                        TaskSuccess = false;
+                        result = "";
+                        break;
+                    default:
+                        break;
+                }
+                http.disconnect();
+                return result;
+
+            } catch (MalformedURLException e) {
+                result = e.getMessage();
+            } catch (IOException e) {
+                result = e.getMessage();
+            }
+            return result;
+        }
+
+        @SuppressLint("SetTextI18n")
+        protected void onPostExecute(String result) {
+            if (result == null) {
+                Toast.makeText(mContext, "Unable to connect to server", Toast.LENGTH_SHORT).show();
+                return;
+            }
+            try {
+                JSONObject jsonObject = new JSONObject(result);
+
+                if( TaskSuccess) {
+                    if (jsonObject.getString("AddedReviewSuc").equals("true")) {
+                        Toast.makeText(mContext, "Review Added", Toast.LENGTH_SHORT).show();
+                    }
+                }
+                else
+                {
+
+                }
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+        }
+    }
 }
 

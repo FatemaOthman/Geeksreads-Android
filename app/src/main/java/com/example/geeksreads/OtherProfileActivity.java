@@ -42,7 +42,6 @@ import java.io.OutputStreamWriter;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.util.Objects;
 
@@ -141,10 +140,12 @@ public class OtherProfileActivity extends AppCompatActivity implements Navigatio
         try {
             ID = getIntent().getStringExtra("FollowId");
             JSON.put("FollowId", ID);
-
             //TODO: Remove the following hardcoded ID line when merging.
             ID = "value";
             jsonObject.put("FollowId", ID);
+
+            jsonObject.put("ShelfName","Read");
+
         } catch (JSONException e) {
             e.printStackTrace();
         }
@@ -161,12 +162,12 @@ public class OtherProfileActivity extends AppCompatActivity implements Navigatio
         TheBooks.execute(SecondUrlService, jsonObject.toString());
         /////////////////////////////////////////////////////
 
-        final String FollowRequest = "http://geeksreads.000webhostapp.com/Amr/Follow.php";
-        final String UnFollowRequest = "http://geeksreads.000webhostapp.com/Amr/UnFollow.php";
+        final String FollowRequest = "https://geeksreads.herokuapp.com/api/users/Follow";
+        final String UnFollowRequest = "https://geeksreads.herokuapp.com/api/users/unFollow";
 
         final JSONObject FollowJson = new JSONObject();
         try {
-            ID = getIntent().getStringExtra("FollowId");
+            ID = LoginActivity.sCurrentUserID;
             FollowJson.put("myuserId", ID);
             ID = getIntent().getStringExtra("FollowId");
             FollowJson.put("userId_tobefollowed", ID);
@@ -243,37 +244,54 @@ public class OtherProfileActivity extends AppCompatActivity implements Navigatio
             String result = "";
 
             try {
-                //Create a URL object holding our url
+                /* Create a URL object holding our url */
                 URL url = new URL(UrlString);
+                /* Create an HTTP Connection and adjust its options */
                 HttpURLConnection http = (HttpURLConnection) url.openConnection();
                 http.setRequestMethod(REQUEST_METHOD);
                 http.setDoInput(true);
                 http.setDoOutput(true);
+                http.setRequestProperty("content-type", "application/json");
 
+                /* A Stream object to hold the sent data to API Call */
                 OutputStream ops = http.getOutputStream();
                 BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(ops, StandardCharsets.UTF_8));
-                String data = URLEncoder.encode("myuserId", "UTF-8") + "=" + URLEncoder.encode(JSONString, "UTF-8");
+                String data = JSONString;
+
                 writer.write(data);
                 writer.flush();
                 writer.close();
                 ops.close();
-
-
-                /////////////////////////////////////////
-                //Create a new InputStreamReader
-                InputStream ips = http.getInputStream();
-                BufferedReader reader = new BufferedReader(new InputStreamReader(ips, StandardCharsets.ISO_8859_1));
-                String line = "";
-                while ((line = reader.readLine()) != null) {
-                    result += line;
+                switch (String.valueOf(http.getResponseCode())) {
+                    case "200":
+                        /* A Stream object to get the returned data from API Call */
+                        InputStream ips = http.getInputStream();
+                        BufferedReader reader = new BufferedReader(new InputStreamReader(ips, StandardCharsets.ISO_8859_1));
+                        String line = "";
+                        //boolean started = false;
+                        while ((line = reader.readLine()) != null) {
+                            //   if ()
+                            result += line;
+                        }
+                        reader.close();
+                        ips.close();
+                        break;
+                    case "400":
+                        result = "{\"ReturnMsg\":\"Invalid email or password.\"}";
+                        break;
+                    case "401":
+                        result = "{\"ReturnMsg\":\"Your account has not been verified.\"}";
+                        break;
+                    default:
+                        break;
                 }
-                reader.close();
-                ips.close();
-                http.disconnect();
 
+
+                http.disconnect();
                 return result;
 
-            } catch (MalformedURLException e) {
+            }
+            /* Handling Exceptions */ catch (MalformedURLException e) {
                 result = e.getMessage();
             } catch (IOException e) {
                 result = e.getMessage();
@@ -348,38 +366,46 @@ public class OtherProfileActivity extends AppCompatActivity implements Navigatio
             String result = "";
 
             try {
-                //Create a URL object holding our url
+                /* Create a URL object holding our url */
                 URL url = new URL(UrlString);
+                /* Create an HTTP Connection and adjust its options */
                 HttpURLConnection http = (HttpURLConnection) url.openConnection();
                 http.setRequestMethod(REQUEST_METHOD);
                 http.setDoInput(true);
                 http.setDoOutput(true);
+                http.setRequestProperty("x-auth-token", LoginActivity.sCurrentToken);
 
+                /* A Stream object to hold the sent data to API Call */
                 OutputStream ops = http.getOutputStream();
                 BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(ops, StandardCharsets.UTF_8));
-                String data = URLEncoder.encode("myuserId", "UTF-8") + "=" + URLEncoder.encode(JSONString, "UTF-8");
-                writer.write(data);
+                writer.write("");
                 writer.flush();
-
                 writer.close();
                 ops.close();
 
-
-                /////////////////////////////////////////
-                //Create a new InputStreamReader
-                InputStream ips = http.getInputStream();
-                BufferedReader reader = new BufferedReader(new InputStreamReader(ips, StandardCharsets.ISO_8859_1));
-                String line = "";
-                while ((line = reader.readLine()) != null) {
-                    result += line;
+                switch (String.valueOf(http.getResponseCode())) {
+                    case "200":
+                        /* A Stream object to get the returned data from API Call */
+                        InputStream ips = http.getInputStream();
+                        BufferedReader reader = new BufferedReader(new InputStreamReader(ips, StandardCharsets.ISO_8859_1));
+                        String line = "";
+                        //boolean started = false;
+                        while ((line = reader.readLine()) != null) {
+                            result += line;
+                        }
+                        reader.close();
+                        ips.close();
+                        break;
+                    default:
+                        result = "{\"ReturnMsg\":\"An Error Occurred!\"}";
+                        break;
                 }
-                reader.close();
-                ips.close();
-                http.disconnect();
 
+                http.disconnect();
                 return result;
 
-            } catch (MalformedURLException e) {
+            }
+            /* Handling Exceptions */ catch (MalformedURLException e) {
                 result = e.getMessage();
             } catch (IOException e) {
                 result = e.getMessage();
@@ -404,7 +430,6 @@ public class OtherProfileActivity extends AppCompatActivity implements Navigatio
                 dialog.setMessage("Done");
                 //dialog.show();
 
-                Log.i("TEST", "Result: " + result);
                 JSONObject jsonObject = new JSONObject(result);
 
                 if (jsonObject.getString("Follow").equals("true"))
@@ -579,15 +604,12 @@ public class OtherProfileActivity extends AppCompatActivity implements Navigatio
                 dialog.setMessage("Done");
                 //dialog.show();
 
-
                 JSONObject jsonObject = new JSONObject(result);
-                //  Log.i("AMR","Result: "+result);
                 OtherProfileActivity.GetOtherUserPicture Pic = new OtherProfileActivity.GetOtherUserPicture();
                 Pic.execute(jsonObject.getString("photourl"));
 
                 UserName.setText(jsonObject.getString("UserNameData"));
                 aForTestUserName = UserName.getText().toString();
-                // Log.i("TEST","USERNAME"+aForTestUserName);
                 BooksCount.setText(jsonObject.getString("CountBooks") + " " + "Books");
                 aForTestBooksCount = BooksCount.getText().toString();
 
@@ -635,18 +657,16 @@ public class OtherProfileActivity extends AppCompatActivity implements Navigatio
                 http.setRequestMethod(REQUEST_METHOD);
                 http.setDoInput(true);
                 http.setDoOutput(true);
-                http.setRequestProperty("content-type", "application/json");
+                http.setRequestProperty("x-auth-token", LoginActivity.sCurrentToken);
 
                 /* A Stream object to hold the sent data to API Call */
                 OutputStream ops = http.getOutputStream();
                 BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(ops, StandardCharsets.UTF_8));
-                //String data = URLEncoder.encode(JSONString, "UTF-8");
-                String data = JSONString;
-
-                writer.write(data);
+                writer.write("");
                 writer.flush();
                 writer.close();
                 ops.close();
+
                 switch (String.valueOf(http.getResponseCode())) {
                     case "200":
                         /* A Stream object to get the returned data from API Call */
@@ -655,22 +675,15 @@ public class OtherProfileActivity extends AppCompatActivity implements Navigatio
                         String line = "";
                         //boolean started = false;
                         while ((line = reader.readLine()) != null) {
-                            //   if ()
                             result += line;
                         }
                         reader.close();
                         ips.close();
                         break;
-                    case "400":
-                        result = "{\"ReturnMsg\":\"Invalid email or password.\"}";
-                        break;
-                    case "401":
-                        result = "{\"ReturnMsg\":\"Your account has not been verified.\"}";
-                        break;
                     default:
+                        result = "{\"ReturnMsg\":\"An Error Occurred!\"}";
                         break;
                 }
-
 
                 http.disconnect();
                 return result;
@@ -828,7 +841,6 @@ public class OtherProfileActivity extends AppCompatActivity implements Navigatio
                 return;
             }
             try {
-
                 JSONObject jsonObject = new JSONObject(result);
                 FollowItem.setTitle("Followers   " + jsonObject.getString("Followers"));
                 BookItem.setTitle("My Books   " + jsonObject.getString("CountBooks"));

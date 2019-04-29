@@ -59,7 +59,8 @@ public class ReadBooksActivity extends AppCompatActivity {
 
         final JSONObject jsonObject = new JSONObject();
         try {
-            jsonObject.put("UserID", "value");
+            jsonObject.put("userId", LoginActivity.sCurrentUserID);
+            jsonObject.put("shelfName", "Read");
         } catch (JSONException e) {
             e.printStackTrace();
         }
