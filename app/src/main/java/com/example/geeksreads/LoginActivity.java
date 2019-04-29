@@ -1,5 +1,7 @@
 package com.example.geeksreads;
 
+import android.accounts.Account;
+import android.accounts.AccountManager;
 import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.content.Context;
@@ -19,6 +21,7 @@ import android.widget.Toast;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.UserSessionManager;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.IOException;
@@ -79,6 +82,16 @@ public class LoginActivity extends AppCompatActivity {
     }
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        /* If user is already logged in, Skip and go to Main Activity */
+        mContext = this;
+        UserSessionManager.Initialize(mContext);
+        UserSessionManager.UserSessionState currentUserState = UserSessionManager.getCurrentState();
+        if (currentUserState == UserSessionManager.UserSessionState.USER_LOGGED_IN)
+        {
+            /* Go to Next Activity Layout */
+            Intent myIntent = new Intent(LoginActivity.this, FeedActivity.class);
+            startActivity(myIntent);
+        }
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
 
@@ -87,18 +100,6 @@ public class LoginActivity extends AppCompatActivity {
         setSupportActionBar(myToolbar);
         Objects.requireNonNull(getSupportActionBar()).setTitle("Login");
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        mContext = this;
-
-        /* Too Act as logged in and re-direct to newsFeed */
-
-       /* SharedPreferences sp;
-        sp = getSharedPreferences("login",MODE_PRIVATE);
-        sp.edit().putBoolean("logged",true).apply();
-
-        if(sp.getBoolean("logged",false)){
-            Intent myIntent = new Intent(LoginActivity.this, FeedActivity.class);
-            startActivity(myIntent);
-        } */
 
 
         /* Getting Text boxes and Buttons from the layout */
@@ -106,6 +107,11 @@ public class LoginActivity extends AppCompatActivity {
         final EditText loginMail = findViewById(R.id.EmailTxt);
         final EditText loginPassword = findViewById(R.id.PasswordTxt);
 
+        if (currentUserState == UserSessionManager.UserSessionState.USER_DATA_AVAILABLE_BUT_NOT_LOGGED_IN)
+        {
+            loginMail.setText(UserSessionManager.getUserEmail());
+            loginPassword.setText(UserSessionManager.getHashedPassword());
+        }
 
         /* Function Handler for Clicking on Login Button, to Start Checking input Field
            and Sending JSON String to the Backend Login API
@@ -130,8 +136,16 @@ public class LoginActivity extends AppCompatActivity {
                 else {
                     JSONObject mJSON = new JSONObject();
                     try {
-                        /* Encrypting User Password into MD5 */
-                        loginPasswordStr = HelpingFunctions.getMD5Encryption(loginPasswordStr);
+                        if (UserSessionManager.getCurrentState() == UserSessionManager.UserSessionState.NO_DATA
+                        || !loginPasswordStr.equals(UserSessionManager.getHashedPassword()))
+                        {
+                            /* Encrypting User Password into MD5 */
+                            loginPasswordStr = HelpingFunctions.getMD5Encryption(loginPasswordStr);
+                        }
+                        else
+                        {
+                            /* No Change, it's already encrypted! */
+                        }
 
                         /* Adding needed parameters for Login API */
                         mJSON.put("UserEmail", loginEmailStr);
@@ -310,6 +324,9 @@ public class LoginActivity extends AppCompatActivity {
                                 /* Storing returned Token and User ID */
                                 sCurrentToken = jsonObject.getString("Token");
                                 sCurrentUserID = jsonObject.getString("UserId");
+
+                                // Save User Data
+                                UserSessionManager.saveUserData(loginEmailStr, loginPasswordStr, sCurrentToken);
 
                                 /* Go to Next Activity Layout */
                                 Intent myIntent = new Intent(LoginActivity.this, FeedActivity.class);

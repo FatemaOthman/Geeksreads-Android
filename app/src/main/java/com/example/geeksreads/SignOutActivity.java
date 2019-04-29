@@ -16,6 +16,7 @@ import android.widget.Toast;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.UserSessionManager;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.IOException;
@@ -47,7 +48,7 @@ public class SignOutActivity extends AppCompatActivity {
 
 
         /* Delete all user's data (id and token) */
-        deleteUserSessionInformation();
+        UserSessionManager.logOutUser();
 
         /* URL For Sign out API */
         String urlService = "https://geeksreads.herokuapp.com/api/users/signout";
@@ -75,13 +76,6 @@ public class SignOutActivity extends AppCompatActivity {
                 startActivity(myIntent);
             }
         });
-    }
-
-    void deleteUserSessionInformation()
-    {
-        //todo
-        LoginActivity.sCurrentUserID = "";
-        LoginActivity.sCurrentToken = "";
     }
 
     /**
