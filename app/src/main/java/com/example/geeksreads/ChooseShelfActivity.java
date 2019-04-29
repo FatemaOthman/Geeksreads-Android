@@ -18,12 +18,14 @@ import android.widget.ImageView;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.RatingBar;
+import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.UserSessionManager;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.IOException;
@@ -77,6 +79,7 @@ public class ChooseShelfActivity extends AppCompatActivity {
         String pageNumbersPassed = intent.getStringExtra("Pages");
         String publishedDatePassed = intent.getStringExtra("published");
         String bookCoverURL = intent.getStringExtra("cover");
+        final String BookStatus = intent.getStringExtra("BookStatus");
         final String getBookID = intent.getStringExtra("bookID");
 
         /* Get views from layout by IDs */
@@ -107,6 +110,20 @@ public class ChooseShelfActivity extends AppCompatActivity {
         GetImage getCover = new GetImage();
         getCover.execute(bookCoverURL);
 
+        /* Decide which radio group */
+        if(BookStatus.equals("Read"))
+        {
+            readRadio.setChecked(true);
+        }
+        else if(BookStatus.equals("Currently Reading"))
+        {
+            readingRadio.setChecked(true);
+        }
+        else if(BookStatus.equals("Want To Read"))
+        {
+            wantRadio.setChecked(true);
+        }
+
         /* On Adding to shelf Button Listener */
         addShelf.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -133,13 +150,26 @@ public class ChooseShelfActivity extends AppCompatActivity {
 
                     JSONObject ReviewObject = new JSONObject();
                     try {
-                        ReviewObject.put("x-auth-token", LoginActivity.sCurrentToken);
+                        ReviewObject.put("token", UserSessionManager.getUserToken());
                         ReviewObject.put("bookId", getBookID);
                         ReviewObject.put("ShelfType", shelfID);
                     } catch (JSONException e) {
                         e.printStackTrace();
                     }
-                    String UrlService = "https://geeksreads.herokuapp.com/api/users/Shelf/AddToShelf";
+                    String UrlService = null;
+                    if (BookStatus.equals("Want To Read") && shelfID.equals("Reading"))
+                    {
+                        UrlService = "https://geeksreads.herokuapp.com/api/users/UpdateWantToReading";
+                    }
+                   else if (BookStatus.equals("Currently Reading") && shelfID.equals("Read"))
+                    {
+                        UrlService = "https://geeksreads.herokuapp.com/api/users/UpdateReadingToRead";
+                    }
+                    else
+                    {
+                        UrlService = "https://geeksreads.herokuapp.com/api/users/AddToShelf";
+                    }
+
                     AddShelfTask addShelfTask = new AddShelfTask();
                     addShelfTask.execute(UrlService, ReviewObject.toString());
                 }
@@ -216,40 +246,36 @@ public class ChooseShelfActivity extends AppCompatActivity {
 
                 OutputStream ops = http.getOutputStream();
                 BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(ops, StandardCharsets.UTF_8));
-                String data = URLEncoder.encode("id", "UTF-8") + "=" + URLEncoder.encode(JSONString, "UTF-8");
 
-                writer.write(data);
+                writer.write(JSONString);
                 writer.flush();
                 writer.close();
                 ops.close();
 
-                switch (String.valueOf(http.getResponseCode()))
+                if (String.valueOf(http.getResponseCode()).equals("200"))
                 {
-                    case "200":
-                        /* A Stream object to get the returned data from API Call */
-                        InputStream ips = http.getInputStream();
-                        BufferedReader reader = new BufferedReader(new InputStreamReader(ips, StandardCharsets.ISO_8859_1));
-                        String line;
-                        while ((line = reader.readLine()) != null) {
-                            result += line;
-                        }
-                        reader.close();
-                        ips.close();
-                        TaskSuccess = true;
-                        break;
-                    case "400":
-                        InputStream es = http.getErrorStream();
-                        BufferedReader readers = new BufferedReader(new InputStreamReader(es, StandardCharsets.ISO_8859_1));
-                        String lines;
-                        while ((lines = readers.readLine()) != null) {
-                            result += lines;
-                        }
-                        readers.close();
-                        es.close();
-                        TaskSuccess = false;
-                        break;
-                    default:
-                        break;
+                    /* when stream success */
+                    InputStream ips = http.getInputStream();
+                    BufferedReader reader = new BufferedReader(new InputStreamReader(ips, StandardCharsets.ISO_8859_1));
+                    String line;
+                    while ((line = reader.readLine()) != null) {
+                        result += line;
+                    }
+                    reader.close();
+                    ips.close();
+                    TaskSuccess = true;
+                }
+                else /* When error take place */
+                {
+                    InputStream es = http.getErrorStream();
+                    BufferedReader readers = new BufferedReader(new InputStreamReader(es, StandardCharsets.ISO_8859_1));
+                    String lines;
+                    while ((lines = readers.readLine()) != null) {
+                        result += lines;
+                    }
+                    readers.close();
+                    es.close();
+                    TaskSuccess = false;
                 }
                 http.disconnect();
                 return result;
@@ -269,16 +295,12 @@ public class ChooseShelfActivity extends AppCompatActivity {
                 return;
             }
             try {
-                JSONObject jsonObject = new JSONObject(result);
 
-                if( TaskSuccess) {
-                    Toast.makeText(mContext, jsonObject.getString("ReturnMsg"), Toast.LENGTH_SHORT).show();
-                }
-                else
-                {
-                    Toast.makeText(mContext, "error", Toast.LENGTH_SHORT).show();
-                }
+                JSONObject jsonObject = new JSONObject(result);
+                Toast.makeText(mContext, jsonObject.getString("ReturnMsg"), Toast.LENGTH_SHORT).show();
+
             } catch (JSONException e) {
+                Toast.makeText(mContext, "Error happen during adding to shelf", Toast.LENGTH_SHORT).show();
                 e.printStackTrace();
             }
         }

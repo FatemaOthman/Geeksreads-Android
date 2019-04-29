@@ -33,7 +33,7 @@ public class BookList_JSONAdapter extends BaseAdapter {
 
     private final Context context;
     private JSONArray data;
-    private String bookID;
+    private String[] bookID = new String[100];
 
     public BookList_JSONAdapter(Context context, JSONArray data) {
         this.data = data;
@@ -50,9 +50,9 @@ public class BookList_JSONAdapter extends BaseAdapter {
     /**
      * @return Book ISBN to get the book itself on clicking.
      */
-    public String getBookID()
+    public String getBookID(int position)
     {
-        return bookID;
+        return bookID[position];
     }
 
     /**
@@ -77,7 +77,7 @@ public class BookList_JSONAdapter extends BaseAdapter {
 
         try {
             JSONObject object = data.getJSONObject(i);
-            object.get("ID");
+            //object.get("BookId");
             return i;
         } catch (JSONException jse) {
             jse.printStackTrace();
@@ -102,20 +102,20 @@ public class BookList_JSONAdapter extends BaseAdapter {
             holder.position = i;
             holder.Cover = view.findViewById(R.id.BookImage);
 
-            bookID = data.getJSONObject(i).getString("BookId");
+            bookID[i] = data.getJSONObject(i).getString("BookId");
 
             TextView BookName = view.findViewById(R.id.BookNameTxt);
             BookName.setText(data.getJSONObject(i).getString("Title"));
 
             TextView AuthorName = view.findViewById(R.id.ByAuthorNameTxt);
-            AuthorName.setText(String.format("By: %s", data.getJSONObject(i).getString("AuthorName")));
+            AuthorName.setText(String.format("By: %s", data.getJSONObject(i).getString("AuthorId")));
 
             String Ratings = data.getJSONObject(i).getString("BookRating");
             TextView RatingNumber = view.findViewById(R.id.ratingBar);
             RatingNumber.setText(String.format("%s", Ratings));
 
             TextView RatingCount = view.findViewById(R.id.BookRatingsTxt);
-            RatingCount.setText(String.format("  %s Ratings", data.getJSONObject(i).getString("ratingcount")));
+            //RatingCount.setText(String.format("  %s Ratings", data.getJSONObject(i).getString("ratingcount")));
 
             RatingBar bookStars = view.findViewById(R.id.bookRatingStars);
             bookStars.setRating(Float.parseFloat(Ratings));
@@ -145,7 +145,7 @@ public class BookList_JSONAdapter extends BaseAdapter {
             Pages.setText(String.format("%s pages.", data.getJSONObject(i).getString("Pages")));
 
             TextView BookData = view.findViewById(R.id.PublishData);
-            BookData.setText(String.format("Published on %s, By: %s", data.getJSONObject(i).getString("Published"),data.getJSONObject(i).getString("Publisher")));
+            BookData.setText(String.format("Published on %s, By: ", data.getJSONObject(i).getString("Published")/*,data.getJSONObject(i).getString("Publisher")*/));
 
             GetImage getCover = new GetImage(i,holder);
             getCover.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR,data.getJSONObject(i).getString("Cover"));

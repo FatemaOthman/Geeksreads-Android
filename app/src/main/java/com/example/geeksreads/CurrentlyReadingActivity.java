@@ -209,7 +209,7 @@ public class CurrentlyReadingActivity extends AppCompatActivity {
                     @Override
                     public void onItemClick(AdapterView<?> arg0, View arg1, int position, long arg3) {
                         Intent intent = new Intent(CurrentlyReadingActivity.this, BookActivity.class);
-                        intent.putExtra("BookID",bookListJsonAdapter.getBookID());
+                        intent.putExtra("BookID",bookListJsonAdapter.getBookID(position));
                         startActivity(intent);
                     }
                 });

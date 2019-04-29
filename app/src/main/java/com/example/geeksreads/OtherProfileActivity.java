@@ -715,7 +715,7 @@ public class OtherProfileActivity extends AppCompatActivity implements Navigatio
                     @Override
                     public void onItemClick(AdapterView<?> arg0, View arg1, int position, long arg3) {
                         Intent intent = new Intent(OtherProfileActivity.this, BookActivity.class);
-                        intent.putExtra("BookID", bookListJsonAdapter.getBookID());
+                        intent.putExtra("BookID", bookListJsonAdapter.getBookID(position));
                         startActivity(intent);
                     }
                 });

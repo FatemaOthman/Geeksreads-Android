@@ -146,9 +146,7 @@ public class ReadBooksActivity extends AppCompatActivity {
 
                 OutputStream ops = http.getOutputStream();
                 BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(ops, StandardCharsets.UTF_8));
-                //String data = URLEncoder.encode("id", "UTF-8") + "=" + URLEncoder.encode(JSONString, "UTF-8");
-                String data = JSONString;
-                writer.write(data);
+                writer.write(JSONString);
                 writer.flush();
                 writer.close();
                 ops.close();
@@ -193,7 +191,7 @@ public class ReadBooksActivity extends AppCompatActivity {
                     @Override
                     public void onItemClick(AdapterView<?> arg0, View arg1, int position, long arg3) {
                         Intent intent = new Intent(ReadBooksActivity.this, BookActivity.class);
-                        intent.putExtra("BookID",bookListJsonAdapter.getBookID());
+                        intent.putExtra("BookID",bookListJsonAdapter.getBookID(position));
                         startActivity(intent);
                     }
                 });

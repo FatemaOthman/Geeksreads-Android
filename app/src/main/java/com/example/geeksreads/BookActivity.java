@@ -186,11 +186,12 @@ public class BookActivity extends AppCompatActivity implements NavigationView.On
                 myIntent.putExtra("Author",bookAuthor.getText());
                 myIntent.putExtra("Title", bookTitle.getText());
                 myIntent.putExtra("Rating",bookRatings.getText());
-                myIntent.putExtra("RatingNumber",ratingsNumber.getText());
+               // myIntent.putExtra("RatingNumber",ratingsNumber.getText());
                 myIntent.putExtra("Pages",pageNumber.getText());
                 myIntent.putExtra("published",publishingDate.getText());
                 myIntent.putExtra("bookID",BookID);
                 myIntent.putExtra("cover", ImageURL);
+                myIntent.putExtra("BookStatus", bookOptions.getText().toString());
                 startActivity(myIntent);
             }
         });
@@ -237,14 +238,12 @@ public class BookActivity extends AppCompatActivity implements NavigationView.On
             }
         });
 
-
-        /* Creating Json Object to be send */
-        String Book_ID = "5c9114a0d345b4a65637eacc";
+        Log.d("BookID",getID);
         /* Calling Async Task with my server url */
         String UrlService = "https://geeksreads.herokuapp.com/api/books/id";
         mProgressBar.setVisibility(View.VISIBLE);
         GetBookDetails getBookDetails = new GetBookDetails();
-        getBookDetails.execute(UrlService, Book_ID);
+        getBookDetails.execute(UrlService, getID);
 
     }
 
@@ -423,12 +422,12 @@ public class BookActivity extends AppCompatActivity implements NavigationView.On
                 if (TaskSuccess) {
                     /* Get Json Object from server and preview results on Layout views */
                     bookTitle.setText(jsonObject.getString("Title"));
-                    bookAuthor.setText("By: " + "" + jsonObject.getString("Author"));
+                    bookAuthor.setText("By: " + "" + jsonObject.getString("AuthorId"));
                     AuthorID = jsonObject.getString("AuthorId");
                     BookID = jsonObject.getString("BookId");
-                    ratingsNumber.setText(jsonObject.getString("ratingcount") + " " + "Ratings");
-                    reviewsNumber.setText(jsonObject.getString("textreviewscount") + " " + "Reviews");
-                    String Ratings = jsonObject.getString("BookRating");
+                    //ratingsNumber.setText(jsonObject.getString("ratingcount") + " " + "Ratings");
+                    //reviewsNumber.setText(jsonObject.getString("textreviewscount") + " " + "Reviews");
+                    String Ratings = jsonObject.optJSONObject("BookRating").getString("$numberDecimal");
                     bookRatings.setText(Ratings);
                     bookDescription.setText(jsonObject.getString("Description"));
                     pageNumber.setText(jsonObject.getString("Pages") + " pages");
@@ -452,7 +451,7 @@ public class BookActivity extends AppCompatActivity implements NavigationView.On
                         LayerDrawable stars = (LayerDrawable) bookStars.getProgressDrawable();
                         stars.getDrawable(2).setColorFilter(Color.rgb(34, 139, 34), PorterDuff.Mode.SRC_ATOP);
                     }
-
+                    Log.d("Book Status", jsonObject.getString("ReadStatus"));
                     if (jsonObject.getString("ReadStatus").equals("Read")) {
                         bookOptions.setText("Read");
                         bookOptions.setBackgroundColor(getResources().getColor(R.color.ReadColor));
