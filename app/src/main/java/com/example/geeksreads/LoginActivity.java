@@ -81,6 +81,24 @@ public class LoginActivity extends AppCompatActivity {
         }
     }
     @Override
+    public void onBackPressed()
+    {
+        String from = getIntent().getStringExtra("FROM");
+        if (from.equals("SIGNUP") || from.equals("SIGNOUT"))
+        {
+            super.onBackPressed();
+        }
+        else
+        {
+            /* Go to Next Activity Layout */
+            Intent myIntent = new Intent(LoginActivity.this, SignupActivity.class);
+            myIntent.putExtra("FROM", "SIGNIN");
+            myIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK|Intent.FLAG_ACTIVITY_NEW_TASK);
+            startActivity(myIntent);
+        }
+
+    }
+    @Override
     protected void onCreate(Bundle savedInstanceState) {
         /* If user is already logged in, Skip and go to Main Activity */
         mContext = this;
@@ -90,6 +108,7 @@ public class LoginActivity extends AppCompatActivity {
         {
             /* Go to Next Activity Layout */
             Intent myIntent = new Intent(LoginActivity.this, FeedActivity.class);
+            myIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK|Intent.FLAG_ACTIVITY_NEW_TASK);
             startActivity(myIntent);
         }
         super.onCreate(savedInstanceState);
@@ -215,6 +234,18 @@ public class LoginActivity extends AppCompatActivity {
             }
         });
 
+        Button signupButton = findViewById(R.id.OrSignUpBtn);
+        signupButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                /* Go to Next Activity Layout */
+                Intent myIntent = new Intent(LoginActivity.this, SignupActivity.class);
+                myIntent.putExtra("FROM", "SIGNIN");
+                myIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK|Intent.FLAG_ACTIVITY_NEW_TASK);
+                startActivity(myIntent);
+            }
+        });
+
     }
 
     /**
@@ -330,6 +361,7 @@ public class LoginActivity extends AppCompatActivity {
 
                                 /* Go to Next Activity Layout */
                                 Intent myIntent = new Intent(LoginActivity.this, FeedActivity.class);
+                                myIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK|Intent.FLAG_ACTIVITY_NEW_TASK);
                                 startActivity(myIntent);
                             } else {
                                 /* If Login didn't succeed, Stay Here in the same Activity and Do Nothing */

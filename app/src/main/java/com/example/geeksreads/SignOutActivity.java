@@ -62,8 +62,9 @@ public class SignOutActivity extends AppCompatActivity {
         {
             @Override
             public void onClick(View view) {
-                UserSessionManager.resetUserData();
+                //UserSessionManager.resetUserData();
                 Intent myIntent = new Intent(SignOutActivity.this, SignupActivity.class);
+                myIntent.putExtra("FROM", "SIGNOUT");
                 startActivity(myIntent);
             }
         });
@@ -74,6 +75,7 @@ public class SignOutActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 Intent myIntent = new Intent(SignOutActivity.this, LoginActivity.class);
+                myIntent.putExtra("FROM", "SIGNOUT");
                 startActivity(myIntent);
             }
         });

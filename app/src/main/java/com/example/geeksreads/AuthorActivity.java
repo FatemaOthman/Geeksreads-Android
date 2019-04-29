@@ -238,6 +238,7 @@ public class AuthorActivity extends AppCompatActivity implements NavigationView.
         }
         else if (id == R.id.Signout) {
             Intent myIntent = new Intent(AuthorActivity.this, SignOutActivity.class);
+            myIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK|Intent.FLAG_ACTIVITY_NEW_TASK);
             startActivity(myIntent);
         }
         DrawerLayout drawer = findViewById(R.id.drawer_layout);

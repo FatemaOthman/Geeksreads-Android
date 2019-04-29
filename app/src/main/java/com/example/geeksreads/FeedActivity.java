@@ -79,12 +79,14 @@ public class FeedActivity extends AppCompatActivity implements NavigationView.On
         {
             /* Go to Next Activity Layout */
             Intent myIntent = new Intent(FeedActivity.this, LoginActivity.class);
+            myIntent.putExtra("FROM", "FEED");
             startActivity(myIntent);
         }
         else
         {
             /* Go to Next Activity Layout */
             Intent myIntent = new Intent(FeedActivity.this, SignupActivity.class);
+            myIntent.putExtra("FROM", "FEED");
             startActivity(myIntent);
 
         }
@@ -168,7 +170,15 @@ public class FeedActivity extends AppCompatActivity implements NavigationView.On
         if (drawer.isDrawerOpen(GravityCompat.START)) {
             drawer.closeDrawer(GravityCompat.START);
         } else {
-            super.onBackPressed();
+           /* String fromActivity = getIntent().getStringExtra("FROM");
+            if ((fromActivity.equals("SIGNUP") || fromActivity.equals("SIGNIN")))
+            {
+                this.moveTaskToBack(true);
+            }
+            else*/
+            {
+                super.onBackPressed();
+            }
         }
     }
 
@@ -219,6 +229,7 @@ public class FeedActivity extends AppCompatActivity implements NavigationView.On
         }
         else if (id == R.id.Signout) {
             Intent myIntent = new Intent(FeedActivity.this, SignOutActivity.class);
+            myIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK|Intent.FLAG_ACTIVITY_NEW_TASK);
             startActivity(myIntent);
         }
         DrawerLayout drawer = findViewById(R.id.drawer_layout);

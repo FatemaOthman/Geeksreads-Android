@@ -255,6 +255,8 @@ public class ForgetPasswordActivity extends AppCompatActivity {
                             if (jsonObject.getString("ReturnMsg").contains("successfully")) {
                                 /* Go to Next Activity Layout */
                                 Intent myIntent = new Intent(ForgetPasswordActivity.this, LoginActivity.class);
+                                myIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK|Intent.FLAG_ACTIVITY_NEW_TASK);
+                                myIntent.putExtra("FROM", "FORGETPASSWORD");
                                 startActivity(myIntent);
                             } else {
                                 /* If forget password didn't succeed, Stay Here in the same Activity and Do Nothing */

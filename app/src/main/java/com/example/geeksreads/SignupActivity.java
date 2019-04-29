@@ -94,6 +94,18 @@ public class SignupActivity extends AppCompatActivity {
         }
     }
 
+    @Override
+    public void onBackPressed()
+    {
+        if (!getIntent().getStringExtra("FROM").equals("SIGNOUT"))
+        {
+            this.moveTaskToBack(true);
+        }
+        else
+        {
+            super.onBackPressed();
+        }
+    }
     /**
      * Function for Starting Logic Actions after Creating the Layout
      */
@@ -102,24 +114,33 @@ public class SignupActivity extends AppCompatActivity {
         /* If user is already logged in, Skip and go to Main Activity */
         mContext = this;
         UserSessionManager.Initialize(mContext);
-        UserSessionManager.UserSessionState currentUserState = UserSessionManager.getCurrentState();
-        if (currentUserState == UserSessionManager.UserSessionState.USER_LOGGED_IN)
+        if (!getIntent().getStringExtra("FROM").equals("SIGNIN") && !getIntent().getStringExtra("FROM").equals("SIGNOUT"))
         {
-            /* Go to Next Activity Layout */
-            Intent myIntent = new Intent(SignupActivity.this, FeedActivity.class);
-            myIntent.putExtra("FROM", "SIGNUP");
-            startActivity(myIntent);
-        }
-        else if (currentUserState == UserSessionManager.UserSessionState.USER_DATA_AVAILABLE_BUT_NOT_LOGGED_IN)
-        {
-            /* Go to Next Activity Layout */
-            Intent myIntent = new Intent(SignupActivity.this, LoginActivity.class);
-            startActivity(myIntent);
+            UserSessionManager.UserSessionState currentUserState = UserSessionManager.getCurrentState();
+            if (currentUserState == UserSessionManager.UserSessionState.USER_LOGGED_IN)
+            {
+                /* Go to Next Activity Layout */
+                Intent myIntent = new Intent(SignupActivity.this, FeedActivity.class);
+                myIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK|Intent.FLAG_ACTIVITY_NEW_TASK);
+                startActivity(myIntent);
+            }
+            else if (currentUserState == UserSessionManager.UserSessionState.USER_DATA_AVAILABLE_BUT_NOT_LOGGED_IN)
+            {
+                /* Go to Next Activity Layout */
+                Intent myIntent = new Intent(SignupActivity.this, LoginActivity.class);
+                myIntent.putExtra("FROM", "SIGNUP");
+                startActivity(myIntent);
+            }
+            else
+            {
+                /* Stay Here */
+            }
         }
         else
         {
             /* Stay Here */
         }
+
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_signup);
@@ -129,6 +150,7 @@ public class SignupActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 Intent myIntent = new Intent(SignupActivity.this, LoginActivity.class);
+                myIntent.putExtra("FROM", "SIGNUP");
                 startActivity(myIntent);
             }
         });
@@ -325,6 +347,7 @@ public class SignupActivity extends AppCompatActivity {
 
                                 /* Go to Next Activity Layout */
                                 Intent myIntent = new Intent(SignupActivity.this, LoginActivity.class);
+                                myIntent.putExtra("FROM", "SIGNUP");
                                 startActivity(myIntent);
                             } else {
                                 /* If Sign up didn't succeed, Stay Here in the same Activity and Do Nothing */
