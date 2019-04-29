@@ -28,6 +28,7 @@ import android.widget.Toast;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.UserSessionManager;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.IOException;
@@ -147,7 +148,7 @@ public class MyBooksShelvesActivity extends AppCompatActivity implements Navigat
             }
         });
 
-        UpdateBookShelfCount updateReadShelf = new UpdateBookShelfCount(LoginActivity.sCurrentToken);
+        UpdateBookShelfCount updateReadShelf = new UpdateBookShelfCount(UserSessionManager.getUserToken());
 
         /* URL For Get Shelves Count API */
         String urlService = "https://geeksreads.herokuapp.com/api/users/ShelvesCount";

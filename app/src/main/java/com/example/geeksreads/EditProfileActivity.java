@@ -8,6 +8,8 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.icu.text.DateFormat;
+
+import java.UserSessionManager;
 import java.text.SimpleDateFormat;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -149,8 +151,8 @@ public class EditProfileActivity extends AppCompatActivity {
         GetProfileData getProfileData = new GetProfileData();
         JSONObject getDataJson = new JSONObject();
         try {
-            Log.w("MahmoudTOKEN", LoginActivity.sCurrentToken);
-            getDataJson.put("token", LoginActivity.sCurrentToken);
+            Log.w("MahmoudTOKEN", UserSessionManager.getUserToken());
+            getDataJson.put("token", UserSessionManager.getUserToken());
             Log.w("Mahmoud___", getDataJson.toString());
         } catch (JSONException e) {
             e.printStackTrace();
@@ -199,7 +201,7 @@ public class EditProfileActivity extends AppCompatActivity {
                     case NO_ERRORS:
                         JSONObject JSON = new JSONObject();
                         try {
-                            JSON.put("token", LoginActivity.sCurrentToken);
+                            JSON.put("token", UserSessionManager.getUserToken());
                             JSON.put("NewUserName", userNameStr);
                             JSON.put("NewUserBirthDate", birthDateStr);
                             //JSON.put("NewUserPhoto", userPhotoUrl); //todo upload photo

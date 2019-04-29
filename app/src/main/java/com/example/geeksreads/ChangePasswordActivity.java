@@ -19,6 +19,7 @@ import android.widget.Toast;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.UserSessionManager;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.IOException;
@@ -164,7 +165,7 @@ public class ChangePasswordActivity extends AppCompatActivity {
                             newPasswordStr = HelpingFunctions.getMD5Encryption(newPasswordStr);
 
                             /* Adding Necessary User Data into JSON Object that will be sent */
-                            mJSON.put("token", LoginActivity.sCurrentToken);
+                            mJSON.put("token", UserSessionManager.getUserToken());
                             mJSON.put("OldUserPassword", oldPasswordStr);
                             mJSON.put("NewUserPassword", newPasswordStr);
                             Log.w("Mahmoud0", mJSON.toString());

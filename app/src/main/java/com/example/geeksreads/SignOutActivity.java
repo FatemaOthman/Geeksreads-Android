@@ -55,7 +55,7 @@ public class SignOutActivity extends AppCompatActivity {
 
         /* Creating a new instance of Sign out Class */
         signOut signOutObject = new signOut();
-        signOutObject.execute(urlService, LoginActivity.sCurrentToken);
+        signOutObject.execute(urlService, UserSessionManager.getUserToken());
 
         /* Sign up button command */
         signupButton.setOnClickListener(new View.OnClickListener()
