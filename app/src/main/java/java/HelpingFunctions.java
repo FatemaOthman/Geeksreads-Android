@@ -2,6 +2,11 @@
  * This class has some public helping functions that can be used in the code of many other classes
  */
 package java;
+import android.content.Context;
+import android.content.Intent;
+
+import com.example.geeksreads.FeedActivity;
+
 import java.math.BigInteger;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;

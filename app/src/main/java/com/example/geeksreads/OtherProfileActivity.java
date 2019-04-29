@@ -442,6 +442,10 @@ public class OtherProfileActivity extends AppCompatActivity implements Navigatio
             Intent myIntent = new Intent(OtherProfileActivity.this, MyBooksShelvesActivity.class);
             startActivity(myIntent);
         }
+        else if (id == R.id.Signout) {
+            Intent myIntent = new Intent(OtherProfileActivity.this, SignOutActivity.class);
+            startActivity(myIntent);
+        }
         DrawerLayout drawer = findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
         return true;

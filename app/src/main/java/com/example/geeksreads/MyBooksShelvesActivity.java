@@ -44,7 +44,6 @@ import java.nio.charset.StandardCharsets;
 import java.util.Objects;
 
 public class MyBooksShelvesActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
-
     /**
      * Global Public Static Variables used for Testing
      */
@@ -202,6 +201,10 @@ public class MyBooksShelvesActivity extends AppCompatActivity implements Navigat
 
         } else if (id == R.id.Followers) {
             Intent myIntent = new Intent(MyBooksShelvesActivity.this, FollowActivity.class);
+            startActivity(myIntent);
+        }
+        else if (id == R.id.Signout) {
+            Intent myIntent = new Intent(MyBooksShelvesActivity.this, SignOutActivity.class);
             startActivity(myIntent);
         }
         DrawerLayout drawer = findViewById(R.id.drawer_layout);

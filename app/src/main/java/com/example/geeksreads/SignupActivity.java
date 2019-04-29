@@ -107,6 +107,7 @@ public class SignupActivity extends AppCompatActivity {
         {
             /* Go to Next Activity Layout */
             Intent myIntent = new Intent(SignupActivity.this, FeedActivity.class);
+            myIntent.putExtra("FROM", "SIGNUP");
             startActivity(myIntent);
         }
         else if (currentUserState == UserSessionManager.UserSessionState.USER_DATA_AVAILABLE_BUT_NOT_LOGGED_IN)

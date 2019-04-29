@@ -29,6 +29,7 @@ import android.widget.Toast;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.UserSessionManager;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.IOException;
@@ -66,6 +67,28 @@ public class FeedActivity extends AppCompatActivity implements NavigationView.On
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        /* If user is already logged in, Skip and go to Main Activity */
+        mContext = this;
+        UserSessionManager.Initialize(mContext);
+        UserSessionManager.UserSessionState currentUserState = UserSessionManager.getCurrentState();
+        if (currentUserState == UserSessionManager.UserSessionState.USER_LOGGED_IN)
+        {
+            /* Stay Here */
+        }
+        else if (currentUserState == UserSessionManager.UserSessionState.USER_DATA_AVAILABLE_BUT_NOT_LOGGED_IN)
+        {
+            /* Go to Next Activity Layout */
+            Intent myIntent = new Intent(FeedActivity.this, LoginActivity.class);
+            startActivity(myIntent);
+        }
+        else
+        {
+            /* Go to Next Activity Layout */
+            Intent myIntent = new Intent(FeedActivity.this, SignupActivity.class);
+            startActivity(myIntent);
+
+        }
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_feed);
         recyclerView = (RecyclerView) findViewById(R.id.FeedRecyclerView);
@@ -192,6 +215,10 @@ public class FeedActivity extends AppCompatActivity implements NavigationView.On
 
         } else if (id == R.id.MyBooks) {
             Intent myIntent = new Intent(FeedActivity.this, MyBooksShelvesActivity.class);
+            startActivity(myIntent);
+        }
+        else if (id == R.id.Signout) {
+            Intent myIntent = new Intent(FeedActivity.this, SignOutActivity.class);
             startActivity(myIntent);
         }
         DrawerLayout drawer = findViewById(R.id.drawer_layout);

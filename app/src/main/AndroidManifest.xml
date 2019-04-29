@@ -19,7 +19,15 @@
         tools:ignore="AllowBackup">
         <activity android:name=".ForgetPasswordActivity"></activity>
         <activity android:name=".SignOutActivity" />
-        <activity android:name=".FeedActivity" />
+        <activity android:name=".FeedActivity">
+        <intent-filter>
+            <action android:name="android.intent.action.MAIN" />
+
+            <category android:name="android.intent.category.LAUNCHER" />
+
+            <action android:name="android.intent.action.VIEW" />
+        </intent-filter>
+        </activity>
         <activity android:name=".ChooseShelfActivity" />
         <activity android:name=".SideBarActivity" />
         <activity android:name=".NotificationActivity" />
@@ -27,13 +35,6 @@
         <activity android:name=".BookActivity" />
         <activity android:name=".LoginActivity" />
         <activity android:name=".SignupActivity">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-
-                <category android:name="android.intent.category.LAUNCHER" />
-
-                <action android:name="android.intent.action.VIEW" />
-            </intent-filter>
         </activity>
         <activity android:name=".MyBooksShelvesActivity" />
         <activity android:name=".EditProfileActivity" />
@@ -46,7 +47,6 @@
         <activity
             android:name=".AuthorActivity"
             android:isScrollContainer="true"
-            android:parentActivityName=".SignupActivity"
             android:windowSoftInputMode="adjustPan" />
         <activity
             android:name=".ChangePasswordActivity"

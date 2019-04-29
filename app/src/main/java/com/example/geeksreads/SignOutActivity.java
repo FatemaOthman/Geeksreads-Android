@@ -62,6 +62,7 @@ public class SignOutActivity extends AppCompatActivity {
         {
             @Override
             public void onClick(View view) {
+                UserSessionManager.resetUserData();
                 Intent myIntent = new Intent(SignOutActivity.this, SignupActivity.class);
                 startActivity(myIntent);
             }

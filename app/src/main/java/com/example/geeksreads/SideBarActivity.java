@@ -180,7 +180,10 @@ public class SideBarActivity extends AppCompatActivity
 
 
         }
-
+        else if (id == R.id.Signout) {
+            Intent myIntent = new Intent(SideBarActivity.this, SignOutActivity.class);
+            startActivity(myIntent);
+        }
 
         DrawerLayout drawer = findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);

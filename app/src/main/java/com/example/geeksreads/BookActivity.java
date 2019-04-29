@@ -263,6 +263,10 @@ public class BookActivity extends AppCompatActivity implements NavigationView.On
             Intent myIntent = new Intent(BookActivity.this, MyBooksShelvesActivity.class);
             startActivity(myIntent);
         }
+        else if (id == R.id.Signout) {
+            Intent myIntent = new Intent(BookActivity.this, SignOutActivity.class);
+            startActivity(myIntent);
+        }
         DrawerLayout drawer = findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
         return true;
