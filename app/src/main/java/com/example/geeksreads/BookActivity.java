@@ -21,7 +21,6 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.text.format.DateFormat;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -59,7 +58,6 @@ import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
-import java.util.Date;
 import java.util.Objects;
 
 
@@ -158,8 +156,8 @@ public class BookActivity extends AppCompatActivity implements NavigationView.On
         });
         JSONObject JSON = new JSONObject();
         String UrlSideBar = "http://geeksreads.000webhostapp.com/Fatema/SideBar.php";
-       // GetSideBarDetails getSideBarDetails = new GetSideBarDetails();
-       // getSideBarDetails.execute(UrlSideBar, JSON.toString());
+        GetSideBarDetails getSideBarDetails = new GetSideBarDetails();
+        getSideBarDetails.execute(UrlSideBar, JSON.toString());
 
 
         /* Getting All views by id from Book Layout */
@@ -222,11 +220,12 @@ public class BookActivity extends AppCompatActivity implements NavigationView.On
                     JSONObject ReviewObject = new JSONObject();
                     try {
                         //ReviewObject.put("token", UserSessionManager.getUserToken());
-                        ReviewObject.put("UserId", LoginActivity.sCurrentUserID);
-                        ReviewObject.put("BookId", BookID);
+                        ReviewObject.put("userId", LoginActivity.sCurrentUserID);
+                        ReviewObject.put("bookId", BookID);
+                        ReviewObject.put("token", UserSessionManager.getUserToken());
                         ReviewObject.put("reviewBody", Review.getText());
                         Calendar calendar = Calendar.getInstance();
-                        SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ssZ");
+                        @SuppressLint("SimpleDateFormat") SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ssZ");
                         ReviewObject.put("reviewDate", format.format(calendar.getTime()));
                         ReviewObject.put("rating",bookRating.getRating());
                         Log.d("Body", ReviewObject.toString());
@@ -388,25 +387,22 @@ public class BookActivity extends AppCompatActivity implements NavigationView.On
             HttpGet httpget = new HttpGet(UrlString);
 
             HttpResponse response = null;
-            String server_response = null;
             try {
                 response = httpclient.execute(httpget);
             } catch (IOException e) {
                 e.printStackTrace();
             }
-
+            assert response != null;
             if (response.getStatusLine().getStatusCode() == 200) {
                 try {
-                    server_response = EntityUtils.toString(response.getEntity());
+                    result = EntityUtils.toString(response.getEntity());
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
-                Log.d("Server response", server_response);
+                Log.d("Server response", result);
             } else {
                 Log.d("Server response", "Failed to get server response");
             }
-
-            result = server_response;
             return result;
         }
 
@@ -521,8 +517,6 @@ public class BookActivity extends AppCompatActivity implements NavigationView.On
     @SuppressLint("StaticFieldLeak")
     private class GetSideBarDetails extends AsyncTask<String, Void, String> {
         static final String REQUEST_METHOD = "GET";
-        //public static final int READ_TIMEOUT = 3000;
-        //public static final int CONNECTION_TIMEOUT = 3000;
         AlertDialog dialog;
 
         @Override
@@ -597,13 +591,11 @@ public class BookActivity extends AppCompatActivity implements NavigationView.On
 
 
     /**
-     * Class that get sidebar Data from server
+     * Class that Add Review to server
      */
     @SuppressLint("StaticFieldLeak")
     private class AddReviewTask extends AsyncTask<String, Void, String> {
         static final String REQUEST_METHOD = "POST";
-        //public static final int READ_TIMEOUT = 3000;
-        //public static final int CONNECTION_TIMEOUT = 3000;
         AlertDialog dialog;
         boolean TaskSuccess = false;
 
@@ -637,33 +629,28 @@ public class BookActivity extends AppCompatActivity implements NavigationView.On
                 ops.close();
 
                 Log.d("ResponseCode: " , String.valueOf(http.getResponseCode()) );
-                switch (String.valueOf(http.getResponseCode()))
-                {
-                    case "200":
-                        /* A Stream object to get the returned data from API Call */
-                        InputStream ips = http.getInputStream();
-                        BufferedReader reader = new BufferedReader(new InputStreamReader(ips, StandardCharsets.ISO_8859_1));
-                        String line;
-                        while ((line = reader.readLine()) != null) {
-                            result += line;
-                        }
-                        reader.close();
-                        ips.close();
-                        TaskSuccess = true;
-                        break;
-                    case "400":
-                        TaskSuccess = false;
-                        InputStream es = http.getErrorStream();
-                        BufferedReader ereader = new BufferedReader(new InputStreamReader(es, StandardCharsets.ISO_8859_1));
-                        String eline;
-                        while ((eline = ereader.readLine()) != null) {
-                            result += eline;
-                        }
-                        ereader.close();
-                        es.close();
-                        break;
-                    default:
-                        break;
+                if (String.valueOf(http.getResponseCode()).equals("200")) {
+                    /* A Stream object to get the returned data from API Call */
+                    InputStream ips = http.getInputStream();
+                    BufferedReader reader = new BufferedReader(new InputStreamReader(ips, StandardCharsets.ISO_8859_1));
+                    String line;
+                    while ((line = reader.readLine()) != null) {
+                        result += line;
+                    }
+                    reader.close();
+                    ips.close();
+                    TaskSuccess = true;
+                }
+                else                {
+                    TaskSuccess = false;
+                    InputStream es = http.getErrorStream();
+                    BufferedReader ereader = new BufferedReader(new InputStreamReader(es, StandardCharsets.ISO_8859_1));
+                    String eline;
+                    while ((eline = ereader.readLine()) != null) {
+                        result += eline;
+                    }
+                    ereader.close();
+                    es.close();
                 }
                 http.disconnect();
                 return result;
@@ -684,7 +671,6 @@ public class BookActivity extends AppCompatActivity implements NavigationView.On
                 return;
             }
             try {
-                Log.d("Result:" , result);
                 JSONObject jsonObject = new JSONObject(result);
                 if( TaskSuccess) {
                     if (jsonObject.getString("AddedReviewSuc").equals("true")) {
@@ -693,7 +679,7 @@ public class BookActivity extends AppCompatActivity implements NavigationView.On
                 }
                 else
                 {
-
+                    Toast.makeText(mContext, "Error in Adding Review", Toast.LENGTH_SHORT).show();
                 }
             } catch (JSONException e) {
                 e.printStackTrace();
