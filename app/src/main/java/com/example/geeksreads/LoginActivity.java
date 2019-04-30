@@ -38,6 +38,8 @@ import java.nio.charset.StandardCharsets;
 import java.util.Objects;
 import java.HelpingFunctions;
 
+import CustomFunctions.APIs;
+
 public class LoginActivity extends AppCompatActivity {
     /**
      * Global Variables to Store Returned Login Token and User ID
@@ -174,7 +176,7 @@ public class LoginActivity extends AppCompatActivity {
                     }
 
                     /* URL For Login API */
-                    String urlService = "https://geeksreads.herokuapp.com/api/auth/signin";
+                    String urlService = APIs.API_LOGIN;
 
                     /* Creating a new instance of Sign in Class */
                     SignIn signIn = new SignIn();
@@ -214,7 +216,7 @@ public class LoginActivity extends AppCompatActivity {
                                     e.printStackTrace();
                                 }
                                 /* URL For Forget password API */
-                                String urlService = "https://geeksreads.herokuapp.com/api/users/forgetpassword";
+                                String urlService = APIs.API_FORGOT_PASSWORD;
 
                                 /* Creating a new instance of Sign up Class */
                                 forgetPassword forgetPasswordObj = new forgetPassword();
@@ -426,7 +428,7 @@ public class LoginActivity extends AppCompatActivity {
                         result = "{\"ReturnMsg\":\"A verification code has been sent to your email address!\"}";
                         break;
                     case "400":
-                        result = "{\"ReturnMsg\":\"This email is not registered before!.\"}";
+                        result = "{\"ReturnMsg\":\"This email was not registered before!\"}";
                         break;
                     default:
                         break;

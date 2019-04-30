@@ -30,6 +30,9 @@ import java.net.URL;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.HelpingFunctions;
+
+import CustomFunctions.APIs;
+
 public class SignupActivity extends AppCompatActivity {
     /**
      * Global Public Static Variables used for Testing
@@ -230,7 +233,7 @@ public class SignupActivity extends AppCompatActivity {
                             e.printStackTrace();
                         }
                         /* URL For Sign up API */
-                        String urlService = "https://geeksreads.herokuapp.com/api/users/signup";
+                        String urlService = APIs.API_SIGNUP;
 
                         /* Creating a new instance of Sign up Class */
                         signUp signUp = new signUp();

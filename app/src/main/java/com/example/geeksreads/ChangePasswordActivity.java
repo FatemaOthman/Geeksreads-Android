@@ -33,6 +33,9 @@ import java.net.URL;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.HelpingFunctions;
+
+import CustomFunctions.APIs;
+
 public class ChangePasswordActivity extends AppCompatActivity {
 
     /**
@@ -174,7 +177,7 @@ public class ChangePasswordActivity extends AppCompatActivity {
                         }
 
                         /* URL For Change Password API */
-                        String urlService = "https://geeksreads.herokuapp.com/api/users/UpdateUserPassword";
+                        String urlService = APIs.API_UPDATE_USER_PASSWORD;
 
                         /* Creating a new instance of Sign in Class */
                         ChangePassword changePassword = new ChangePassword();

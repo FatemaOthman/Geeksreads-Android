@@ -49,6 +49,8 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.Objects;
 
+import CustomFunctions.APIs;
+
 public class EditProfileActivity extends AppCompatActivity {
 
     /**
@@ -145,7 +147,7 @@ public class EditProfileActivity extends AppCompatActivity {
 
         mContext = this;
         /* URL For Get Current User Info API */
-        String urlService = "https://geeksreads.herokuapp.com/api/users/me";
+        String urlService = APIs.API_GET_USER_INFO;
 
         /* Creating a new instance of Sign in Class */
         GetProfileData getProfileData = new GetProfileData();
@@ -210,7 +212,7 @@ public class EditProfileActivity extends AppCompatActivity {
                             e.printStackTrace();
                         }
                         /* URL For Update Current User Data API */
-                        String urlService = "https://geeksreads.herokuapp.com/api/users/update";
+                        String urlService = APIs.API_UPDATE_USER_INFO;
 
                         /* Creating a new instance of Sign up Class */
                         SaveProfileData saveProfileData = new SaveProfileData();

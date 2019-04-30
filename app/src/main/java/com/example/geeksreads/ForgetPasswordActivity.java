@@ -28,6 +28,8 @@ import java.nio.charset.StandardCharsets;
 import java.util.Objects;
 import java.HelpingFunctions;
 
+import CustomFunctions.APIs;
+
 public class ForgetPasswordActivity extends AppCompatActivity {
     /**
      * Global Public Static Variables used for Testing
@@ -150,13 +152,13 @@ public class ForgetPasswordActivity extends AppCompatActivity {
                             newPasswordStr = HelpingFunctions.getMD5Encryption(newPasswordStr);
 
                             /* Adding API parameters into JSON String */
-                            JSON.put("VerificationCode", verificationCodeStr);
-                            JSON.put("NewPassword", newPasswordStr);
+                            JSON.put("token", verificationCodeStr);
+                            JSON.put("NewUserPassword", newPasswordStr);
                         } catch (JSONException e) {
                             e.printStackTrace();
                         }
                         /* URL For Forget Password API */
-                        String urlService = "https://geeksreads.herokuapp.com/api/users/forgetpassword2";
+                        String urlService = APIs.API_CHANGE_FORGOT_PASSWORD;
 
                         /* Creating a new instance of Sign up Class */
                         forgetPasswordClass forgetPassword = new forgetPasswordClass();

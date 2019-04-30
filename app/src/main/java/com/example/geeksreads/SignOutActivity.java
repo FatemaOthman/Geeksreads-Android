@@ -29,6 +29,8 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
 
+import CustomFunctions.APIs;
+
 public class SignOutActivity extends AppCompatActivity {
     /**
      * Global Public Static Variables used for Testing
@@ -51,7 +53,7 @@ public class SignOutActivity extends AppCompatActivity {
         UserSessionManager.logOutUser();
 
         /* URL For Sign out API */
-        String urlService = "https://geeksreads.herokuapp.com/api/users/signout";
+        String urlService = APIs.API_SIGNOUT;
 
         /* Creating a new instance of Sign out Class */
         signOut signOutObject = new signOut();

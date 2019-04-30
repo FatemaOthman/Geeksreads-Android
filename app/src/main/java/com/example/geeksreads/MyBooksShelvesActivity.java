@@ -43,6 +43,8 @@ import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.util.Objects;
 
+import CustomFunctions.APIs;
+
 public class MyBooksShelvesActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
     /**
      * Global Public Static Variables used for Testing
@@ -150,7 +152,7 @@ public class MyBooksShelvesActivity extends AppCompatActivity implements Navigat
         UpdateBookShelfCount updateReadShelf = new UpdateBookShelfCount(UserSessionManager.getUserToken());
 
         /* URL For Get Shelves Count API */
-        String urlService = "https://geeksreads.herokuapp.com/api/users/ShelvesCount";
+        String urlService = APIs.API_GET_SHELVES_COUNT;
 
         updateReadShelf.execute(urlService);
     }
