@@ -6,6 +6,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Color;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.support.annotation.RequiresApi;
@@ -113,14 +114,23 @@ public class ChooseShelfActivity extends AppCompatActivity {
         if(BookStatus.equals("Read"))
         {
             readRadio.setChecked(true);
+            readingRadio.setClickable(false);
+            readingRadio.setTextColor(Color.GRAY);
+            wantRadio.setClickable(false);
+            wantRadio.setTextColor(Color.GRAY);
+            addShelf.setClickable(false);
         }
         else if(BookStatus.equals("Currently Reading"))
         {
+            wantRadio.setClickable(false);
+            wantRadio.setTextColor(Color.GRAY);
             readingRadio.setChecked(true);
         }
         else if(BookStatus.equals("Want To Read"))
         {
             wantRadio.setChecked(true);
+            readRadio.setClickable(false);
+            readRadio.setTextColor(Color.GRAY);
         }
 
         /* On Adding to shelf Button Listener */
