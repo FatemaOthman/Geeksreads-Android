@@ -21,6 +21,7 @@ public class UserSessionManager {
     private static String userEmail;
     private static String hashedPassword;
     private static String userToken;
+    private static String userID;
     private static boolean isLoggedIn;
 
     private static SharedPreferences userDataOnDevice;
@@ -33,6 +34,7 @@ public class UserSessionManager {
         userEmail = "";
         hashedPassword = "";
         userToken = "";
+        userID = "";
         isLoggedIn = false;
         userContext = context;
 
@@ -42,6 +44,7 @@ public class UserSessionManager {
         userEmail = userDataOnDevice.getString("userEmail", "");
         hashedPassword = userDataOnDevice.getString("hashedPassword", "");
         userToken = userDataOnDevice.getString("userToken", "");
+        userID = userDataOnDevice.getString("userID", "");
 
         if (isLoggedIn && !userToken.isEmpty())
         {
@@ -72,6 +75,11 @@ public class UserSessionManager {
         return userToken;
     }
 
+    public static String getUserID()
+    {
+        return userID;
+    }
+
     public static UserSessionState getCurrentState()
     {
         return CurrentState;
@@ -83,6 +91,7 @@ public class UserSessionManager {
         userEmail = userDataOnDevice.getString("userEmail", "");
         hashedPassword = userDataOnDevice.getString("hashedPassword", "");
         userToken = userDataOnDevice.getString("userToken", "");
+        userID = userDataOnDevice.getString("userID", "");
 
         if (isLoggedIn)
         {
@@ -97,20 +106,24 @@ public class UserSessionManager {
             CurrentState = UserSessionState.NO_DATA;
         }
     }
-
-    public static void saveUserData(String _userEmail, String _hashedPassword, String _userToken)
+    /* This function should be called when used signs In to save his token and user ID and set
+     * Logged in parameter to be true
+     */
+    public static void saveUserData(String _userEmail, String _hashedPassword, String _userToken, String _userID)
     {
         userEmail = _userEmail;
         hashedPassword = _hashedPassword;
         userToken = _userToken;
+        userID = _userID;
         isLoggedIn = true;
         CurrentState = UserSessionState.USER_LOGGED_IN;
         userDataOnDevice.edit().putString("userEmail", userEmail).apply();
         userDataOnDevice.edit().putString("hashedPassword", hashedPassword).apply();
         userDataOnDevice.edit().putString("userToken", userToken).apply();
+        userDataOnDevice.edit().putString("userID", userID).apply();
         userDataOnDevice.edit().putBoolean("isLoggedIn", true).apply();
     }
-
+    /* This function resets all registered data about the user */
     public static void resetUserData()
     {
         userEmail = "";
@@ -122,12 +135,16 @@ public class UserSessionManager {
         userDataOnDevice.edit().putString("hashedPassword", "").apply();
         userDataOnDevice.edit().putBoolean("isLoggedIn", false).apply();
         userDataOnDevice.edit().putString("userToken", "").apply();
+        userDataOnDevice.edit().putString("userID", "").apply();
     }
-
+    /* This function should be called when used signs out to delete his token and user ID and reset
+     * Logged in parameter to be false
+     */
     public static void logOutUser()
     {
         userDataOnDevice.edit().putBoolean("isLoggedIn", false).apply();
         userDataOnDevice.edit().putString("userToken", "").apply();
+        userDataOnDevice.edit().putString("userID", "").apply();
         userToken = "";
         isLoggedIn = false;
         CurrentState = UserSessionState.USER_DATA_AVAILABLE_BUT_NOT_LOGGED_IN;

@@ -357,7 +357,7 @@ public class LoginActivity extends AppCompatActivity {
                                 sCurrentUserID = jsonObject.getString("UserId");
 
                                 // Save User Data
-                                UserSessionManager.saveUserData(loginEmailStr, loginPasswordStr, sCurrentToken);
+                                UserSessionManager.saveUserData(loginEmailStr, loginPasswordStr, sCurrentToken, sCurrentUserID);
 
                                 /* Go to Next Activity Layout */
                                 Intent myIntent = new Intent(LoginActivity.this, FeedActivity.class);
