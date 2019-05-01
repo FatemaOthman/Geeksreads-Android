@@ -35,8 +35,8 @@ public class NotificationService extends Service {
 
     private final Context context;
 
-    public NotificationService(Context context) {
-        this.context = context;
+    public NotificationService() {
+        this.context = this;
     }
 
     void showPushNotification(){

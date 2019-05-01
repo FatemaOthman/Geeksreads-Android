@@ -13,6 +13,8 @@ public class APIs {
     public static String API_GET_USER_INFO = "https://geeksreads.herokuapp.com/api/users/me";
     public static String API_UPDATE_USER_PASSWORD = "https://geeksreads.herokuapp.com/api/users/UpdateUserPassword";
     public static String API_GET_SHELVES_COUNT = "https://geeksreads.herokuapp.com/api/users/ShelvesCount";
+
+
     public static String API_GET_BOOK_DETAILS = "https://geeksreads.herokuapp.com/api/books/id";
     public static String API_GET_READ_LIST = "https://geeksreads.herokuapp.com/api/Users/GetUserReadDetails";
     public static String API_GET_READING_LIST = "https://geeksreads.herokuapp.com/api/Users/GetUserReadingDetails";
@@ -46,19 +48,24 @@ public class APIs {
 //    public static String API_GET_USER_INFO = "http://geeksreads.000webhostapp.com/Morsy/me.php";
 //    public static String API_UPDATE_USER_PASSWORD = "http://geeksreads.000webhostapp.com/Morsy/UpdateUserPassword.php";
 //    public static String API_GET_SHELVES_COUNT = "http://geeksreads.000webhostapp.com/Morsy/ShelvesCount.php";
+
+
+//    public static String API_GET_BOOK_DETAILS = "http://geeksreads.000webhostapp.com/Shrouk/BookDetails.php";
+//    public static String API_GET_READ_LIST = "http://geeksreads.000webhostapp.com/Shrouk/ReadList.php";
+//    public static String API_GET_READING_LIST = "http://geeksreads.000webhostapp.com/Shrouk/ReadingList.php";
+//    public static String API_GET_WANTTOREAD_LIST = "http://geeksreads.000webhostapp.com/Shrouk/WantList.php";
+//    public static String API_ADD_BOOK_TOSHELF = "http://geeksreads.000webhostapp.com/Shrouk/AddBookToShelf.php";
+//    public static String API_MOVE_BOOK_TOREAD = "http://geeksreads.000webhostapp.com/Shrouk/MoveBookToRead.php";
+//    public static String API_MOVE_BOOK_TOREADING = "http://geeksreads.000webhostapp.com/Shrouk/MoveBookToReading.php";
+//    public static String API_ADD_BOOK_REVIEW = "http://geeksreads.000webhostapp.com/Shrouk/AddReview.php";
+//    public static String API_GET_USER_NOTIFICATIONS = ""http://geeksreads.000webhostapp.com/Shrouk/Notifications.php";
+
+
 //    public static String API_GET_USER_INFO = "http://geeksreads.000webhostapp.com/Amr/UserProfile.php";
 //    public static String API_GET_USER_BY_ID = "http://geeksreads.000webhostapp.com/Amr/OtherUserProfile.php";
 //    public static String API_GET_FOLLOWERS_LIST = "http://geeksreads.000webhostapp.com/Amr/GetFollowers.php";
 //    public static String API_GET_FOLLOWING_LIST = "http://geeksreads.000webhostapp.com/Amr/GetFollowers.php";
 //    public static String API_GET_REVIEWS_LIST = "http://geeksreads.000webhostapp.com/Amr/ReviewList.php";
-//    public static String API_GET_BOOK_DETAILS = "http://geeksreads.000webhostapp.com/Shrouk/BookDetails.php;
-//    public static String API_GET_READ_LIST = "http://geeksreads.000webhostapp.com/Shrouk/ReadList.php;
-//    public static String API_GET_READING_LIST = "http://geeksreads.000webhostapp.com/Shrouk/ReadingList.php;
-//    public static String API_GET_WANTTOREAD_LIST = "http://geeksreads.000webhostapp.com/Shrouk/WantList.php;
-//    public static String API_ADD_BOOK_TOSHELF = "http://geeksreads.000webhostapp.com/Shrouk/AddBookToShelf.php;
-//    public static String API_MOVE_BOOK_TOREAD = "http://geeksreads.000webhostapp.com/Shrouk/MoveBookToRead.php;
-//    public static String API_MOVE_BOOK_TOREADING = "http://geeksreads.000webhostapp.com/Shrouk/MoveBookToReading.php;
-//    public static String API_ADD_BOOK_REVIEW = "http://geeksreads.000webhostapp.com/Shrouk/AddReview.php;
-//    public static String API_GET_USER_NOTIFICATIONS = ""http://geeksreads.000webhostapp.com/Shrouk/Notifications.php;
+
 
 }
