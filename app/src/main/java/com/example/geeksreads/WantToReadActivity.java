@@ -22,6 +22,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import CustomFunctions.APIs;
 import CustomFunctions.UserSessionManager;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
@@ -63,7 +64,7 @@ public class WantToReadActivity extends AppCompatActivity {
         } catch (JSONException e) {
             e.printStackTrace();
         }
-        final String UrlService = "https://geeksreads.herokuapp.com/api/Users/GetUserWantToReadDetails";
+        final String UrlService = APIs.API_GET_WANTTOREAD_LIST;
 
         mSwipeRefreshLayout = findViewById(R.id.WantSwipeLayout);
         mSwipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
