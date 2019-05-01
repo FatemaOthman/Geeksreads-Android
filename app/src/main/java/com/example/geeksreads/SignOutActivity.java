@@ -122,7 +122,7 @@ public class SignOutActivity extends AppCompatActivity {
                 switch (String.valueOf(http.getResponseCode()))
                 {
                     case "200":
-                        result = "{\"ReturnMsg\":\"User signed out successfully.\"}";
+                        result = "{\"ReturnMsg\":\"Signed out Successfully\"}";
                         break;
                     case "400":
                         result = "{\"ReturnMsg\":\"Invalid token.\"}";

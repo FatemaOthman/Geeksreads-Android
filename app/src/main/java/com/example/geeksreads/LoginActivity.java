@@ -311,6 +311,7 @@ public class LoginActivity extends AppCompatActivity {
                         result = "{\"ReturnMsg\":\"Your account has not been verified.\"}";
                         break;
                     default:
+                        result = "{\"ReturnMsg\":\"An error occurred!\"}";
                         break;
                 }
 
