@@ -44,6 +44,8 @@ import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.util.Objects;
 
+import CustomFunctions.APIs;
+
 public class NotificationActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
 
     Context mContext;
@@ -123,7 +125,7 @@ public class NotificationActivity extends AppCompatActivity implements Navigatio
         } catch (JSONException e) {
             e.printStackTrace();
         }
-        final String UrlService = "http://geeksreads.000webhostapp.com/Shrouk/Notifications.php";
+        final String UrlService = APIs.API_GET_USER_NOTIFICATIONS;
 
         mSwipeRefreshLayout = findViewById(R.id.notificationSwipeLayout);
         mSwipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
