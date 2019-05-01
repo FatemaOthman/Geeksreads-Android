@@ -15,7 +15,6 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -44,6 +43,9 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import java.util.Objects;
+
+import CustomFunctions.APIs;
+import CustomFunctions.UserSessionManager;
 
 
 public class OtherProfileActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener{
@@ -123,7 +125,9 @@ public class OtherProfileActivity extends AppCompatActivity implements Navigatio
         });
 
         JSONObject mJSON = new JSONObject();
+        //TODO: Change the side bar once it is updated.
         String UrlSideBar = "http://geeksreads.000webhostapp.com/Fatema/SideBar.php";
+
         GetSideBarDetails getSideBarDetails = new GetSideBarDetails();
         getSideBarDetails.execute(UrlSideBar, mJSON.toString());
 
@@ -136,41 +140,39 @@ public class OtherProfileActivity extends AppCompatActivity implements Navigatio
 
         JSONObject JSON = new JSONObject();
         final JSONObject jsonObject = new JSONObject();
-        String ID;
-        try {
-            ID = getIntent().getStringExtra("FollowId");
-            JSON.put("FollowId", ID);
-            //TODO: Remove the following hardcoded ID line when merging.
-            ID = "value";
-            jsonObject.put("FollowId", ID);
 
+        try {
+
+            JSON.put("token", UserSessionManager.getUserToken());
+            JSON.put("UserId", getIntent().getStringExtra("FollowId"));
+
+            jsonObject.put("UserId", getIntent().getStringExtra("FollowId"));
             jsonObject.put("ShelfName","Read");
 
         } catch (JSONException e) {
             e.printStackTrace();
         }
 
-
-        String UrlService = "http://geeksreads.000webhostapp.com/Amr/OtherUserProfile.php";
+        String UrlService = APIs.API_GET_USER_BY_ID;
         OtherProfileActivity.GetOtherProfileDetails MyProfile = new OtherProfileActivity.GetOtherProfileDetails();
         MyProfile.execute(UrlService, JSON.toString());
 
         /////////////////////////////////////////////////////
 
-        final String SecondUrlService = "http://geeksreads.000webhostapp.com/Shrouk/ReadingList.php";
+        final String SecondUrlService = APIs.API_GET_USER_READ_DETAILS;
         OtherProfileActivity.GetOtherProfileBooks TheBooks = new OtherProfileActivity.GetOtherProfileBooks();
         TheBooks.execute(SecondUrlService, jsonObject.toString());
         /////////////////////////////////////////////////////
 
-        final String FollowRequest = "https://geeksreads.herokuapp.com/api/users/Follow";
-        final String UnFollowRequest = "https://geeksreads.herokuapp.com/api/users/unFollow";
+        final String FollowRequest = APIs.API_FOLLOW_USER;
+        final String UnFollowRequest = APIs.API_UN_FOLLOW_USER;
 
         final JSONObject FollowJson = new JSONObject();
         try {
-            ID = LoginActivity.sCurrentUserID;
-            FollowJson.put("myuserId", ID);
-            ID = getIntent().getStringExtra("FollowId");
-            FollowJson.put("userId_tobefollowed", ID);
+
+            FollowJson.put("token", UserSessionManager.getUserToken());
+            FollowJson.put("myuserid", UserSessionManager.getUserID());
+            FollowJson.put("userId_tobefollowed", getIntent().getStringExtra("FollowId"));
         } catch (JSONException e) {
             e.printStackTrace();
         }
@@ -226,6 +228,7 @@ public class OtherProfileActivity extends AppCompatActivity implements Navigatio
     }
 
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    @SuppressLint("StaticFieldLeak")
     public class UnFollowUser extends AsyncTask<String, Void, String> {
         public static final String REQUEST_METHOD = "POST";
 
@@ -252,13 +255,13 @@ public class OtherProfileActivity extends AppCompatActivity implements Navigatio
                 http.setDoInput(true);
                 http.setDoOutput(true);
                 http.setRequestProperty("content-type", "application/json");
+                http.setRequestProperty("x-auth-token", UserSessionManager.getUserToken());
 
                 /* A Stream object to hold the sent data to API Call */
                 OutputStream ops = http.getOutputStream();
                 BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(ops, StandardCharsets.UTF_8));
-                String data = JSONString;
 
-                writer.write(data);
+                writer.write(JSONString);
                 writer.flush();
                 writer.close();
                 ops.close();
@@ -348,6 +351,7 @@ public class OtherProfileActivity extends AppCompatActivity implements Navigatio
         }
     }
 
+    @SuppressLint("StaticFieldLeak")
     public class FollowUser extends AsyncTask<String, Void, String> {
         public static final String REQUEST_METHOD = "POST";
 
@@ -373,12 +377,13 @@ public class OtherProfileActivity extends AppCompatActivity implements Navigatio
                 http.setRequestMethod(REQUEST_METHOD);
                 http.setDoInput(true);
                 http.setDoOutput(true);
-                http.setRequestProperty("x-auth-token", LoginActivity.sCurrentToken);
+                http.setRequestProperty("content-type", "application/json");
+                http.setRequestProperty("x-auth-token", UserSessionManager.getUserToken());
 
                 /* A Stream object to hold the sent data to API Call */
                 OutputStream ops = http.getOutputStream();
                 BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(ops, StandardCharsets.UTF_8));
-                writer.write("");
+                writer.write(JSONString);
                 writer.flush();
                 writer.close();
                 ops.close();
@@ -481,6 +486,7 @@ public class OtherProfileActivity extends AppCompatActivity implements Navigatio
      * Class GetOtherUserPicture:
      * Gets the image of the user from the JsonObject and translates it into a bitMap to be used by the ImageView.
      */
+    @SuppressLint("StaticFieldLeak")
     private class GetOtherUserPicture extends AsyncTask<String, Void, Bitmap> {
 
         @Override
@@ -511,8 +517,9 @@ public class OtherProfileActivity extends AppCompatActivity implements Navigatio
      * Class that get the data from host and Add it to its views.
      * The Parameters are host Url and toSend Data.
      */
+    @SuppressLint("StaticFieldLeak")
     public class GetOtherProfileDetails extends AsyncTask<String, Void, String> {
-        public static final String REQUEST_METHOD = "GET";
+        public static final String REQUEST_METHOD = "POST";
 
         AlertDialog dialog;
 
@@ -537,14 +544,13 @@ public class OtherProfileActivity extends AppCompatActivity implements Navigatio
                 http.setDoInput(true);
                 http.setDoOutput(true);
                 http.setRequestProperty("content-type", "application/json");
+                http.setRequestProperty("x-auth-token", UserSessionManager.getUserToken());
 
                 /* A Stream object to hold the sent data to API Call */
                 OutputStream ops = http.getOutputStream();
                 BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(ops, StandardCharsets.UTF_8));
-                //String data = URLEncoder.encode(JSONString, "UTF-8");
-                String data = JSONString;
 
-                writer.write(data);
+                writer.write(JSONString);
                 writer.flush();
                 writer.close();
                 ops.close();
@@ -606,14 +612,14 @@ public class OtherProfileActivity extends AppCompatActivity implements Navigatio
 
                 JSONObject jsonObject = new JSONObject(result);
                 OtherProfileActivity.GetOtherUserPicture Pic = new OtherProfileActivity.GetOtherUserPicture();
-                Pic.execute(jsonObject.getString("photourl"));
+                Pic.execute(jsonObject.getString("photo"));
 
-                UserName.setText(jsonObject.getString("UserNameData"));
+                UserName.setText(jsonObject.getString("UserName"));
                 aForTestUserName = UserName.getText().toString();
-                BooksCount.setText(jsonObject.getString("CountBooks") + " " + "Books");
-                aForTestBooksCount = BooksCount.getText().toString();
+                //BooksCount.setText(jsonObject.getString("CountBooks") + " " + "Books");
+                //aForTestBooksCount = BooksCount.getText().toString();
 
-                if (jsonObject.getString("FollowStatus").equals("true"))
+                if (jsonObject.getString("IsFollowing").equals("true"))
                     FollowButton.setText("Un-Follow");
                 else
                     FollowButton.setText("Follow");
@@ -630,6 +636,7 @@ public class OtherProfileActivity extends AppCompatActivity implements Navigatio
      * A Private class that extend Async Task to connect to server in background.
      * It get the Want to Read book lists.
      */
+    @SuppressLint("StaticFieldLeak")
     private class GetOtherProfileBooks extends AsyncTask<String, Void, String> {
         public static final String REQUEST_METHOD = "GET";
         //public static final int READ_TIMEOUT = 3000;
@@ -657,7 +664,7 @@ public class OtherProfileActivity extends AppCompatActivity implements Navigatio
                 http.setRequestMethod(REQUEST_METHOD);
                 http.setDoInput(true);
                 http.setDoOutput(true);
-                http.setRequestProperty("x-auth-token", LoginActivity.sCurrentToken);
+                http.setRequestProperty("x-auth-token", UserSessionManager.getUserToken());
 
                 /* A Stream object to hold the sent data to API Call */
                 OutputStream ops = http.getOutputStream();
@@ -791,9 +798,8 @@ public class OtherProfileActivity extends AppCompatActivity implements Navigatio
                 OutputStream ops = http.getOutputStream();
                 BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(ops, StandardCharsets.UTF_8));
                 //String data = URLEncoder.encode(JSONString, "UTF-8");
-                String data = JSONString;
 
-                writer.write(data);
+                writer.write(JSONString);
                 writer.flush();
                 writer.close();
                 ops.close();

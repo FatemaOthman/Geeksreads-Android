@@ -14,6 +14,7 @@ public class CommentDataModel {
     private String NLikes;
     private String CommentText;
     private String UserWhoWroteID;
+    private String DateOfComment;
 
     /**
      * fromJson: Put Data from a single JSONOBJECT into a UserDataModel
@@ -25,13 +26,14 @@ public class CommentDataModel {
         CommentDataModel DummyUser = new CommentDataModel();
         // Deserialize json into object fields
         try {
-            //TODO: Check with backend the missing data!
-            DummyUser.UserProfilePicture = jsonObject.getString("UserPicLink");
-            DummyUser.UserName = jsonObject.getString("username");
-            DummyUser.NLikes = jsonObject.getString("likes");
-            DummyUser.CommentText = jsonObject.getString("body");
+            //TODO: Add Comment Date.
+            DummyUser.UserProfilePicture = jsonObject.getString("photo");
+            DummyUser.UserName = jsonObject.getString("userName");
+            DummyUser.NLikes = jsonObject.getString("likesCount");
+            DummyUser.CommentText = jsonObject.getString("Body");
             DummyUser.CommentID = jsonObject.getString("CommentID");
-            DummyUser.UserWhoWroteID = jsonObject.getString("UserWhoWroteID");
+            DummyUser.UserWhoWroteID = jsonObject.getString("userID");
+            DummyUser.DateOfComment = jsonObject.getString("date");
         } catch (JSONException e) {
             e.printStackTrace();
             return null;

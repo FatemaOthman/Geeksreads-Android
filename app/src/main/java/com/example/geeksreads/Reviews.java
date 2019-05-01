@@ -23,21 +23,12 @@ import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.util.EntityUtils;
 import org.json.JSONArray;
 import org.json.JSONException;
-import org.json.JSONObject;
 
-import java.io.BufferedReader;
-import java.io.BufferedWriter;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.OutputStream;
-import java.io.OutputStreamWriter;
-import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
-import java.net.URL;
-import java.net.URLEncoder;
-import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
+
+import CustomFunctions.APIs;
+import CustomFunctions.UserSessionManager;
 
 public class Reviews extends AppCompatActivity {
 
@@ -55,18 +46,13 @@ public class Reviews extends AppCompatActivity {
         BookNameForReview = findViewById(R.id.ReviewsName);
         //TODO: Remove next line and uncomment the following one.
         //Don't forget to check with Sherouk that the BookName is passed.
-        BookNameForReview.setText("Pride And Prejudice");
-        //    BookNameForReview.setText(getIntent().getStringExtra("BookName"));
+        BookNameForReview.setText(getIntent().getStringExtra("BookName"));
 
-        final String UrlService = "https://geeksreads.herokuapp.com/api/reviews/getrev?UserId="+"5cb6067bd42e9b00173fa1fc"+"&"+
-                "bookId"+"5c911452bbfd1717b8a7a169"+"&"+"userName="+"n";
+        final String GetAllReviewsURL = APIs.API_GET_REVIEWS_LIST + "?UserId=" + UserSessionManager.getUserID() + "&" +
+                "bookId" + getIntent().getStringExtra("BookID") + "&" + "userName=" + getIntent().getStringExtra("userName");
 
-        /*
-           final String UrlService = "https://geeksreads.herokuapp.com/api/reviews/getrev?UserId="+Profile.CurrentUser+"&"+
-                "bookId"+getIntent().getStringExtra("BookID")+"&"+"userName="+getIntent().getStringExtra("userName");
-        */
         Reviews.GetAllReviews performBackgroundTask = new Reviews.GetAllReviews();
-        performBackgroundTask.execute(UrlService);
+        performBackgroundTask.execute(GetAllReviewsURL);
 
 
         ReviewList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -75,8 +61,7 @@ public class Reviews extends AppCompatActivity {
             @Override
             public void onItemClick(AdapterView<?> arg0, View arg1, int position, long arg3) {
                 final ReviewDataModel dataModel = dataModels.get(position);
-                Intent intent;
-                intent = new Intent(Reviews.this, Comments.class);
+                Intent intent = new Intent(Reviews.this, Comments.class);
                 intent.putExtra("ReviewID", dataModel.getReviewID());
                 startActivity(intent);
             }

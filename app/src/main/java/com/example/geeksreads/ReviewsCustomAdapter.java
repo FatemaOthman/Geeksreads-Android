@@ -1,26 +1,41 @@
 package com.example.geeksreads;
 
 import android.annotation.SuppressLint;
+import android.app.AlertDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.AsyncTask;
 import android.support.annotation.NonNull;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.geeksreads.views.ExpandableTextView;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.OutputStream;
+import java.io.OutputStreamWriter;
 import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
 import java.net.URL;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
+
+import CustomFunctions.APIs;
+import CustomFunctions.UserSessionManager;
 
 
 public class ReviewsCustomAdapter extends ArrayAdapter<ReviewDataModel> implements View.OnClickListener {
@@ -52,7 +67,7 @@ public class ReviewsCustomAdapter extends ArrayAdapter<ReviewDataModel> implemen
 
 
         // view lookup cache stored in tag
-        ViewHolder viewHolder;
+        final ViewHolder viewHolder;
         if (convertView == null) {
 
 
@@ -68,9 +83,12 @@ public class ReviewsCustomAdapter extends ArrayAdapter<ReviewDataModel> implemen
             viewHolder.UserName = convertView.findViewById(R.id.titleTextView);
             viewHolder.NLikes = convertView.findViewById(R.id.likeCounterTextView);
             viewHolder.NComments = convertView.findViewById(R.id.commentsCountTextView);
+            viewHolder.Likes = convertView.findViewById(R.id.likesImageView);
+
 
             holder.Cover = viewHolder.UserPicInfo;
             holder.BookC = viewHolder.BookCoverPicture;
+            holder.LikesHolder = viewHolder.Likes;
 
             convertView.setTag(viewHolder);
         } else {
@@ -85,6 +103,17 @@ public class ReviewsCustomAdapter extends ArrayAdapter<ReviewDataModel> implemen
         viewHolder.NComments.setText(dataModel.getNComments());
         viewHolder.ReviewID = dataModel.getReviewID();
         viewHolder.UserWhoWroteID = dataModel.getUserWhoWroteID();
+        viewHolder.IsLiked = dataModel.getLikeStatus();
+
+        if (viewHolder.IsLiked.equals("true")) {
+            viewHolder.Likes.setImageResource(R.drawable.ic_like_active);
+
+
+        } else {
+
+            viewHolder.Likes.setImageResource(R.drawable.ic_like);
+        }
+
 
         ReviewsCustomAdapter.GetBookCoverImage CoverPic = new ReviewsCustomAdapter.GetBookCoverImage(position, holder);
         CoverPic.execute(dataModel.getBookCoverPicture());
@@ -98,7 +127,6 @@ public class ReviewsCustomAdapter extends ArrayAdapter<ReviewDataModel> implemen
                     public void onClick(View view) {
                         Intent myIntent = new Intent(mContext, OtherProfileActivity.class);
                         myIntent.putExtra("FollowId", dataModel.getUserWhoWroteID());
-                        Log.d("Test","USer who wrote Review: "+dataModel.getUserWhoWroteID());
                         mContext.startActivity(myIntent);
                     }
                 }
@@ -116,6 +144,45 @@ public class ReviewsCustomAdapter extends ArrayAdapter<ReviewDataModel> implemen
         );
 
 
+        final JSONObject LikeJson = new JSONObject();
+        try {
+            LikeJson.put("token", UserSessionManager.getUserToken());
+            LikeJson.put("Type", "Review");
+            LikeJson.put("resourceId", viewHolder.ReviewID);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+        final String LikeRequest = APIs.API_LIKE_REVIEW;
+        final String UnLikeRequest = APIs.API_UNLIKE_REVIEW;
+        final String NumberOfLikes = viewHolder.NLikes.getText().toString();
+
+        viewHolder.Likes.setOnClickListener(
+                new View.OnClickListener() {
+                    @SuppressLint("SetTextI18n")
+                    @Override
+                    public void onClick(View view) {
+
+                        if (viewHolder.IsLiked.equals("false")) { //Review wasn't already liked
+
+                            ReviewsCustomAdapter.LikeReview TestObject = new ReviewsCustomAdapter.LikeReview();
+                            TestObject.execute(LikeRequest, LikeJson.toString());
+                            viewHolder.Likes.setImageResource(R.drawable.ic_like_active);
+                            viewHolder.IsLiked = "true";
+                            viewHolder.NLikes.setText(Integer.toString(Integer.parseInt(NumberOfLikes) + 1));
+
+                        } else { //Review was liked
+
+                            ReviewsCustomAdapter.UnLikeReview TestObject = new ReviewsCustomAdapter.UnLikeReview();
+                            TestObject.execute(UnLikeRequest, LikeJson.toString());
+                            viewHolder.Likes.setImageResource(R.drawable.ic_like);
+                            viewHolder.IsLiked = "false";
+                            viewHolder.NLikes.setText(Integer.toString(Integer.parseInt(NumberOfLikes) - 1));
+                        }
+
+                    }
+                }
+        );
 
         // Return the completed view to render on screen
         return convertView;
@@ -131,12 +198,15 @@ public class ReviewsCustomAdapter extends ArrayAdapter<ReviewDataModel> implemen
         TextView NComments;
         String ReviewID;
         String UserWhoWroteID;
+        ImageView Likes;
+        String IsLiked;
     }
 
     private static class FixImagePosition {
         public int position;
         ImageView Cover;
         ImageView BookC;
+        ImageView LikesHolder;
     }
 
     /**
@@ -223,6 +293,193 @@ public class ReviewsCustomAdapter extends ArrayAdapter<ReviewDataModel> implemen
         }
     }
 
+    @SuppressLint("StaticFieldLeak")
+    private class LikeReview extends AsyncTask<String, Void, String> {
+        public static final String REQUEST_METHOD = "POST";
+
+        AlertDialog dialog;
+
+        @Override
+        protected void onPreExecute() {
+            dialog = new AlertDialog.Builder(mContext).create();
+            dialog.setTitle("Connection Status");
+        }
+
+        @Override
+        protected String doInBackground(String... params) {
+            String UrlString = params[0];
+            String JSONString = params[1];
+            String result = "";
+
+            try {
+                /* Create a URL object holding our url */
+                URL url = new URL(UrlString);
+                /* Create an HTTP Connection and adjust its options */
+                HttpURLConnection http = (HttpURLConnection) url.openConnection();
+                http.setRequestMethod(REQUEST_METHOD);
+                http.setDoInput(true);
+                http.setDoOutput(true);
+                http.setRequestProperty("content-type", "application/json");
+                http.setRequestProperty("x-auth-token", UserSessionManager.getUserToken());
+
+                /* A Stream object to hold the sent data to API Call */
+                OutputStream ops = http.getOutputStream();
+                BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(ops, StandardCharsets.UTF_8));
+                writer.write(JSONString);
+                writer.flush();
+                writer.close();
+                ops.close();
+
+                switch (String.valueOf(http.getResponseCode())) {
+                    case "200":
+                        /* A Stream object to get the returned data from API Call */
+                        InputStream ips = http.getInputStream();
+                        BufferedReader reader = new BufferedReader(new InputStreamReader(ips, StandardCharsets.ISO_8859_1));
+                        String line = "";
+                        //boolean started = false;
+                        while ((line = reader.readLine()) != null) {
+                            result += line;
+                        }
+                        reader.close();
+                        ips.close();
+                        break;
+                    default:
+                        result = "{\"ReturnMsg\":\"An Error Occurred!\"}";
+                        break;
+                }
+
+                http.disconnect();
+                return result;
+
+            }
+            /* Handling Exceptions */ catch (MalformedURLException e) {
+                result = e.getMessage();
+            } catch (IOException e) {
+                result = e.getMessage();
+            }
+            return result;
+        }
+
+        /**
+         * onPostExecute: Takes the string result and treates it as a json object
+         * to set data of:
+         * -Follow Button
+         *
+         * @param result : The result containing all the passed data from backend.
+         */
+        @SuppressLint("SetTextI18n")
+        protected void onPostExecute(String result) {
+            if (result == null) {
+                Toast.makeText(mContext, "Unable to connect to server", Toast.LENGTH_SHORT).show();
+                return;
+            }
+            try {
+                dialog.setMessage("Done");
+                //dialog.show();
+
+                JSONObject jsonObject = new JSONObject(result);
+
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+        }
+
+    }
+
+    @SuppressLint("StaticFieldLeak")
+    private class UnLikeReview extends AsyncTask<String, Void, String> {
+        public static final String REQUEST_METHOD = "POST";
+
+        AlertDialog dialog;
+
+        @Override
+        protected void onPreExecute() {
+            dialog = new AlertDialog.Builder(mContext).create();
+            dialog.setTitle("Connection Status");
+        }
+
+        @Override
+        protected String doInBackground(String... params) {
+            String UrlString = params[0];
+            String JSONString = params[1];
+            String result = "";
+
+            try {
+                /* Create a URL object holding our url */
+                URL url = new URL(UrlString);
+                /* Create an HTTP Connection and adjust its options */
+                HttpURLConnection http = (HttpURLConnection) url.openConnection();
+                http.setRequestMethod(REQUEST_METHOD);
+                http.setDoInput(true);
+                http.setDoOutput(true);
+                http.setRequestProperty("content-type", "application/json");
+                http.setRequestProperty("x-auth-token", UserSessionManager.getUserToken());
+
+                /* A Stream object to hold the sent data to API Call */
+                OutputStream ops = http.getOutputStream();
+                BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(ops, StandardCharsets.UTF_8));
+                writer.write(JSONString);
+                writer.flush();
+                writer.close();
+                ops.close();
+
+                switch (String.valueOf(http.getResponseCode())) {
+                    case "200":
+                        /* A Stream object to get the returned data from API Call */
+                        InputStream ips = http.getInputStream();
+                        BufferedReader reader = new BufferedReader(new InputStreamReader(ips, StandardCharsets.ISO_8859_1));
+                        String line = "";
+                        //boolean started = false;
+                        while ((line = reader.readLine()) != null) {
+                            result += line;
+                        }
+                        reader.close();
+                        ips.close();
+                        break;
+                    default:
+                        result = "{\"ReturnMsg\":\"An Error Occurred!\"}";
+                        break;
+                }
+
+                http.disconnect();
+                return result;
+
+            }
+            /* Handling Exceptions */ catch (MalformedURLException e) {
+                result = e.getMessage();
+            } catch (IOException e) {
+                result = e.getMessage();
+            }
+            return result;
+        }
+
+        /**
+         * onPostExecute: Takes the string result and treates it as a json object
+         * to set data of:
+         * -Follow Button
+         *
+         * @param result : The result containing all the passed data from backend.
+         */
+        @SuppressLint("SetTextI18n")
+        protected void onPostExecute(String result) {
+            if (result == null) {
+                Toast.makeText(mContext, "Unable to connect to server", Toast.LENGTH_SHORT).show();
+                return;
+            }
+            try {
+                dialog.setMessage("Done");
+                //dialog.show();
+
+                JSONObject jsonObject = new JSONObject(result);
+                //TODO: Add post execute logic of like here
+
+
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+        }
+
+    }
 
 }
 

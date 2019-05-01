@@ -12,7 +12,19 @@ public class APIs {
     public static String API_UPDATE_USER_INFO = "https://geeksreads.herokuapp.com/api/users/update";
     public static String API_GET_USER_INFO = "https://geeksreads.herokuapp.com/api/users/me";
     public static String API_UPDATE_USER_PASSWORD = "https://geeksreads.herokuapp.com/api/users/UpdateUserPassword";
+
     public static String API_GET_SHELVES_COUNT = "https://geeksreads.herokuapp.com/api/users/ShelvesCount";
+    public static String API_GET_USER_BY_ID = "https://geeksreads.herokuapp.com/api/users/GetUserById";
+    public static String API_FOLLOW_USER = "https://geeksreads.herokuapp.com/api/users/Follow";
+    public static String API_UN_FOLLOW_USER = "https://geeksreads.herokuapp.com/api/users/unFollow";
+    public static String API_GET_USER_READ_DETAILS = "https://geeksreads.herokuapp.com/api/Users/GetUserReadDetails";
+    public static String API_GET_COMMENTS_LIST = "https://geeksreads.herokuapp.com/api/comments/list";
+    public static String API_ADD_COMMENT = "https://geeksreads.herokuapp.com/api/comments/add";
+    public static String API_GET_REVIEWS_LIST = "https://geeksreads.herokuapp.com/api/reviews/getrev";
+    public static String API_GET_FOLLOWERS_LIST = "https://geeksreads.herokuapp.com/api/users/getfollowers";
+    public static String API_GET_FOLLOWING_LIST = "https://geeksreads.herokuapp.com/api/users/getfollowing";
+    public static String API_LIKE_REVIEW = "https://geeksreads.herokuapp.com/api/resources/like";
+    public static String API_UNLIKE_REVIEW = "https://geeksreads.herokuapp.com/api/resources/unlike";
 
     /* APIS Links for the Mimic Services APIs on Our Mimic Server, uncomment when used with Mimic */
 //    public static String API_LOGIN = "http://geeksreads.000webhostapp.com/Morsy/Signin.php";
@@ -24,5 +36,10 @@ public class APIs {
 //    public static String API_GET_USER_INFO = "http://geeksreads.000webhostapp.com/Morsy/me.php";
 //    public static String API_UPDATE_USER_PASSWORD = "http://geeksreads.000webhostapp.com/Morsy/UpdateUserPassword.php";
 //    public static String API_GET_SHELVES_COUNT = "http://geeksreads.000webhostapp.com/Morsy/ShelvesCount.php";
+//    public static String API_GET_USER_INFO = "http://geeksreads.000webhostapp.com/Amr/UserProfile.php";
+//    public static String API_GET_USER_BY_ID = "http://geeksreads.000webhostapp.com/Amr/OtherUserProfile.php";
+//    public static String API_GET_FOLLOWERS_LIST = "http://geeksreads.000webhostapp.com/Amr/GetFollowers.php";
+//    public static String API_GET_FOLLOWING_LIST = "http://geeksreads.000webhostapp.com/Amr/GetFollowers.php";
+//    public static String API_GET_REVIEWS_LIST = "http://geeksreads.000webhostapp.com/Amr/ReviewList.php";
 
 }
