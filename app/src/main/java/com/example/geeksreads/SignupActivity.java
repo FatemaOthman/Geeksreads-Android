@@ -16,7 +16,7 @@ import android.widget.Toast;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.UserSessionManager;
+import CustomFunctions.UserSessionManager;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.IOException;
@@ -27,9 +27,8 @@ import java.io.OutputStreamWriter;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
-import java.HelpingFunctions;
+import CustomFunctions.HelpingFunctions;
 
 import CustomFunctions.APIs;
 

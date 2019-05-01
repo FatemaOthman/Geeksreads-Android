@@ -26,7 +26,7 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import java.util.Objects;
-import java.HelpingFunctions;
+import CustomFunctions.HelpingFunctions;
 
 import CustomFunctions.APIs;
 
