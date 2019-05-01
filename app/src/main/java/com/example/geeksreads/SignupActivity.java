@@ -297,7 +297,24 @@ public class SignupActivity extends AppCompatActivity {
                         ips.close();
                         break;
                     case "400":
-                        result = "{\"ReturnMsg\":\"User already registered.\"}";
+                        /* A Stream object to get the returned data from API Call */
+                        InputStream Errips = http.getErrorStream();
+                        BufferedReader Errreader = new BufferedReader(new InputStreamReader(Errips, StandardCharsets.ISO_8859_1));
+                        String Errline = "";
+                        //boolean started = false;
+                        while ((Errline = Errreader.readLine()) != null) {
+                            result += Errline;
+                        }
+                        Errreader.close();
+                        Errips.close();
+                        if (result.contains("registered"))
+                        {
+                            result = "{\"ReturnMsg\":\"User already registered.\"}";
+                        }
+                        else
+                        {
+                            result = "{\"ReturnMsg\":\"An error occurred!\"}";
+                        }
                         break;
                     default:
                         break;
