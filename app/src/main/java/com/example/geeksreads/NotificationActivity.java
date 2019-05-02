@@ -16,6 +16,7 @@ import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -45,6 +46,7 @@ import java.nio.charset.StandardCharsets;
 import java.util.Objects;
 
 import CustomFunctions.APIs;
+import CustomFunctions.UserSessionManager;
 
 public class NotificationActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
 
@@ -121,7 +123,7 @@ public class NotificationActivity extends AppCompatActivity implements Navigatio
 
         final JSONObject jsonObject = new JSONObject();
         try {
-            jsonObject.put("UserID", "value");
+            jsonObject.put("token", UserSessionManager.getUserToken());
         } catch (JSONException e) {
             e.printStackTrace();
         }
@@ -215,6 +217,7 @@ public class NotificationActivity extends AppCompatActivity implements Navigatio
         //public static final int READ_TIMEOUT = 3000;
         //public static final int CONNECTION_TIMEOUT = 3000;
         AlertDialog dialog;
+        boolean TaskSuccess = false;
 
         @Override
         protected void onPreExecute() {
@@ -229,6 +232,7 @@ public class NotificationActivity extends AppCompatActivity implements Navigatio
             String JSONString = params[1];
             String result = "";
 
+
             try {
                 //Create a URL object holding our url
                 URL url = new URL(UrlString);
@@ -239,24 +243,37 @@ public class NotificationActivity extends AppCompatActivity implements Navigatio
 
                 OutputStream ops = http.getOutputStream();
                 BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(ops, StandardCharsets.UTF_8));
-                String data = URLEncoder.encode("id", "UTF-8") + "=" + URLEncoder.encode(JSONString, "UTF-8");
 
-                writer.write(data);
+                Log.d("body",JSONString );
+                writer.write(JSONString);
                 writer.flush();
                 writer.close();
                 ops.close();
 
-                //Create a new InputStreamReader
-                InputStream ips = http.getInputStream();
-                BufferedReader reader = new BufferedReader(new InputStreamReader(ips, StandardCharsets.ISO_8859_1));
-                String line;
-                while ((line = reader.readLine()) != null) {
-                    result += line;
+                Log.d("ResponseCode: " , String.valueOf(http.getResponseCode()) );
+                if (String.valueOf(http.getResponseCode()).equals("200")) {
+                    /* A Stream object to get the returned data from API Call */
+                    InputStream ips = http.getInputStream();
+                    BufferedReader reader = new BufferedReader(new InputStreamReader(ips, StandardCharsets.ISO_8859_1));
+                    String line;
+                    while ((line = reader.readLine()) != null) {
+                        result += line;
+                    }
+                    reader.close();
+                    ips.close();
+                    TaskSuccess = true;
                 }
-                reader.close();
-                ips.close();
-                http.disconnect();
-                return result;
+                else                {
+                    TaskSuccess = false;
+                    InputStream es = http.getErrorStream();
+                    BufferedReader ereader = new BufferedReader(new InputStreamReader(es, StandardCharsets.ISO_8859_1));
+                    String eline;
+                    while ((eline = ereader.readLine()) != null) {
+                        result += eline;
+                    }
+                    ereader.close();
+                    es.close();
+                }
 
             } catch (MalformedURLException e) {
                 result = e.getMessage();
