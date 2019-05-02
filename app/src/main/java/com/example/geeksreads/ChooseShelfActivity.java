@@ -19,14 +19,14 @@ import android.widget.ImageView;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.RatingBar;
-import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.UserSessionManager;
+import CustomFunctions.APIs;
+import CustomFunctions.UserSessionManager;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.IOException;
@@ -37,10 +37,7 @@ import java.io.OutputStreamWriter;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
-import java.text.SimpleDateFormat;
-import java.util.Calendar;
 import java.util.Objects;
 
 public class ChooseShelfActivity extends AppCompatActivity {
@@ -168,15 +165,15 @@ public class ChooseShelfActivity extends AppCompatActivity {
                     String UrlService = null;
                     if (BookStatus.equals("Want To Read") && shelfID.equals("Reading"))
                     {
-                        UrlService = "https://geeksreads.herokuapp.com/api/users/UpdateWantToReading";
+                        UrlService = APIs.API_MOVE_BOOK_TOREADING;
                     }
                    else if (BookStatus.equals("Currently Reading") && shelfID.equals("Read"))
                     {
-                        UrlService = "https://geeksreads.herokuapp.com/api/users/UpdateReadingToRead";
+                        UrlService = APIs.API_MOVE_BOOK_TOREAD;
                     }
                     else
                     {
-                        UrlService = "https://geeksreads.herokuapp.com/api/users/AddToShelf";
+                        UrlService = APIs.API_ADD_BOOK_TOSHELF;
                     }
 
                     AddShelfTask addShelfTask = new AddShelfTask();

@@ -43,7 +43,8 @@ import org.apache.http.util.EntityUtils;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.UserSessionManager;
+import CustomFunctions.APIs;
+import CustomFunctions.UserSessionManager;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.IOException;
@@ -220,7 +221,7 @@ public class BookActivity extends AppCompatActivity implements NavigationView.On
                     JSONObject ReviewObject = new JSONObject();
                     try {
                         //ReviewObject.put("token", UserSessionManager.getUserToken());
-                        ReviewObject.put("userId", LoginActivity.sCurrentUserID);
+                        ReviewObject.put("userId", UserSessionManager.getUserID());
                         ReviewObject.put("bookId", BookID);
                         ReviewObject.put("token", UserSessionManager.getUserToken());
                         ReviewObject.put("reviewBody", Review.getText());
@@ -233,7 +234,7 @@ public class BookActivity extends AppCompatActivity implements NavigationView.On
                     } catch (JSONException e) {
                         e.printStackTrace();
                     }
-                    String UrlService = "https://geeksreads.herokuapp.com/api/reviews/add";
+                    String UrlService = APIs.API_ADD_BOOK_REVIEW;
                     AddReviewTask addReviewTask = new AddReviewTask();
                     addReviewTask.execute(UrlService, ReviewObject.toString());
                 }
@@ -242,7 +243,7 @@ public class BookActivity extends AppCompatActivity implements NavigationView.On
 
         Log.d("BookID",getID);
         /* Calling Async Task with my server url */
-        String UrlService = "https://geeksreads.herokuapp.com/api/books/id";
+        String UrlService = APIs.API_GET_BOOK_DETAILS;
         mProgressBar.setVisibility(View.VISIBLE);
         GetBookDetails getBookDetails = new GetBookDetails();
         getBookDetails.execute(UrlService, getID);
@@ -366,7 +367,7 @@ public class BookActivity extends AppCompatActivity implements NavigationView.On
     private class GetBookDetails extends AsyncTask<String, Void, String> {
         public static final String REQUEST_METHOD = "GET";
         AlertDialog dialog;
-        boolean TaskSuccess = true;
+        boolean TaskSuccess = false;
 
         @Override
         protected void onPreExecute() {
@@ -394,6 +395,7 @@ public class BookActivity extends AppCompatActivity implements NavigationView.On
             }
             assert response != null;
             if (response.getStatusLine().getStatusCode() == 200) {
+                TaskSuccess = true;
                 try {
                     result = EntityUtils.toString(response.getEntity());
                 } catch (IOException e) {
@@ -401,6 +403,11 @@ public class BookActivity extends AppCompatActivity implements NavigationView.On
                 }
                 Log.d("Server response", result);
             } else {
+                try {
+                    result = EntityUtils.toString(response.getEntity());
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
                 Log.d("Server response", "Failed to get server response");
             }
             return result;
@@ -421,12 +428,12 @@ public class BookActivity extends AppCompatActivity implements NavigationView.On
                 if (TaskSuccess) {
                     /* Get Json Object from server and preview results on Layout views */
                     bookTitle.setText(jsonObject.getString("Title"));
-                    bookAuthor.setText("By: " + "" + jsonObject.getString("AuthorId"));
+                    bookAuthor.setText("By: " + "" + jsonObject.getString("Author"));
                     AuthorID = jsonObject.getString("AuthorId");
                     BookID = jsonObject.getString("BookId");
-                    //ratingsNumber.setText(jsonObject.getString("ratingcount") + " " + "Ratings");
-                    //reviewsNumber.setText(jsonObject.getString("textreviewscount") + " " + "Reviews");
-                    String Ratings = jsonObject.optJSONObject("BookRating").getString("$numberDecimal");
+                    ratingsNumber.setText(jsonObject.getString("ratingcount") + " " + "Ratings");
+                    reviewsNumber.setText(jsonObject.getString("textreviewscount") + " " + "Reviews");
+                    String Ratings = jsonObject.getString("BookRating");
                     bookRatings.setText(Ratings);
                     bookDescription.setText(jsonObject.getString("Description"));
                     pageNumber.setText(jsonObject.getString("Pages") + " pages");
@@ -473,7 +480,7 @@ public class BookActivity extends AppCompatActivity implements NavigationView.On
                 }
                 else
                 {
-                    dialog.setMessage(jsonObject.getString("Book-not-found"));
+                    Toast.makeText(mContext,"Error in loading Book Data", Toast.LENGTH_SHORT).show();
                 }
 
             } catch(JSONException e){

@@ -22,7 +22,7 @@ public class EditProfileActivityTest {
     public void Test_UsernameLessThanThreeChars() {
         onView(withId(R.id.UserNameTxt))
                 .perform(typeText("Ab"), closeSoftKeyboard());
-        onView(withId(R.id.EmailAddressTxt))
+        onView(withId(R.id.EmailTxt))
                 .perform(typeText("mahmoud_1@live.com"), closeSoftKeyboard());
         onView(withId(R.id.BirthDate))
                 .perform(typeText("1/9/1995"), closeSoftKeyboard());
@@ -37,7 +37,7 @@ public class EditProfileActivityTest {
     public void Test_UserEmailIsNotValid() {
         onView(withId(R.id.UserNameTxt))
                 .perform(typeText("Mahmoud Morsy"), closeSoftKeyboard());
-        onView(withId(R.id.EmailAddressTxt))
+        onView(withId(R.id.EmailTxt))
                 .perform(typeText("mahmoud_1@live"), closeSoftKeyboard());
         onView(withId(R.id.BirthDate))
                 .perform(typeText("1/9/1995"), closeSoftKeyboard());
@@ -75,7 +75,7 @@ public class EditProfileActivityTest {
     public void Test_InvalidDayInBirthDate() {
         onView(withId(R.id.UserNameTxt))
                 .perform(typeText("Mahmoud Morsy"), closeSoftKeyboard());
-        onView(withId(R.id.EmailAddressTxt))
+        onView(withId(R.id.EmailTxt))
                 .perform(typeText("mahmoud_morsy@live.com"), closeSoftKeyboard());
         onView(withId(R.id.BirthDate))
                 .perform(typeText("91/9/1995"), closeSoftKeyboard());
@@ -105,7 +105,7 @@ public class EditProfileActivityTest {
     public void Test_InvalidYearInBirthDate() {
         onView(withId(R.id.UserNameTxt))
                 .perform(typeText("Mahmoud Morsy"), closeSoftKeyboard());
-        onView(withId(R.id.EmailAddressTxt))
+        onView(withId(R.id.EmailTxt))
                 .perform(typeText("mahmoud_morsy@live.com"), closeSoftKeyboard());
         onView(withId(R.id.BirthDate))
                 .perform(typeText("1/9/-1995"), closeSoftKeyboard());
@@ -120,7 +120,7 @@ public class EditProfileActivityTest {
     public void Test_FutureYearInBirthDate() {
         onView(withId(R.id.UserNameTxt))
                 .perform(typeText("Mahmoud Morsy"), closeSoftKeyboard());
-        onView(withId(R.id.EmailAddressTxt))
+        onView(withId(R.id.EmailTxt))
                 .perform(typeText("mahmoud_morsy@live.com"), closeSoftKeyboard());
         onView(withId(R.id.BirthDate))
                 .perform(typeText("1/9/2020"), closeSoftKeyboard());
@@ -135,7 +135,7 @@ public class EditProfileActivityTest {
     public void Test_BirthDateLessThan5Years() {
         onView(withId(R.id.UserNameTxt))
                 .perform(typeText("Mahmoud Morsy"), closeSoftKeyboard());
-        onView(withId(R.id.EmailAddressTxt))
+        onView(withId(R.id.EmailTxt))
                 .perform(typeText("mahmoud_morsy@live.com"), closeSoftKeyboard());
         onView(withId(R.id.BirthDate))
                 .perform(typeText("1/9/2017"), closeSoftKeyboard());
@@ -150,7 +150,7 @@ public class EditProfileActivityTest {
     public void Test_SuccessCase() {
         onView(withId(R.id.UserNameTxt))
                 .perform(typeText("Mahmoud Morsy"), closeSoftKeyboard());
-        onView(withId(R.id.EmailAddressTxt))
+        onView(withId(R.id.EmailTxt))
                 .perform(typeText(EditProfileActivity.sForTest_OriginalEmail), closeSoftKeyboard());
         onView(withId(R.id.BirthDate))
                 .perform(typeText("1/9/1995"), closeSoftKeyboard());

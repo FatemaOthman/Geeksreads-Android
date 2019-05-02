@@ -9,7 +9,6 @@ import android.os.Bundle;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -23,7 +22,8 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.UserSessionManager;
+import CustomFunctions.APIs;
+import CustomFunctions.UserSessionManager;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.IOException;
@@ -34,7 +34,6 @@ import java.io.OutputStreamWriter;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.util.Objects;
 
@@ -65,7 +64,7 @@ public class CurrentlyReadingActivity extends AppCompatActivity {
         } catch (JSONException e) {
             e.printStackTrace();
         }
-        final String UrlService = "https://geeksreads.herokuapp.com/api/Users/GetUserReadingDetails";
+        final String UrlService = APIs.API_GET_READING_LIST;
 
         mSwipeRefreshLayout = findViewById(R.id.CurrentlySwipeLayout);
         mSwipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {

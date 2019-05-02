@@ -16,7 +16,7 @@ import android.widget.Toast;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.UserSessionManager;
+import CustomFunctions.UserSessionManager;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.IOException;
@@ -27,9 +27,8 @@ import java.io.OutputStreamWriter;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
-import java.HelpingFunctions;
+import CustomFunctions.HelpingFunctions;
 
 import CustomFunctions.APIs;
 
@@ -115,35 +114,29 @@ public class SignupActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         /* If user is already logged in, Skip and go to Main Activity */
-        mContext = this;
-        UserSessionManager.Initialize(mContext);
-        if (!getIntent().getStringExtra("FROM").equals("SIGNIN") && !getIntent().getStringExtra("FROM").equals("SIGNOUT"))
+        mContext=this;
+        if (!APIs.TestingModeEnabled)
         {
-            UserSessionManager.UserSessionState currentUserState = UserSessionManager.getCurrentState();
-            if (currentUserState == UserSessionManager.UserSessionState.USER_LOGGED_IN)
-            {
-                /* Go to Next Activity Layout */
-                Intent myIntent = new Intent(SignupActivity.this, FeedActivity.class);
-                myIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK|Intent.FLAG_ACTIVITY_NEW_TASK);
-                startActivity(myIntent);
-            }
-            else if (currentUserState == UserSessionManager.UserSessionState.USER_DATA_AVAILABLE_BUT_NOT_LOGGED_IN)
-            {
-                /* Go to Next Activity Layout */
-                Intent myIntent = new Intent(SignupActivity.this, LoginActivity.class);
-                myIntent.putExtra("FROM", "SIGNUP");
-                startActivity(myIntent);
-            }
-            else
-            {
+            UserSessionManager.Initialize(mContext);
+            if (!getIntent().getStringExtra("FROM").equals("SIGNIN") && !getIntent().getStringExtra("FROM").equals("SIGNOUT")) {
+                UserSessionManager.UserSessionState currentUserState=UserSessionManager.getCurrentState();
+                if (currentUserState == UserSessionManager.UserSessionState.USER_LOGGED_IN) {
+                    /* Go to Next Activity Layout */
+                    Intent myIntent=new Intent(SignupActivity.this, FeedActivity.class);
+                    myIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
+                    startActivity(myIntent);
+                } else if (currentUserState == UserSessionManager.UserSessionState.USER_DATA_AVAILABLE_BUT_NOT_LOGGED_IN) {
+                    /* Go to Next Activity Layout */
+                    Intent myIntent=new Intent(SignupActivity.this, LoginActivity.class);
+                    myIntent.putExtra("FROM", "SIGNUP");
+                    startActivity(myIntent);
+                } else {
+                    /* Stay Here */
+                }
+            } else {
                 /* Stay Here */
             }
         }
-        else
-        {
-            /* Stay Here */
-        }
-
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_signup);
@@ -298,7 +291,24 @@ public class SignupActivity extends AppCompatActivity {
                         ips.close();
                         break;
                     case "400":
-                        result = "{\"ReturnMsg\":\"User already registered.\"}";
+                        /* A Stream object to get the returned data from API Call */
+                        InputStream Errips = http.getErrorStream();
+                        BufferedReader Errreader = new BufferedReader(new InputStreamReader(Errips, StandardCharsets.ISO_8859_1));
+                        String Errline = "";
+                        //boolean started = false;
+                        while ((Errline = Errreader.readLine()) != null) {
+                            result += Errline;
+                        }
+                        Errreader.close();
+                        Errips.close();
+                        if (result.contains("registered"))
+                        {
+                            result = "{\"ReturnMsg\":\"User already registered.\"}";
+                        }
+                        else
+                        {
+                            result = "{\"ReturnMsg\":\"An error occurred!\"}";
+                        }
                         break;
                     default:
                         break;

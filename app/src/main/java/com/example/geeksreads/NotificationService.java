@@ -15,7 +15,8 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.UserSessionManager;
+import CustomFunctions.APIs;
+import CustomFunctions.UserSessionManager;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.IOException;
@@ -26,7 +27,6 @@ import java.io.OutputStreamWriter;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.util.Objects;
 
@@ -35,8 +35,8 @@ public class NotificationService extends Service {
 
     private final Context context;
 
-    public NotificationService(Context context) {
-        this.context = context;
+    public NotificationService() {
+        this.context = this;
     }
 
     void showPushNotification(){
@@ -46,7 +46,7 @@ public class NotificationService extends Service {
         } catch (JSONException e) {
             e.printStackTrace();
         }
-        final String UrlService = "http://geeksreads.000webhostapp.com/Shrouk/Notifications.php";
+        final String UrlService = APIs.API_GET_USER_NOTIFICATIONS;
 
         GetNotificationsList performBackgroundTask = new GetNotificationsList();
         performBackgroundTask.execute(UrlService, jsonObject.toString());

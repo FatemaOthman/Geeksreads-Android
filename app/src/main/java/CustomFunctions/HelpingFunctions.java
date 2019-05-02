@@ -1,7 +1,7 @@
 /*
  * This class has some public helping functions that can be used in the code of many other classes
  */
-package java;
+package CustomFunctions;
 import android.content.Context;
 import android.content.Intent;
 

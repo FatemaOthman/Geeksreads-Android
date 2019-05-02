@@ -1,4 +1,4 @@
-package java;
+package CustomFunctions;
 
 
 import android.content.Context;

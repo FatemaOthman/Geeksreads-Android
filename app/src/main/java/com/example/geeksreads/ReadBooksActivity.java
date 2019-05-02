@@ -23,7 +23,8 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.UserSessionManager;
+import CustomFunctions.APIs;
+import CustomFunctions.UserSessionManager;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.IOException;
@@ -34,7 +35,6 @@ import java.io.OutputStreamWriter;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.util.Objects;
 
@@ -65,7 +65,7 @@ public class ReadBooksActivity extends AppCompatActivity {
         } catch (JSONException e) {
             e.printStackTrace();
         }
-        final String UrlService = "https://geeksreads.herokuapp.com/api/Users/GetUserReadDetails";
+        final String UrlService = APIs.API_GET_READ_LIST;
 
         mSwipeRefreshLayout = findViewById(R.id.ReadSwipeLayout);
         mSwipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
@@ -118,9 +118,8 @@ public class ReadBooksActivity extends AppCompatActivity {
     @SuppressLint("StaticFieldLeak")
     private class GetReadBooks extends AsyncTask<String, Void, String> {
         public static final String REQUEST_METHOD = "POST";
-        //public static final int READ_TIMEOUT = 3000;
-        //public static final int CONNECTION_TIMEOUT = 3000;
         AlertDialog dialog;
+        boolean TaskSuccess = false;
 
         @Override
         protected void onPreExecute() {
@@ -152,16 +151,33 @@ public class ReadBooksActivity extends AppCompatActivity {
                 ops.close();
 
                 //Create a new InputStreamReader
-                InputStream ips = http.getInputStream();
-                BufferedReader reader = new BufferedReader(new InputStreamReader(ips, StandardCharsets.ISO_8859_1));
-                String line;
-                while ((line = reader.readLine()) != null) {
-                    result += line;
+                Log.d("Code:" ,String.valueOf(http.getResponseCode()));
+                if (String.valueOf(http.getResponseCode()).equals("200")) {
+                    /* A Stream object to get the returned data from API Call */
+                    InputStream ips = http.getInputStream();
+                    BufferedReader reader = new BufferedReader(new InputStreamReader(ips, StandardCharsets.ISO_8859_1));
+                    String line;
+                    while ((line = reader.readLine()) != null) {
+                        result += line;
+                    }
+                    reader.close();
+                    ips.close();
+                    TaskSuccess = true;
                 }
-                reader.close();
-                ips.close();
+                else                {
+                    TaskSuccess = false;
+                    InputStream es = http.getErrorStream();
+                    BufferedReader ereader = new BufferedReader(new InputStreamReader(es, StandardCharsets.ISO_8859_1));
+                    String eline;
+                    while ((eline = ereader.readLine()) != null) {
+                        result += eline;
+                    }
+                    ereader.close();
+                    es.close();
+                }
                 http.disconnect();
                 return result;
+
 
             } catch (MalformedURLException e) {
                 result = e.getMessage();
@@ -181,20 +197,27 @@ public class ReadBooksActivity extends AppCompatActivity {
             }
             try {
                 dialog.setMessage(result);
+                Log.d("result:", result);
                 //dialog.show();
                 JSONObject jsonObject = new JSONObject(result);
-                ListView readBookList = findViewById(R.id.ReadBookList);
-                final BookList_JSONAdapter bookListJsonAdapter = new BookList_JSONAdapter(mContext, new JSONArray(jsonObject.getString("ReadData")));
-                readBookList.setAdapter(bookListJsonAdapter);
-                readBookList.deferNotifyDataSetChanged();
-                readBookList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-                    @Override
-                    public void onItemClick(AdapterView<?> arg0, View arg1, int position, long arg3) {
-                        Intent intent = new Intent(ReadBooksActivity.this, BookActivity.class);
-                        intent.putExtra("BookID",bookListJsonAdapter.getBookID(position));
-                        startActivity(intent);
-                    }
-                });
+                if (TaskSuccess) {
+                    ListView readBookList = findViewById(R.id.ReadBookList);
+                    final BookList_JSONAdapter bookListJsonAdapter = new BookList_JSONAdapter(mContext, new JSONArray(jsonObject.getString("ReadData")));
+                    readBookList.setAdapter(bookListJsonAdapter);
+                    readBookList.deferNotifyDataSetChanged();
+                    readBookList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                        @Override
+                        public void onItemClick(AdapterView<?> arg0, View arg1, int position, long arg3) {
+                            Intent intent = new Intent(ReadBooksActivity.this, BookActivity.class);
+                            intent.putExtra("BookID", bookListJsonAdapter.getBookID(position));
+                            startActivity(intent);
+                        }
+                    });
+                }
+                else
+                {
+                    Toast.makeText(mContext, "Error happened during loading list ", Toast.LENGTH_SHORT).show();
+                }
 
             } catch (JSONException e) {
                 e.printStackTrace();

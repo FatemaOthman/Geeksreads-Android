@@ -32,6 +32,9 @@ import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 
+import CustomFunctions.APIs;
+import CustomFunctions.UserSessionManager;
+
 public class Following_Fragment extends Fragment {
 
     ListView FollowersList;
@@ -48,16 +51,16 @@ public class Following_Fragment extends Fragment {
         mContext = getContext();
         dataModels = new ArrayList<>();
 
-        final String CurrentUser = FollowActivity.getCurrentID();
         //In my code here, I am sending the id of the user
         JSONObject JSON = new JSONObject();
         try {
-            JSON.put("UserId", FollowActivity.getCurrentID()); //Value will be passed from FollowActivity.java
+            JSON.put("User_id", UserSessionManager.getUserID());
+            JSON.put("token", UserSessionManager.getUserToken());
         } catch (JSONException e) {
             e.printStackTrace();
         }
         // Calling Async Task with my server url
-        String UrlService = "http://geeksreads.000webhostapp.com/Amr/GetFollowers.php";
+        String UrlService = APIs.API_GET_FOLLOWING_LIST;
         Following_Fragment.GetDetails MyFollowing = new GetDetails();
         MyFollowing.execute(UrlService, JSON.toString());
 
@@ -71,7 +74,7 @@ public class Following_Fragment extends Fragment {
                 final UserDataModel dataModel = dataModels.get(position);
 
                 Intent myIntent = new Intent(getActivity(), OtherProfileActivity.class);
-                myIntent.putExtra("UserId", CurrentUser);
+                myIntent.putExtra("UserId", UserSessionManager.getUserID());
                 myIntent.putExtra("FollowId", dataModel.getID());
                 startActivity(myIntent);
             }
@@ -117,10 +120,8 @@ public class Following_Fragment extends Fragment {
                 /* A Stream object to hold the sent data to API Call */
                 OutputStream ops = http.getOutputStream();
                 BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(ops, StandardCharsets.UTF_8));
-                //String data = URLEncoder.encode(JSONString, "UTF-8");
-                String data = JSONString;
 
-                writer.write(data);
+                writer.write(JSONString);
                 writer.flush();
                 writer.close();
                 ops.close();

@@ -15,7 +15,6 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.util.Base64;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -42,9 +41,11 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
 
+import CustomFunctions.APIs;
+import CustomFunctions.UserSessionManager;
+
 public class Profile extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener{
 
-    public static String CurrentUser; //Put Id of user here.
     public static String ForTestProfilePicture, ForTestFollowersCount, ForTestFollowingCount;
     ImageView UserPhoto;
     Context mContext;
@@ -61,10 +62,11 @@ public class Profile extends AppCompatActivity implements NavigationView.OnNavig
     MenuItem FollowItem;
     MenuItem BookItem;
 
+    /*
     public static String getCurrentID() {
         return CurrentUser;
     }
-
+    */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -77,9 +79,6 @@ public class Profile extends AppCompatActivity implements NavigationView.OnNavig
         FollowingCount = findViewById(R.id.ActualFollowingCount);
         EditProfileButton = findViewById(R.id.edit_profile);
 
-        /////////////////////////////////////////////////////
-        CurrentUser = getIntent().getStringExtra("UserId");
-        //////////////////////////////////////////////////////
         Toolbar myToolbar = findViewById(R.id.toolbar);
         setSupportActionBar(myToolbar);
         myToolbar.setNavigationOnClickListener(new View.OnClickListener() {
@@ -135,11 +134,10 @@ public class Profile extends AppCompatActivity implements NavigationView.OnNavig
             public void onClick(View view) {
                 //   Intent myIntent = new Intent(Profile.this,FollowActivity.class);
                 Intent myIntent = new Intent(Profile.this, EditProfileActivity.class);
-                myIntent.putExtra("UserID", CurrentUser);
+                myIntent.putExtra("UserID", UserSessionManager.getUserID());
                 startActivity(myIntent);
             }
         });
-
 
 
         FollowersCount.setOnClickListener(new View.OnClickListener() {
@@ -147,7 +145,7 @@ public class Profile extends AppCompatActivity implements NavigationView.OnNavig
             public void onClick(View view) {
                 //   Intent myIntent = new Intent(Profile.this,FollowActivity.class);
                 Intent myIntent = new Intent(Profile.this, FollowActivity.class);
-                myIntent.putExtra("UserID", CurrentUser);
+                myIntent.putExtra("UserID", UserSessionManager.getUserID());
                 startActivity(myIntent);
             }
         });
@@ -156,7 +154,7 @@ public class Profile extends AppCompatActivity implements NavigationView.OnNavig
             @Override
             public void onClick(View view) {
                 Intent myIntent = new Intent(Profile.this, FollowActivity.class);
-                myIntent.putExtra("UserID", CurrentUser);
+                myIntent.putExtra("UserID", UserSessionManager.getUserID());
                 startActivity(myIntent);
             }
         });
@@ -167,16 +165,23 @@ public class Profile extends AppCompatActivity implements NavigationView.OnNavig
 
         try {
 
-            mJSON.put("token", LoginActivity.sCurrentToken);
+            mJSON.put("token", UserSessionManager.getUserToken());
         } catch (JSONException e) {
             e.printStackTrace();
         }
 
         // Calling Async Task with my server url
 
-        String UrlService = "https://geeksreads.herokuapp.com/api/users/me";
+        String UrlService = APIs.API_GET_USER_INFO;
         Profile.GetProfileDetails MyProfile = new Profile.GetProfileDetails();
         MyProfile.execute(UrlService, mJSON.toString());
+
+        Profile.UpdateBookShelfCount updateReadShelf = new Profile.UpdateBookShelfCount(UserSessionManager.getUserToken());
+
+        /* URL For Get Shelves Count API */
+        String GetShelvesCountUrl = APIs.API_GET_SHELVES_COUNT;
+
+        updateReadShelf.execute(GetShelvesCountUrl);
 
 
     }
@@ -258,6 +263,7 @@ public class Profile extends AppCompatActivity implements NavigationView.OnNavig
      *      Gets user picture from the url and changes it into bitmap
      *      sets the imageView into the same bitmap
      */
+    @SuppressLint("StaticFieldLeak")
     private class GetUserPicture extends AsyncTask<String, Void, Bitmap> {
 
         @Override
@@ -289,6 +295,7 @@ public class Profile extends AppCompatActivity implements NavigationView.OnNavig
      * Class that get the data from host and Add it to its views.
      * The Parameters are host Url and toSend Data.
      */
+    @SuppressLint("StaticFieldLeak")
     public class GetProfileDetails extends AsyncTask<String, Void, String> {
         public static final String REQUEST_METHOD = "POST";
 
@@ -307,52 +314,6 @@ public class Profile extends AppCompatActivity implements NavigationView.OnNavig
          * @return result
          */
 
-        /*
-        @Override
-        protected String doInBackground(String... params) {
-            String UrlString = params[0];
-            String JSONString = params[1];
-            String result = "";
-
-            try {
-                //Create a URL object holding our url
-                URL url = new URL(UrlString);
-                HttpURLConnection http = (HttpURLConnection) url.openConnection();
-                http.setRequestMethod(REQUEST_METHOD);
-                http.setDoInput(true);
-                http.setDoOutput(true);
-
-                OutputStream ops = http.getOutputStream();
-                BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(ops, StandardCharsets.UTF_8));
-                String data = URLEncoder.encode("Json", "UTF-8") + "=" + URLEncoder.encode(JSONString, "UTF-8");
-
-                writer.write(data);
-                writer.flush();
-                writer.close();
-                ops.close();
-
-
-                /////////////////////////////////////////
-                //Create a new InputStreamReader
-                InputStream ips = http.getInputStream();
-                BufferedReader reader = new BufferedReader(new InputStreamReader(ips, StandardCharsets.ISO_8859_1));
-                String line = "";
-                while ((line = reader.readLine()) != null) {
-                    result += line;
-                }
-                reader.close();
-                ips.close();
-                http.disconnect();
-                return result;
-
-            } catch (MalformedURLException e) {
-                result = e.getMessage();
-            } catch (IOException e) {
-                result = e.getMessage();
-            }
-            return result;
-        }
-        */
         //////////////////////////////////////////////////////////////////////////////////////////
         @Override
         protected String doInBackground(String... params) {
@@ -369,7 +330,6 @@ public class Profile extends AppCompatActivity implements NavigationView.OnNavig
                 http.setDoInput(true);
                 http.setDoOutput(true);
                 http.setRequestProperty("content-type", "application/json");
-                Log.d("Test","CurrentToken: "+ LoginActivity.sCurrentToken);
                 /* A Stream object to hold the sent data to API Call */
                 OutputStream ops = http.getOutputStream();
                 BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(ops, StandardCharsets.UTF_8));
@@ -430,19 +390,11 @@ public class Profile extends AppCompatActivity implements NavigationView.OnNavig
             try {
 
                 JSONObject jsonObject = new JSONObject(result);
-                Log.d("Test","Result: "+result);
                 FollowersCount.setText(jsonObject.getString("NoOfFollowers"));
                 FollowingCount.setText(jsonObject.getString("NoOfFollowings"));
-                //TODO: Add GetSHelvesCount function to get number of books.
-                //BooksCount.setText(jsonObject.getString("CountBooks") + " " + "Books");
-
-               // Profile.GetUserPicture Pic = new Profile.GetUserPicture();
-               // Pic.execute(jsonObject.getString("Photo"));
-                byte[] decodedString = Base64.decode(jsonObject.getString("Photo"), Base64.DEFAULT);
-                Bitmap decodedByte = BitmapFactory.decodeByteArray(decodedString, 0, decodedString.length);
-                userPhoto.setImageBitmap(decodedByte);
-
-                //ForTestProfilePicture = jsonObject.getString("Photo");
+                Profile.GetUserPicture Pic = new Profile.GetUserPicture();
+                Pic.execute(jsonObject.getString("Photo"));
+                ForTestProfilePicture = jsonObject.getString("Photo");
                 ForTestFollowersCount = FollowersCount.getText().toString();
                 ForTestFollowingCount = FollowingCount.getText().toString();
             } catch (JSONException e) {
@@ -516,10 +468,8 @@ public class Profile extends AppCompatActivity implements NavigationView.OnNavig
                 /* A Stream object to hold the sent data to API Call */
                 OutputStream ops = http.getOutputStream();
                 BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(ops, StandardCharsets.UTF_8));
-                //String data = URLEncoder.encode(JSONString, "UTF-8");
-                String data = JSONString;
 
-                writer.write(data);
+                writer.write(JSONString);
                 writer.flush();
                 writer.close();
                 ops.close();
@@ -580,4 +530,110 @@ public class Profile extends AppCompatActivity implements NavigationView.OnNavig
         }
 
     }
+    ///////////////////////////////////////
+
+
+    /**
+     * Class that get the data from host and Add it to its views.
+     * The Parameters are host Url and toSend Data.
+     */
+    @SuppressLint("StaticFieldLeak")
+    public class UpdateBookShelfCount extends AsyncTask<String, String, String> {
+        static final String REQUEST_METHOD = "POST";
+        String userToken;
+
+        UpdateBookShelfCount(String userToken) {
+            this.userToken = userToken;
+        }
+
+        @Override
+        protected void onPreExecute() {
+            /* Do Nothing */
+        }
+
+        @Override
+        protected String doInBackground(String... params) {
+            String UrlString = params[0];
+
+            String result = "";
+            try {
+                /* Create a URL object holding our url */
+                URL url = new URL(UrlString);
+                /* Create an HTTP Connection and adjust its options */
+                HttpURLConnection http = (HttpURLConnection) url.openConnection();
+                http.setRequestMethod(REQUEST_METHOD);
+                http.setDoInput(true);
+                http.setDoOutput(true);
+                http.setRequestProperty("content-type", "application/json");
+
+                /* A Stream object to hold the sent data to API Call */
+                OutputStream ops = http.getOutputStream();
+                BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(ops, StandardCharsets.UTF_8));
+                JSONObject newJson = new JSONObject();
+                newJson.put("token", userToken);
+                writer.write(newJson.toString());
+                writer.flush();
+                writer.close();
+                ops.close();
+
+                /* A Stream object to get the returned data from API Call */
+                switch (String.valueOf(http.getResponseCode())) {
+                    case "200":
+                        /* A Stream object to get the returned data from API Call */
+                        InputStream ips = http.getInputStream();
+                        BufferedReader reader = new BufferedReader(new InputStreamReader(ips, StandardCharsets.ISO_8859_1));
+                        String line = "";
+                        while ((line = reader.readLine()) != null) {
+                            result += line;
+                        }
+                        reader.close();
+                        ips.close();
+                        break;
+                    case "400":
+                        result = "{\"ReturnMsg\":\"Error Occurred.\"}";
+                        break;
+                    default:
+                        break;
+                }
+                http.disconnect();
+                return result;
+
+            }
+            /* Handling Exceptions */ catch (MalformedURLException e) {
+                result = e.getMessage();
+            } catch (IOException e) {
+                result = e.getMessage();
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+            return result;
+        }
+
+        @SuppressLint("SetTextI18n")
+        protected void onPostExecute(String result) {
+
+            if (result == null) {
+                Toast.makeText(mContext, "Unable to connect to server", Toast.LENGTH_SHORT).show();
+                return;
+            }
+            try {
+                /* Creating a JSON Object to parse the data in */
+                final JSONObject jsonObject = new JSONObject(result);
+                String readCount = jsonObject.getString("NoOfRead");
+                String wantToReadCount = jsonObject.getString("NoOfWantToRead");
+                String readingCount = jsonObject.getString("NoOfReading");
+                String FullCount = Integer.toString(Integer.parseInt(readCount) + Integer.parseInt(wantToReadCount) + Integer.parseInt(readingCount));
+                BooksCount.setText(FullCount + " " + "Books");
+
+            }
+            /* Catching Exceptions */ catch (JSONException e) {
+                e.printStackTrace();
+                Toast.makeText(mContext, "Error in loading shelves data", Toast.LENGTH_SHORT).show();
+            }
+        }
+
+    }
+
+
+    /////////////////////////////////////
 }

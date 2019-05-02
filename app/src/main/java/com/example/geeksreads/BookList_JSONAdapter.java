@@ -108,7 +108,7 @@ public class BookList_JSONAdapter extends BaseAdapter {
             BookName.setText(data.getJSONObject(i).getString("Title"));
 
             TextView AuthorName = view.findViewById(R.id.ByAuthorNameTxt);
-            AuthorName.setText(String.format("By: %s", data.getJSONObject(i).getString("AuthorId")));
+            AuthorName.setText(String.format("By: %s", data.getJSONObject(i).getString("Author")));
 
             String Ratings = data.getJSONObject(i).getString("BookRating");
             TextView RatingNumber = view.findViewById(R.id.ratingBar);

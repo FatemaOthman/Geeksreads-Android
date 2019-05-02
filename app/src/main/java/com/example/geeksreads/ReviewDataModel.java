@@ -16,6 +16,7 @@ public class ReviewDataModel {
     private String NComments;
     private String ReviewText;
     private String UserWhoWroteID;
+    private String IsLiked;
 
     /**
      * fromJson: Put Data from a single JSONOBJECT into a UserDataModel
@@ -27,15 +28,16 @@ public class ReviewDataModel {
         ReviewDataModel DummyUser = new ReviewDataModel();
         // Deserialize json into object fields
         try {
-            //TODO: Check with backend the missing data!
-            DummyUser.BookCoverPicture = jsonObject.getString("photo");
+            //TODO: Add the data parameter and the rating.
+            DummyUser.BookCoverPicture = jsonObject.getString("BookCover");
             DummyUser.UserProfilePicture = jsonObject.getString("photo");
             DummyUser.UserName = jsonObject.getString("userName");
             DummyUser.NLikes = jsonObject.getString("likesCount");
-         // DummyUser.NComments = jsonObject.getString("commentsCount");
+            DummyUser.NComments = jsonObject.getString("commCount");
             DummyUser.ReviewText = jsonObject.getString("reviewBody");
             DummyUser.ReviewID = jsonObject.getString("reviewId");
             DummyUser.UserWhoWroteID = jsonObject.getString("userId");
+            DummyUser.IsLiked = jsonObject.getString("Liked");
         } catch (JSONException e) {
             e.printStackTrace();
             return null;
@@ -137,6 +139,16 @@ public class ReviewDataModel {
      */
     String getReviewID() {
         return ReviewID;
+    }
+
+
+    /**
+     * getLikeStatus: Gets Like Status of current Review
+     *
+     * @return IsLiked
+     */
+    String getLikeStatus() {
+        return IsLiked;
     }
 
 

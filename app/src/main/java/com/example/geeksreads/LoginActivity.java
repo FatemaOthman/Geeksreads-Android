@@ -1,13 +1,10 @@
 package com.example.geeksreads;
 
-import android.accounts.Account;
-import android.accounts.AccountManager;
 import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
@@ -21,7 +18,7 @@ import android.widget.Toast;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.UserSessionManager;
+import CustomFunctions.UserSessionManager;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.IOException;
@@ -29,14 +26,12 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
-import java.net.ContentHandlerFactory;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.util.Objects;
-import java.HelpingFunctions;
+import CustomFunctions.HelpingFunctions;
 
 import CustomFunctions.APIs;
 
@@ -104,15 +99,21 @@ public class LoginActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         /* If user is already logged in, Skip and go to Main Activity */
         mContext = this;
-        UserSessionManager.Initialize(mContext);
-        UserSessionManager.UserSessionState currentUserState = UserSessionManager.getCurrentState();
-        if (currentUserState == UserSessionManager.UserSessionState.USER_LOGGED_IN)
+        UserSessionManager.UserSessionState currentUserState = UserSessionManager.UserSessionState.NO_DATA;
+
+        if (!APIs.TestingModeEnabled)
         {
-            /* Go to Next Activity Layout */
-            Intent myIntent = new Intent(LoginActivity.this, FeedActivity.class);
-            myIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK|Intent.FLAG_ACTIVITY_NEW_TASK);
-            startActivity(myIntent);
+            UserSessionManager.Initialize(mContext);
+            currentUserState = UserSessionManager.getCurrentState();
+            if (currentUserState == UserSessionManager.UserSessionState.USER_LOGGED_IN)
+            {
+                /* Go to Next Activity Layout */
+                Intent myIntent = new Intent(LoginActivity.this, FeedActivity.class);
+                myIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK|Intent.FLAG_ACTIVITY_NEW_TASK);
+                startActivity(myIntent);
+            }
         }
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
 
@@ -289,6 +290,8 @@ public class LoginActivity extends AppCompatActivity {
                 writer.flush();
                 writer.close();
                 ops.close();
+                Log.w("LoginDebug_1", data);
+                Log.w("LoginDebug_2", String.valueOf(http.getResponseCode()));
                 switch (String.valueOf(http.getResponseCode()))
                 {
                     case "200":
@@ -311,6 +314,7 @@ public class LoginActivity extends AppCompatActivity {
                         result = "{\"ReturnMsg\":\"Your account has not been verified.\"}";
                         break;
                     default:
+                        result = "{\"ReturnMsg\":\"An error occurred!\"}";
                         break;
                 }
 

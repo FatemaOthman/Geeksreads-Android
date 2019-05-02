@@ -9,11 +9,11 @@ import android.os.Bundle;
 import android.support.annotation.RequiresApi;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
+import android.view.View;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.Toast;
-
-import com.example.geeksreads.views.ExpandableTextView;
 
 import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
@@ -35,7 +35,10 @@ import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+
+import CustomFunctions.APIs;
 
 public class Comments extends AppCompatActivity {
 
@@ -43,7 +46,7 @@ public class Comments extends AppCompatActivity {
     ArrayList<CommentDataModel> dataModels;
     Context mContext;
 
-    ExpandableTextView CommentTextHolder;
+    EditText CommentTextHolder;
     Button AddCommentBtn;
 
 
@@ -58,30 +61,47 @@ public class Comments extends AppCompatActivity {
         CommentTextHolder = findViewById(R.id.commentText);
         AddCommentBtn = findViewById(R.id.AddComment);
 
-        final JSONObject jsonObject = new JSONObject();
         final JSONObject AddCommentJson = new JSONObject();
-        try {
-            jsonObject.put("UserID", "value");
 
-            AddCommentJson.put("UserID", "value");
-            AddCommentJson.put("reviewId", "value");
-            AddCommentJson.put("date", "value");
-            AddCommentJson.put("body", "value");
+        final String AddCommentUrl = APIs.API_ADD_COMMENT;
 
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
+        AddCommentBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
 
-        final String UrlService = "https://geeksreads.herokuapp.com/api/comments?ReviewId="+"5cc5da731245439148709e8b";
-        //final String UrlService = "https://geeksreads.herokuapp.com/api/comments?ReviewId="+getIntent().getStringExtra("ReviewId");
+                if (!CommentTextHolder.getText().toString().equals("")) {
 
-        final String CommentUrl = "http://geeksreads.000webhostapp.com/Amr/CommentList.php";
+                    try {
+                        @SuppressLint("SimpleDateFormat")
+                        SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
+                        String CurrentDate = sdf.format(System.currentTimeMillis());
+                        AddCommentJson.put("UserID", LoginActivity.sCurrentUserID);
+                        AddCommentJson.put("reviewId", getIntent().getStringExtra("ReviewId"));
+                        AddCommentJson.put("date", CurrentDate);
+                        AddCommentJson.put("body", CommentTextHolder.getText().toString());
+
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+
+                    Comments.AddComment AddTheComment = new Comments.AddComment();
+                    AddTheComment.execute(AddCommentUrl, AddCommentJson.toString());
+
+                } else {
+                    //Do Nothing.
+                }
+
+
+            }
+        });
+
+
+        // final String UrlService = "https://geeksreads.herokuapp.com/api/comments?ReviewId="+"5cc5da731245439148709e8b";
+        final String CommentsListUrl = APIs.API_GET_COMMENTS_LIST + "?ReviewId=" + getIntent().getStringExtra("ReviewId");
 
         Comments.GetAllComments performBackgroundTask = new Comments.GetAllComments();
-        performBackgroundTask.execute(UrlService);
+        performBackgroundTask.execute(CommentsListUrl);
 
-        Comments.AddComment AddTheComment = new Comments.AddComment();
-        AddTheComment.execute(CommentUrl, AddCommentJson.toString());
 
     }
 
@@ -167,7 +187,7 @@ public class Comments extends AppCompatActivity {
 
     @SuppressLint("StaticFieldLeak")
     public class AddComment extends AsyncTask<String, Void, String> {
-        public static final String REQUEST_METHOD = "GET";
+        public static final String REQUEST_METHOD = "POST";
 
         AlertDialog dialog;
 
@@ -199,11 +219,10 @@ public class Comments extends AppCompatActivity {
                 http.setDoInput(true);
                 http.setDoOutput(true);
                 http.setRequestProperty("content-type", "application/json");
-
                 /* A Stream object to hold the sent data to API Call */
                 OutputStream ops = http.getOutputStream();
                 BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(ops, StandardCharsets.UTF_8));
-                writer.write("");
+                writer.write(JSONString);
                 writer.flush();
                 writer.close();
                 ops.close();
@@ -222,6 +241,7 @@ public class Comments extends AppCompatActivity {
                         ips.close();
                         break;
                     default:
+                        Log.d("Test", "String.valueOf(http.getResponseCode()): " + String.valueOf(http.getResponseCode()));
                         result = "{\"ReturnMsg\":\"An Error Occurred!\"}";
                         break;
                 }
@@ -237,8 +257,6 @@ public class Comments extends AppCompatActivity {
             }
             return result;
         }
-
-
         /////////////////////////////////////////////////////////////////////////////////////////
 
         @SuppressLint("SetTextI18n")
