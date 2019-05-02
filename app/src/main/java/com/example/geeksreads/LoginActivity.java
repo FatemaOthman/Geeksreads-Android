@@ -99,15 +99,21 @@ public class LoginActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         /* If user is already logged in, Skip and go to Main Activity */
         mContext = this;
-        UserSessionManager.Initialize(mContext);
-        UserSessionManager.UserSessionState currentUserState = UserSessionManager.getCurrentState();
-        if (currentUserState == UserSessionManager.UserSessionState.USER_LOGGED_IN)
+        UserSessionManager.UserSessionState currentUserState = UserSessionManager.UserSessionState.NO_DATA;
+
+        if (!APIs.TestingModeEnabled)
         {
-            /* Go to Next Activity Layout */
-            Intent myIntent = new Intent(LoginActivity.this, FeedActivity.class);
-            myIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK|Intent.FLAG_ACTIVITY_NEW_TASK);
-            startActivity(myIntent);
+            UserSessionManager.Initialize(mContext);
+            currentUserState = UserSessionManager.getCurrentState();
+            if (currentUserState == UserSessionManager.UserSessionState.USER_LOGGED_IN)
+            {
+                /* Go to Next Activity Layout */
+                Intent myIntent = new Intent(LoginActivity.this, FeedActivity.class);
+                myIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK|Intent.FLAG_ACTIVITY_NEW_TASK);
+                startActivity(myIntent);
+            }
         }
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
 

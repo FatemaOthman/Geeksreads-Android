@@ -5,6 +5,10 @@ import android.support.test.rule.ActivityTestRule;
 import org.junit.Rule;
 import org.junit.Test;
 
+import java.util.Random;
+
+import CustomFunctions.APIs;
+
 import static android.support.test.espresso.Espresso.onView;
 import static android.support.test.espresso.action.ViewActions.click;
 import static android.support.test.espresso.action.ViewActions.closeSoftKeyboard;
@@ -139,10 +143,23 @@ public class SignupActivityTest {
     @Test
     /* Creating account and Waiting Email Verification */
     public void Test_CreatingAccountAndWaitingEmailVerification() {
+        int RandomNumber;
         onView(withId(R.id.UserNameTxt))
                 .perform(typeText("MahmoudMorsy"), closeSoftKeyboard());
-        onView(withId(R.id.EmailTxt))
-                .perform(typeText("mahmoud_1@live.com"), closeSoftKeyboard());
+        if (APIs.MimicModeEnabled)
+        {
+            RandomNumber = 1;
+            onView(withId(R.id.EmailTxt))
+                    .perform(typeText("mahmoud_1@live.com"), closeSoftKeyboard());
+        }
+        else
+        {
+            RandomNumber = (new Random().nextInt(1000) * new Random().nextInt(1000));
+            onView(withId(R.id.EmailTxt))
+                    .perform(typeText("mahmoud_"+ String.valueOf(RandomNumber) +"@live.com"),
+                            closeSoftKeyboard());
+        }
+
         onView(withId(R.id.PasswordTxt))
                 .perform(typeText("Mah1142019"), closeSoftKeyboard());
         onView(withId(R.id.ConfirmPasswordTxt))
@@ -150,7 +167,7 @@ public class SignupActivityTest {
 
         onView(withId(R.id.SignupBtn)).perform(click());
 
-        assertEquals("A verification email has been sent to mahmoud_1@live.com", SignupActivity.sForTest);
+        assertEquals("A verification email has been sent to mahmoud_"+String.valueOf(RandomNumber)+"@live.com.", SignupActivity.sForTest);
     }
 
     @Test
@@ -167,7 +184,7 @@ public class SignupActivityTest {
 
         onView(withId(R.id.SignupBtn)).perform(click());
 
-        assertEquals("User already registered", SignupActivity.sForTest);
+        assertEquals("User already registered.", SignupActivity.sForTest);
     }
 
     @Test
@@ -183,7 +200,7 @@ public class SignupActivityTest {
                 .perform(typeText("Mah1142019"), closeSoftKeyboard());
 
         onView(withId(R.id.SignupBtn)).perform(click());
-
-        assertEquals("An Error Occurred", SignupActivity.sForTest);
+        if (!APIs.MimicModeEnabled) return;
+        assertEquals("An error occurred!", SignupActivity.sForTest);
     }
 }

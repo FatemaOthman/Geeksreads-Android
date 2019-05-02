@@ -114,35 +114,29 @@ public class SignupActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         /* If user is already logged in, Skip and go to Main Activity */
-        mContext = this;
-        UserSessionManager.Initialize(mContext);
-        if (!getIntent().getStringExtra("FROM").equals("SIGNIN") && !getIntent().getStringExtra("FROM").equals("SIGNOUT"))
+        mContext=this;
+        if (!APIs.TestingModeEnabled)
         {
-            UserSessionManager.UserSessionState currentUserState = UserSessionManager.getCurrentState();
-            if (currentUserState == UserSessionManager.UserSessionState.USER_LOGGED_IN)
-            {
-                /* Go to Next Activity Layout */
-                Intent myIntent = new Intent(SignupActivity.this, FeedActivity.class);
-                myIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK|Intent.FLAG_ACTIVITY_NEW_TASK);
-                startActivity(myIntent);
-            }
-            else if (currentUserState == UserSessionManager.UserSessionState.USER_DATA_AVAILABLE_BUT_NOT_LOGGED_IN)
-            {
-                /* Go to Next Activity Layout */
-                Intent myIntent = new Intent(SignupActivity.this, LoginActivity.class);
-                myIntent.putExtra("FROM", "SIGNUP");
-                startActivity(myIntent);
-            }
-            else
-            {
+            UserSessionManager.Initialize(mContext);
+            if (!getIntent().getStringExtra("FROM").equals("SIGNIN") && !getIntent().getStringExtra("FROM").equals("SIGNOUT")) {
+                UserSessionManager.UserSessionState currentUserState=UserSessionManager.getCurrentState();
+                if (currentUserState == UserSessionManager.UserSessionState.USER_LOGGED_IN) {
+                    /* Go to Next Activity Layout */
+                    Intent myIntent=new Intent(SignupActivity.this, FeedActivity.class);
+                    myIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
+                    startActivity(myIntent);
+                } else if (currentUserState == UserSessionManager.UserSessionState.USER_DATA_AVAILABLE_BUT_NOT_LOGGED_IN) {
+                    /* Go to Next Activity Layout */
+                    Intent myIntent=new Intent(SignupActivity.this, LoginActivity.class);
+                    myIntent.putExtra("FROM", "SIGNUP");
+                    startActivity(myIntent);
+                } else {
+                    /* Stay Here */
+                }
+            } else {
                 /* Stay Here */
             }
         }
-        else
-        {
-            /* Stay Here */
-        }
-
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_signup);

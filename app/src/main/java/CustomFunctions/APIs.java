@@ -2,7 +2,6 @@ package CustomFunctions;
 
 public class APIs {
 
-
     /* APIS Links for the Deployed APIs on Server, uncomment when used with Deployed */
     public static String API_LOGIN = "https://geeksreads.herokuapp.com/api/auth/signin";
     public static String API_SIGNUP = "https://geeksreads.herokuapp.com/api/users/signup";
@@ -67,5 +66,6 @@ public class APIs {
 //    public static String API_GET_FOLLOWING_LIST = "http://geeksreads.000webhostapp.com/Amr/GetFollowers.php";
 //    public static String API_GET_REVIEWS_LIST = "http://geeksreads.000webhostapp.com/Amr/ReviewList.php";
 
-
+    public static boolean TestingModeEnabled = true;
+    public static boolean MimicModeEnabled = false;
 }
