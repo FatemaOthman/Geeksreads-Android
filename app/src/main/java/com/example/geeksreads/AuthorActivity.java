@@ -17,6 +17,7 @@ import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -28,6 +29,11 @@ import android.widget.SearchView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import org.apache.http.HttpResponse;
+import org.apache.http.client.HttpClient;
+import org.apache.http.client.methods.HttpGet;
+import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.util.EntityUtils;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -73,6 +79,7 @@ public class AuthorActivity extends AppCompatActivity implements NavigationView.
     TextView booksCount;
     MenuItem FollowItem;
     MenuItem BookItem;
+    String AuthorID;
 
 
     @Override
@@ -84,6 +91,10 @@ public class AuthorActivity extends AppCompatActivity implements NavigationView.
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         mContext = this;
+        Intent intent = getIntent();
+        AuthorID=intent.getStringExtra("AuthorID");
+        AuthorID = "5c911452938ffea87b4672d7";//intent.getStringExtra("AuthorID");
+
 
         /* ToolBar and SideBar Setups */
         Toolbar myToolbar = findViewById(R.id.toolbar);
@@ -157,17 +168,22 @@ public class AuthorActivity extends AppCompatActivity implements NavigationView.
             }
         });
 
+
         list = new ArrayList<>();
         JSONObject mJSON = new JSONObject();
-       try {
-            mJSON.put("id", "value");
+       /*try {
+            mJSON.put("auth_id", AuthorID);
         } catch (JSONException e) {
             e.printStackTrace();
-        }
-        String UrlService = "http://geeksreads.000webhostapp.com/Fatema/GetAuthorInfo.php";
+        }*/
+
+        String UrlAuthor = "https://geeksreads.herokuapp.com/api/authors/id?auth_id=5c911452938ffea87b4672d7";
+
 
         GetAuthorDetails getAuthorDetails = new GetAuthorDetails();
-        getAuthorDetails.execute(UrlService, mJSON.toString());
+        getAuthorDetails.execute(UrlAuthor, "5c911452938ffea87b4672d7");
+
+
 
 
 
@@ -297,108 +313,94 @@ public class AuthorActivity extends AppCompatActivity implements NavigationView.
      */
     @SuppressLint("StaticFieldLeak")
     private class GetAuthorDetails extends AsyncTask<String, Void, String> {
-        public static final String REQUEST_METHOD = "GET";
-        AlertDialog dialog;
+        static final String REQUEST_METHOD = "GET";
+        JSONObject mJSON = new JSONObject();
 
         @Override
         protected void onPreExecute() {
-            dialog = new AlertDialog.Builder(mContext).create();
-            dialog.setTitle("Connection Status");
-
+            /* Do Nothing */
         }
 
         @Override
         protected String doInBackground(String... params) {
             String UrlString = params[0];
-            String JSONString = params[1];
+            String bookID = params[1];
             String result = "";
 
+            // UrlString = UrlString + "?Json =" + params[1];
+            HttpClient httpclient = new DefaultHttpClient();
+            HttpGet httpget = new HttpGet(UrlString);
+
+            HttpResponse response = null;
+            String server_response = null;
             try {
-                //Create a URL object holding our url
-                URL url = new URL(UrlString);
-                HttpURLConnection http = (HttpURLConnection) url.openConnection();
-                http.setRequestMethod(REQUEST_METHOD);
-                http.setDoInput(true);
-                http.setDoOutput(true);
-
-                OutputStream ops = http.getOutputStream();
-                BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(ops, StandardCharsets.UTF_8));
-                String data = URLEncoder.encode("UserId", "UTF-8") + "=" + URLEncoder.encode(JSONString, "UTF-8");
-
-                writer.write(data);
-                writer.flush();
-                writer.close();
-                ops.close();
-
-                //Create a new InputStreamReader
-                InputStream ips = http.getInputStream();
-                BufferedReader reader = new BufferedReader(new InputStreamReader(ips, StandardCharsets.ISO_8859_1));
-                String line;
-                while ((line = reader.readLine()) != null) {
-                    result += line;
-                }
-                reader.close();
-                ips.close();
-                http.disconnect();
-                return result;
-
-            } catch (MalformedURLException e) {
-                result = e.getMessage();
+                response = httpclient.execute(httpget);
             } catch (IOException e) {
-                result = e.getMessage();
+                e.printStackTrace();
             }
-            return result;
-        }
+
+            if (response.getStatusLine().getStatusCode() == 200) {
+                try {
+                    server_response = EntityUtils.toString(response.getEntity());
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+                Log.d("Server response", server_response);
+            } else {
+                Log.d("Server response", "Failed to get server response");
+            }
+
+            result = server_response;
+            return result;        }
 
         @SuppressLint("SetTextI18n")
         protected void onPostExecute(String result) {
-            // mProgressBar.setVisibility(View.GONE);
             if (result == null) {
                 Toast.makeText(mContext, "Unable to connect to server", Toast.LENGTH_SHORT).show();
                 return;
             }
             try {
-                dialog.setMessage("Done");
-                //dialog.show();
+                /* Creating a JSON Object to parse the data in */
+                final JSONObject jsonObject = new JSONObject(result);
 
-                /* Get Json Object from server and preview results on Layout views */
-                JSONObject jsonObject = new JSONObject(result);
+                AuthorName.setText(jsonObject.getString("AuthorName"));
+                // AuthorNumsOfRating.setText(jsonObject.getString("numofrates")+" ratings.");
 
-                AuthorName.setText(jsonObject.getString("name"));
-                AuthorNumsOfRating.setText(jsonObject.getString("numofrates")+" ratings.");
+                //  AuthorRating.setText(jsonObject.getString("rate"));
+                //  AuthorRatingBar.setRating(Float.parseFloat((String)jsonObject.getString("rate")));
 
-                AuthorRating.setText(jsonObject.getString("rate"));
-                AuthorRatingBar.setRating(Float.parseFloat((String)jsonObject.getString("rate")));
-                AuthorDescription.setText(jsonObject.getString("disc"));
-                NumOfBooks.setText("Author of "+jsonObject.getString("numofbooks")+" books.");
-                AuthorNumsOfReviews.setText(jsonObject.getString("numofreviews")+" reviews.");
+                AuthorDescription.setText(jsonObject.getString("About"));
+
+                JSONArray array=jsonObject.getJSONArray("BookId");
+                NumOfBooks.setText("Author of "+array.length()+" books.");
+                // AuthorNumsOfReviews.setText(jsonObject.getString("numofreviews")+" reviews.");
 
 
-                if(jsonObject.getString("followed").equals("true"))
-                {
-                    followingState.setText("Following");
-                    Follow=true;
-                }
-                else {
+                // if(/*jsonObject.getString("followed").equals("true")*/)
+                // {
+                followingState.setText("Following");
+                Follow=true;
+                // }
+                /*else {
                     followingState.setText("Follow");
                     Follow=false;
-                }
+                }*/
 
                 /* Start Async Task to get the image from url */
                 GetImage getAuthorPic = new GetImage();
-                ImageURL = jsonObject.getString("authorpicurl");
+                ImageURL = jsonObject.getString("Photo");
                 getAuthorPic.execute(ImageURL);
 
-                sForTestAuthorName=(String)AuthorName.getText();
-                sForTestAuthorNumOfRates=(String) AuthorNumsOfRating.getText();
-                sForTestNumOfBooks=(String) NumOfBooks.getText();
-                sForTestAuthorDescription =(String) AuthorDescription.getText();
-                sForTestAuthorPicURL=ImageURL;
-                sFortTestFollowStatus=followingState.getText().toString();
-                sForTestAuthorRate=AuthorRating.getText().toString();
-                sForTestAuthorNumOfReviews=AuthorNumsOfReviews.getText().toString();
-                JSONArray array=jsonObject.getJSONArray("authorbooks");
-                for(int i=0;i<array.length();i++)
+                // sForTestAuthorName=(String)AuthorName.getText();
+                // sForTestAuthorNumOfRates=(String) AuthorNumsOfRating.getText();
+                // sForTestNumOfBooks=(String) NumOfBooks.getText();
+                // sForTestAuthorDescription =(String) AuthorDescription.getText();
+                // sForTestAuthorPicURL=ImageURL;
+                // sFortTestFollowStatus=followingState.getText().toString();
+                // sForTestAuthorRate=AuthorRating.getText().toString();
+                // sForTestAuthorNumOfReviews=AuthorNumsOfReviews.getText().toString();
+                //   JSONArray array=jsonObject.getJSONArray("authorbooks");
+             /*   for(int i=0;i<array.length();i++)
                 {
                     JSONObject o = array.getJSONObject(i);
                     BookItem B =new BookItem(
@@ -407,12 +409,13 @@ public class AuthorActivity extends AppCompatActivity implements NavigationView.
                             o.getString("bookrate"),
                             o.getString("numofrates"),
                             o.getString("coverurl"),
-                            o.getString("readingstatus")
+                            o.getString("readingstatus"),
+                            o.getString("BookId")
                     );
                     list.add(B);
                 }
                 adapter =new BookAdapter(list,getApplicationContext());
-                recyclerView.setAdapter(adapter);
+                recyclerView.setAdapter(adapter);*/
 
             } catch (JSONException e) {
                 e.printStackTrace();
@@ -420,6 +423,8 @@ public class AuthorActivity extends AppCompatActivity implements NavigationView.
         }
 
     }
+
+
 
     /**
      * Class that get sidebar profile pic. from server
@@ -469,45 +474,37 @@ public class AuthorActivity extends AppCompatActivity implements NavigationView.
         @Override
         protected String doInBackground(String... params) {
             String UrlString = params[0];
-            String JSONString = params[1];
+            String bookID = params[1];
             String result = "";
 
+            // UrlString = UrlString + "?Json =" + params[1];
+            HttpClient httpclient = new DefaultHttpClient();
+            HttpGet httpget = new HttpGet(UrlString);
+
+
+
+            HttpResponse response = null;
+            String server_response = null;
             try {
-                //Create a URL object holding our url
-                URL url = new URL(UrlString);
-                HttpURLConnection http = (HttpURLConnection) url.openConnection();
-                http.setRequestMethod(REQUEST_METHOD);
-                http.setDoInput(true);
-                http.setDoOutput(true);
-
-                OutputStream ops = http.getOutputStream();
-                BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(ops, StandardCharsets.UTF_8));
-                String data = URLEncoder.encode("id", "UTF-8") + "=" + URLEncoder.encode(JSONString, "UTF-8");
-
-                writer.write(data);
-                writer.flush();
-                writer.close();
-                ops.close();
-
-                //Create a new InputStreamReader
-                InputStream ips = http.getInputStream();
-                BufferedReader reader = new BufferedReader(new InputStreamReader(ips, StandardCharsets.ISO_8859_1));
-                String line;
-                while ((line = reader.readLine()) != null) {
-                    result += line;
-                }
-                reader.close();
-                ips.close();
-                http.disconnect();
-                return result;
-
-            } catch (MalformedURLException e) {
-                result = e.getMessage();
+                response = httpclient.execute(httpget);
             } catch (IOException e) {
-                result = e.getMessage();
+                e.printStackTrace();
             }
-            return result;
-        }
+
+            if (response.getStatusLine().getStatusCode() == 200) {
+                try {
+                    server_response = EntityUtils.toString(response.getEntity());
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+                Log.d("Server response", server_response);
+            } else {
+                Log.d("Server response", "Failed to get server response");
+            }
+
+            result = server_response;
+            return result;        }
+
 
         @SuppressLint("SetTextI18n")
         protected void onPostExecute(String result) {

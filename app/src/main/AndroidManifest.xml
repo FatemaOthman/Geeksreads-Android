@@ -17,13 +17,13 @@
         <activity android:name=".ForgetPasswordActivity"/>
         <activity android:name=".SignOutActivity" />
         <activity android:name=".FeedActivity">
-        <intent-filter>
-            <action android:name="android.intent.action.MAIN" />
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
 
-            <category android:name="android.intent.category.LAUNCHER" />
+                <category android:name="android.intent.category.LAUNCHER" />
 
-            <action android:name="android.intent.action.VIEW" />
-        </intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+            </intent-filter>
         </activity>
         <activity android:name=".ChooseShelfActivity" />
         <activity android:name=".SideBarActivity" />
@@ -31,7 +31,7 @@
         <activity android:name=".Profile" />
         <activity android:name=".BookActivity" />
         <activity android:name=".LoginActivity" />
-        <activity android:name=".SignupActivity">
+        <activity android:name=".AuthorActivity">
 
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -51,7 +51,7 @@
             android:name=".FollowActivity"
             android:parentActivityName=".Profile" />
         <activity
-            android:name=".AuthorActivity"
+            android:name=".SignupActivity"
             android:isScrollContainer="true"
             android:windowSoftInputMode="adjustPan" />
         <activity
@@ -66,8 +66,12 @@
         <activity
             android:name=".WantToReadActivity"
             android:parentActivityName=".MyBooksShelvesActivity" />
+       <!-- <service android:name=".NotificationService" />
 
-        <service android:name=".NotificationService" />
+       /-->
+
+
+
     </application>
 
 </manifest>
