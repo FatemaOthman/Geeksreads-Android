@@ -66,10 +66,10 @@ public class EditProfileActivity extends AppCompatActivity {
     public static boolean isThisDateValid(String dateToValidate) {
 
 
-        Log.w("DATTEEEE", dateToValidate);
+        //Log.w("DATTEEEE", dateToValidate);
         SimpleDateFormat sdf = new SimpleDateFormat("mm/dd/yyyy");
         sdf.setLenient(false);
-        Log.w("DATTEEEE", dateToValidate);
+        //Log.w("DATTEEEE", dateToValidate);
         try {
             // if not valid, it will throw ParseException
             Date date = sdf.parse(dateToValidate);
@@ -81,10 +81,10 @@ public class EditProfileActivity extends AppCompatActivity {
             //System.out.println("Original Date = " + dateToValidate + ", Subtracted Date = " + currentDateBefore5Years.getTime().toString());
             if (date.after(currentDateBefore5Years.getTime())) {
                 //System.out.println("Original Date = " + dateToValidate + ", Subtracted Date = " + currentDateBefore5Years.getTime().toString() + ",  False");
-                Log.w("DATTEEEE", "FALSE");
+                //Log.w("DATTEEEE", "FALSE");
                 return false;
             } else {
-                Log.w("DATTEEEE", "TRUE");
+                //Log.w("DATTEEEE", "TRUE");
                 //System.out.println("Original Date = " + dateToValidate + ", Subtracted Date = " + currentDateBefore5Years.getTime().toString() + ",  True");
                 return true;
             }
@@ -147,9 +147,9 @@ public class EditProfileActivity extends AppCompatActivity {
         GetProfileData getProfileData = new GetProfileData();
         JSONObject getDataJson = new JSONObject();
         try {
-            Log.w("MahmoudTOKEN", UserSessionManager.getUserToken());
+            //Log.w("MahmoudTOKEN", UserSessionManager.getUserToken());
             getDataJson.put("token", UserSessionManager.getUserToken());
-            Log.w("Mahmoud___", getDataJson.toString());
+            //Log.w("Mahmoud___", getDataJson.toString());
         } catch (JSONException e) {
             e.printStackTrace();
         }
@@ -283,7 +283,7 @@ public class EditProfileActivity extends AppCompatActivity {
             String UrlString = params[0];
             String JSONString = params[1];
             String result = "";
-            Log.w("Mahmoud12", JSONString);
+            //Log.w("Mahmoud12", JSONString);
             try {
                 /* Create a URL object holding our url */
                 URL url = new URL(UrlString);
@@ -301,7 +301,7 @@ public class EditProfileActivity extends AppCompatActivity {
                 writer.flush();
                 writer.close();
                 ops.close();
-                Log.w("Mahmoud12000", String.valueOf(http.getResponseCode()));
+                //Log.w("Mahmoud12000", String.valueOf(http.getResponseCode()));
                 switch (String.valueOf(http.getResponseCode()))
                 {
                     case "200":
@@ -315,7 +315,7 @@ public class EditProfileActivity extends AppCompatActivity {
                         }
                         reader.close();
                         ips.close();
-                        Log.w("Mahmoud13", result);
+                        //Log.w("Mahmoud13", result);
                         break;
                     default:
                         result = "{\"ReturnMsg\":\"An Error Occurred!\"}";
@@ -330,7 +330,7 @@ public class EditProfileActivity extends AppCompatActivity {
             } catch (IOException e) {
                 result = e.getMessage();
             }
-            Log.w("Mahmoud14", result);
+            //Log.w("Mahmoud14", result);
             return result;
         }
 
@@ -370,7 +370,7 @@ public class EditProfileActivity extends AppCompatActivity {
                     /* Take Day */
                     String Day = bD;
                     String finalDate = Day + "/" + Month + "/" + Year;
-                    Log.w("FINALDATEEE", finalDate);
+                    //Log.w("FINALDATEEE", finalDate);
                     birthDateTxt.setText(finalDate);
                     if (!jsonObject.getString("Photo").equals(""))
                     {
