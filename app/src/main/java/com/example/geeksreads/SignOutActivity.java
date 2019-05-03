@@ -34,7 +34,7 @@ public class SignOutActivity extends AppCompatActivity {
     /**
      * Global Variables to Store Context of this Activity itself
      */
-    private Context mContext;
+    public static Context mContext;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -42,10 +42,6 @@ public class SignOutActivity extends AppCompatActivity {
         Button loginButton = findViewById(R.id.loginBtn);
         Button signupButton = findViewById(R.id.signupBtn);
         mContext = this;
-
-
-        /* Delete all user's data (id and token) */
-        UserSessionManager.logOutUser();
 
         /* URL For Sign out API */
         String urlService = APIs.API_SIGNOUT;
@@ -76,6 +72,9 @@ public class SignOutActivity extends AppCompatActivity {
                 startActivity(myIntent);
             }
         });
+
+        /* Delete all user's data (id and token) */
+        UserSessionManager.logOutUser();
     }
 
     /**
@@ -105,11 +104,13 @@ public class SignOutActivity extends AppCompatActivity {
                 http.setDoInput(true);
                 http.setDoOutput(true);
                 http.setRequestProperty("content-type", "application/json");
-                http.setRequestProperty("x-auth-token", UserToken);
                 /* A Stream object to hold the sent data to API Call */
                 OutputStream ops = http.getOutputStream();
                 BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(ops, StandardCharsets.UTF_8));
-                writer.write("");
+
+                JSONObject mJSON = new JSONObject();
+                mJSON.put("token", UserToken);
+                writer.write(mJSON.toString());
                 writer.flush();
                 writer.close();
                 ops.close();
@@ -138,6 +139,8 @@ public class SignOutActivity extends AppCompatActivity {
                 result = e.getMessage();
             } catch (IOException e) {
                 result = e.getMessage();
+            } catch (JSONException e) {
+                e.printStackTrace();
             }
             return result;
         }

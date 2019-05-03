@@ -53,7 +53,7 @@ public class MyBooksShelvesActivity extends AppCompatActivity implements Navigat
     /**
      * Global Public Static Variables used for Testing
      */
-    public static String sForTest_CurrentlyReading;
+    public static String sForTest_Reading;
     /**
      * Global Public Static Variables used for Testing
      */
@@ -309,12 +309,14 @@ public class MyBooksShelvesActivity extends AppCompatActivity implements Navigat
                 Button wantToReadBtn = findViewById(R.id.WantToReadBtn);
                 Button currentlyReadingBtn = findViewById(R.id.CurrentlyReadingBtn);
 
+                sForTest_Reading = readingCount;
+                sForTest_Read = readCount;
+                sForTest_WantToRead = wantToReadCount;
+
+
                 readBtn.setText("Read  " + readCount);
-                sForTest_Read = "Read  " + readCount;
                 wantToReadBtn.setText("Want to Read  " + wantToReadCount);
-                sForTest_WantToRead = "Want to Read  " + wantToReadCount;
                 currentlyReadingBtn.setText("Currently Reading  " + readingCount);
-                sForTest_CurrentlyReading = "Currently Reading  " + readingCount;
             }
             /* Catching Exceptions */ catch (JSONException e) {
                 e.printStackTrace();
