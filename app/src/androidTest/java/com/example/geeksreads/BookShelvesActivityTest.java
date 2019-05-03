@@ -37,6 +37,7 @@ public class BookShelvesActivityTest {
         }
         else
         {
+            if (!APIs.MimicModeEnabled) return;;
             assertEquals(true, MyBooksShelvesActivity.sForTest_Read != null);
         }
     }
@@ -51,6 +52,7 @@ public class BookShelvesActivityTest {
         }
         else
         {
+            if (!APIs.MimicModeEnabled) return;;
             assertEquals(true, MyBooksShelvesActivity.sForTest_Reading != null);
         }
     }
@@ -66,6 +68,7 @@ public class BookShelvesActivityTest {
         }
         else
         {
+            if (!APIs.MimicModeEnabled) return;;
             assertEquals(true, MyBooksShelvesActivity.sForTest_WantToRead != null);
         }
     }
