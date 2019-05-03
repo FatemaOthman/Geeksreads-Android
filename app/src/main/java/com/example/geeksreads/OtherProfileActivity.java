@@ -231,7 +231,7 @@ public class OtherProfileActivity extends AppCompatActivity implements Navigatio
     @SuppressLint("StaticFieldLeak")
     public class UnFollowUser extends AsyncTask<String, Void, String> {
         public static final String REQUEST_METHOD = "POST";
-
+        boolean TaskSucc = false;
         AlertDialog dialog;
 
         @Override
@@ -278,6 +278,7 @@ public class OtherProfileActivity extends AppCompatActivity implements Navigatio
                         }
                         reader.close();
                         ips.close();
+                        TaskSucc = true;
                         break;
                     case "400":
                         result = "{\"ReturnMsg\":\"Invalid email or password.\"}";
@@ -323,10 +324,11 @@ public class OtherProfileActivity extends AppCompatActivity implements Navigatio
                 JSONObject jsonObject = new JSONObject(result);
                 //  Log.i("AMR","Result: "+result);
 
-                if (jsonObject.getString("Follow").equals("true"))
+                if (TaskSucc)
                     FollowButton.setText("Follow");
                 else
                     FollowButton.setText("Un-Follow");
+                Toast.makeText(getApplicationContext(), "Unable to connect to Server!", Toast.LENGTH_SHORT).show();
 
             } catch (JSONException e) {
                 e.printStackTrace();
@@ -354,7 +356,7 @@ public class OtherProfileActivity extends AppCompatActivity implements Navigatio
     @SuppressLint("StaticFieldLeak")
     public class FollowUser extends AsyncTask<String, Void, String> {
         public static final String REQUEST_METHOD = "POST";
-
+        boolean TaskSucc = false;
         AlertDialog dialog;
 
         @Override
@@ -400,6 +402,7 @@ public class OtherProfileActivity extends AppCompatActivity implements Navigatio
                         }
                         reader.close();
                         ips.close();
+                        TaskSucc = true;
                         break;
                     default:
                         result = "{\"ReturnMsg\":\"An Error Occurred!\"}";
@@ -437,11 +440,11 @@ public class OtherProfileActivity extends AppCompatActivity implements Navigatio
 
                 JSONObject jsonObject = new JSONObject(result);
 
-                if (jsonObject.getString("Follow").equals("true"))
+                if (TaskSucc)
                     FollowButton.setText("Un-Follow");
                 else
                     FollowButton.setText("Follow");
-
+                Toast.makeText(getApplicationContext(), "Unable to connect to Server!", Toast.LENGTH_SHORT).show();
             } catch (JSONException e) {
                 e.printStackTrace();
             }
