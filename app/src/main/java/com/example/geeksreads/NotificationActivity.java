@@ -21,6 +21,7 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.SearchView;
@@ -295,7 +296,18 @@ public class NotificationActivity extends AppCompatActivity implements Navigatio
                 dialog.setMessage(result);
                 //dialog.show();
                 ListView notificationList = findViewById(R.id.NotificationList);
-                notificationList.setAdapter(new Notification_JSONAdapter(mContext, new JSONArray(result)));
+                final Notification_JSONAdapter notificationJsonAdapter = new Notification_JSONAdapter(mContext, new JSONArray(result));
+                notificationList.setAdapter(notificationJsonAdapter);
+                notificationList.deferNotifyDataSetChanged();
+                notificationList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                    @Override
+                    public void onItemClick(AdapterView<?> arg0, View arg1, int position, long arg3) {
+                        Intent intent = new Intent(NotificationActivity.this, Reviews.class);
+                        intent.putExtra("BookID",notificationJsonAdapter.getBookID(position));
+                        intent.putExtra("BookName",notificationJsonAdapter.getBookName(position));
+                        startActivity(intent);
+                    }
+                });
             } catch (JSONException e) {
                 e.printStackTrace();
             }
