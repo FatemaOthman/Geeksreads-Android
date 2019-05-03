@@ -79,14 +79,6 @@ public class Notification_JSONAdapter extends BaseAdapter {
         try {
 
             String body = data.getJSONObject(i).getString("body");
-            if (!data.getJSONObject(i).getBoolean("seen")) {
-                NotificationManager notificationManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
-                Notification notify = new Notification.Builder(context.getApplicationContext()).setContentTitle("GeeksRead").setContentText(body).setContentTitle("GeeksReads").setSmallIcon(R.drawable.ic_book).build();
-                notify.defaults |= Notification.DEFAULT_SOUND;
-                notify.defaults |= Notification.DEFAULT_VIBRATE;
-                notify.flags |= Notification.FLAG_AUTO_CANCEL;
-                Objects.requireNonNull(notificationManager).notify(0, notify);
-            }
             TextView notificationContent = itemView.findViewById(R.id.NotificationContent);
             notificationContent.setText(body);
 

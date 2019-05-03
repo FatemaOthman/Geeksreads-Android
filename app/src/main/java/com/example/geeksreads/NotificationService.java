@@ -2,13 +2,18 @@ package com.example.geeksreads;
 
 import android.annotation.SuppressLint;
 import android.app.Notification;
+import android.app.NotificationChannel;
 import android.app.NotificationManager;
+import android.app.PendingIntent;
 import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
 import android.os.AsyncTask;
+import android.os.Build;
 import android.os.IBinder;
 import android.support.annotation.Nullable;
+import android.support.v4.app.NotificationCompat;
+import android.support.v4.app.NotificationManagerCompat;
 import android.util.Log;
 
 import org.json.JSONArray;
@@ -37,6 +42,19 @@ public class NotificationService extends Service {
 
     public NotificationService() {
         this.context = this;
+    }
+
+
+    private void createNotificationChannel() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            CharSequence name = "notify";
+            String description = "test";
+            int importance = NotificationManager.IMPORTANCE_DEFAULT;
+            NotificationChannel channel = new NotificationChannel("NotificationsService", name, importance);
+            channel.setDescription(description);
+            NotificationManager notificationManager = getSystemService(NotificationManager.class);
+            Objects.requireNonNull(notificationManager).createNotificationChannel(channel);
+        }
     }
 
     void showPushNotification(){
@@ -161,20 +179,40 @@ public class NotificationService extends Service {
                 return;
             }
             try {
-
+                Log.d("NotificationResult", result);
                 JSONArray Notifications = new JSONArray(result);
-                for (int i=0 ; i< Notifications.length(); i++)
-                {
+                for (int i=0 ; i< Notifications.length(); i++) {
                     JSONObject CurrentNotification = Notifications.getJSONObject(i);
                     String body = CurrentNotification.getString("body");
                     if (!CurrentNotification.getBoolean("seen")) {
-                        NotificationManager notificationManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
-                        Notification notify = new Notification.Builder(context.getApplicationContext()).setContentTitle("GeeksRead").setContentText(body).setContentTitle("GeeksReads").setSmallIcon(R.drawable.ic_book).build();
-                        notify.defaults |= Notification.DEFAULT_SOUND;
-                        notify.defaults |= Notification.DEFAULT_VIBRATE;
-                        notify.flags |= Notification.FLAG_AUTO_CANCEL;
-                        Objects.requireNonNull(notificationManager).notify(0, notify);
 
+                        createNotificationChannel();
+                        Intent intent = new Intent(context, NotificationService.class);
+                        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                        PendingIntent pendingIntent = PendingIntent.getActivity(context, 0, intent, 0);
+                        NotificationCompat.Builder builder ;
+
+                        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
+                            builder = new NotificationCompat.Builder(context, "NotificationsService")
+                                    .setSmallIcon(R.drawable.ic_book)
+                                    .setContentTitle("GeeksReads")
+                                    .setContentText("type")
+                                    .setStyle(new NotificationCompat.BigTextStyle()
+                                            .bigText(body))
+                                    .setPriority(NotificationCompat.PRIORITY_HIGH)
+                                    .setContentIntent(pendingIntent)
+                                    .setAutoCancel(true)
+                                    .setDefaults(Notification.DEFAULT_SOUND)
+                                    .setDefaults(Notification.DEFAULT_VIBRATE);
+
+                            Log.d("Push","pleaaaaaaaaaaase");
+                        }
+                        else
+                        {
+                            builder = new NotificationCompat.Builder(context);
+                        }
+                        NotificationManagerCompat notificationManager = NotificationManagerCompat.from(context);
+                        notificationManager.notify(0, builder.build());
                     }
                 }
             } catch (JSONException e) {
