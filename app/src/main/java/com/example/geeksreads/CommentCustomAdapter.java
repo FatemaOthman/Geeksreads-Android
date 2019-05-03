@@ -7,7 +7,6 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.AsyncTask;
 import android.support.annotation.NonNull;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -65,7 +64,7 @@ public class CommentCustomAdapter  extends ArrayAdapter<CommentDataModel> implem
             viewHolder.UserPicInfo = convertView.findViewById(R.id.authorImageView);
             viewHolder.Details = convertView.findViewById(R.id.detailsTextView);
             viewHolder.UserName = convertView.findViewById(R.id.titleTextView);
-            viewHolder.NLikes = convertView.findViewById(R.id.likeCounterTextView);
+            //   viewHolder.NLikes = convertView.findViewById(R.id.likeCounterTextView);
 
             holder.Cover = viewHolder.UserPicInfo;
 
@@ -78,7 +77,7 @@ public class CommentCustomAdapter  extends ArrayAdapter<CommentDataModel> implem
         assert dataModel != null;
         viewHolder.Details.setText(dataModel.getCommentText());
         viewHolder.UserName.setText(dataModel.getUserName());
-        viewHolder.NLikes.setText(dataModel.getNLikes());
+        // viewHolder.NLikes.setText(dataModel.getNLikes());
         viewHolder.ReviewID = dataModel.getCommentID();
         viewHolder.UserWhoWroteID = dataModel.getUserWhoWroteID();
 
@@ -106,7 +105,7 @@ public class CommentCustomAdapter  extends ArrayAdapter<CommentDataModel> implem
         ImageView UserPicInfo;
         ExpandableTextView Details;
         TextView UserName;
-        TextView NLikes;
+        //  TextView NLikes;
         String ReviewID;
         String UserWhoWroteID;
     }

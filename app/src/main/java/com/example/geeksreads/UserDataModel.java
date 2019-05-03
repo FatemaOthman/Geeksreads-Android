@@ -26,7 +26,6 @@ public class UserDataModel {
             DummyUser.Picture_Url = jsonObject.getString("photo");
             DummyUser.User_Name = jsonObject.getString("UserName");
 
-
         } catch (JSONException e) {
             e.printStackTrace();
             return null;

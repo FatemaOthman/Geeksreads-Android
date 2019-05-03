@@ -44,8 +44,7 @@ public class Reviews extends AppCompatActivity {
         dataModels = new ArrayList<>();
         ReviewList = findViewById(R.id.ReviewsList);
         BookNameForReview = findViewById(R.id.ReviewsName);
-        //TODO: Remove next line and uncomment the following one.
-        //Don't forget to check with Sherouk that the BookName is passed.
+
         BookNameForReview.setText(getIntent().getStringExtra("BookName"));
 
         final String GetAllReviewsURL = APIs.API_GET_REVIEWS_LIST + "?UserId=" + UserSessionManager.getUserID() + "&" +

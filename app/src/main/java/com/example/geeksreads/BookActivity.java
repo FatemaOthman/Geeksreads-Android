@@ -86,6 +86,7 @@ public class BookActivity extends AppCompatActivity implements NavigationView.On
     String ImageURL;
     String AuthorID;
     String BookID;
+    String BookName;
 
     /* SideBar Views */
     ImageView userPhoto;
@@ -428,6 +429,7 @@ public class BookActivity extends AppCompatActivity implements NavigationView.On
                 if (TaskSuccess) {
                     /* Get Json Object from server and preview results on Layout views */
                     bookTitle.setText(jsonObject.getString("Title"));
+                    BookName = jsonObject.getString("Title");
                     bookAuthor.setText("By: " + "" + jsonObject.getString("Author"));
                     AuthorID = jsonObject.getString("AuthorId");
                     BookID = jsonObject.getString("BookId");
@@ -679,9 +681,15 @@ public class BookActivity extends AppCompatActivity implements NavigationView.On
             }
             try {
                 JSONObject jsonObject = new JSONObject(result);
+                Log.d("Review Result" , result);
                 if( TaskSuccess) {
                     if (jsonObject.getString("AddedReviewSuc").equals("true")) {
                         Toast.makeText(mContext, "Review Added", Toast.LENGTH_SHORT).show();
+
+                        Intent intent = new Intent(BookActivity.this, Reviews.class);
+                        intent.putExtra("BookID", BookID);
+                        intent.putExtra("BookName",BookName);
+                        startActivity(intent);
                     }
                 }
                 else
