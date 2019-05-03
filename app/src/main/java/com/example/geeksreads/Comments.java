@@ -58,7 +58,7 @@ public class Comments extends AppCompatActivity {
         dataModels = new ArrayList<>();
         CommentsList = findViewById(R.id.CommentsList);
 
-        CommentTextHolder = findViewById(R.id.commentText);
+        CommentTextHolder = findViewById(R.id.CommentText);
         AddCommentBtn = findViewById(R.id.AddComment);
 
         final JSONObject AddCommentJson = new JSONObject();
@@ -265,6 +265,8 @@ public class Comments extends AppCompatActivity {
             /*
                 DO Nothing
             */
+            Comments.GetAllComments performBackgroundTask = new Comments.GetAllComments();
+            // performBackgroundTask.execute(CommentsListUrl);
         }
 
     }

@@ -26,7 +26,6 @@ public class CommentDataModel {
         CommentDataModel DummyUser = new CommentDataModel();
         // Deserialize json into object fields
         try {
-            //TODO: Add Comment Date.
             DummyUser.UserProfilePicture = jsonObject.getString("photo");
             DummyUser.UserName = jsonObject.getString("userName");
             DummyUser.NLikes = jsonObject.getString("likesCount");
@@ -127,6 +126,16 @@ public class CommentDataModel {
      */
     String getUserWhoWroteID() {
         return UserWhoWroteID;
+    }
+
+
+    /**
+     * getDateOfComment: Gets when the Comment was written
+     *
+     * @return DateOfComment
+     */
+    String getDateOfComment() {
+        return DateOfComment;
     }
 
 }

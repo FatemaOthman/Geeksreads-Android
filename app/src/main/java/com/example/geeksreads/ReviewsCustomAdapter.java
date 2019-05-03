@@ -471,7 +471,6 @@ public class ReviewsCustomAdapter extends ArrayAdapter<ReviewDataModel> implemen
                 //dialog.show();
 
                 JSONObject jsonObject = new JSONObject(result);
-                //TODO: Add post execute logic of like here
 
 
             } catch (JSONException e) {

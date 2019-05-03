@@ -65,6 +65,7 @@ public class APIs {
 //    public static String API_GET_FOLLOWERS_LIST = "http://geeksreads.000webhostapp.com/Amr/GetFollowers.php";
 //    public static String API_GET_FOLLOWING_LIST = "http://geeksreads.000webhostapp.com/Amr/GetFollowers.php";
 //    public static String API_GET_REVIEWS_LIST = "http://geeksreads.000webhostapp.com/Amr/ReviewList.php";
+//    public static String API_GET_COMMENTS_LIST = "http://geeksreads.000webhostapp.com/Amr/Commentslist.php";
 
     public static boolean TestingModeEnabled = true;
     public static boolean MimicModeEnabled = false;
