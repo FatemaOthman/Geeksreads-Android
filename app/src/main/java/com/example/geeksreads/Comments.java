@@ -58,7 +58,7 @@ public class Comments extends AppCompatActivity {
         dataModels = new ArrayList<>();
         CommentsList = findViewById(R.id.CommentsList);
 
-        CommentTextHolder = findViewById(R.id.commentText);
+        CommentTextHolder = findViewById(R.id.CommentText);
         AddCommentBtn = findViewById(R.id.AddComment);
 
         final JSONObject AddCommentJson = new JSONObject();
@@ -188,7 +188,7 @@ public class Comments extends AppCompatActivity {
     @SuppressLint("StaticFieldLeak")
     public class AddComment extends AsyncTask<String, Void, String> {
         public static final String REQUEST_METHOD = "POST";
-
+        boolean TaskSucc = false;
         AlertDialog dialog;
 
         @Override
@@ -239,6 +239,7 @@ public class Comments extends AppCompatActivity {
                         }
                         reader.close();
                         ips.close();
+                        TaskSucc = true;
                         break;
                     default:
                         Log.d("Test", "String.valueOf(http.getResponseCode()): " + String.valueOf(http.getResponseCode()));
@@ -262,9 +263,11 @@ public class Comments extends AppCompatActivity {
         @SuppressLint("SetTextI18n")
         protected void onPostExecute(String result) {
 
-            /*
-                DO Nothing
-            */
+            if (!TaskSucc) {
+                Toast.makeText(getApplicationContext(), "Unable to Add Comment!", Toast.LENGTH_SHORT);
+            }
+            // Comments.GetAllComments performBackgroundTask = new Comments.GetAllComments();
+            // performBackgroundTask.execute(CommentsListUrl);
         }
 
     }

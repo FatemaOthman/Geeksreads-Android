@@ -389,7 +389,7 @@ public class ReviewsCustomAdapter extends ArrayAdapter<ReviewDataModel> implemen
     @SuppressLint("StaticFieldLeak")
     private class UnLikeReview extends AsyncTask<String, Void, String> {
         public static final String REQUEST_METHOD = "POST";
-
+        boolean TaskSucc = false;
         AlertDialog dialog;
 
         @Override
@@ -435,6 +435,7 @@ public class ReviewsCustomAdapter extends ArrayAdapter<ReviewDataModel> implemen
                         }
                         reader.close();
                         ips.close();
+                        TaskSucc = true;
                         break;
                     default:
                         result = "{\"ReturnMsg\":\"An Error Occurred!\"}";
@@ -471,7 +472,6 @@ public class ReviewsCustomAdapter extends ArrayAdapter<ReviewDataModel> implemen
                 //dialog.show();
 
                 JSONObject jsonObject = new JSONObject(result);
-                //TODO: Add post execute logic of like here
 
 
             } catch (JSONException e) {
