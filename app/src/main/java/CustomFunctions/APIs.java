@@ -12,6 +12,7 @@ public class APIs {
     public static String API_GET_USER_INFO = "https://geeksreads.herokuapp.com/api/users/me";
     public static String API_UPDATE_USER_PASSWORD = "https://geeksreads.herokuapp.com/api/users/UpdateUserPassword";
     public static String API_GET_SHELVES_COUNT = "https://geeksreads.herokuapp.com/api/users/ShelvesCount";
+    public static String API_UPLOAD_PHOTO = "http://geeksreads.000webhostapp.com/Morsy/UploadPhoto.php";
 
 
     public static String API_GET_BOOK_DETAILS = "https://geeksreads.herokuapp.com/api/books/id";
@@ -47,7 +48,7 @@ public class APIs {
 //    public static String API_GET_USER_INFO = "http://geeksreads.000webhostapp.com/Morsy/me.php";
 //    public static String API_UPDATE_USER_PASSWORD = "http://geeksreads.000webhostapp.com/Morsy/UpdateUserPassword.php";
 //    public static String API_GET_SHELVES_COUNT = "http://geeksreads.000webhostapp.com/Morsy/ShelvesCount.php";
-
+//    public static String API_UPLOAD_PHOTO = "http://geeksreads.000webhostapp.com/Morsy/UploadPhoto.php";
 
 //    public static String API_GET_BOOK_DETAILS = "http://geeksreads.000webhostapp.com/Shrouk/BookDetails.php";
 //    public static String API_GET_READ_LIST = "http://geeksreads.000webhostapp.com/Shrouk/ReadList.php";
@@ -66,6 +67,6 @@ public class APIs {
 //    public static String API_GET_FOLLOWING_LIST = "http://geeksreads.000webhostapp.com/Amr/GetFollowers.php";
 //    public static String API_GET_REVIEWS_LIST = "http://geeksreads.000webhostapp.com/Amr/ReviewList.php";
 
-    public static boolean TestingModeEnabled = true;
+    public static boolean TestingModeEnabled = false;
     public static boolean MimicModeEnabled = false;
 }

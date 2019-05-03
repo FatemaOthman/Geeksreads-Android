@@ -8,11 +8,19 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 
 import CustomFunctions.UserSessionManager;
+
+import java.io.ByteArrayOutputStream;
+import java.io.FileNotFoundException;
+import java.net.ProtocolException;
 import java.text.SimpleDateFormat;
+
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.provider.MediaStore;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Base64;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -200,7 +208,10 @@ public class EditProfileActivity extends AppCompatActivity {
                             JSON.put("token", UserSessionManager.getUserToken());
                             JSON.put("NewUserName", userNameStr);
                             JSON.put("NewUserBirthDate", birthDateStr);
-                            //JSON.put("NewUserPhoto", userPhotoUrl); //todo upload photo
+                            if (!newUserPhoto_Url.equals(""))
+                            {
+                                JSON.put("NewUserPhoto", newUserPhoto_Url);
+                            }
 
                         } catch (JSONException e) {
                             e.printStackTrace();
@@ -216,6 +227,15 @@ public class EditProfileActivity extends AppCompatActivity {
             }
         });
 
+
+        Button chooseNewPic = findViewById(R.id.choosePhotoBtn);
+        chooseNewPic.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+              PickImageFromGallery();
+
+            }
+        });
     }
 
     @Override
@@ -237,6 +257,76 @@ public class EditProfileActivity extends AppCompatActivity {
         });
         return super.onCreateOptionsMenu(menu);
     }
+
+    /**********************************************************************************************/
+    String newUserPhoto_B64 = "";
+    String newUserPhoto_Url = "";
+    private void PickImageFromGallery()
+    {
+        Intent gallery = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.INTERNAL_CONTENT_URI);
+        startActivityForResult(gallery, 100);
+    }
+
+    /* Function to encode from Bitmap into Base64 String */
+    private String encodeImage(Bitmap bm)
+    {
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        bm.compress(Bitmap.CompressFormat.JPEG,100,baos);
+        byte[] b = baos.toByteArray();
+        String encImage = Base64.encodeToString(b, Base64.DEFAULT);
+
+        return encImage;
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data)
+    {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (resultCode == RESULT_OK && requestCode == 100)
+        {
+            Uri imageUri = data.getData();
+            try {
+                InputStream imageStream = getContentResolver().openInputStream(imageUri);
+                Bitmap selectedImage = BitmapFactory.decodeStream(imageStream);
+                String encodedImage = encodeImage(selectedImage);
+                newUserPhoto_B64 = encodedImage;
+            } catch (FileNotFoundException e) {
+                e.printStackTrace();
+            }
+
+            if (!newUserPhoto_B64.equals(""))
+            {
+                JSONObject JSON = new JSONObject();
+                try {
+                    JSON.put("UserID", UserSessionManager.getUserID());
+                    JSON.put("Photo", newUserPhoto_B64);
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+                /* URL For Update Current User Data API */
+                String urlService = APIs.API_UPLOAD_PHOTO;
+
+                /* Creating a new instance of upload photo Class */
+                UploadPhotoClass uploadPhotoObj = new UploadPhotoClass();
+                uploadPhotoObj.execute(urlService, JSON.toString());
+            }
+        }
+    }
+
+    private Bitmap getBitmapFromBase64(String encodedImage)
+    {
+        byte[] decodedString = Base64.decode(encodedImage, Base64.DEFAULT);
+        Bitmap decodedByte = BitmapFactory.decodeByteArray(decodedString, 0, decodedString.length);
+        return decodedByte;
+    }
+    private void displayBitmap(Bitmap bitmap)
+    {
+        ImageView userProfilePhoto = findViewById(R.id.UserProfilePhoto);
+        userProfilePhoto.setImageBitmap(bitmap);
+    }
+
+    /**********************************************************************************************/
+
 
     /*  Class GetUserPicture:
      *      Gets user picture from the url and changes it into bitmap
@@ -372,6 +462,7 @@ public class EditProfileActivity extends AppCompatActivity {
                     String finalDate = Day + "/" + Month + "/" + Year;
                     //Log.w("FINALDATEEE", finalDate);
                     birthDateTxt.setText(finalDate);
+                    newUserPhoto_Url = jsonObject.getString("Photo");
                     if (!jsonObject.getString("Photo").equals(""))
                     {
                         GetPicture Pic = new GetPicture();
@@ -423,6 +514,7 @@ public class EditProfileActivity extends AppCompatActivity {
                 writer.flush();
                 writer.close();
                 ops.close();
+                Log.w("MORSY", data+UrlString);
                 switch (String.valueOf(http.getResponseCode()))
                 {
                     case "200":
@@ -458,6 +550,95 @@ public class EditProfileActivity extends AppCompatActivity {
                 Toast.makeText(mContext, jsonObject.getString("ReturnMsg"), Toast.LENGTH_SHORT).show();
 
                 finish();
+
+            }
+            /* Catching Exceptions */ catch (JSONException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    private class UploadPhotoClass extends AsyncTask<String, Void, String> {
+        static final String REQUEST_METHOD = "POST";
+        JSONObject mJSON = new JSONObject();
+
+        @Override
+        protected void onPreExecute() {
+            /* Do Nothing */
+        }
+
+        @Override
+        protected String doInBackground(String... params) {
+            String UrlString = params[0];
+            String JSONString = params[1];
+            String result = "";
+
+            try {
+                /* Create a URL object holding our url */
+                URL url = new URL(UrlString);
+                /* Create an HTTP Connection and adjust its options */
+                HttpURLConnection http = (HttpURLConnection) url.openConnection();
+                http.setRequestMethod(REQUEST_METHOD);
+                http.setDoInput(true);
+                http.setDoOutput(true);
+                http.setRequestProperty("content-type", "application/json");
+                /* A Stream object to hold the sent data to API Call */
+                OutputStream ops = http.getOutputStream();
+                BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(ops, StandardCharsets.UTF_8));
+                String data = JSONString;
+
+                writer.write(data);
+                writer.flush();
+                writer.close();
+                ops.close();
+                switch (String.valueOf(http.getResponseCode()))
+                {
+                    case "200":
+                        /* A Stream object to get the returned data from API Call */
+                        InputStream ips = http.getInputStream();
+                        BufferedReader reader = new BufferedReader(new InputStreamReader(ips, StandardCharsets.ISO_8859_1));
+                        String line = "";
+                        //boolean started = false;
+                        while ((line = reader.readLine()) != null) {
+                            result += line;
+                        }
+                        reader.close();
+                        ips.close();
+                        break;
+                    default:
+                        result = "{\"ReturnMsg\":\"An error occurred while uploading your photo!\"}";
+                        break;
+                }
+                http.disconnect();
+                return result;
+            }
+            /* Handling Exceptions */ catch (MalformedURLException e) {
+                result = e.getMessage();
+            } catch (IOException e) {
+                result = e.getMessage();
+            }
+            return result;
+        }
+
+        @SuppressLint("SetTextI18n")
+        protected void onPostExecute(String result) {
+            AlertDialog.Builder dialog = new AlertDialog.Builder(mContext);
+            if (result == null) {
+                Toast.makeText(mContext, "Unable to connect to server", Toast.LENGTH_SHORT).show();
+                return;
+            }
+            try {
+                /* Creating a JSON Object to parse the data in */
+                final JSONObject jsonObject = new JSONObject(result);
+                sForTest = jsonObject.getString("ReturnMsg");
+
+                Toast.makeText(mContext, jsonObject.getString("ReturnMsg"), Toast.LENGTH_SHORT).show();
+
+                if (jsonObject.getString("ReturnMsg").contains("Successful"))
+                {
+                    newUserPhoto_Url = jsonObject.getString("PhotoUrl");
+                    displayBitmap(getBitmapFromBase64(newUserPhoto_B64));
+                }
 
             }
             /* Catching Exceptions */ catch (JSONException e) {

@@ -282,4 +282,6 @@
     <string name="OrForgetPassword">"If you forgot your password, "</string>
     <string name="ForgetPassword">Click Here</string>
     <string name="OrSignUpTxt">"Or to create a new account, "</string>
+    <string name="UploadPhotoBtnTxt">Upload New Photo</string>
+    <string name="ChooseNewPhotoTxt">Choose a New Photo</string>
 </resources>

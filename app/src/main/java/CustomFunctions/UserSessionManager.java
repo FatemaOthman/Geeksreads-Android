@@ -55,8 +55,9 @@ public class UserSessionManager {
             userToken = _userToken;
         }
     }
-    public static void Initialize(Context context)
+    public static Context Initialize(Context context)
     {
+        if (context == null) return null;
         userEmail = "";
         hashedPassword = "";
         userToken = "";
@@ -85,6 +86,7 @@ public class UserSessionManager {
             CurrentState = UserSessionState.NO_DATA;
         }
         isInitialized = true;
+        return context;
     }
 
     public static String getHashedPassword()
