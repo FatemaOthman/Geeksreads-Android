@@ -205,9 +205,17 @@ public class EditProfileActivity extends AppCompatActivity {
                     case NO_ERRORS:
                         JSONObject JSON = new JSONObject();
                         try {
+                            String Date = birthDateStr;
+                            String Month = Date.substring(0, Date.indexOf('/'));
+                            Date = Date.substring(Date.indexOf('/')+1);
+                            String Day = Date.substring(0, Date.indexOf('/'));
+                            Date = Date.substring(Date.indexOf('/')+1);
+                            String Year = Date;
+                            Date = Year + "-" + Day+ "-" + Month+ "T00:00:00.000Z";
                             JSON.put("token", UserSessionManager.getUserToken());
                             JSON.put("NewUserName", userNameStr);
-                            JSON.put("NewUserBirthDate", birthDateStr);
+                            JSON.put("NewUserBirthDate", Date);
+                            Log.w("DATEEEE", Date);
                             if (!newUserPhoto_Url.equals(""))
                             {
                                 JSON.put("NewUserPhoto", newUserPhoto_Url);
@@ -463,6 +471,7 @@ public class EditProfileActivity extends AppCompatActivity {
                     //Log.w("FINALDATEEE", finalDate);
                     birthDateTxt.setText(finalDate);
                     newUserPhoto_Url = jsonObject.getString("Photo");
+                    Log.w("PHOTO", newUserPhoto_Url);
                     if (!jsonObject.getString("Photo").equals(""))
                     {
                         GetPicture Pic = new GetPicture();
