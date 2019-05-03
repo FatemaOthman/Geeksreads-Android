@@ -66,6 +66,10 @@ public class APIs {
 //    public static String API_GET_FOLLOWING_LIST = "http://geeksreads.000webhostapp.com/Amr/GetFollowers.php";
 //    public static String API_GET_REVIEWS_LIST = "http://geeksreads.000webhostapp.com/Amr/ReviewList.php";
 //    public static String API_GET_COMMENTS_LIST = "http://geeksreads.000webhostapp.com/Amr/Commentslist.php";
+//    public static String API_FOLLOW_USER = "http://geeksreads.000webhostapp.com/Amr/Follow.php";
+//    public static String API_UN_FOLLOW_USER = "http://geeksreads.000webhostapp.com/Amr/unFollow.php";
+//    public static String API_LIKE_REVIEW = "http://geeksreads.000webhostapp.com/Amr/Like.php";
+//    public static String API_UNLIKE_REVIEW = "http://geeksreads.000webhostapp.com/Amr/Unlike.php";
 
     public static boolean TestingModeEnabled = true;
     public static boolean MimicModeEnabled = false;

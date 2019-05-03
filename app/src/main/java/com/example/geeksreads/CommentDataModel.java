@@ -11,7 +11,6 @@ public class CommentDataModel {
     private String CommentID;
     private String UserProfilePicture;
     private String UserName;
-    private String NLikes;
     private String CommentText;
     private String UserWhoWroteID;
     private String DateOfComment;
@@ -28,11 +27,10 @@ public class CommentDataModel {
         try {
             DummyUser.UserProfilePicture = jsonObject.getString("photo");
             DummyUser.UserName = jsonObject.getString("userName");
-            DummyUser.NLikes = jsonObject.getString("likesCount");
             DummyUser.CommentText = jsonObject.getString("Body");
             DummyUser.CommentID = jsonObject.getString("CommentID");
             DummyUser.UserWhoWroteID = jsonObject.getString("userID");
-            DummyUser.DateOfComment = jsonObject.getString("date");
+            // DummyUser.DateOfComment = jsonObject.getString("date");
         } catch (JSONException e) {
             e.printStackTrace();
             return null;
@@ -80,15 +78,6 @@ public class CommentDataModel {
      */
     String getUserProfilePicture() {
         return UserProfilePicture;
-    }
-
-    /**
-     * getNLikes: Gets Number of Likes of Current Comment
-     *
-     * @return NLikes
-     */
-    String getNLikes() {
-        return NLikes;
     }
 
     /**
