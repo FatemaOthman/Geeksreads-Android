@@ -251,7 +251,8 @@ public class MyBooksShelvesActivity extends AppCompatActivity implements Navigat
                 OutputStream ops = http.getOutputStream();
                 BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(ops, StandardCharsets.UTF_8));
                 JSONObject newJson = new JSONObject();
-                newJson.put("token", userToken);
+                newJson.put("token", UserSessionManager.getUserToken());
+                newJson.put("UserId", UserSessionManager.getUserID());
                 writer.write(newJson.toString());
                 writer.flush();
                 writer.close();
