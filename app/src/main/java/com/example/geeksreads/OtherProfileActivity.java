@@ -50,7 +50,7 @@ import CustomFunctions.UserSessionManager;
 
 public class OtherProfileActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener{
     public static String aForTestUserName = "";
-    public static String aForTestBooksCount = "";
+    public static String aForTestUserPic = "";
 
     ImageView OtherUserPhoto;
     Context mContext;
@@ -616,11 +616,9 @@ public class OtherProfileActivity extends AppCompatActivity implements Navigatio
                 JSONObject jsonObject = new JSONObject(result);
                 OtherProfileActivity.GetOtherUserPicture Pic = new OtherProfileActivity.GetOtherUserPicture();
                 Pic.execute(jsonObject.getString("photo"));
-
+                aForTestUserPic = jsonObject.getString("photo");
                 UserName.setText(jsonObject.getString("UserName"));
                 aForTestUserName = UserName.getText().toString();
-                //BooksCount.setText(jsonObject.getString("CountBooks") + " " + "Books");
-                //aForTestBooksCount = BooksCount.getText().toString();
 
                 if (jsonObject.getString("IsFollowing").equals("true"))
                     FollowButton.setText("Un-Follow");

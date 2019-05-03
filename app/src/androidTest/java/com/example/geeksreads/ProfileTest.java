@@ -15,16 +15,16 @@ public class ProfileTest {
             new ActivityTestRule<>(Profile.class, true, true);
 
     @Test
-    public void Test_1() {
+    public void Test_MyProfile() {
 
 
         //Test Profile Picture:
         assertEquals("http://geeksreads.000webhostapp.com/LoggedInUser/PP.jpg", Profile.ForTestProfilePicture);
 
         //Test Followers Count:
-        assertEquals("2", Profile.ForTestFollowersCount);
+        assertEquals("50", Profile.ForTestFollowersCount);
 
         //Test Following Count:
-        assertEquals("2", Profile.ForTestFollowingCount);
+        assertEquals("20", Profile.ForTestFollowingCount);
     }
 }
