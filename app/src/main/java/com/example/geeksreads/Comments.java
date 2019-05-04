@@ -264,7 +264,7 @@ public class Comments extends AppCompatActivity {
         protected void onPostExecute(String result) {
 
             if (!TaskSucc) {
-                Toast.makeText(getApplicationContext(), "Unable to Add Comment!", Toast.LENGTH_SHORT);
+                Toast.makeText(getApplicationContext(), "Unable to Add Comment!", Toast.LENGTH_SHORT).show();
             }
             // Comments.GetAllComments performBackgroundTask = new Comments.GetAllComments();
             // performBackgroundTask.execute(CommentsListUrl);
