@@ -249,6 +249,7 @@ public class BookActivity extends AppCompatActivity implements NavigationView.On
                         ReviewObject.put("reviewDate", format.format(calendar.getTime()));
                         ReviewObject.put("rating",bookRating.getRating());
                         Log.d("Body", ReviewObject.toString());
+                        //sForTestAddingReview = "Review Added";
 
                     } catch (JSONException e) {
                         e.printStackTrace();
@@ -448,8 +449,8 @@ public class BookActivity extends AppCompatActivity implements NavigationView.On
                     /* Get Json Object from server and preview results on Layout views */
                     bookTitle.setText(jsonObject.getString("Title"));
                     BookName = jsonObject.getString("Title");
-                    bookAuthor.setText("By: " + "" + jsonObject.getString("AuthorId"));
-                    AuthorID = jsonObject.getString("AuthorId");
+                    bookAuthor.setText("By: " + "" + jsonObject.getString("AuthorName"));
+                    AuthorID = jsonObject.getString("AuthorName");
                     BookID = jsonObject.getString("BookId");
                     ratingsNumber.setText(jsonObject.getString("RateCount") + " " + "Ratings");
                     reviewsNumber.setText(jsonObject.getString("ReviewCount") + " " + "Reviews");
@@ -704,10 +705,12 @@ public class BookActivity extends AppCompatActivity implements NavigationView.On
                     if (jsonObject.getString("AddedReviewSuc").equals("true")) {
                         Toast.makeText(mContext, "Review Added", Toast.LENGTH_SHORT).show();
                         sForTestAddingReview = "Review Added";
-                        Intent intent = new Intent(BookActivity.this, Reviews.class);
-                        intent.putExtra("BookID", BookID);
-                        intent.putExtra("BookName",BookName);
-                        startActivity(intent);
+                        if (!APIs.TestingModeEnabled) {
+                            Intent intent = new Intent(BookActivity.this, Reviews.class);
+                            intent.putExtra("BookID", BookID);
+                            intent.putExtra("BookName",BookName);
+                            startActivity(intent);
+                        }
                     }
                 }
                 else

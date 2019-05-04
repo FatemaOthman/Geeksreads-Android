@@ -42,7 +42,7 @@ import java.util.Objects;
 
 public class ChooseShelfActivity extends AppCompatActivity {
 
-    public static String sForTestChooseShelf;
+    public static String sForTestChooseShelf, sForTestRadioChooseShelf;
 
     ImageView bookImage;
     Context mContext;
@@ -147,17 +147,17 @@ public class ChooseShelfActivity extends AppCompatActivity {
                     if (readRadio.isChecked())
                     {
                         shelfID = "Read";
-                        sForTestChooseShelf = "Read";
+                        sForTestRadioChooseShelf = "Read";
                     }
                     else if (readingRadio.isChecked())
                     {
                         shelfID = "Reading";
-                        sForTestChooseShelf = "Reading";
+                        sForTestRadioChooseShelf = "Reading";
                     }
                     else if (wantRadio.isChecked())
                     {
                         shelfID = "WantToRead";
-                        sForTestChooseShelf = "WantToRead";
+                        sForTestRadioChooseShelf = "WantToRead";
                     }
 
                     JSONObject ReviewObject = new JSONObject();
