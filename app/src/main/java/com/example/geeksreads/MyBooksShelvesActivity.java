@@ -20,10 +20,13 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.SearchView;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import com.example.geeksreads.views.LoadingView;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -69,6 +72,8 @@ public class MyBooksShelvesActivity extends AppCompatActivity implements Navigat
      * Global Variables to Store Context of this Activity itself
      */
     private Context mContext;
+
+    LoadingView Loading;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -123,6 +128,8 @@ public class MyBooksShelvesActivity extends AppCompatActivity implements Navigat
         Button wantToReadButton = findViewById(R.id.WantToReadBtn);
 
 
+        TextView allControls[] = {readButton, currentlyReadingButton, wantToReadButton};
+        Loading = new LoadingView(allControls, (FrameLayout)findViewById(R.id.progressBarHolder), (TextView)findViewById(R.id.ProgressName));
         readButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -229,7 +236,7 @@ public class MyBooksShelvesActivity extends AppCompatActivity implements Navigat
 
         @Override
         protected void onPreExecute() {
-            /* Do Nothing */
+            Loading.Start("Loading...");
         }
 
         @Override
@@ -323,8 +330,8 @@ public class MyBooksShelvesActivity extends AppCompatActivity implements Navigat
                 e.printStackTrace();
                 Toast.makeText(mContext, "Error in loading shelves data", Toast.LENGTH_SHORT).show();
             }
+            Loading.Stop();
         }
-
     }
 
     /**

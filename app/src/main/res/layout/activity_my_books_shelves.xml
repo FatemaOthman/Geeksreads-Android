@@ -24,6 +24,9 @@
             android:layout_height="match_parent"
             android:orientation="vertical">
 
+            !-- Progress bar overlay; shown while progress -->
+            <include layout="@layout/include_loading"/>
+
             <Button
                 android:id="@+id/ReadBtn"
                 style="@style/Widget.AppCompat.Button"
