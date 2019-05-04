@@ -50,7 +50,6 @@ public class APIs {
 //    public static String API_GET_SHELVES_COUNT = "http://geeksreads.000webhostapp.com/Morsy/ShelvesCount.php";
 //    public static String API_UPLOAD_PHOTO = "http://geeksreads.000webhostapp.com/Morsy/UploadPhoto.php";
 
-
 //    public static String API_GET_BOOK_DETAILS = "http://geeksreads.000webhostapp.com/Shrouk/BookDetails.php";
 //    public static String API_GET_READ_LIST = "http://geeksreads.000webhostapp.com/Shrouk/ReadList.php";
 //    public static String API_GET_READING_LIST = "http://geeksreads.000webhostapp.com/Shrouk/ReadingList.php";
