@@ -6,7 +6,7 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 
-public class ReviewDataModel {
+class ReviewDataModel {
 
     private String ReviewID;
     private String BookCoverPicture;
@@ -28,7 +28,7 @@ public class ReviewDataModel {
         ReviewDataModel DummyUser = new ReviewDataModel();
         // Deserialize json into object fields
         try {
-            //TODO: Add the data parameter and the rating.
+
             DummyUser.BookCoverPicture = jsonObject.getString("BookCover");
             DummyUser.UserProfilePicture = jsonObject.getString("photo");
             DummyUser.UserName = jsonObject.getString("userName");
@@ -53,7 +53,7 @@ public class ReviewDataModel {
      * @param jsonArray
      * @return ArrayList of Users Prototypes
      */
-    public static ArrayList<ReviewDataModel> fromJson(JSONArray jsonArray) {
+    static ArrayList<ReviewDataModel> fromJson(JSONArray jsonArray) {
         JSONObject UsersJson;
         ArrayList<ReviewDataModel> AllUsers = new ArrayList<>(jsonArray.length());
         // Process each result in json array, decode and convert to UserModel object

@@ -43,6 +43,15 @@ public class APIs {
     public static String API_LIKE_REVIEW = "https://geeksreads.herokuapp.com/api/resources/like";
     public static String API_UNLIKE_REVIEW = "https://geeksreads.herokuapp.com/api/resources/unlike";
 
+
+    public static String API_GET_AUTHOR_BY_ID = "https://geeksreads.herokuapp.com/api/authors/id";
+    public static String API_GET_FOLLOWING_AUTHOR_STATE = "https://geeksreads.herokuapp.com/api/authors/isfollowed";
+    public static String API_GET_BOOKS_WRITTEN_BY_AUTHOR = "https://geeksreads.herokuapp.com/api/books/author";
+    public static String API_FOLLOW_AUTHOR = "https://geeksreads.herokuapp.com/api/authors/follow";
+    public static String API_UNFOLLOW_AUTHOR = "https://geeksreads.herokuapp.com/api/authors/unfollow";
+    public static String API_AUTHOR_ISFOLLOWED ="https://geeksreads.herokuapp.com/api/authors/isfollowed";
+    public static String API_USER_SHELVES = "https://geeksreads.herokuapp.com/api/users/GetUserShelves";
+
     /* APIS Links for the Mimic Services APIs on Our Mimic Server, uncomment when used with Mimic */
 //    public static String API_LOGIN = "http://geeksreads.000webhostapp.com/Morsy/Signin.php";
 //    public static String API_SIGNUP = "http://geeksreads.000webhostapp.com/Morsy/Signup.php";
@@ -78,7 +87,8 @@ public class APIs {
     public static String API_LIKE_REVIEW = "http://geeksreads.000webhostapp.com/Amr/Like.php";
     public static String API_UNLIKE_REVIEW = "http://geeksreads.000webhostapp.com/Amr/Unlike.php";
     public static String API_ADD_COMMENT = "http://geeksreads.000webhostapp.com/Amr/AddComment.php";
-*/
+    */
+
     public static boolean TestingModeEnabled = false;
     public static boolean MimicModeEnabled = false;
 }

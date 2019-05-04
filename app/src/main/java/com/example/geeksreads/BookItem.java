@@ -8,13 +8,12 @@ public class BookItem {
     private String numOfRates;
     private String bookCoverURL;
     private String status="Add to ReadList";
+    private String bookID;
 
-    public BookItem(String bookName, String bookAuthor, String bookRate, String numOfRates, String bookCoverURL, String status) {
+    public BookItem(String bookName, String bookAuthor, String bookRate, String numOfRates, String bookCoverURL, String status, String bookID) {
         this.bookName = bookName;
         this.bookAuthor = bookAuthor;
-        //this.bookCover = bookCover;
-        //this.bookRateBar = bookRateBar;
-
+        this.bookID=bookID;
         this.bookRate = bookRate;
         this.numOfRates = numOfRates;
         this.bookCoverURL=bookCoverURL;
@@ -45,5 +44,9 @@ public class BookItem {
 
     public String getStatus() {
         return status;
+    }
+
+    public String getBookID() {
+        return bookID;
     }
 }

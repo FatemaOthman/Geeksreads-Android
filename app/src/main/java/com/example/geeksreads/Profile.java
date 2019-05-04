@@ -47,7 +47,7 @@ import CustomFunctions.UserSessionManager;
 public class Profile extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener{
 
     public static String ForTestProfilePicture, ForTestFollowersCount, ForTestFollowingCount;
-    ImageView UserPhoto;
+    public static ImageView UserPhoto;
     Context mContext;
     TextView FollowersCount;
     TextView FollowingCount;
@@ -272,6 +272,8 @@ public class Profile extends AppCompatActivity implements NavigationView.OnNavig
                 String photoUrl = params[0];
                 URL url = new URL(photoUrl);
                 HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+                connection.setDefaultUseCaches(false);
+                connection.setUseCaches(false);
                 connection.setDoInput(true);
                 connection.connect();
                 InputStream input = connection.getInputStream();
@@ -398,6 +400,7 @@ public class Profile extends AppCompatActivity implements NavigationView.OnNavig
                 ForTestProfilePicture = jsonObject.getString("photo");
                 ForTestFollowersCount = FollowersCount.getText().toString();
                 ForTestFollowingCount = FollowingCount.getText().toString();
+
             } catch (JSONException e) {
                 e.printStackTrace();
             }

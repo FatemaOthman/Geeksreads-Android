@@ -155,6 +155,7 @@ public class EditProfileActivity extends AppCompatActivity {
         chooseNewPic = findViewById(R.id.choosePhotoBtn);
         changePassword = findViewById(R.id.ChangePasswordBtn);
 
+
         setSupportActionBar(myToolbar);
         Objects.requireNonNull(getSupportActionBar()).setTitle("Edit Profile");
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
@@ -343,9 +344,11 @@ public class EditProfileActivity extends AppCompatActivity {
         Bitmap decodedByte = BitmapFactory.decodeByteArray(decodedString, 0, decodedString.length);
         return decodedByte;
     }
-    private void displayBitmap(Bitmap bitmap)
+    private void displayBitmap(ImageView userProfilePhoto,  Bitmap bitmap)
     {
-        ImageView userProfilePhoto = findViewById(R.id.UserProfilePhoto);
+        userProfilePhoto.destroyDrawingCache();
+        userProfilePhoto.setDrawingCacheEnabled(false);
+        userProfilePhoto.setWillNotCacheDrawing(true);
         userProfilePhoto.setImageBitmap(bitmap);
     }
 
@@ -364,6 +367,8 @@ public class EditProfileActivity extends AppCompatActivity {
                 String photoUrl = params[0];
                 URL url = new URL(photoUrl);
                 HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+                connection.setDefaultUseCaches(false);
+                connection.setUseCaches(false);
                 connection.setDoInput(true);
                 connection.connect();
                 InputStream input = connection.getInputStream();
@@ -665,7 +670,14 @@ public class EditProfileActivity extends AppCompatActivity {
                 if (jsonObject.getString("ReturnMsg").contains("Successful"))
                 {
                     newUserPhoto_Url = jsonObject.getString("PhotoUrl");
-                    displayBitmap(getBitmapFromBase64(newUserPhoto_B64));
+                    ImageView userProfilePhoto = findViewById(R.id.UserProfilePhoto);
+                    displayBitmap(userProfilePhoto, getBitmapFromBase64(newUserPhoto_B64));
+
+                    if (Profile.UserPhoto != null)
+                    {
+                        displayBitmap(Profile.UserPhoto, getBitmapFromBase64(newUserPhoto_B64));
+                    }
+
                 }
 
             }
