@@ -24,7 +24,6 @@ import CustomFunctions.UserSessionManager;
 
 import static android.support.test.InstrumentationRegistry.getInstrumentation;
 import static android.support.test.espresso.Espresso.onView;
-import static android.support.test.espresso.action.ViewActions.clearText;
 import static android.support.test.espresso.action.ViewActions.click;
 import static android.support.test.espresso.action.ViewActions.closeSoftKeyboard;
 import static android.support.test.espresso.action.ViewActions.replaceText;
@@ -34,7 +33,6 @@ import static android.support.test.espresso.matcher.ViewMatchers.isAssignableFro
 import static android.support.test.espresso.matcher.ViewMatchers.withId;
 import static android.support.test.espresso.matcher.ViewMatchers.withText;
 import static junit.framework.Assert.assertNotNull;
-import static junit.framework.Assert.assertNull;
 import static org.junit.Assert.assertEquals;
 
 public class BookActivityTest {
@@ -183,6 +181,23 @@ public class BookActivityTest {
 
         assertEquals("You have to rate before Adding a review.", BookActivity.sForTestAddingReview);
 
+    }
+
+    @Test
+    public void TestViewReviews(){
+        Intent mIntent = new Intent();
+        mIntent.putExtra("BookID", "111");
+
+        menuActivityTestRule.launchActivity(mIntent);
+
+        Instrumentation.ActivityMonitor activityMonitor = getInstrumentation().addMonitor(Reviews.class.getName(), null, false);
+
+        onView(withId(R.id.GoToReviews)).perform(scrollTo() , click());
+
+        Activity nextActivity = getInstrumentation().waitForMonitorWithTimeout(activityMonitor, 5000);
+        // next activity is opened and captured.
+        assertNotNull(nextActivity);
+        nextActivity .finish();
     }
     
 }

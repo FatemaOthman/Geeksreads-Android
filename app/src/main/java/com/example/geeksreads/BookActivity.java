@@ -80,6 +80,7 @@ public class BookActivity extends AppCompatActivity implements NavigationView.On
     EditText Review;
     Button bookOptions;
     Button AddReview;
+    Button viewReviews;
     RatingBar bookStars;
     RatingBar bookRating;
     ProgressBar mProgressBar;
@@ -195,6 +196,7 @@ public class BookActivity extends AppCompatActivity implements NavigationView.On
         AddReview = findViewById(R.id.AddReview);
         bookRating = findViewById(R.id.ratingBook);
         Review = findViewById(R.id.Review);
+        viewReviews = findViewById(R.id.GoToReviews);
 
         bookOptions.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -258,6 +260,18 @@ public class BookActivity extends AppCompatActivity implements NavigationView.On
                     AddReviewTask addReviewTask = new AddReviewTask();
                     addReviewTask.execute(UrlService, ReviewObject.toString());
                 }
+            }
+        });
+
+        viewReviews.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                Intent intent = new Intent(BookActivity.this, Reviews.class);
+                intent.putExtra("BookID", BookID);
+                intent.putExtra("BookName",BookName);
+                startActivity(intent);
+
             }
         });
 
