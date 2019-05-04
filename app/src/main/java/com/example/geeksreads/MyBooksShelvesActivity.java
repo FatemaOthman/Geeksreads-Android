@@ -48,6 +48,10 @@ import java.util.Objects;
 
 import CustomFunctions.APIs;
 
+/**
+ * @author Mahmoud MORSY,
+ * This Class Activity handles Books Shelves View and Display for Users
+ */
 public class MyBooksShelvesActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
     /**
      * Global Public Static Variables used for Testing
@@ -73,8 +77,14 @@ public class MyBooksShelvesActivity extends AppCompatActivity implements Navigat
      */
     private Context mContext;
 
+    /**
+     * Global Variable for LoadingView to be displayed while loading a content from server
+     */
     LoadingView Loading;
 
+    /**
+     * Function to be called when the Activity starts
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -164,7 +174,9 @@ public class MyBooksShelvesActivity extends AppCompatActivity implements Navigat
         updateReadShelf.execute(urlService);
     }
 
-
+    /**
+     * Overriding back button function to a custom behaviour
+     */
     @Override
     public void onBackPressed() {
         DrawerLayout drawer = findViewById(R.id.drawer_layout);
@@ -175,6 +187,9 @@ public class MyBooksShelvesActivity extends AppCompatActivity implements Navigat
         }
     }
 
+    /**
+     * Function to be called when menu is created
+     */
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater inflater = getMenuInflater();
@@ -198,6 +213,9 @@ public class MyBooksShelvesActivity extends AppCompatActivity implements Navigat
     }
 
 
+    /**
+     * Function to do Actions of Navigation Bar
+     */
     @Override
     public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
 
@@ -223,6 +241,7 @@ public class MyBooksShelvesActivity extends AppCompatActivity implements Navigat
     }
 
     /**
+     * @author  Mahmoud MORSY
      * Class that get the data from host and Add it to its views.
      * The Parameters are host Url and toSend Data.
      */
@@ -230,15 +249,23 @@ public class MyBooksShelvesActivity extends AppCompatActivity implements Navigat
         static final String REQUEST_METHOD = "POST";
         String userToken;
 
+        /**
+         * Constructor for UpdateBookSHelfCountClass
+         * @param userToken Parameter to send user token
+         */
         public UpdateBookShelfCount(String userToken) {
             this.userToken = userToken;
         }
-
+        /**
+         * Function to be done before Executing, it starts Loading Animation
+         */
         @Override
         protected void onPreExecute() {
             Loading.Start("Loading...");
         }
-
+        /**
+         * Function that executes the logic needed in the background thread
+         */
         @Override
         protected String doInBackground(String... params) {
             String UrlString = params[0];
@@ -298,7 +325,9 @@ public class MyBooksShelvesActivity extends AppCompatActivity implements Navigat
             }
             return result;
         }
-
+        /**
+         * Function that does the needed actions in layout and finish loading animation
+         */
         @SuppressLint("SetTextI18n")
         protected void onPostExecute(String result) {
 
@@ -335,10 +364,14 @@ public class MyBooksShelvesActivity extends AppCompatActivity implements Navigat
     }
 
     /**
-     * Class that get sidebar profile pic. from server
+     * @author  Mahmoud MORSY
+     * Class that get user profile pic. from server
      */
     private class GetUserPicture extends AsyncTask<String, Void, Bitmap> {
 
+        /**
+         * Function that executes the logic needed in the background thread
+         */
         @Override
         protected Bitmap doInBackground(String... params) {
             try {
@@ -356,6 +389,9 @@ public class MyBooksShelvesActivity extends AppCompatActivity implements Navigat
             return null;
         }
 
+        /**
+         * Function that does the needed actions in layout and display picture
+         */
         @Override
         protected void onPostExecute(Bitmap result) {
             userPhoto.setImageBitmap(result);
@@ -368,16 +404,20 @@ public class MyBooksShelvesActivity extends AppCompatActivity implements Navigat
      */
     private class GetSideBarDetails extends AsyncTask<String, Void, String> {
         static final String REQUEST_METHOD = "GET";
-        //public static final int READ_TIMEOUT = 3000;
-        //public static final int CONNECTION_TIMEOUT = 3000;
         AlertDialog dialog;
 
+        /**
+         * Function to be done before Executing, it starts Loading Animation
+         */
         @Override
         protected void onPreExecute() {
             dialog = new AlertDialog.Builder(mContext).create();
             dialog.setTitle("Connection Status");
         }
 
+        /**
+         * Function that executes the logic needed in the background thread
+         */
         @Override
         protected String doInBackground(String... params) {
             String UrlString = params[0];
@@ -421,6 +461,9 @@ public class MyBooksShelvesActivity extends AppCompatActivity implements Navigat
             return result;
         }
 
+        /**
+         * Function that does the needed actions in layout and finish loading animation
+         */
         @SuppressLint("SetTextI18n")
         protected void onPostExecute(String result) {
             if (result == null) {
