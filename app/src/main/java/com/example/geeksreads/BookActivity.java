@@ -18,6 +18,7 @@ import android.support.annotation.RequiresApi;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -88,6 +89,7 @@ public class BookActivity extends AppCompatActivity implements NavigationView.On
     String AuthorID;
     String BookID;
     String BookName;
+    SwipeRefreshLayout mSwipeRefreshLayout;
 
     /* SideBar Views */
     ImageView userPhoto;
@@ -127,7 +129,7 @@ public class BookActivity extends AppCompatActivity implements NavigationView.On
 
 
         Intent intent = getIntent();
-        String getID = intent.getStringExtra("BookID");
+        final String getID = intent.getStringExtra("BookID");
 
         /* ToolBar and SideBar Setups */
         Toolbar myToolbar = findViewById(R.id.toolbar);
@@ -277,7 +279,21 @@ public class BookActivity extends AppCompatActivity implements NavigationView.On
 
         Log.d("BookID",getID);
         /* Calling Async Task with my server url */
-        String UrlService = APIs.API_GET_BOOK_DETAILS;
+        final String UrlService = APIs.API_GET_BOOK_DETAILS;
+
+        mSwipeRefreshLayout = findViewById(R.id.BookSwipeLayout);
+        mSwipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            /**
+             *  Overrided Function to decide what to do when refreshing the layout.
+             */
+            @Override
+            public void onRefresh() {
+
+                mProgressBar.setVisibility(View.VISIBLE);
+                GetBookDetails getBookDetails = new GetBookDetails();
+                getBookDetails.execute(UrlService, getID);
+            }
+        });
         mProgressBar.setVisibility(View.VISIBLE);
         GetBookDetails getBookDetails = new GetBookDetails();
         getBookDetails.execute(UrlService, getID);
@@ -450,6 +466,7 @@ public class BookActivity extends AppCompatActivity implements NavigationView.On
         @SuppressLint("SetTextI18n")
         protected void onPostExecute(String result) {
             mProgressBar.setVisibility(View.GONE);
+            mSwipeRefreshLayout.setRefreshing(false);
             if (result == null) {
                 Toast.makeText(mContext, "Unable to connect to server", Toast.LENGTH_SHORT).show();
                 return;
@@ -708,6 +725,7 @@ public class BookActivity extends AppCompatActivity implements NavigationView.On
 
         @SuppressLint("SetTextI18n")
         protected void onPostExecute(String result) {
+            mSwipeRefreshLayout.setRefreshing(false);
             if (result == null) {
                 Toast.makeText(mContext, "Unable to connect to server", Toast.LENGTH_SHORT).show();
                 return;

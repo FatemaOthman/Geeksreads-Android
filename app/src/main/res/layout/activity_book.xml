@@ -25,258 +25,59 @@
             android:layout_height="wrap_content"
             android:background="@android:color/transparent" />
 
-        <ScrollView
-            android:layout_width="match_parent"
-            android:layout_height="match_parent">
+        <android.support.v4.widget.SwipeRefreshLayout
+            android:id="@+id/BookSwipeLayout"
+            style="@style/SwipeRefreshingLayout"
+            tools:context=".BookActivity">
 
-            <LinearLayout
+            <ScrollView
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="vertical">
-
-                <ImageView
-                    android:id="@+id/BookCover"
-                    android:layout_width="match_parent"
-                    android:layout_height="332dp"
-                    android:layout_marginTop="3dp"
-                    android:layout_marginBottom="10dp"
-                    android:background="@color/colorToolbar"
-                    android:contentDescription="@string/BookImageDescription"
-                    app:srcCompat="@android:drawable/ic_menu_report_image" />
-
-                <TextView
-                    android:id="@+id/BookTitleTxt"
-                    android:layout_width="match_parent"
-                    android:layout_height="36dp"
-                    android:fontFamily="sans-serif"
-                    android:text="@string/TempBookTitle"
-                    android:textAlignment="center"
-                    android:textColor="@android:color/background_dark"
-                    android:textSize="24sp"
-                    android:textStyle="normal" />
-
-
-                <TextView
-                    android:id="@+id/AuthorNameTxt"
-                    android:layout_width="match_parent"
-                    android:layout_height="35dp"
-                    android:text="@string/TempAuthorName"
-                    android:textAlignment="center"
-                    android:textColor="#2E8B57"
-                    android:textSize="20sp" />
-
-                <View
-                    android:id="@+id/FirstDivider"
-                    android:layout_width="match_parent"
-                    android:layout_height="1dp"
-                    android:layout_marginStart="15dp"
-                    android:layout_marginTop="20dp"
-                    android:layout_marginEnd="15dp"
-                    android:background="@color/colorNotificationbar" />
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:layout_marginStart="15dp"
-                    android:orientation="horizontal">
-
-                    <TextView
-                        android:id="@+id/RatingBar"
-                        android:layout_width="wrap_content"
-                        android:layout_height="match_parent"
-                        android:layout_weight="1"
-                        android:text="@string/TempRatingNumber"
-                        android:textAlignment="center"
-                        android:textColor="@android:color/background_dark"
-                        android:textSize="14sp" />
-
-                    <RatingBar
-                        android:id="@+id/BookRatingStars"
-                        style="?android:attr/ratingBarStyleSmall"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:clickable="false" />
-
-                    <TextView
-                        android:id="@+id/RatingsNumberTxt"
-                        android:layout_width="wrap_content"
-                        android:layout_height="match_parent"
-                        android:layout_weight="1"
-                        android:text="@string/TempRatingNumber"
-                        android:textAlignment="center"
-                        android:textColor="@android:color/background_dark"
-                        android:textSize="14sp" />
-
-                    <TextView
-                        android:id="@+id/ReviewsNumberTxt"
-                        android:layout_width="wrap_content"
-                        android:layout_height="match_parent"
-                        android:layout_weight="1"
-                        android:text="@string/TempReviewsNumber"
-                        android:textAlignment="center"
-                        android:textColor="@android:color/background_dark"
-                        android:textSize="14sp" />
-                </LinearLayout>
-
-                <View
-                    android:id="@+id/SecondDivider"
-                    android:layout_width="match_parent"
-                    android:layout_height="1dp"
-                    android:layout_marginTop="2dp"
-                    android:layout_marginStart="15dp"
-                    android:layout_marginEnd="15dp"
-                    android:background="@color/colorNotificationbar" />
-
-                <Button
-                    android:id="@+id/OptionsDropList"
-                    android:layout_width="match_parent"
-                    android:layout_marginLeft="90dp"
-                    android:layout_marginRight="90dp"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center"
-                    android:layout_marginTop="20dp"/>
-
-
-                <TextView
-                    android:id="@+id/BookDescriptionTxt"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="20dp"
-                    android:text="@string/BookDescriptionTxt"
-                    android:textAlignment="center"
-                    android:textColor="@android:color/background_dark"
-                    android:textSize="18sp"
-                    android:textStyle="bold" />
-
-                <View
-                    android:id="@+id/ThirdDivider"
-                    android:layout_width="148dp"
-                    android:layout_height="1dp"
-                    android:layout_gravity="center"
-                    android:background="@color/colorPrimary" />
-
-                <TextView
-                    android:id="@+id/DescriptionTxt"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="15dp"
-                    android:layout_marginTop="10dp"
-                    android:layout_marginEnd="15dp"
-                    android:scrollbars="vertical"
-                    android:text="@string/TempDesc"
-                    android:textAlignment="gravity"
-                    android:textColor="@android:color/background_dark"
-                    android:textSize="16sp" />
-
-
-                <View
-                    android:id="@+id/FourthDivider"
-                    android:layout_width="match_parent"
-                    android:layout_height="1dp"
-                    android:layout_gravity="center"
-                    android:layout_marginStart="15dp"
-                    android:layout_marginTop="10dp"
-                    android:layout_marginEnd="15dp"
-                    android:background="@android:color/darker_gray" />
+                android:layout_height="match_parent">
 
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:orientation="horizontal">
+                    android:orientation="vertical">
+
+                    <ImageView
+                        android:id="@+id/BookCover"
+                        android:layout_width="match_parent"
+                        android:layout_height="332dp"
+                        android:layout_marginTop="3dp"
+                        android:layout_marginBottom="10dp"
+                        android:background="@color/colorToolbar"
+                        android:contentDescription="@string/BookImageDescription"
+                        app:srcCompat="@android:drawable/ic_menu_report_image" />
 
                     <TextView
-                        android:id="@+id/pages"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginStart="15dp"
-                        android:layout_marginEnd="15dp"
-                        android:layout_weight="1"
-                        android:text="@string/PublishedOnString"
+                        android:id="@+id/BookTitleTxt"
+                        android:layout_width="match_parent"
+                        android:layout_height="36dp"
+                        android:fontFamily="sans-serif"
+                        android:text="@string/TempBookTitle"
                         android:textAlignment="center"
-                        android:textColor="@android:color/background_dark" />
+                        android:textColor="@android:color/background_dark"
+                        android:textSize="24sp"
+                        android:textStyle="normal" />
+
 
                     <TextView
-                        android:id="@+id/PublishedOnTxt"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginStart="15dp"
-                        android:layout_marginEnd="15dp"
-                        android:layout_weight="1"
-                        android:text="@string/PublishedOnString"
+                        android:id="@+id/AuthorNameTxt"
+                        android:layout_width="match_parent"
+                        android:layout_height="35dp"
+                        android:text="@string/TempAuthorName"
                         android:textAlignment="center"
-                        android:textColor="@android:color/background_dark" />
+                        android:textColor="#2E8B57"
+                        android:textSize="20sp" />
 
-                </LinearLayout>
-
-                <TextView
-                    android:id="@+id/ISBN"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="15dp"
-                    android:layout_marginEnd="15dp"
-                    android:text="@string/PublishedOnString"
-                    android:textAlignment="center"
-                    android:layout_gravity="center"
-                    android:textColor="@android:color/background_dark" />
-
-                <View
-                    android:id="@+id/FifthDivider"
-                    android:layout_width="match_parent"
-                    android:layout_height="1dp"
-                    android:layout_gravity="center"
-                    android:layout_marginStart="15dp"
-                    android:layout_marginEnd="15dp"
-                    android:layout_marginBottom="20dp"
-                    android:background="@android:color/darker_gray" />
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal">
-
-                <TextView
-                    android:id="@+id/rate"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="15dp"
-                    android:layout_marginTop="10dp"
-                    android:layout_weight="1"
-                    android:text="Rate Your Book:"
-                    android:textAlignment="gravity"
-                    android:textColor="@android:color/background_dark"
-                    android:textSize="18sp" />
-
-                <RatingBar
-                    android:id="@+id/ratingBook"
-                    style="@style/Base.Widget.AppCompat.RatingBar"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="start"
-                    android:layout_marginEnd="20dp"
-                    android:isIndicator="false"
-                    android:numStars="5"
-                    android:stepSize="1" />
-            </LinearLayout>
-
-
-                <EditText
-                    android:id="@+id/Review"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="15dp"
-                    android:layout_marginEnd="15dp"
-                    android:background="@drawable/edit_text_border"
-                    android:inputType="textMultiLine"
-                    android:lines="8"
-                    android:minLines="6"
-                    android:gravity="top|start"
-                    android:maxLines="15"
-                    android:imeOptions="actionDone"
-                    android:hint="@string/AddReviewString"
-                    android:overScrollMode="always"
-                    android:scrollHorizontally="false"
-                    android:scrollbars="vertical"
-                    tools:ignore="Autofill" />
+                    <View
+                        android:id="@+id/FirstDivider"
+                        android:layout_width="match_parent"
+                        android:layout_height="1dp"
+                        android:layout_marginStart="15dp"
+                        android:layout_marginTop="20dp"
+                        android:layout_marginEnd="15dp"
+                        android:background="@color/colorNotificationbar" />
 
                     <LinearLayout
                         android:layout_width="match_parent"
@@ -284,33 +85,238 @@
                         android:layout_marginStart="15dp"
                         android:orientation="horizontal">
 
-                        <Button
-                            android:id="@+id/GoToReviews"
+                        <TextView
+                            android:id="@+id/RatingBar"
+                            android:layout_width="wrap_content"
+                            android:layout_height="match_parent"
+                            android:layout_weight="1"
+                            android:text="@string/TempRatingNumber"
+                            android:textAlignment="center"
+                            android:textColor="@android:color/background_dark"
+                            android:textSize="14sp" />
+
+                        <RatingBar
+                            android:id="@+id/BookRatingStars"
+                            style="?android:attr/ratingBarStyleSmall"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:layout_marginStart="10dp"
-                            android:layout_weight="1"
-                            android:background="@android:color/transparent"
-                            android:text=" Click Here to view Reviews"
-                            android:textAlignment="textStart"
-                            android:textAppearance="@style/TextAppearance.AppCompat"
-                            android:textColor="@color/colorPrimaryDark" />
+                            android:clickable="false" />
 
-                        <Button
-                            android:id="@+id/AddReview"
+                        <TextView
+                            android:id="@+id/RatingsNumberTxt"
                             android:layout_width="wrap_content"
-                            android:layout_height="40dp"
-                            android:layout_gravity="end"
-                            android:layout_marginStart="100dp"
-                            android:layout_marginTop="5dp"
-                            android:layout_marginEnd="15dp"
-                            android:layout_marginBottom="40dp"
-                            android:background="@color/colorToolbar"
-                            android:text="Add Review" />
-                     </LinearLayout>
+                            android:layout_height="match_parent"
+                            android:layout_weight="1"
+                            android:text="@string/TempRatingNumber"
+                            android:textAlignment="center"
+                            android:textColor="@android:color/background_dark"
+                            android:textSize="14sp" />
 
-            </LinearLayout>
-        </ScrollView>
+                        <TextView
+                            android:id="@+id/ReviewsNumberTxt"
+                            android:layout_width="wrap_content"
+                            android:layout_height="match_parent"
+                            android:layout_weight="1"
+                            android:text="@string/TempReviewsNumber"
+                            android:textAlignment="center"
+                            android:textColor="@android:color/background_dark"
+                            android:textSize="14sp" />
+                    </LinearLayout>
+
+                    <View
+                        android:id="@+id/SecondDivider"
+                        android:layout_width="match_parent"
+                        android:layout_height="1dp"
+                        android:layout_marginTop="2dp"
+                        android:layout_marginStart="15dp"
+                        android:layout_marginEnd="15dp"
+                        android:background="@color/colorNotificationbar" />
+
+                    <Button
+                        android:id="@+id/OptionsDropList"
+                        android:layout_width="match_parent"
+                        android:layout_marginLeft="90dp"
+                        android:layout_marginRight="90dp"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:layout_marginTop="20dp"/>
+
+
+                    <TextView
+                        android:id="@+id/BookDescriptionTxt"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="20dp"
+                        android:text="@string/BookDescriptionTxt"
+                        android:textAlignment="center"
+                        android:textColor="@android:color/background_dark"
+                        android:textSize="18sp"
+                        android:textStyle="bold" />
+
+                    <View
+                        android:id="@+id/ThirdDivider"
+                        android:layout_width="148dp"
+                        android:layout_height="1dp"
+                        android:layout_gravity="center"
+                        android:background="@color/colorPrimary" />
+
+                    <TextView
+                        android:id="@+id/DescriptionTxt"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="15dp"
+                        android:layout_marginTop="10dp"
+                        android:layout_marginEnd="15dp"
+                        android:scrollbars="vertical"
+                        android:text="@string/TempDesc"
+                        android:textAlignment="gravity"
+                        android:textColor="@android:color/background_dark"
+                        android:textSize="16sp" />
+
+
+                    <View
+                        android:id="@+id/FourthDivider"
+                        android:layout_width="match_parent"
+                        android:layout_height="1dp"
+                        android:layout_gravity="center"
+                        android:layout_marginStart="15dp"
+                        android:layout_marginTop="10dp"
+                        android:layout_marginEnd="15dp"
+                        android:background="@android:color/darker_gray" />
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal">
+
+                        <TextView
+                            android:id="@+id/pages"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="15dp"
+                            android:layout_marginEnd="15dp"
+                            android:layout_weight="1"
+                            android:text="@string/PublishedOnString"
+                            android:textAlignment="center"
+                            android:textColor="@android:color/background_dark" />
+
+                        <TextView
+                            android:id="@+id/PublishedOnTxt"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="15dp"
+                            android:layout_marginEnd="15dp"
+                            android:layout_weight="1"
+                            android:text="@string/PublishedOnString"
+                            android:textAlignment="center"
+                            android:textColor="@android:color/background_dark" />
+
+                    </LinearLayout>
+
+                    <TextView
+                        android:id="@+id/ISBN"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="15dp"
+                        android:layout_marginEnd="15dp"
+                        android:text="@string/PublishedOnString"
+                        android:textAlignment="center"
+                        android:layout_gravity="center"
+                        android:textColor="@android:color/background_dark" />
+
+                    <View
+                        android:id="@+id/FifthDivider"
+                        android:layout_width="match_parent"
+                        android:layout_height="1dp"
+                        android:layout_gravity="center"
+                        android:layout_marginStart="15dp"
+                        android:layout_marginEnd="15dp"
+                        android:layout_marginBottom="20dp"
+                        android:background="@android:color/darker_gray" />
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:id="@+id/rate"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="15dp"
+                        android:layout_marginTop="10dp"
+                        android:layout_weight="1"
+                        android:text="Rate Your Book:"
+                        android:textAlignment="gravity"
+                        android:textColor="@android:color/background_dark"
+                        android:textSize="18sp" />
+
+                    <RatingBar
+                        android:id="@+id/ratingBook"
+                        style="@style/Base.Widget.AppCompat.RatingBar"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="start"
+                        android:layout_marginEnd="20dp"
+                        android:isIndicator="false"
+                        android:numStars="5"
+                        android:stepSize="1" />
+                </LinearLayout>
+
+
+                    <EditText
+                        android:id="@+id/Review"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="15dp"
+                        android:layout_marginEnd="15dp"
+                        android:background="@drawable/edit_text_border"
+                        android:inputType="textMultiLine"
+                        android:lines="8"
+                        android:minLines="6"
+                        android:gravity="top|start"
+                        android:maxLines="15"
+                        android:imeOptions="actionDone"
+                        android:hint="@string/AddReviewString"
+                        android:overScrollMode="always"
+                        android:scrollHorizontally="false"
+                        android:scrollbars="vertical"
+                        tools:ignore="Autofill" />
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:layout_marginStart="15dp"
+                            android:orientation="horizontal">
+
+                            <Button
+                                android:id="@+id/GoToReviews"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginStart="10dp"
+                                android:layout_weight="1"
+                                android:background="@android:color/transparent"
+                                android:text=" Click Here to view Reviews"
+                                android:textAlignment="textStart"
+                                android:textAppearance="@style/TextAppearance.AppCompat"
+                                android:textColor="@color/colorPrimaryDark" />
+
+                            <Button
+                                android:id="@+id/AddReview"
+                                android:layout_width="wrap_content"
+                                android:layout_height="40dp"
+                                android:layout_gravity="end"
+                                android:layout_marginStart="100dp"
+                                android:layout_marginTop="5dp"
+                                android:layout_marginEnd="15dp"
+                                android:layout_marginBottom="40dp"
+                                android:background="@color/colorToolbar"
+                                android:text="Add Review" />
+                         </LinearLayout>
+
+                </LinearLayout>
+            </ScrollView>
+        </android.support.v4.widget.SwipeRefreshLayout>
     </LinearLayout>
 
     <android.support.design.widget.NavigationView

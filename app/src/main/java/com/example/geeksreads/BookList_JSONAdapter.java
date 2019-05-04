@@ -115,7 +115,7 @@ public class BookList_JSONAdapter extends BaseAdapter {
             RatingNumber.setText(String.format("%s", Ratings));
 
             TextView RatingCount = view.findViewById(R.id.BookRatingsTxt);
-            RatingCount.setText(String.format("  %s Ratings", data.getJSONObject(i).getString("RatingCount")));
+            RatingCount.setText(String.format("  %s Ratings", data.getJSONObject(i).getString("RateCount")));
 
             RatingBar bookStars = view.findViewById(R.id.bookRatingStars);
             bookStars.setRating(Float.parseFloat(Ratings));
