@@ -13,7 +13,11 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.FrameLayout;
+import android.widget.TextView;
 import android.widget.Toast;
+
+import com.example.geeksreads.views.LoadingView;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -54,6 +58,7 @@ public class LoginActivity extends AppCompatActivity {
      */
     private Context mContext;
 
+    LoadingView Loading;
     /**
      * Function for Starting Logic Actions after Creating the Layout
      */
@@ -124,10 +129,14 @@ public class LoginActivity extends AppCompatActivity {
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
 
+
         /* Getting Text boxes and Buttons from the layout */
         Button loginButton = findViewById(R.id.LoginBtn);
         final EditText loginMail = findViewById(R.id.EmailTxt);
         final EditText loginPassword = findViewById(R.id.PasswordTxt);
+
+        TextView allControls[] = {loginMail, loginPassword, loginButton};
+        Loading = new LoadingView(allControls, (FrameLayout)findViewById(R.id.progressBarHolder), (TextView)findViewById(R.id.ProgressName));
 
         if (currentUserState == UserSessionManager.UserSessionState.USER_DATA_AVAILABLE_BUT_NOT_LOGGED_IN)
         {
@@ -261,7 +270,7 @@ public class LoginActivity extends AppCompatActivity {
 
         @Override
         protected void onPreExecute() {
-            /* Do Nothing */
+            Loading.Start("Signing in, Please wait...");
         }
 
         @Override
@@ -379,12 +388,15 @@ public class LoginActivity extends AppCompatActivity {
                     }
                 });
 
+                Loading.Stop();
                 dialog.show();
+
 
             }
             /* Catching Exceptions */ catch (JSONException e) {
                 e.printStackTrace();
             }
+            Loading.Stop();
         }
 
     }
@@ -398,7 +410,7 @@ public class LoginActivity extends AppCompatActivity {
 
         @Override
         protected void onPreExecute() {
-            /* Do Nothing */
+            Loading.Start("Loading, Please wait...");
         }
 
         @Override
@@ -481,11 +493,13 @@ public class LoginActivity extends AppCompatActivity {
                         }
                     }
                 });
+                Loading.Stop();
                 dialog.show();
             }
             /* Catching Exceptions */ catch (JSONException e) {
                 e.printStackTrace();
             }
+            Loading.Stop();
         }
 
     }
