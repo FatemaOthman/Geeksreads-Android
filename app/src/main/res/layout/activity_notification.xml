@@ -9,43 +9,43 @@
     tools:context=".BookActivity"
     tools:openDrawer="start">
 
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="vertical">
+  <LinearLayout
+      android:layout_width="match_parent"
+      android:layout_height="match_parent"
+      android:orientation="vertical">
 
-        <include
-            android:id="@+id/toolbar"
-            layout="@layout/toolbar"></include>
+    <include
+        android:id="@+id/toolbar"
+        layout="@layout/toolbar"/>
 
-        <android.support.v4.widget.SwipeRefreshLayout
-            android:id="@+id/notificationSwipeLayout"
-            style="@style/SwipeRefreshingLayout"
-            tools:context=".ReadBooksActivity">
+    <android.support.v4.widget.SwipeRefreshLayout
+        android:id="@+id/notificationSwipeLayout"
+        style="@style/SwipeRefreshingLayout"
+        tools:context=".ReadBooksActivity">
 
-            <ListView
-                android:id="@+id/NotificationList"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:scrollbars="vertical"
-                android:verticalScrollbarPosition="right" />
+      <ListView
+          android:id="@+id/NotificationList"
+          android:layout_width="match_parent"
+          android:layout_height="match_parent"
+          android:scrollbars="vertical"
+          android:verticalScrollbarPosition="right" />
 
-        </android.support.v4.widget.SwipeRefreshLayout>
+    </android.support.v4.widget.SwipeRefreshLayout>
 
-    </LinearLayout>
+  </LinearLayout>
 
-    <android.support.design.widget.NavigationView
-        android:id="@+id/nav_view"
-        android:layout_width="wrap_content"
-        android:layout_height="match_parent"
-        android:layout_gravity="start"
+  <android.support.design.widget.NavigationView
+      android:id="@+id/nav_view"
+      android:layout_width="wrap_content"
+      android:layout_height="match_parent"
+      android:layout_gravity="start"
 
-        android:background="@color/colorNavBackground"
-        android:fitsSystemWindows="true"
-        app:headerLayout="@layout/nav_header_side_bar"
-        app:itemIconTint="@color/colorFont"
-        app:itemTextColor="@color/colorFont"
-        app:menu="@menu/activity_side_bar_drawer"
+      android:background="@color/colorNavBackground"
+      android:fitsSystemWindows="true"
+      app:headerLayout="@layout/nav_header_side_bar"
+      app:itemIconTint="@color/colorFont"
+      app:itemTextColor="@color/colorFont"
+      app:menu="@menu/activity_side_bar_drawer"
 
-        />
+      />
 </android.support.v4.widget.DrawerLayout>

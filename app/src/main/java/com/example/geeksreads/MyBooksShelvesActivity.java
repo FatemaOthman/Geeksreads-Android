@@ -12,6 +12,7 @@ import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -76,6 +77,7 @@ public class MyBooksShelvesActivity extends AppCompatActivity implements Navigat
      * Global Variables to Store Context of this Activity itself
      */
     private Context mContext;
+    SwipeRefreshLayout mSwipeRefreshLayout;
 
     /**
      * Global Variable for LoadingView to be displayed while loading a content from server
@@ -166,11 +168,23 @@ public class MyBooksShelvesActivity extends AppCompatActivity implements Navigat
             }
         });
 
-        UpdateBookShelfCount updateReadShelf = new UpdateBookShelfCount(UserSessionManager.getUserToken());
 
         /* URL For Get Shelves Count API */
-        String urlService = APIs.API_GET_SHELVES_COUNT;
+        final String urlService = APIs.API_GET_SHELVES_COUNT;
 
+        mSwipeRefreshLayout = findViewById(R.id.MyBookSelvesSwipeLayout);
+        mSwipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            /**
+             *  Overrided Function to decide what to do when refreshing the layout.
+             */
+            @Override
+            public void onRefresh() {
+
+                UpdateBookShelfCount updateReadShelf = new UpdateBookShelfCount(UserSessionManager.getUserToken());
+                updateReadShelf.execute(urlService);
+            }
+        });
+        UpdateBookShelfCount updateReadShelf = new UpdateBookShelfCount(UserSessionManager.getUserToken());
         updateReadShelf.execute(urlService);
     }
 
@@ -359,6 +373,7 @@ public class MyBooksShelvesActivity extends AppCompatActivity implements Navigat
                 e.printStackTrace();
                 Toast.makeText(mContext, "Error in loading shelves data", Toast.LENGTH_SHORT).show();
             }
+            mSwipeRefreshLayout.setRefreshing(false);
             Loading.Stop();
         }
     }

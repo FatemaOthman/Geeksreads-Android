@@ -16,7 +16,7 @@
 
         <include
             android:id="@+id/toolbar"
-            layout="@layout/toolbar"></include>
+            layout="@layout/toolbar"/>
 
         <LinearLayout
             android:id="@+id/MyBooksTab"
@@ -27,75 +27,87 @@
             !-- Progress bar overlay; shown while progress -->
             <include layout="@layout/include_loading"/>
 
-            <Button
-                android:id="@+id/ReadBtn"
-                style="@style/Widget.AppCompat.Button"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="30dp"
-                android:layout_marginTop="30dp"
-                android:layout_marginEnd="30dp"
-                android:layout_marginRight="0dp"
-                android:background="@color/bkColor"
-                android:drawableRight="@android:drawable/ic_menu_send"
-                android:fadingEdge="none"
-                android:requiresFadingEdge="none"
-                android:shadowColor="@color/White"
-                android:text="@string/ReadTxt"
-                android:textAlignment="viewStart"
-                android:textAppearance="@style/TextAppearance.AppCompat" />
+            <android.support.v4.widget.SwipeRefreshLayout
+                android:id="@+id/MyBookSelvesSwipeLayout"
+                style="@style/SwipeRefreshingLayout"
+                tools:context=".MyBooksShelvesActivity">
 
-            <ImageView
-                android:id="@+id/SpacerImg1"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="30dp"
-                android:layout_marginEnd="30dp"
-                app:srcCompat="@mipmap/spacer" />
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:orientation="vertical">
 
-            <Button
-                android:id="@+id/CurrentlyReadingBtn"
-                style="@style/Widget.AppCompat.Button"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="30dp"
-                android:layout_marginEnd="30dp"
-                android:layout_marginRight="0dp"
-                android:background="@color/bkColor"
-                android:drawableRight="@android:drawable/ic_menu_send"
-                android:text="@string/CurrentlyReadingTxt"
-                android:textAlignment="viewStart"
-                android:textAppearance="@style/TextAppearance.AppCompat" />
+                <Button
+                    android:id="@+id/ReadBtn"
+                    style="@style/Widget.AppCompat.Button"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="30dp"
+                    android:layout_marginTop="30dp"
+                    android:layout_marginEnd="30dp"
+                    android:layout_marginRight="0dp"
+                    android:background="@color/bkColor"
+                    android:drawableRight="@android:drawable/ic_menu_send"
+                    android:fadingEdge="none"
+                    android:requiresFadingEdge="none"
+                    android:shadowColor="@color/White"
+                    android:text="@string/ReadTxt"
+                    android:textAlignment="viewStart"
+                    android:textAppearance="@style/TextAppearance.AppCompat" />
 
-            <ImageView
-                android:id="@+id/SpacerImg2"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="30dp"
-                android:layout_marginEnd="30dp"
-                app:srcCompat="@mipmap/spacer" />
+                <ImageView
+                    android:id="@+id/SpacerImg1"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="30dp"
+                    android:layout_marginEnd="30dp"
+                    app:srcCompat="@mipmap/spacer" />
 
-            <Button
-                android:id="@+id/WantToReadBtn"
-                style="@style/Widget.AppCompat.Button"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="30dp"
-                android:layout_marginEnd="30dp"
-                android:layout_marginRight="0dp"
-                android:background="@color/bkColor"
-                android:drawableRight="@android:drawable/ic_menu_send"
-                android:text="@string/WantToReadTxt"
-                android:textAlignment="viewStart"
-                android:textAppearance="@style/TextAppearance.AppCompat" />
+                <Button
+                    android:id="@+id/CurrentlyReadingBtn"
+                    style="@style/Widget.AppCompat.Button"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="30dp"
+                    android:layout_marginEnd="30dp"
+                    android:layout_marginRight="0dp"
+                    android:background="@color/bkColor"
+                    android:drawableRight="@android:drawable/ic_menu_send"
+                    android:text="@string/CurrentlyReadingTxt"
+                    android:textAlignment="viewStart"
+                    android:textAppearance="@style/TextAppearance.AppCompat" />
 
-            <ImageView
-                android:id="@+id/SpacerImg3"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="30dp"
-                android:layout_marginEnd="30dp"
-                app:srcCompat="@mipmap/spacer" />
+                <ImageView
+                    android:id="@+id/SpacerImg2"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="30dp"
+                    android:layout_marginEnd="30dp"
+                    app:srcCompat="@mipmap/spacer" />
+
+                <Button
+                    android:id="@+id/WantToReadBtn"
+                    style="@style/Widget.AppCompat.Button"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="30dp"
+                    android:layout_marginEnd="30dp"
+                    android:layout_marginRight="0dp"
+                    android:background="@color/bkColor"
+                    android:drawableRight="@android:drawable/ic_menu_send"
+                    android:text="@string/WantToReadTxt"
+                    android:textAlignment="viewStart"
+                    android:textAppearance="@style/TextAppearance.AppCompat" />
+
+                <ImageView
+                    android:id="@+id/SpacerImg3"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="30dp"
+                    android:layout_marginEnd="30dp"
+                    app:srcCompat="@mipmap/spacer" />
+                </LinearLayout>
+        </android.support.v4.widget.SwipeRefreshLayout>
 
         </LinearLayout>
     </LinearLayout>
