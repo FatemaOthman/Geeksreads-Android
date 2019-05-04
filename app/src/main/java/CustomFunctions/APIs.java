@@ -1,5 +1,10 @@
 package CustomFunctions;
 
+/**
+ * @author Mahmoud MORSY
+ * @author Amr KHALED, Shrouk RASHWAN, Fatema OTHMAN,
+ * This Class stores all the APIs End Points, so as to access/modify them all from one location only
+ */
 public class APIs {
 
     /* APIS Links for the Deployed APIs on Server, uncomment when used with Deployed */
@@ -61,17 +66,19 @@ public class APIs {
 //    public static String API_GET_USER_NOTIFICATIONS = "http://geeksreads.000webhostapp.com/Shrouk/Notifications.php";
 //    public static String API_MAKE_NOTIFICATION_SEEN = "http://geeksreads.000webhostapp.com/Shrouk/NotificationSeen.php";
 
-//    public static String API_GET_USER_INFO = "http://geeksreads.000webhostapp.com/Amr/UserProfile.php";
-//    public static String API_GET_USER_BY_ID = "http://geeksreads.000webhostapp.com/Amr/OtherUserProfile.php";
-//    public static String API_GET_FOLLOWERS_LIST = "http://geeksreads.000webhostapp.com/Amr/GetFollowers.php";
-//    public static String API_GET_FOLLOWING_LIST = "http://geeksreads.000webhostapp.com/Amr/GetFollowers.php";
-//    public static String API_GET_REVIEWS_LIST = "http://geeksreads.000webhostapp.com/Amr/ReviewList.php";
-//    public static String API_GET_COMMENTS_LIST = "http://geeksreads.000webhostapp.com/Amr/Commentslist.php";
-//    public static String API_FOLLOW_USER = "http://geeksreads.000webhostapp.com/Amr/Follow.php";
-//    public static String API_UN_FOLLOW_USER = "http://geeksreads.000webhostapp.com/Amr/unFollow.php";
-//    public static String API_LIKE_REVIEW = "http://geeksreads.000webhostapp.com/Amr/Like.php";
-//    public static String API_UNLIKE_REVIEW = "http://geeksreads.000webhostapp.com/Amr/Unlike.php";
-
+    /*
+    public static String API_GET_USER_INFO = "http://geeksreads.000webhostapp.com/Amr/UserProfile.php";
+    public static String API_GET_USER_BY_ID = "http://geeksreads.000webhostapp.com/Amr/OtherUserProfile.php";
+    public static String API_GET_FOLLOWERS_LIST = "http://geeksreads.000webhostapp.com/Amr/GetFollowers.php";
+    public static String API_GET_FOLLOWING_LIST = "http://geeksreads.000webhostapp.com/Amr/GetFollowers.php";
+    public static String API_GET_REVIEWS_LIST = "http://geeksreads.000webhostapp.com/Amr/ReviewList.php";
+    public static String API_GET_COMMENTS_LIST = "http://geeksreads.000webhostapp.com/Amr/Commentslist.php";
+    public static String API_FOLLOW_USER = "http://geeksreads.000webhostapp.com/Amr/Follow.php";
+    public static String API_UN_FOLLOW_USER = "http://geeksreads.000webhostapp.com/Amr/UnFollow.php";
+    public static String API_LIKE_REVIEW = "http://geeksreads.000webhostapp.com/Amr/Like.php";
+    public static String API_UNLIKE_REVIEW = "http://geeksreads.000webhostapp.com/Amr/Unlike.php";
+    public static String API_ADD_COMMENT = "http://geeksreads.000webhostapp.com/Amr/AddComment.php";
+*/
     public static boolean TestingModeEnabled = false;
     public static boolean MimicModeEnabled = false;
 }

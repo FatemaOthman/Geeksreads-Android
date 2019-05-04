@@ -12,7 +12,11 @@ import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.FrameLayout;
+import android.widget.TextView;
 import android.widget.Toast;
+
+import com.example.geeksreads.views.LoadingView;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -40,7 +44,7 @@ public class ForgetPasswordActivity extends AppCompatActivity {
      */
     private Context mContext;
 
-
+    LoadingView Loading;
     /**
      * Function for Starting Logic Actions after Creating the Layout
      */
@@ -95,6 +99,10 @@ public class ForgetPasswordActivity extends AppCompatActivity {
         final EditText verificationCode = findViewById(R.id.otpTxt);
         final EditText newPassword = findViewById(R.id.passwordTxt);
         final EditText confNewPassword = findViewById(R.id.confPasswordTxt);
+
+
+        TextView allControls[] = {savePasswordBtn, cancelBtn, verificationCode, newPassword, confNewPassword};
+        Loading = new LoadingView(allControls, (FrameLayout)findViewById(R.id.progressBarHolder), (TextView)findViewById(R.id.ProgressName));
 
         /* Function Handler for Clicking on Save Changed Password Button, to Start Checking input Field
            and Sending JSON String to the Backend  API
@@ -183,7 +191,7 @@ public class ForgetPasswordActivity extends AppCompatActivity {
 
         @Override
         protected void onPreExecute() {
-            /* Do Nothing */
+            Loading.Start("Loading, Please wait...");
         }
 
         @Override
@@ -273,6 +281,7 @@ public class ForgetPasswordActivity extends AppCompatActivity {
             /* Catching Exceptions */ catch (JSONException e) {
                 e.printStackTrace();
             }
+            Loading.Stop();
         }
 
     }

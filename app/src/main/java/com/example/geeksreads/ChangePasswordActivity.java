@@ -13,8 +13,12 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.FrameLayout;
 import android.widget.SearchView;
+import android.widget.TextView;
 import android.widget.Toast;
+
+import com.example.geeksreads.views.LoadingView;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -46,6 +50,7 @@ public class ChangePasswordActivity extends AppCompatActivity {
      */
     private Context mContext;
 
+    LoadingView Loading;
     /* Enum which specifies the kinds of errors that might come from verifyChangePassword function */
     enum changePasswordErrors
     {
@@ -99,6 +104,8 @@ public class ChangePasswordActivity extends AppCompatActivity {
         final EditText newPasswordTxt = findViewById(R.id.NewPasswordTxt);
         final EditText confNewPasswordTxt = findViewById(R.id.ConfirmNewPasswordTxt);
 
+        TextView allControls[] = {saveNewPassword, cancel, oldPasswordTxt, newPasswordTxt, confNewPasswordTxt};
+        Loading = new LoadingView(allControls, (FrameLayout)findViewById(R.id.progressBarHolder), (TextView)findViewById(R.id.ProgressName));
 
         cancel.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -210,7 +217,7 @@ public class ChangePasswordActivity extends AppCompatActivity {
 
         @Override
         protected void onPreExecute() {
-            /* Do Nothing */
+            Loading.Start("Changing your password, Please wait...");
         }
 
         @Override
@@ -314,6 +321,7 @@ public class ChangePasswordActivity extends AppCompatActivity {
                 Toast.makeText(mContext, "An Error Occurred!", Toast.LENGTH_SHORT).show();
                 e.printStackTrace();
             }
+            Loading.Stop();
         }
 
     }
