@@ -7,6 +7,9 @@
     android:orientation="vertical"
     tools:context=".SignOutActivity">
 
+    !-- Progress bar overlay; shown while progress -->
+    <include layout="@layout/include_loading"/>
+
     <ImageView
         android:id="@+id/logo"
         android:layout_width="match_parent"
