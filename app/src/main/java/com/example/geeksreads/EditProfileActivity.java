@@ -26,11 +26,16 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.animation.AlphaAnimation;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.SearchView;
+import android.widget.TextView;
 import android.widget.Toast;
+
+import com.example.geeksreads.views.LoadingView;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -70,6 +75,13 @@ public class EditProfileActivity extends AppCompatActivity {
      */
     private Context mContext;
 
+    EditText userNameTxt;
+    EditText birthDateTxt;
+    Button saveChange;
+    Button chooseNewPic;
+    Button changePassword;
+
+    LoadingView Loading;
     /* Function to check the validity of the input date string with a format of DD/MM/YYYY and before 5 Years*/
     public static boolean isThisDateValid(String dateToValidate) {
 
@@ -137,6 +149,12 @@ public class EditProfileActivity extends AppCompatActivity {
         setContentView(R.layout.activity_edit_profile);
 
         Toolbar myToolbar = findViewById(R.id.toolbar);
+        userNameTxt = findViewById(R.id.UserNameTxt);
+        birthDateTxt = findViewById(R.id.BirthDate);
+        saveChange = findViewById(R.id.SaveChangesBtn);
+        chooseNewPic = findViewById(R.id.choosePhotoBtn);
+        changePassword = findViewById(R.id.ChangePasswordBtn);
+
         setSupportActionBar(myToolbar);
         Objects.requireNonNull(getSupportActionBar()).setTitle("Edit Profile");
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
@@ -146,7 +164,8 @@ public class EditProfileActivity extends AppCompatActivity {
                 finish();
             }
         });
-
+        TextView allControls[] = {saveChange, changePassword, chooseNewPic, userNameTxt, birthDateTxt};
+        Loading = new LoadingView(allControls, (FrameLayout)findViewById(R.id.progressBarHolder), (TextView)findViewById(R.id.ProgressName));
         mContext = this;
         /* URL For Get Current User Info API */
         String urlService = APIs.API_GET_USER_INFO;
@@ -163,10 +182,7 @@ public class EditProfileActivity extends AppCompatActivity {
         }
         getProfileData.execute(urlService, getDataJson.toString());
 
-        final EditText userNameTxt = findViewById(R.id.UserNameTxt);
-        final EditText birthDateTxt = findViewById(R.id.BirthDate);
 
-        Button changePassword = findViewById(R.id.ChangePasswordBtn);
 
         changePassword.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -177,7 +193,7 @@ public class EditProfileActivity extends AppCompatActivity {
             }
         });
 
-        Button saveChange = findViewById(R.id.SaveChangesBtn);
+
         saveChange.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -236,7 +252,7 @@ public class EditProfileActivity extends AppCompatActivity {
         });
 
 
-        Button chooseNewPic = findViewById(R.id.choosePhotoBtn);
+
         chooseNewPic.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -373,7 +389,7 @@ public class EditProfileActivity extends AppCompatActivity {
 
         @Override
         protected void onPreExecute() {
-            /* Do Nothing */
+            Loading.Start("Loading profile data, Please wait...");
         }
 
         @Override
@@ -486,6 +502,7 @@ public class EditProfileActivity extends AppCompatActivity {
             /* Catching Exceptions */ catch (JSONException e) {
                 e.printStackTrace();
             }
+            Loading.Stop();
         }
 
     }
@@ -496,7 +513,7 @@ public class EditProfileActivity extends AppCompatActivity {
 
         @Override
         protected void onPreExecute() {
-            /* Do Nothing */
+            Loading.Start("Saving your changes, Please wait...");
         }
 
         @Override
@@ -564,6 +581,7 @@ public class EditProfileActivity extends AppCompatActivity {
             /* Catching Exceptions */ catch (JSONException e) {
                 e.printStackTrace();
             }
+            Loading.Stop();
         }
     }
 
@@ -573,7 +591,7 @@ public class EditProfileActivity extends AppCompatActivity {
 
         @Override
         protected void onPreExecute() {
-            /* Do Nothing */
+            Loading.Start("Uploading your photo, Please wait...");
         }
 
         @Override
@@ -630,7 +648,8 @@ public class EditProfileActivity extends AppCompatActivity {
         }
 
         @SuppressLint("SetTextI18n")
-        protected void onPostExecute(String result) {
+        protected void onPostExecute(String result)
+        {
             AlertDialog.Builder dialog = new AlertDialog.Builder(mContext);
             if (result == null) {
                 Toast.makeText(mContext, "Unable to connect to server", Toast.LENGTH_SHORT).show();
@@ -653,6 +672,8 @@ public class EditProfileActivity extends AppCompatActivity {
             /* Catching Exceptions */ catch (JSONException e) {
                 e.printStackTrace();
             }
+            Loading.Stop();
         }
     }
+
 }
