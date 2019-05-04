@@ -18,6 +18,7 @@
         <activity android:name=".ForgetPasswordActivity"/>
         <activity android:name=".SignOutActivity" />
         <activity android:name=".FeedActivity">
+
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -33,7 +34,7 @@
         <activity android:name=".Comments" />
         <activity android:name=".BookActivity" />
         <activity android:name=".LoginActivity" />
-        <activity android:name=".AuthorActivity">
+        <activity android:name=".SignupActivity">
 
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -53,7 +54,7 @@
             android:name=".FollowActivity"
             android:parentActivityName=".Profile" />
         <activity
-            android:name=".SignupActivity"
+            android:name=".AuthorActivity"
             android:isScrollContainer="true"
             android:windowSoftInputMode="adjustPan" />
         <activity
@@ -68,9 +69,9 @@
         <activity
             android:name=".WantToReadActivity"
             android:parentActivityName=".MyBooksShelvesActivity" />
-       <!-- <service android:name=".NotificationService" />
+        <activity android:name=".SearchHandlerActivity"
+            android:windowSoftInputMode="stateVisible" />
 
-       /-->
 
 
 

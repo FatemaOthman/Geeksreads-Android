@@ -4,7 +4,9 @@ import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
 import android.os.AsyncTask;
+import android.os.Build;
 import android.os.Bundle;
+import android.support.annotation.RequiresApi;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -84,6 +86,7 @@ public class SearchHandlerActivity extends AppCompatActivity  {
      * @return super.onCreateOptionsMenu(menu)
      *  Overrided Function to create the toolbar and decide what to do when click it's menu items.
      */
+    @RequiresApi(api = Build.VERSION_CODES.O)
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater inflater = getMenuInflater();
@@ -97,6 +100,12 @@ public class SearchHandlerActivity extends AppCompatActivity  {
         searchView.setQueryHint("Search books");
         searchView.setBackgroundColor(getResources().getColor(R.color.white));
         searchView.setFocusable(true);
+        searchView.setFocusable(true);
+        searchView.setTouchscreenBlocksFocus(true);
+        searchView.setEnabled(true);
+        searchView.setKeepScreenOn(true);
+        searchView.setKeyboardNavigationCluster(true);
+
         //Intent i =getIntent();
         //String S=i.getStringExtra("FirstSearch");
        // searchView.setQuery((CharSequence) i,false);

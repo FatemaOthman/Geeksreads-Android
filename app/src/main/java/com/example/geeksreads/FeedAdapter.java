@@ -45,10 +45,21 @@ public class FeedAdapter extends RecyclerView.Adapter<FeedAdapter.ViewHolder> {
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         FeedItem feeditem = feedItemList.get(position);
+        if(feeditem.getStatusType()=="Review")
+        {
+            holder.textViewPostBody.setText(feeditem.getMakerName()+""+feeditem.getPostBody()+feeditem.getBookName());
+
+        }
+        else
+        {
+
+        }
+
+
         holder.textViewPostBody.setText(feeditem.getPostBody());
         holder.getTextViewPostTime.setText(feeditem.getPostTime());
         Picasso.with(context)
-                .load(feeditem.getNotifierPicURL())
+                .load(feeditem.getMakerPhoto())
                 .into(holder.imageViewPostPic);
     }
     /**
@@ -71,8 +82,6 @@ public class FeedAdapter extends RecyclerView.Adapter<FeedAdapter.ViewHolder> {
             textViewPostBody=(TextView) itemView.findViewById(R.id.postBody);
             getTextViewPostTime=(TextView)itemView.findViewById(R.id.postTime);
             imageViewPostPic=(ImageView)itemView.findViewById(R.id.postPic);
-
-
         }
     }
 }
