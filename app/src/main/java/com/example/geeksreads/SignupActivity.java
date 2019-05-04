@@ -11,7 +11,11 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.FrameLayout;
+import android.widget.TextView;
 import android.widget.Toast;
+
+import com.example.geeksreads.views.LoadingView;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -54,6 +58,7 @@ public class SignupActivity extends AppCompatActivity {
      */
     private Context mContext;
 
+    LoadingView Loading;
     /* Enum for all types of validation errors in sign up data */
     enum signUpValidationErrors
     {
@@ -161,6 +166,9 @@ public class SignupActivity extends AppCompatActivity {
         /* Function Handler for Clicking on Sign up Button, to Start Checking input Fields
            and Sending JSON String to the Backend Sign up API
          */
+
+        TextView allControls[] = {fullName, email, password, confPassword, signUpButton};
+        Loading = new LoadingView(allControls, (FrameLayout)findViewById(R.id.progressBarHolder), (TextView)findViewById(R.id.ProgressName));
         signUpButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -248,7 +256,7 @@ public class SignupActivity extends AppCompatActivity {
 
         @Override
         protected void onPreExecute() {
-            /* Do Nothing */
+            Loading.Start("Creating account, Please wait...");
         }
 
         @Override
@@ -370,11 +378,13 @@ public class SignupActivity extends AppCompatActivity {
                         }
                     }
                 });
+                Loading.Stop();
                 dialog.show();
             }
             /* Catching Exceptions */ catch (JSONException e) {
                 e.printStackTrace();
             }
+            Loading.Stop();
         }
 
     }
