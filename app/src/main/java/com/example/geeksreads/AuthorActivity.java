@@ -981,48 +981,6 @@ public class AuthorActivity extends AppCompatActivity implements NavigationView.
             return result;
         }
 
-        // static final String REQUEST_METHOD = "GET";
-        // JSONObject mJSON = new JSONObject();
-
-        /*   @Override
-           protected void onPreExecute()
-           {
-               // Do Nothing
-           }
-           */
-     /*
-        @Override
-        protected String doInBackground(String... params) {
-            String UrlString = params[0];
-            String UserToken = params[1];
-            String result = "";
-
-            UrlString = UrlString + "?token=" + UserToken;
-            HttpClient httpclient = new DefaultHttpClient();
-            HttpGet httpget = new HttpGet(UrlString);
-
-            HttpResponse response = null;
-            String server_response = null;
-            try {
-                response = httpclient.execute(httpget);
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-
-            if (response.getStatusLine().getStatusCode() == 200) {
-                try {
-                    server_response = EntityUtils.toString(response.getEntity());
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-                Log.d("Server response", server_response);
-            } else {
-                Log.d("Server response", "Failed to get server response");
-            }
-
-            result = server_response;
-            return result;        }
-            */
         @SuppressLint("SetTextI18n")
         protected void onPostExecute(String result) {
             if (result == null) {

@@ -51,6 +51,7 @@ public class APIs {
     public static String API_UNFOLLOW_AUTHOR = "https://geeksreads.herokuapp.com/api/authors/unfollow";
     public static String API_AUTHOR_ISFOLLOWED ="https://geeksreads.herokuapp.com/api/authors/isfollowed";
     public static String API_USER_SHELVES = "https://geeksreads.herokuapp.com/api/users/GetUserShelves";
+    public static String API_USER_STATUS ="https://geeksreads.herokuapp.com/api/user_status/show";
 
     /* APIS Links for the Mimic Services APIs on Our Mimic Server, uncomment when used with Mimic */
 //    public static String API_LOGIN = "http://geeksreads.000webhostapp.com/Morsy/Signin.php";

@@ -9,6 +9,7 @@ import android.graphics.BitmapFactory;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.support.annotation.NonNull;
+import android.support.annotation.RequiresApi;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
@@ -33,6 +34,7 @@ import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.util.EntityUtils;
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -58,7 +60,7 @@ public class FeedActivity extends AppCompatActivity implements NavigationView.On
 
     RecyclerView recyclerView;
     RecyclerView.Adapter adapter;
-    private List<FeedItem> list;
+    private List<FeedModel> list;
     ImageView postPhoto;
     Context mContext;
     TextView postBody;
@@ -168,21 +170,41 @@ public class FeedActivity extends AppCompatActivity implements NavigationView.On
         postTime=findViewById(R.id.postTime);
         postPhoto=findViewById(R.id.postPic);
         list = new ArrayList<>();
-        Intent myIntent = new Intent(FeedActivity.this, AuthorActivity.class);
-        startActivity(myIntent);
+        //String Url= APIs.API_USER_STATUS;
+        //GetFeedDetails getFeedDetails= new GetFeedDetails(UserSessionManager.getUserToken());
+        //getFeedDetails.execute(Url);
+        String Type;
 
-       /* for(int i=0;i<10;i++)
+        for(int i=0;i<10;i++)
         {
-            FeedItem feedItem=new FeedItem(
-                    "This is post number "+i,
-                    i+" minutes ago.",
-                    "http:\\/\\/geeksreads.000webhostapp.com\\/Fatema\\/prideandprejudice.jpg"
+            Type = i%2==0?"Review":"Comment";
+
+
+
+            FeedModel B =new FeedModel(
+                    "",
+                    "5c911452a48b42bb84bc785c",
+                    "5c911452a48b42bb84bc785c",
+                    Type,
+                   "Review"+i,
+                    "Comment"+i,
+                    "Book"+i,
+                    "Read",
+                    "BookID"+i,
+                    "CommentMakerName"+i,
+                    "ReviewMakerName"+i,
+                    "https://loremflickr.com/cache/resized/1955_44782960525_027acf00f1_320_240_nofilter.jpg",
+                   "https://loremflickr.com/cache/resized/1955_44782960525_027acf00f1_320_240_nofilter.jpg",
+                    "AuthorName"+i,
+                    "5c911452938ffea87b4672d7",
+                   "https://loremflickr.com/cache/resized/1955_44782960525_027acf00f1_320_240_nofilter.jpg",
+                    "ReviewBody"
 
             );
-            list.add(feedItem);
-            adapter=new FeedAdapter(list,this);
-            recyclerView.setAdapter(adapter);
-        }*/
+            list.add(B);
+        }
+        adapter =new FeedAdapter((ArrayList)list,mContext);
+        recyclerView.setAdapter(adapter);
 
 
     }
@@ -223,6 +245,17 @@ public class FeedActivity extends AppCompatActivity implements NavigationView.On
         searchView.setMaxWidth(800);
         searchView.setQueryHint("Search books");
         searchView.setBackgroundColor(getResources().getColor(R.color.white));
+        searchView.setOnQueryTextFocusChangeListener(new View.OnFocusChangeListener() {
+            @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
+            @Override
+            public void onFocusChange(View v, boolean hasFocus) {
+                Intent intent = new Intent(FeedActivity.this,SearchHandlerActivity.class);
+                startActivity(intent);
+
+            }
+        });
+
+
         MenuItem item1 = menu.findItem(R.id.NotificationButton);
         item1.setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
             @Override
@@ -456,48 +489,6 @@ public class FeedActivity extends AppCompatActivity implements NavigationView.On
             return result;
         }
 
-        // static final String REQUEST_METHOD = "GET";
-       // JSONObject mJSON = new JSONObject();
-
-     /*   @Override
-        protected void onPreExecute()
-        {
-            // Do Nothing
-        }
-        */
-     /*
-        @Override
-        protected String doInBackground(String... params) {
-            String UrlString = params[0];
-            String UserToken = params[1];
-            String result = "";
-
-            UrlString = UrlString + "?token=" + UserToken;
-            HttpClient httpclient = new DefaultHttpClient();
-            HttpGet httpget = new HttpGet(UrlString);
-
-            HttpResponse response = null;
-            String server_response = null;
-            try {
-                response = httpclient.execute(httpget);
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-
-            if (response.getStatusLine().getStatusCode() == 200) {
-                try {
-                    server_response = EntityUtils.toString(response.getEntity());
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-                Log.d("Server response", server_response);
-            } else {
-                Log.d("Server response", "Failed to get server response");
-            }
-
-            result = server_response;
-            return result;        }
-            */
         @SuppressLint("SetTextI18n")
         protected void onPostExecute(String result) {
             if (result == null) {
@@ -520,6 +511,129 @@ public class FeedActivity extends AppCompatActivity implements NavigationView.On
         }
 
     }
+
+    @SuppressLint("StaticFieldLeak")
+    private class GetFeedDetails extends AsyncTask<String, Void, String> {
+        static final String REQUEST_METHOD = "POST";
+        String userToken;
+
+        public GetFeedDetails(String userToken) {
+            this.userToken = userToken;
+        }
+
+        @Override
+        protected void onPreExecute() {
+            /* Do Nothing */
+        }
+
+        @Override
+        protected String doInBackground(String... params) {
+            String UrlString = params[0];
+
+            String result = "";
+            try {
+                /* Create a URL object holding our url */
+                URL url = new URL(UrlString);
+                /* Create an HTTP Connection and adjust its options */
+                HttpURLConnection http = (HttpURLConnection) url.openConnection();
+                http.setRequestMethod(REQUEST_METHOD);
+                http.setDoInput(true);
+                http.setDoOutput(true);
+                http.setRequestProperty("content-type", "application/json");
+
+                /* A Stream object to hold the sent data to API Call */
+                OutputStream ops = http.getOutputStream();
+                BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(ops, StandardCharsets.UTF_8));
+                JSONObject newJson = new JSONObject();
+                newJson.put("x-auth-token", userToken);
+                writer.write(newJson.toString());
+                writer.flush();
+                writer.close();
+                ops.close();
+
+                /* A Stream object to get the returned data from API Call */
+                switch (String.valueOf(http.getResponseCode()))
+                {
+                    case "200":
+                        /* A Stream object to get the returned data from API Call */
+                        InputStream ips = http.getInputStream();
+                        BufferedReader reader = new BufferedReader(new InputStreamReader(ips, StandardCharsets.ISO_8859_1));
+                        String line = "";
+                        while ((line = reader.readLine()) != null) {
+                            result += line;
+                        }
+                        reader.close();
+                        ips.close();
+                        break;
+                    case "400":
+                        result = "{\"ReturnMsg\":\"Error Occurred.\"}";
+                        break;
+                    default:
+                        break;
+                }
+                http.disconnect();
+                return result;
+
+            }
+            /* Handling Exceptions */ catch (MalformedURLException e) {
+                result = e.getMessage();
+            } catch (IOException e) {
+                result = e.getMessage();
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+            return result;
+        }
+
+        @SuppressLint("SetTextI18n")
+        protected void onPostExecute(String result) {
+            if (result == null) {
+                Toast.makeText(mContext, "Unable to connect to server", Toast.LENGTH_SHORT).show();
+                return;
+            }
+            try {
+                /* Creating a JSON Object to parse the data in */
+                final JSONObject jsonObject = new JSONObject(result);
+                final JSONArray jsonArray = new JSONArray(result);
+                for(int i=0;i<jsonArray.length();i++)
+                {
+                    JSONObject o = jsonArray.getJSONObject(i);
+
+
+                    FeedModel B =new FeedModel(
+                            "",
+                            o.getString("ReviewMakerId"),
+                            o.getString("CommentMakerId"),
+                            o.getString("StatusType"),
+                            o.getString("ReviewId"),
+                            o.getString("CommentId"),
+                            o.getString("BookName"),
+                            o.getString("BookStatus"),
+                            o.getString("BookId"),
+                            o.getString("CommentMakerName"),
+                            o.getString("ReviewMakerName"),
+                            o.getString("ReviewMakerPhoto"),
+                            o.getString("CommentMakerPhoto"),
+                            o.getString("AuthorName"),
+                            o.getString("AuthorId"),
+                            o.getString("BookPhoto"),
+                            o.getString("ReviewBody")
+
+                            );
+                    list.add(B);
+                }
+                adapter =new FeedAdapter((ArrayList)list,mContext);
+                recyclerView.setAdapter(adapter);
+
+
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+        }
+
+    }
+
+
 
 
 }

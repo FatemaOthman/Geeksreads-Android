@@ -18,4 +18,6 @@
     <color name="colorNavHeader">#5c5c5c</color>
     <color name="colorNavBackground">#333333</color>
     <color name="colorFont">#FFFFFF</color>
+    <color name="feedBackGround">#FEFDFB</color>
+    <color name="feedBorders">#E9E9E9</color>
 </resources>
