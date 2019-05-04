@@ -58,9 +58,14 @@ public class CurrentlyReadingActivity extends AppCompatActivity {
         Objects.requireNonNull(getSupportActionBar()).setTitle("Currently Reading");
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
+
+
+
+
         final JSONObject jsonObject = new JSONObject();
         try {
             jsonObject.put("token", UserSessionManager.getUserToken());
+            jsonObject.put("UserId", UserSessionManager.getUserID());
         } catch (JSONException e) {
             e.printStackTrace();
         }
@@ -80,6 +85,8 @@ public class CurrentlyReadingActivity extends AppCompatActivity {
 
         GetCurrentlyReadingBooks performBackgroundTask = new GetCurrentlyReadingBooks();
         performBackgroundTask.execute(UrlService,jsonObject.toString());
+
+
 
     }
 
@@ -116,9 +123,9 @@ public class CurrentlyReadingActivity extends AppCompatActivity {
     @SuppressLint("StaticFieldLeak")
     private class GetCurrentlyReadingBooks extends AsyncTask<String, Void, String> {
         public static final String REQUEST_METHOD = "POST";
-        //public static final int READ_TIMEOUT = 3000;
-        //public static final int CONNECTION_TIMEOUT = 3000;
         AlertDialog dialog;
+
+        boolean TaskSuccess = false;
 
         @Override
         protected void onPreExecute() {
@@ -150,33 +157,29 @@ public class CurrentlyReadingActivity extends AppCompatActivity {
                 writer.close();
                 ops.close();
 
-                switch (String.valueOf(http.getResponseCode()))
-                {
-                    case "200":
-                        /* A Stream object to get the returned data from API Call */
-                        InputStream ips = http.getInputStream();
-                        BufferedReader reader = new BufferedReader(new InputStreamReader(ips, StandardCharsets.ISO_8859_1));
-                        String line = "";
-                        //boolean started = false;
-                        while ((line = reader.readLine()) != null) {
-                            //   if ()
-                            result += line;
-                        }
-                        reader.close();
-                        ips.close();
-                        break;
-                    case "400":
-                        InputStream es = http.getErrorStream();
-                        BufferedReader ereader = new BufferedReader(new InputStreamReader(es, StandardCharsets.ISO_8859_1));
-                        String eline = "";
-                        while ((eline = ereader.readLine()) != null) {
-                            result += eline;
-                        }
-                        break;
-                    default:
-                        break;
+                if (String.valueOf(http.getResponseCode()).equals("200")) {
+                    /* A Stream object to get the returned data from API Call */
+                    InputStream ips = http.getInputStream();
+                    BufferedReader reader = new BufferedReader(new InputStreamReader(ips, StandardCharsets.ISO_8859_1));
+                    String line;
+                    while ((line = reader.readLine()) != null) {
+                        result += line;
+                    }
+                    reader.close();
+                    ips.close();
+                    TaskSuccess = true;
                 }
-
+                else                {
+                    TaskSuccess = false;
+                    InputStream es = http.getErrorStream();
+                    BufferedReader ereader = new BufferedReader(new InputStreamReader(es, StandardCharsets.ISO_8859_1));
+                    String eline;
+                    while ((eline = ereader.readLine()) != null) {
+                        result += eline;
+                    }
+                    ereader.close();
+                    es.close();
+                }
                 http.disconnect();
                 return result;
 
@@ -200,18 +203,24 @@ public class CurrentlyReadingActivity extends AppCompatActivity {
                 dialog.setMessage(result);
                 //dialog.show();
                 JSONObject jsonObject = new JSONObject(result);
-                ListView currentlyReadingList = findViewById(R.id.CurrentlyReadingList);
-                final BookList_JSONAdapter bookListJsonAdapter = new BookList_JSONAdapter(mContext, new JSONArray(jsonObject.getString("ReadingData")));
-                currentlyReadingList.setAdapter(bookListJsonAdapter);
-                currentlyReadingList.deferNotifyDataSetChanged();
-                currentlyReadingList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-                    @Override
-                    public void onItemClick(AdapterView<?> arg0, View arg1, int position, long arg3) {
-                        Intent intent = new Intent(CurrentlyReadingActivity.this, BookActivity.class);
-                        intent.putExtra("BookID",bookListJsonAdapter.getBookID(position));
-                        startActivity(intent);
-                    }
-                });
+                if (TaskSuccess) {
+                    ListView currentlyReadingList = findViewById(R.id.CurrentlyReadingList);
+                    final BookList_JSONAdapter bookListJsonAdapter = new BookList_JSONAdapter(mContext, new JSONArray(jsonObject.getString("ReadingData")));
+                    currentlyReadingList.setAdapter(bookListJsonAdapter);
+                    currentlyReadingList.deferNotifyDataSetChanged();
+                    currentlyReadingList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                        @Override
+                        public void onItemClick(AdapterView<?> arg0, View arg1, int position, long arg3) {
+                            Intent intent = new Intent(CurrentlyReadingActivity.this, BookActivity.class);
+                            intent.putExtra("BookID", bookListJsonAdapter.getBookID(position));
+                            startActivity(intent);
+                        }
+                    });
+                }
+                else
+                {
+                    Toast.makeText(mContext, "Error happened during loading list ", Toast.LENGTH_SHORT).show();
+                }
             } catch (JSONException e) {
                 Toast.makeText(mContext, "Unable to get Shelf Data from server", Toast.LENGTH_SHORT).show();
                 e.printStackTrace();

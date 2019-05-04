@@ -2,15 +2,34 @@ package com.example.geeksreads;
 
 import android.app.Activity;
 import android.app.Instrumentation;
+import android.content.Intent;
+import android.support.test.espresso.UiController;
+import android.support.test.espresso.ViewAction;
+import android.support.test.espresso.action.CoordinatesProvider;
+import android.support.test.espresso.action.GeneralClickAction;
+import android.support.test.espresso.action.Press;
+import android.support.test.espresso.action.Tap;
 import android.support.test.espresso.assertion.ViewAssertions;
+import android.support.test.espresso.matcher.ViewMatchers;
 import android.support.test.rule.ActivityTestRule;
+import android.view.InputDevice;
+import android.view.MotionEvent;
+import android.view.View;
+import android.widget.RatingBar;
 
+import org.hamcrest.Matcher;
 import org.junit.Rule;
 import org.junit.Test;
 
 import static android.support.test.InstrumentationRegistry.getInstrumentation;
 import static android.support.test.espresso.Espresso.onView;
+import static android.support.test.espresso.action.ViewActions.clearText;
 import static android.support.test.espresso.action.ViewActions.click;
+import static android.support.test.espresso.action.ViewActions.closeSoftKeyboard;
+import static android.support.test.espresso.action.ViewActions.replaceText;
+import static android.support.test.espresso.action.ViewActions.scrollTo;
+import static android.support.test.espresso.action.ViewActions.typeText;
+import static android.support.test.espresso.matcher.ViewMatchers.isAssignableFrom;
 import static android.support.test.espresso.matcher.ViewMatchers.withId;
 import static android.support.test.espresso.matcher.ViewMatchers.withText;
 import static junit.framework.Assert.assertNotNull;
@@ -19,11 +38,15 @@ import static org.junit.Assert.assertEquals;
 public class BookActivityTest {
     @Rule
     public ActivityTestRule<BookActivity> menuActivityTestRule =
-            new ActivityTestRule<>(BookActivity.class, true, true);
+            new ActivityTestRule<>(BookActivity.class, true, false);
 
     @Test
     public void TestView() {
 
+        Intent mIntent = new Intent();
+        mIntent.putExtra("BookID", "111");
+
+        menuActivityTestRule.launchActivity(mIntent);
         /* Testing getting Author of the Book right */
         onView(withId(R.id.AuthorNameTxt)).check(ViewAssertions.matches(withText("By: Jane Austen")));
 
@@ -50,8 +73,12 @@ public class BookActivityTest {
     }
 
     @Test
-    public void TestButton()
-    {
+    public void TestButton(){
+        Intent mIntent = new Intent();
+        mIntent.putExtra("BookID", "111");
+
+        menuActivityTestRule.launchActivity(mIntent);
+
         Instrumentation.ActivityMonitor activityMonitor = getInstrumentation().addMonitor(ChooseShelfActivity.class.getName(), null, false);
 
         onView(withId(R.id.OptionsDropList)).perform(click());
@@ -61,4 +88,98 @@ public class BookActivityTest {
         assertNotNull(nextActivity);
         nextActivity .finish();
     }
+
+    private static ViewAction setRating(final float rating) {
+        if (rating % 0.5 != 0) {
+            throw new IllegalArgumentException("Rating must be multiple of 0.5f");
+        }
+
+        return new ViewAction() {
+            @Override
+            public Matcher<View> getConstraints() {
+                return isAssignableFrom(RatingBar.class);
+            }
+
+            @Override
+            public String getDescription() {
+                return "Set rating on RatingBar in 0.5f increments";
+            }
+
+            @Override
+            public void perform(UiController uiController, View view) {
+                GeneralClickAction viewAction = new GeneralClickAction(
+                        Tap.SINGLE,
+                        new CoordinatesProvider() {
+                            @Override
+                            public float[] calculateCoordinates(View view) {
+                                int[] locationOnScreen = new int[2];
+                                view.getLocationOnScreen(locationOnScreen);
+                                int screenX = locationOnScreen[0];
+                                int screenY = locationOnScreen[1];
+                                int numStars = ((RatingBar) view).getNumStars();
+                                float widthPerStar = 1f * view.getWidth() / numStars;
+                                float percent = rating / numStars;
+                                float x = screenX + view.getWidth() * percent;
+                                float y = screenY + view.getHeight() * 0.5f;
+                                return new float[]{x - widthPerStar * 0.5f, y};
+                            }
+                        },
+                        Press.FINGER,
+                        InputDevice.SOURCE_UNKNOWN,
+                        MotionEvent.BUTTON_PRIMARY
+                );
+                viewAction.perform(uiController, view);
+            }
+        };
+    }
+
+
+    @Test
+    public void TestAddReviewSuccess(){
+        Intent mIntent = new Intent();
+        mIntent.putExtra("BookID", "111");
+
+        menuActivityTestRule.launchActivity(mIntent);
+
+        onView(withId(R.id.Review)).perform(scrollTo() ,typeText("Review") , closeSoftKeyboard());
+
+        onView(withId(R.id.ratingBook)).perform(scrollTo() , setRating(4));
+
+        onView(withId(R.id.AddReview)).perform(scrollTo() , click());
+
+        assertEquals("Review Added", BookActivity.sForTestAddingReview);
+
+    }
+
+    @Test
+    public void TestAddReviewNoBody(){
+        Intent mIntent = new Intent();
+        mIntent.putExtra("BookID", "111");
+
+        menuActivityTestRule.launchActivity(mIntent);
+
+        onView(withId(R.id.ratingBook)).perform(scrollTo() , setRating(4));
+
+        onView(withId(R.id.AddReview)).perform(scrollTo() , click());
+
+        assertEquals("Your review is empty", BookActivity.sForTestAddingReview);
+
+    }
+
+    @Test
+    public void TestAddReviewNoRate(){
+        Intent mIntent = new Intent();
+        mIntent.putExtra("BookID", "111");
+
+        menuActivityTestRule.launchActivity(mIntent);
+
+        onView(withId(R.id.Review)).perform(scrollTo() ,replaceText("Engineer") , closeSoftKeyboard());
+
+        onView(withId(R.id.AddReview)).perform(scrollTo() , click());
+
+        assertEquals("You have to rate before Adding a review.", BookActivity.sForTestAddingReview);
+
+    }
+
+
 }

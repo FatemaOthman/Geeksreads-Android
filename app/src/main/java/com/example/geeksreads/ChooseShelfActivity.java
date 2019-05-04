@@ -42,6 +42,8 @@ import java.util.Objects;
 
 public class ChooseShelfActivity extends AppCompatActivity {
 
+    public static String sForTestChooseShelf;
+
     ImageView bookImage;
     Context mContext;
     String shelfID;
@@ -137,6 +139,7 @@ public class ChooseShelfActivity extends AppCompatActivity {
                 if (ShelfChoosed.getCheckedRadioButtonId() == -1)
                 {
                     Toast.makeText(mContext,"You need to choose Shelf", Toast.LENGTH_SHORT).show();
+                    sForTestChooseShelf = "You need to choose Shelf";
 
                 }
                 else
@@ -144,14 +147,17 @@ public class ChooseShelfActivity extends AppCompatActivity {
                     if (readRadio.isChecked())
                     {
                         shelfID = "Read";
+                        sForTestChooseShelf = "Read";
                     }
                     else if (readingRadio.isChecked())
                     {
                         shelfID = "Reading";
+                        sForTestChooseShelf = "Reading";
                     }
                     else if (wantRadio.isChecked())
                     {
                         shelfID = "WantToRead";
+                        sForTestChooseShelf = "WantToRead";
                     }
 
                     JSONObject ReviewObject = new JSONObject();
@@ -162,7 +168,7 @@ public class ChooseShelfActivity extends AppCompatActivity {
                     } catch (JSONException e) {
                         e.printStackTrace();
                     }
-                    String UrlService = null;
+                    String UrlService;
                     if (BookStatus.equals("Want To Read") && shelfID.equals("Reading"))
                     {
                         UrlService = APIs.API_MOVE_BOOK_TOREADING;
@@ -296,6 +302,7 @@ public class ChooseShelfActivity extends AppCompatActivity {
 
                 JSONObject jsonObject = new JSONObject(result);
                 Toast.makeText(mContext, jsonObject.getString("ReturnMsg"), Toast.LENGTH_SHORT).show();
+                sForTestChooseShelf = "Added Successfully to shelf";
 
             } catch (JSONException e) {
                 Toast.makeText(mContext, "Error happen during adding to shelf", Toast.LENGTH_SHORT).show();
