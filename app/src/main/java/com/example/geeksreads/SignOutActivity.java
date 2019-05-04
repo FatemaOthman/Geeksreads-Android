@@ -172,6 +172,9 @@ public class SignOutActivity extends AppCompatActivity {
             return result;
         }
 
+        /**
+         * Function that does the needed actions in layout and finish loading animation
+         */
         @SuppressLint("SetTextI18n")
         protected void onPostExecute(String result) {
             if (result == null) {
