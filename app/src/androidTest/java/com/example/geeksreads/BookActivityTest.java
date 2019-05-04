@@ -10,7 +10,6 @@ import android.support.test.espresso.action.GeneralClickAction;
 import android.support.test.espresso.action.Press;
 import android.support.test.espresso.action.Tap;
 import android.support.test.espresso.assertion.ViewAssertions;
-import android.support.test.espresso.matcher.ViewMatchers;
 import android.support.test.rule.ActivityTestRule;
 import android.view.InputDevice;
 import android.view.MotionEvent;
@@ -35,6 +34,7 @@ import static android.support.test.espresso.matcher.ViewMatchers.isAssignableFro
 import static android.support.test.espresso.matcher.ViewMatchers.withId;
 import static android.support.test.espresso.matcher.ViewMatchers.withText;
 import static junit.framework.Assert.assertNotNull;
+import static junit.framework.Assert.assertNull;
 import static org.junit.Assert.assertEquals;
 
 public class BookActivityTest {
@@ -43,7 +43,7 @@ public class BookActivityTest {
             new ActivityTestRule<>(BookActivity.class, true, false);
 
 
-    UserSessionManager userSessionManager = new UserSessionManager("xYzAbCdToKeN", true);
+    UserSessionManager userSessionManager = new UserSessionManager("xYzAbCdToKeN","anyid",true);
 
     @Test
     public void TestView() {
@@ -143,13 +143,11 @@ public class BookActivityTest {
         Intent mIntent = new Intent();
         mIntent.putExtra("BookID", "111");
 
-        UserSessionManager.stubUserDataForTesting("","","xYzAbCdToKeN","xYzAbCdToKeN");
-
         menuActivityTestRule.launchActivity(mIntent);
 
         onView(withId(R.id.ratingBook)).perform(scrollTo() , setRating(4));
 
-        onView(withId(R.id.Review)).perform(scrollTo() ,typeText("Review") , closeSoftKeyboard());
+        onView(withId(R.id.Review)).perform(scrollTo() ,typeText("Add Review to Test") , closeSoftKeyboard());
 
         onView(withId(R.id.AddReview)).perform(scrollTo() , click());
 
@@ -179,13 +177,12 @@ public class BookActivityTest {
 
         menuActivityTestRule.launchActivity(mIntent);
 
-        onView(withId(R.id.Review)).perform(scrollTo() ,replaceText("Engineer") , closeSoftKeyboard());
+        onView(withId(R.id.Review)).perform(scrollTo() ,replaceText("Add Review to Test") , closeSoftKeyboard());
 
         onView(withId(R.id.AddReview)).perform(scrollTo() , click());
 
         assertEquals("You have to rate before Adding a review.", BookActivity.sForTestAddingReview);
 
     }
-
-
+    
 }
