@@ -1,5 +1,10 @@
 package CustomFunctions;
 
+/**
+ * @author Mahmoud MORSY
+ * @author Amr KHALED, Shrouk RASHWAN, Fatema OTHMAN,
+ * This Class stores all the APIs End Points, so as to access/modify them all from one location only
+ */
 public class APIs {
 
     /* APIS Links for the Deployed APIs on Server, uncomment when used with Deployed */

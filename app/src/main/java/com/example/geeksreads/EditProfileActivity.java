@@ -170,7 +170,7 @@ public class EditProfileActivity extends AppCompatActivity {
         /* URL For Get Current User Info API */
         String urlService = APIs.API_GET_USER_INFO;
 
-        /* Creating a new instance of Sign in Class */
+        /* Creating a new instance of Get Profile Data Class */
         GetProfileData getProfileData = new GetProfileData();
         JSONObject getDataJson = new JSONObject();
         try {

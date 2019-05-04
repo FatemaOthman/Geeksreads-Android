@@ -29,7 +29,10 @@ import java.net.URL;
 import java.nio.charset.StandardCharsets;
 
 import CustomFunctions.APIs;
-
+/**
+ * @author Mahmoud MORSY,
+ * This Class Activity handles SignOut Process and Display for Users
+ */
 public class SignOutActivity extends AppCompatActivity {
     /**
      * Global Public Static Variables used for Testing
@@ -40,8 +43,15 @@ public class SignOutActivity extends AppCompatActivity {
      */
     public static Context mContext;
 
+    /**
+     * Global Variable for LoadingView to be displayed while loading a content from server
+     */
     LoadingView Loading;
 
+    /**
+     * Starts and Created Signout Activity
+     * @param savedInstanceState
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -88,17 +98,24 @@ public class SignOutActivity extends AppCompatActivity {
     }
 
     /**
+     * @author Mahmoud MORSY,
      * Class that get the data from host and Add it to its views.
      * The Parameters are host Url and toSend Data.
      */
     public class signOut extends AsyncTask<String, Void, String> {
         static final String REQUEST_METHOD = "POST";
 
+        /**
+         * Function to be done before Executing, it starts Loading Animation
+         */
         @Override
         protected void onPreExecute() {
             Loading.Start("Signing out, Please wait...");
         }
 
+        /**
+         * Function that executes the logic needed in the background thread
+         */
         @Override
         protected String doInBackground(String... params) {
             String UrlString = params[0];
