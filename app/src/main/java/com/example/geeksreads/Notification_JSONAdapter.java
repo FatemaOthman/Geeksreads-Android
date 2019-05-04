@@ -1,8 +1,6 @@
 package com.example.geeksreads;
 
 import android.annotation.SuppressLint;
-import android.app.Notification;
-import android.app.NotificationManager;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -106,19 +104,24 @@ public class Notification_JSONAdapter extends BaseAdapter {
             String notificationBody , NotificationDate;
             bookID[i] = data.getJSONObject(i).getString("BookId");
             bookName[i] = data.getJSONObject(i).getString("BookName");
-            if (notificationType.equals("Review"))
+            if (notificationType.equals("ReviewLike"))
             {
-                notificationBody = data.getJSONObject(i).getString("MakerName") + " added a review on "
+                notificationBody = data.getJSONObject(i).getString("MakerName") + " Liked your review on "
                                  + data.getJSONObject(i).getString("BookName");
 
                 NotificationDate = data.getJSONObject(i).getString("ReviewDate");
             }
-            else
+            else if (notificationType.equals("Comment"))
             {
                 notificationBody = data.getJSONObject(i).getString("MakerName") + " commented on review in "
                         + data.getJSONObject(i).getString("BookName");
 
                 NotificationDate = data.getJSONObject(i).getString("CommentDate");
+            }
+             else
+            {
+                notificationBody = data.getJSONObject(i).getString("MakerName") + " Started Following You";
+                NotificationDate = data.getJSONObject(i).getString("FollowDate");
             }
             TextView notificationContent = itemView.findViewById(R.id.NotificationContent);
             notificationContent.setText(notificationBody);

@@ -64,7 +64,7 @@ import java.util.Objects;
 
 public class BookActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
 
-    public static String sForTestBookActivity;
+    public static String sForTestBookActivity, sForTestAddingReview;
     /* BookActivity Views */
     ImageView bookCover;
     Context mContext;
@@ -187,7 +187,7 @@ public class BookActivity extends AppCompatActivity implements NavigationView.On
                 myIntent.putExtra("Author",bookAuthor.getText());
                 myIntent.putExtra("Title", bookTitle.getText());
                 myIntent.putExtra("Rating",bookRatings.getText());
-               // myIntent.putExtra("RatingNumber",ratingsNumber.getText());
+                myIntent.putExtra("RatingNumber",ratingsNumber.getText());
                 myIntent.putExtra("Pages",pageNumber.getText());
                 myIntent.putExtra("published",publishingDate.getText());
                 myIntent.putExtra("bookID",BookID);
@@ -212,10 +212,12 @@ public class BookActivity extends AppCompatActivity implements NavigationView.On
                 if(bookRating.getRating() <= 0)
                 {
                     Toast.makeText(mContext, "You have to rate before Adding a review.", Toast.LENGTH_SHORT).show();
+                    sForTestAddingReview = "You have to rate before Adding a review.";
                 }
                 else if(Review.getText().toString().equals(""))
                 {
                     Toast.makeText(mContext, "Your review is empty", Toast.LENGTH_SHORT).show();
+                    sForTestAddingReview = "Your review is empty";
                 }
                 else
                 {
@@ -430,11 +432,11 @@ public class BookActivity extends AppCompatActivity implements NavigationView.On
                     /* Get Json Object from server and preview results on Layout views */
                     bookTitle.setText(jsonObject.getString("Title"));
                     BookName = jsonObject.getString("Title");
-                    bookAuthor.setText("By: " + "" + jsonObject.getString("Author"));
+                    bookAuthor.setText("By: " + "" + jsonObject.getString("AuthorId"));
                     AuthorID = jsonObject.getString("AuthorId");
                     BookID = jsonObject.getString("BookId");
-                    ratingsNumber.setText(jsonObject.getString("ratingcount") + " " + "Ratings");
-                    reviewsNumber.setText(jsonObject.getString("textreviewscount") + " " + "Reviews");
+                    ratingsNumber.setText(jsonObject.getString("RateCount") + " " + "Ratings");
+                    reviewsNumber.setText(jsonObject.getString("ReviewCount") + " " + "Reviews");
                     String Ratings = jsonObject.getString("BookRating");
                     bookRatings.setText(Ratings);
                     bookDescription.setText(jsonObject.getString("Description"));
@@ -680,12 +682,12 @@ public class BookActivity extends AppCompatActivity implements NavigationView.On
                 return;
             }
             try {
-                JSONObject jsonObject = new JSONObject(result);
                 Log.d("Review Result" , result);
+                JSONObject jsonObject = new JSONObject(result);
                 if( TaskSuccess) {
                     if (jsonObject.getString("AddedReviewSuc").equals("true")) {
                         Toast.makeText(mContext, "Review Added", Toast.LENGTH_SHORT).show();
-
+                        sForTestAddingReview = "Review Added";
                         Intent intent = new Intent(BookActivity.this, Reviews.class);
                         intent.putExtra("BookID", BookID);
                         intent.putExtra("BookName",BookName);

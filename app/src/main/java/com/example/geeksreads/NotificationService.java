@@ -179,62 +179,70 @@ public class NotificationService extends Service {
             }
             try {
                 Log.d("NotificationResult", result);
-                JSONArray Notifications = new JSONArray(result);
-                Log.d("length", String.valueOf(Notifications.length()));
-                for (int i=0 ; i< Notifications.length(); i++) {
-                    JSONObject CurrentNotification = Notifications.getJSONObject(i);
-                    Log.d("SEEN", String.valueOf(CurrentNotification.getBoolean("seen")));
-                    String notificationBody , NotificationId = CurrentNotification.getString("NotificationId");
 
-                    if (CurrentNotification.getString("NotificationType").equals("Review"))
+                if (TaskSuccess) {
+                    JSONArray Notifications = new JSONArray(result);
+                    Log.d("length", String.valueOf(Notifications.length()));
+                    for (int i = 0; i < Notifications.length(); i++)
                     {
-                        notificationBody = CurrentNotification.getString("MakerName") + " added a review on "
-                                + CurrentNotification.getString("BookName");
-                    }
-                    else
-                    {
-                        notificationBody = CurrentNotification.getString("MakerName") + " commented on review in "
-                                + CurrentNotification.getString("BookName");
-                    }
+                        JSONObject CurrentNotification = Notifications.getJSONObject(i);
+                        Log.d("SEEN", String.valueOf(CurrentNotification.getBoolean("Seen")));
+                        String notificationBody;
+                        String NotificationId = CurrentNotification.getString("NotificationId");
 
-                    if (!CurrentNotification.getBoolean("seen")) {
-
-                        createNotificationChannel();
-                        Intent intent = new Intent(context, NotificationActivity.class);
-                        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-                        PendingIntent pendingIntent = PendingIntent.getActivity(context, 0, intent, 0);
-                        NotificationCompat.Builder builder ;
-
-                        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
-                            builder = new NotificationCompat.Builder(context, "NotificationsService")
-                                    .setSmallIcon(R.drawable.ic_book)
-                                    .setContentTitle("GeeksReads")
-                                    .setContentText(notificationBody)
-                                    .setContentIntent(pendingIntent)
-                                    .setPriority(NotificationCompat.PRIORITY_DEFAULT)
-                                    .setAutoCancel(true)
-                                    .setDefaults(Notification.DEFAULT_SOUND)
-                                    .setDefaults(Notification.DEFAULT_VIBRATE);
+                        if (CurrentNotification.getString("NotificationType").equals("ReviewLike"))
+                        {
+                            notificationBody = CurrentNotification.getString("MakerName") + " Liked you review on "
+                                    + CurrentNotification.getString("BookName");
+                        }
+                        else if (CurrentNotification.getString("NotificationType").equals("Comment"))
+                        {
+                            notificationBody = CurrentNotification.getString("MakerName") + " commented on review in "
+                                    + CurrentNotification.getString("BookName");
                         }
                         else
                         {
-                            builder = new NotificationCompat.Builder(context);
+                            notificationBody = CurrentNotification.getString("MakerName") + " Started Following You";
                         }
-                        NotificationManagerCompat notificationManager = NotificationManagerCompat.from(context);
-                        notificationManager.notify(1, builder.build());
+
+                        if (!CurrentNotification.getBoolean("Seen")) {
+
+                            createNotificationChannel();
+                            Intent intent = new Intent(context, NotificationActivity.class);
+                            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                            PendingIntent pendingIntent = PendingIntent.getActivity(context, 0, intent, 0);
+                            NotificationCompat.Builder builder;
+
+                            if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
+                                builder = new NotificationCompat.Builder(context, "NotificationsService")
+                                        .setSmallIcon(R.drawable.ic_book)
+                                        .setContentTitle("GeeksReads")
+                                        .setContentText(notificationBody)
+                                        .setContentIntent(pendingIntent)
+                                        .setPriority(NotificationCompat.PRIORITY_DEFAULT)
+                                        .setAutoCancel(true)
+                                        .setDefaults(Notification.DEFAULT_SOUND)
+                                        .setDefaults(Notification.DEFAULT_VIBRATE);
+                            } else {
+                                builder = new NotificationCompat.Builder(context);
+                            }
+                            NotificationManagerCompat notificationManager = NotificationManagerCompat.from(context);
+                            notificationManager.notify(1, builder.build());
 
 
-                        final JSONObject jsonObject = new JSONObject();
-                        try {
-                            jsonObject.put("token", UserSessionManager.getUserToken());
-                            jsonObject.put("NotificationId", NotificationId);
-                        } catch (JSONException e) {
-                            e.printStackTrace();
+                            final JSONObject jsonObject = new JSONObject();
+                            try {
+                                jsonObject.put("NotificationId", NotificationId);
+                            } catch (JSONException e) {
+                                e.printStackTrace();
+                            }
+                            final String UrlService = APIs.API_MAKE_NOTIFICATION_SEEN;
+
+                            Log.d("PRINT" ,  jsonObject.toString() );
+                            MarkSeen seen = new MarkSeen();
+                            seen.execute(UrlService, jsonObject.toString());
+                            break;
                         }
-                        final String UrlService = APIs.API_MAKE_NOTIFICATION_SEEN;
-
-                        MarkSeen seen = new MarkSeen();
-                        seen.execute(UrlService,jsonObject.toString());
                     }
                 }
             } catch (JSONException e) {
@@ -315,8 +323,9 @@ public class NotificationService extends Service {
                 return;
             }
             try {
-                Log.d("NotificationResult", result);
+
                 JSONObject Message = new JSONObject(result);
+                Log.d("NotificationResult", Message.toString());
 
             } catch (JSONException e) {
                 e.printStackTrace();

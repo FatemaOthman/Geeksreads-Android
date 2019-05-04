@@ -108,14 +108,14 @@ public class BookList_JSONAdapter extends BaseAdapter {
             BookName.setText(data.getJSONObject(i).getString("Title"));
 
             TextView AuthorName = view.findViewById(R.id.ByAuthorNameTxt);
-            AuthorName.setText(String.format("By: %s", data.getJSONObject(i).getString("Author")));
+            AuthorName.setText(String.format("By: %s", data.getJSONObject(i).getString("AuthorName")));
 
             String Ratings = data.getJSONObject(i).getString("BookRating");
             TextView RatingNumber = view.findViewById(R.id.ratingBar);
             RatingNumber.setText(String.format("%s", Ratings));
 
             TextView RatingCount = view.findViewById(R.id.BookRatingsTxt);
-            //RatingCount.setText(String.format("  %s Ratings", data.getJSONObject(i).getString("ratingcount")));
+            RatingCount.setText(String.format("  %s Ratings", data.getJSONObject(i).getString("RatingCount")));
 
             RatingBar bookStars = view.findViewById(R.id.bookRatingStars);
             bookStars.setRating(Float.parseFloat(Ratings));
@@ -145,7 +145,7 @@ public class BookList_JSONAdapter extends BaseAdapter {
             Pages.setText(String.format("%s pages.", data.getJSONObject(i).getString("Pages")));
 
             TextView BookData = view.findViewById(R.id.PublishData);
-            BookData.setText(String.format("Published on %s, By: ", data.getJSONObject(i).getString("Published")/*,data.getJSONObject(i).getString("Publisher")*/));
+            BookData.setText(String.format("Published on %s, By: %s", data.getJSONObject(i).getString("Published"),data.getJSONObject(i).getString("Publisher")));
 
             GetImage getCover = new GetImage(i,holder);
             getCover.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR,data.getJSONObject(i).getString("Cover"));
