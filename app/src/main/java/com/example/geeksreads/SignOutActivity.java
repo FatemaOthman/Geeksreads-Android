@@ -8,7 +8,11 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
+import android.widget.FrameLayout;
+import android.widget.TextView;
 import android.widget.Toast;
+
+import com.example.geeksreads.views.LoadingView;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -35,6 +39,9 @@ public class SignOutActivity extends AppCompatActivity {
      * Global Variables to Store Context of this Activity itself
      */
     public static Context mContext;
+
+    LoadingView Loading;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -42,6 +49,9 @@ public class SignOutActivity extends AppCompatActivity {
         Button loginButton = findViewById(R.id.loginBtn);
         Button signupButton = findViewById(R.id.signupBtn);
         mContext = this;
+
+        TextView allControls[] = {loginButton, signupButton};
+        Loading = new LoadingView(allControls, (FrameLayout)findViewById(R.id.progressBarHolder), (TextView)findViewById(R.id.ProgressName));
 
         /* URL For Sign out API */
         String urlService = APIs.API_SIGNOUT;
@@ -86,7 +96,7 @@ public class SignOutActivity extends AppCompatActivity {
 
         @Override
         protected void onPreExecute() {
-            /* Do Nothing */
+            Loading.Start("Signing out, Please wait...");
         }
 
         @Override
@@ -160,8 +170,8 @@ public class SignOutActivity extends AppCompatActivity {
             catch (JSONException e) {
                 e.printStackTrace();
             }
+            Loading.Stop();
         }
-
     }
 
 }
