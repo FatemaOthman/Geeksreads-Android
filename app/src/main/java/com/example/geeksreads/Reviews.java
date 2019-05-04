@@ -48,7 +48,7 @@ public class Reviews extends AppCompatActivity {
         BookNameForReview.setText(getIntent().getStringExtra("BookName"));
 
         final String GetAllReviewsURL = APIs.API_GET_REVIEWS_LIST + "?UserId=" + UserSessionManager.getUserID() + "&" +
-                "bookId" + getIntent().getStringExtra("BookID");
+                "bookId=" + getIntent().getStringExtra("BookID");
 
         Reviews.GetAllReviews performBackgroundTask = new Reviews.GetAllReviews();
         performBackgroundTask.execute(GetAllReviewsURL);
