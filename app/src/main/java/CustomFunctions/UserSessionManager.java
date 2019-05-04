@@ -41,6 +41,21 @@ public class UserSessionManager {
     }
 
     /**
+     * Constructor function for UserSession Manager Class
+     * @param _userToken Input String for UserToken
+     * @param _userID Input String for UserID
+     * @param _isTest Input Boolean if it's used for Testing
+     */
+    public UserSessionManager(String _userToken, String _userID, boolean _isTest)
+    {
+        if (_isTest)
+        {
+            userID = _userID;
+            userToken = _userToken;
+        }
+    }
+
+    /**
      * Function to Initialize the UserSessionManager Class & Load Saved Data in Device
      * @param context Input Context of the Calling Activity
      * @return The passed Context if function worked correctly
