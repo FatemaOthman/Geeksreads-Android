@@ -78,7 +78,8 @@ public class APIs {
     public static String API_LIKE_REVIEW = "http://geeksreads.000webhostapp.com/Amr/Like.php";
     public static String API_UNLIKE_REVIEW = "http://geeksreads.000webhostapp.com/Amr/Unlike.php";
     public static String API_ADD_COMMENT = "http://geeksreads.000webhostapp.com/Amr/AddComment.php";
-*/
+    */
+
     public static boolean TestingModeEnabled = false;
     public static boolean MimicModeEnabled = false;
 }

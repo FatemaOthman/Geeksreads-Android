@@ -36,6 +36,9 @@ public class Reviews extends AppCompatActivity {
     ArrayList<ReviewDataModel> dataModels;
     TextView BookNameForReview;
     Context mContext;
+    public static String sForTestReviewsList;
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -133,6 +136,7 @@ public class Reviews extends AppCompatActivity {
 
                 dialog.setMessage(result);
                 //dialog.show();
+                sForTestReviewsList = result;
                 JSONArray jsonArr = new JSONArray(result);
                 dataModels = ReviewDataModel.fromJson(jsonArr);
                 final ReviewsCustomAdapter ReviewAdapter = new ReviewsCustomAdapter(dataModels, mContext);

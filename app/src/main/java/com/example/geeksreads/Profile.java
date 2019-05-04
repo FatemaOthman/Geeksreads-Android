@@ -398,6 +398,7 @@ public class Profile extends AppCompatActivity implements NavigationView.OnNavig
                 ForTestProfilePicture = jsonObject.getString("photo");
                 ForTestFollowersCount = FollowersCount.getText().toString();
                 ForTestFollowingCount = FollowingCount.getText().toString();
+
             } catch (JSONException e) {
                 e.printStackTrace();
             }
