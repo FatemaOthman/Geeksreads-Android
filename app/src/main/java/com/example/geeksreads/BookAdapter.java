@@ -40,10 +40,10 @@ public class BookAdapter extends RecyclerView.Adapter<BookAdapter.ViewHolder>{
         return new ViewHolder(v);
     }
     /**
-    * onBindViewHolder: Called by RecyclerView to display the data at the specified position.
-    * @param  holder
-    * @param  position
-    * @return void
+     * onBindViewHolder: Called by RecyclerView to display the data at the specified position.
+     * @param  holder
+     * @param  position
+     * @return void
      */
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
@@ -82,6 +82,7 @@ public class BookAdapter extends RecyclerView.Adapter<BookAdapter.ViewHolder>{
                 myIntent.putExtra("Pages","3");
                 myIntent.putExtra("published","9-9-2011");
                 myIntent.putExtra("cover", bookitem.getBookCoverURL());
+                myIntent.putExtra("BookID",bookitem.getBookID());
                 context.startActivity(myIntent);
 
 

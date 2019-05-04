@@ -6,8 +6,11 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.media.MediaCas;
 import android.os.AsyncTask;
+import android.os.Build;
 import android.support.annotation.NonNull;
+import android.support.annotation.RequiresApi;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
@@ -17,6 +20,7 @@ import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -28,6 +32,11 @@ import android.widget.SearchView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import org.apache.http.HttpResponse;
+import org.apache.http.client.HttpClient;
+import org.apache.http.client.methods.HttpGet;
+import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.util.EntityUtils;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -48,6 +57,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
+import CustomFunctions.APIs;
+import CustomFunctions.UserSessionManager;
+
 public class AuthorActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener{
     public static String sForTestAuthorName, sForTestAuthorRate, sForTestAuthorNumOfRates,sForTestAuthorNumOfReviews, sForTestAuthorPicURL, sForTestNumOfBooks,sFortTestFollowStatus, sForTestAuthorDescription;
     RecyclerView recyclerView;
@@ -64,7 +76,7 @@ public class AuthorActivity extends AppCompatActivity implements NavigationView.
     TextView AuthorNumsOfReviews;
     String ImageURL;
     Button followingState;
-    static boolean Follow=true;
+    static boolean Follow;
 
     /* SideBar Views */
     ImageView userPhoto;
@@ -73,6 +85,7 @@ public class AuthorActivity extends AppCompatActivity implements NavigationView.
     TextView booksCount;
     MenuItem FollowItem;
     MenuItem BookItem;
+    String AuthorID;
 
 
     @Override
@@ -84,6 +97,10 @@ public class AuthorActivity extends AppCompatActivity implements NavigationView.
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         mContext = this;
+        Intent intent = getIntent();
+        AuthorID=intent.getStringExtra("AuthorID");
+        AuthorID = "5c911452938ffea87b4672d7";//intent.getStringExtra("AuthorID");
+
 
         /* ToolBar and SideBar Setups */
         Toolbar myToolbar = findViewById(R.id.toolbar);
@@ -129,10 +146,20 @@ public class AuthorActivity extends AppCompatActivity implements NavigationView.
                 startActivity(mIntent);
             }
         });
-        JSONObject JSON = new JSONObject();
-        String UrlSideBar = "http://geeksreads.000webhostapp.com/Fatema/SideBar.php";
+        JSONObject jsonUserDetails = new JSONObject();
+        try {
+            jsonUserDetails.put("token", UserSessionManager.getUserToken());
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        String UrlSideBar = APIs.API_GET_USER_INFO;//"http://geeksreads.000webhostapp.com/Fatema/SideBar.php";
         GetSideBarDetails getSideBarDetails = new GetSideBarDetails();
-        getSideBarDetails.execute(UrlSideBar, JSON.toString());
+        //getSideBarDetails.execute(UrlSideBar, jsonUserDetails.toString());
+        //GetShelvesDetails getShelvesDetails = new GetShelvesDetails(UserSessionManager.getUserToken());
+        String UrlShelvesDetails = APIs.API_USER_SHELVES;
+       // getShelvesDetails.execute(UrlShelvesDetails,UserSessionManager.getUserToken());
+
+
 
 
         /*Getting All views by id from AuthorActivity Layout*/
@@ -150,24 +177,45 @@ public class AuthorActivity extends AppCompatActivity implements NavigationView.
         followingState.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-               Follow= (authorFollowUnFollow(Follow)=="Following")?true:false;
-               followingState.setText(authorFollowUnFollow(Follow));
+               //Follow= (authorFollowUnFollow(Follow)=="Following")?true:false;
+               //followingState.setText(authorFollowUnFollow(Follow));
+                if(Follow == true)
+                {
+                    String UrlunFollowAuthor=APIs.API_UNFOLLOW_AUTHOR;
+                    UnFollowAuthor unFollowAuthor=new UnFollowAuthor(UserSessionManager.getUserToken(),UserSessionManager.getUserID(),AuthorID);
+                    unFollowAuthor.execute(UrlunFollowAuthor);
+                }
+                    else
+                {
+                    String UrlFollowAuthor=APIs.API_FOLLOW_AUTHOR;
+                    FollowAuthor FollowAuthor=new FollowAuthor(UserSessionManager.getUserToken(),UserSessionManager.getUserID(),AuthorID);
+                    FollowAuthor.execute(UrlFollowAuthor);
+
+                }
 
 
             }
         });
 
+
         list = new ArrayList<>();
         JSONObject mJSON = new JSONObject();
-       try {
-            mJSON.put("id", "value");
+       /*try {
+            mJSON.put("auth_id", AuthorID);
         } catch (JSONException e) {
             e.printStackTrace();
-        }
-        String UrlService = "http://geeksreads.000webhostapp.com/Fatema/GetAuthorInfo.php";
+        }*/
+
+        String UrlAuthor = APIs.API_GET_AUTHOR_BY_ID;//"https://geeksreads.herokuapp.com/api/authors/id?auth_id="+AuthorID;//5c911452938ffea87b4672d7";
+
 
         GetAuthorDetails getAuthorDetails = new GetAuthorDetails();
-        getAuthorDetails.execute(UrlService, mJSON.toString());
+        getAuthorDetails.execute(UrlAuthor, AuthorID);
+        GetFollowingAuthorDetails getFollowingAuthorDetails = new GetFollowingAuthorDetails(UserSessionManager.getUserToken(),UserSessionManager.getUserID(),AuthorID);
+        String UrlAuthorFollowingStatus = APIs.API_GET_FOLLOWING_AUTHOR_STATE;
+        getFollowingAuthorDetails.execute(UrlAuthorFollowingStatus);
+
+
 
 
 
@@ -201,6 +249,16 @@ public class AuthorActivity extends AppCompatActivity implements NavigationView.
         searchView.setMaxWidth(800);
         searchView.setQueryHint("Search books");
         searchView.setBackgroundColor(getResources().getColor(R.color.white));
+        searchView.setOnQueryTextFocusChangeListener(new View.OnFocusChangeListener() {
+            @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
+            @Override
+            public void onFocusChange(View v, boolean hasFocus) {
+                Intent m = new Intent(mContext,SearchHandlerActivity.class);
+                startActivity(m);
+
+
+            }
+        });
         MenuItem item1 = menu.findItem(R.id.NotificationButton);
         item1.setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
             @Override
@@ -297,108 +355,94 @@ public class AuthorActivity extends AppCompatActivity implements NavigationView.
      */
     @SuppressLint("StaticFieldLeak")
     private class GetAuthorDetails extends AsyncTask<String, Void, String> {
-        public static final String REQUEST_METHOD = "GET";
-        AlertDialog dialog;
+        static final String REQUEST_METHOD = "GET";
+        JSONObject mJSON = new JSONObject();
 
         @Override
         protected void onPreExecute() {
-            dialog = new AlertDialog.Builder(mContext).create();
-            dialog.setTitle("Connection Status");
-
+            /* Do Nothing */
         }
 
         @Override
         protected String doInBackground(String... params) {
             String UrlString = params[0];
-            String JSONString = params[1];
+            String AuthorID = params[1];
             String result = "";
 
+            UrlString = UrlString + "?auth_id=" + AuthorID;
+            HttpClient httpclient = new DefaultHttpClient();
+            HttpGet httpget = new HttpGet(UrlString);
+
+            HttpResponse response = null;
+            String server_response = null;
             try {
-                //Create a URL object holding our url
-                URL url = new URL(UrlString);
-                HttpURLConnection http = (HttpURLConnection) url.openConnection();
-                http.setRequestMethod(REQUEST_METHOD);
-                http.setDoInput(true);
-                http.setDoOutput(true);
-
-                OutputStream ops = http.getOutputStream();
-                BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(ops, StandardCharsets.UTF_8));
-                String data = URLEncoder.encode("UserId", "UTF-8") + "=" + URLEncoder.encode(JSONString, "UTF-8");
-
-                writer.write(data);
-                writer.flush();
-                writer.close();
-                ops.close();
-
-                //Create a new InputStreamReader
-                InputStream ips = http.getInputStream();
-                BufferedReader reader = new BufferedReader(new InputStreamReader(ips, StandardCharsets.ISO_8859_1));
-                String line;
-                while ((line = reader.readLine()) != null) {
-                    result += line;
-                }
-                reader.close();
-                ips.close();
-                http.disconnect();
-                return result;
-
-            } catch (MalformedURLException e) {
-                result = e.getMessage();
+                response = httpclient.execute(httpget);
             } catch (IOException e) {
-                result = e.getMessage();
+                e.printStackTrace();
             }
-            return result;
-        }
+
+            if (response.getStatusLine().getStatusCode() == 200) {
+                try {
+                    server_response = EntityUtils.toString(response.getEntity());
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+                Log.d("Server response", server_response);
+            } else {
+                Log.d("Server response", "Failed to get server response");
+            }
+
+            result = server_response;
+            return result;        }
 
         @SuppressLint("SetTextI18n")
         protected void onPostExecute(String result) {
-            // mProgressBar.setVisibility(View.GONE);
             if (result == null) {
                 Toast.makeText(mContext, "Unable to connect to server", Toast.LENGTH_SHORT).show();
                 return;
             }
             try {
-                dialog.setMessage("Done");
-                //dialog.show();
+                /* Creating a JSON Object to parse the data in */
+                final JSONObject jsonObject = new JSONObject(result);
 
-                /* Get Json Object from server and preview results on Layout views */
-                JSONObject jsonObject = new JSONObject(result);
+                AuthorName.setText(jsonObject.getString("AuthorName"));
+                // AuthorNumsOfRating.setText(jsonObject.getString("numofrates")+" ratings.");
 
-                AuthorName.setText(jsonObject.getString("name"));
-                AuthorNumsOfRating.setText(jsonObject.getString("numofrates")+" ratings.");
+                //  AuthorRating.setText(jsonObject.getString("rate"));
+                //  AuthorRatingBar.setRating(Float.parseFloat((String)jsonObject.getString("rate")));
 
-                AuthorRating.setText(jsonObject.getString("rate"));
-                AuthorRatingBar.setRating(Float.parseFloat((String)jsonObject.getString("rate")));
-                AuthorDescription.setText(jsonObject.getString("disc"));
-                NumOfBooks.setText("Author of "+jsonObject.getString("numofbooks")+" books.");
-                AuthorNumsOfReviews.setText(jsonObject.getString("numofreviews")+" reviews.");
+                AuthorDescription.setText(jsonObject.getString("About"));
+
+                JSONArray array=jsonObject.getJSONArray("BookId");
+                NumOfBooks.setText("Author of "+array.length()+" books.");
+                // AuthorNumsOfReviews.setText(jsonObject.getString("numofreviews")+" reviews.");
 
 
-                if(jsonObject.getString("followed").equals("true"))
-                {
-                    followingState.setText("Following");
-                    Follow=true;
-                }
-                else {
+                // if(/*jsonObject.getString("followed").equals("true")*/)
+                // {
+                //followingState.setText("Following");
+                //Follow=true;
+                // }
+                /*else {
                     followingState.setText("Follow");
                     Follow=false;
-                }
+                }*/
 
                 /* Start Async Task to get the image from url */
                 GetImage getAuthorPic = new GetImage();
-                ImageURL = jsonObject.getString("authorpicurl");
+                ImageURL = jsonObject.getString("Photo");
                 getAuthorPic.execute(ImageURL);
 
-                sForTestAuthorName=(String)AuthorName.getText();
-                sForTestAuthorNumOfRates=(String) AuthorNumsOfRating.getText();
-                sForTestNumOfBooks=(String) NumOfBooks.getText();
-                sForTestAuthorDescription =(String) AuthorDescription.getText();
-                sForTestAuthorPicURL=ImageURL;
-                sFortTestFollowStatus=followingState.getText().toString();
-                sForTestAuthorRate=AuthorRating.getText().toString();
-                sForTestAuthorNumOfReviews=AuthorNumsOfReviews.getText().toString();
-                JSONArray array=jsonObject.getJSONArray("authorbooks");
-                for(int i=0;i<array.length();i++)
+                // sForTestAuthorName=(String)AuthorName.getText();
+                // sForTestAuthorNumOfRates=(String) AuthorNumsOfRating.getText();
+                // sForTestNumOfBooks=(String) NumOfBooks.getText();
+                // sForTestAuthorDescription =(String) AuthorDescription.getText();
+                // sForTestAuthorPicURL=ImageURL;
+                // sFortTestFollowStatus=followingState.getText().toString();
+                // sForTestAuthorRate=AuthorRating.getText().toString();
+                // sForTestAuthorNumOfReviews=AuthorNumsOfReviews.getText().toString();
+                //   JSONArray array=jsonObject.getJSONArray("authorbooks");
+             /*   for(int i=0;i<array.length();i++)
                 {
                     JSONObject o = array.getJSONObject(i);
                     BookItem B =new BookItem(
@@ -407,12 +451,13 @@ public class AuthorActivity extends AppCompatActivity implements NavigationView.
                             o.getString("bookrate"),
                             o.getString("numofrates"),
                             o.getString("coverurl"),
-                            o.getString("readingstatus")
+                            o.getString("readingstatus"),
+                            o.getString("BookId")
                     );
                     list.add(B);
                 }
                 adapter =new BookAdapter(list,getApplicationContext());
-                recyclerView.setAdapter(adapter);
+                recyclerView.setAdapter(adapter);*/
 
             } catch (JSONException e) {
                 e.printStackTrace();
@@ -420,6 +465,328 @@ public class AuthorActivity extends AppCompatActivity implements NavigationView.
         }
 
     }
+
+    @SuppressLint("StaticFieldLeak")
+    private class GetFollowingAuthorDetails extends AsyncTask<String, Void, String> {
+        static final String REQUEST_METHOD = "POST";
+        String userToken;
+        String userID;
+        String authorID;
+
+        public GetFollowingAuthorDetails(String userToken,String user_id,String author_id) {
+            this.userToken = userToken;
+            userID=user_id;
+            authorID=author_id;
+        }
+
+        @Override
+        protected void onPreExecute() {
+            /* Do Nothing */
+        }
+
+        @Override
+        protected String doInBackground(String... params) {
+            String UrlString = params[0];
+
+            String result = "";
+            try {
+                /* Create a URL object holding our url */
+                URL url = new URL(UrlString);
+                /* Create an HTTP Connection and adjust its options */
+                HttpURLConnection http = (HttpURLConnection) url.openConnection();
+                http.setRequestMethod(REQUEST_METHOD);
+                http.setDoInput(true);
+                http.setDoOutput(true);
+                http.setRequestProperty("Content-type", "application/json");
+
+                /* A Stream object to hold the sent data to API Call */
+                OutputStream ops = http.getOutputStream();
+                BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(ops, StandardCharsets.UTF_8));
+                JSONObject newJson = new JSONObject();
+                newJson.put("token", "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI1Y2NiODRlMTQ5NmNiYjAwMTdmNDgxMjgiLCJpYXQiOjE1NTY5NzM4NzEsImV4cCI6MTU1NzA2MDI3MX0.rbHGPMygD21ba3eN_ASFsBoG-gDEs32bBQlxTcK32fU");
+                newJson.put("user_id","5ccb84e1496cbb0017f48128");
+                newJson.put("auth_id","5c911452938ffea87b4672d7");
+
+                writer.write(newJson.toString());
+                Log.d("FatemaToken",userToken);
+                Log.d("Fatemauser id:",userID);
+                Log.d("FatemaAuthorID:",authorID);
+                Log.d("FatemaJsonObject",newJson.toString());
+                Log.d("FatemaResponde",String.valueOf(http.getResponseCode()));
+                Log.d("FatemsREspinseText",http.getResponseMessage());
+
+
+                writer.flush();
+                writer.close();
+                ops.close();
+
+                /* A Stream object to get the returned data from API Call */
+                switch (String.valueOf(http.getResponseCode()))
+                {
+                    case "200":
+                        /* A Stream object to get the returned data from API Call */
+                        InputStream ips = http.getInputStream();
+                        BufferedReader reader = new BufferedReader(new InputStreamReader(ips, StandardCharsets.ISO_8859_1));
+                        String line = "";
+                        while ((line = reader.readLine()) != null) {
+                            result += line;
+                        }
+                        reader.close();
+                        ips.close();
+                        break;
+                    case "400":
+                        result = "{\"ReturnMsg\":\"Error Occurred.\"}";
+                        break;
+                    default:
+                        break;
+                }
+                http.disconnect();
+                return result;
+
+            }
+            /* Handling Exceptions */ catch (MalformedURLException e) {
+                result = e.getMessage();
+                Log.d("Fatemaesult",result);
+
+            } catch (IOException e) {
+                //result = e.getMessage();
+                Log.d("Fatemareslt",result);
+
+
+
+            } catch (JSONException e) {
+                e.printStackTrace();
+                Log.d("Fatemaresul",result);
+
+            }
+            return result;        }
+
+        @SuppressLint("SetTextI18n")
+        protected void onPostExecute(String result) {
+            Log.d("Fatemaresult",result);
+            if (result == null) {
+                Toast.makeText(mContext, "Unable to connect to server", Toast.LENGTH_SHORT).show();
+                return;
+            }
+            try {
+                /* Creating a JSON Object to parse the data in */
+                final JSONObject jsonObject = new JSONObject(result);
+                Follow=jsonObject.getBoolean("Isfollowed");
+                followingState.setText(Follow==true?"Following":"Follow");
+
+
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+        }
+
+    }
+
+    @SuppressLint("StaticFieldLeak")
+    private class FollowAuthor extends AsyncTask<String, Void, String> {
+        static final String REQUEST_METHOD = "POST";
+        String userToken;
+        String userID;
+        String authorID;
+
+        public FollowAuthor(String userToken,String user_id,String author_id) {
+            this.userToken = userToken;
+            userID=user_id;
+            authorID=author_id;
+        }
+
+        @Override
+        protected void onPreExecute() {
+            /* Do Nothing */
+        }
+
+        @Override
+        protected String doInBackground(String... params) {
+            String UrlString = params[0];
+
+            String result = "";
+            try {
+                /* Create a URL object holding our url */
+                URL url = new URL(UrlString);
+                /* Create an HTTP Connection and adjust its options */
+                HttpURLConnection http = (HttpURLConnection) url.openConnection();
+                http.setRequestMethod(REQUEST_METHOD);
+                http.setDoInput(true);
+                http.setDoOutput(true);
+                http.setRequestProperty("content-type", "application/json");
+
+                /* A Stream object to hold the sent data to API Call */
+                OutputStream ops = http.getOutputStream();
+                BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(ops, StandardCharsets.UTF_8));
+                JSONObject newJson = new JSONObject();
+                newJson.put("token", userToken);
+                newJson.put("myuser_id",userID);
+                newJson.put("auth_id",authorID);
+                writer.write(newJson.toString());
+                writer.flush();
+                writer.close();
+                ops.close();
+
+                /* A Stream object to get the returned data from API Call */
+                switch (String.valueOf(http.getResponseCode()))
+                {
+                    case "200":
+                        /* A Stream object to get the returned data from API Call */
+                        InputStream ips = http.getInputStream();
+                        BufferedReader reader = new BufferedReader(new InputStreamReader(ips, StandardCharsets.ISO_8859_1));
+                        String line = "";
+                        while ((line = reader.readLine()) != null) {
+                            result += line;
+                        }
+                        reader.close();
+                        ips.close();
+                        break;
+                    case "400":
+                        result = "{\"ReturnMsg\":\"Error Occurred.\"}";
+                        break;
+                    default:
+                        break;
+                }
+                http.disconnect();
+                return result;
+
+            }
+            /* Handling Exceptions */ catch (MalformedURLException e) {
+                result = e.getMessage();
+            } catch (IOException e) {
+                result = e.getMessage();
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+            return result;
+        }
+
+        @SuppressLint("SetTextI18n")
+        protected void onPostExecute(String result) {
+            if (result == null) {
+                Toast.makeText(mContext, "Unable to connect to server", Toast.LENGTH_SHORT).show();
+                return;
+            }
+            try {
+                /* Creating a JSON Object to parse the data in */
+                final JSONObject jsonObject = new JSONObject(result);
+               if(jsonObject.getBoolean("success")==true) {
+                   followingState.setText("Following");
+                   Follow = true;
+               }
+
+
+
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+        }
+
+    }
+
+    @SuppressLint("StaticFieldLeak")
+    private class UnFollowAuthor extends AsyncTask<String, Void, String> {
+        static final String REQUEST_METHOD = "POST";
+        String userToken;
+        String userID;
+        String authorID;
+
+        public UnFollowAuthor(String userToken,String user_id,String author_id) {
+            this.userToken = userToken;
+            userID=user_id;
+            authorID=author_id;
+        }
+
+        @Override
+        protected void onPreExecute() {
+            /* Do Nothing */
+        }
+
+        @Override
+        protected String doInBackground(String... params) {
+            String UrlString = params[0];
+
+            String result = "";
+            try {
+                /* Create a URL object holding our url */
+                URL url = new URL(UrlString);
+                /* Create an HTTP Connection and adjust its options */
+                HttpURLConnection http = (HttpURLConnection) url.openConnection();
+                http.setRequestMethod(REQUEST_METHOD);
+                http.setDoInput(true);
+                http.setDoOutput(true);
+                http.setRequestProperty("content-type", "application/json");
+
+                /* A Stream object to hold the sent data to API Call */
+                OutputStream ops = http.getOutputStream();
+                BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(ops, StandardCharsets.UTF_8));
+                JSONObject newJson = new JSONObject();
+                newJson.put("token", userToken);
+                newJson.put("myuser_id",userID);
+                newJson.put("auth_id",authorID);
+                writer.write(newJson.toString());
+                writer.flush();
+                writer.close();
+                ops.close();
+
+                /* A Stream object to get the returned data from API Call */
+                switch (String.valueOf(http.getResponseCode()))
+                {
+                    case "200":
+                        /* A Stream object to get the returned data from API Call */
+                        InputStream ips = http.getInputStream();
+                        BufferedReader reader = new BufferedReader(new InputStreamReader(ips, StandardCharsets.ISO_8859_1));
+                        String line = "";
+                        while ((line = reader.readLine()) != null) {
+                            result += line;
+                        }
+                        reader.close();
+                        ips.close();
+                        break;
+                    case "400":
+                        result = "{\"ReturnMsg\":\"Error Occurred.\"}";
+                        break;
+                    default:
+                        break;
+                }
+                http.disconnect();
+                return result;
+
+            }
+            /* Handling Exceptions */ catch (MalformedURLException e) {
+                result = e.getMessage();
+            } catch (IOException e) {
+                result = e.getMessage();
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+            return result;
+        }
+
+        @SuppressLint("SetTextI18n")
+        protected void onPostExecute(String result) {
+            if (result == null) {
+                Toast.makeText(mContext, "Unable to connect to server", Toast.LENGTH_SHORT).show();
+                return;
+            }
+            try {
+                /* Creating a JSON Object to parse the data in */
+                final JSONObject jsonObject = new JSONObject(result);
+                if(jsonObject.getBoolean("success")==true) {
+                    followingState.setText("Follow");
+                    Follow = false;
+                }
+
+
+
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+        }
+
+    }
+
+
 
     /**
      * Class that get sidebar profile pic. from server
@@ -471,43 +838,54 @@ public class AuthorActivity extends AppCompatActivity implements NavigationView.
             String UrlString = params[0];
             String JSONString = params[1];
             String result = "";
-
             try {
-                //Create a URL object holding our url
+                /* Create a URL object holding our url */
                 URL url = new URL(UrlString);
+                /* Create an HTTP Connection and adjust its options */
                 HttpURLConnection http = (HttpURLConnection) url.openConnection();
                 http.setRequestMethod(REQUEST_METHOD);
                 http.setDoInput(true);
                 http.setDoOutput(true);
+                http.setRequestProperty("content-type", "application/json");
 
+                /* A Stream object to hold the sent data to API Call */
                 OutputStream ops = http.getOutputStream();
                 BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(ops, StandardCharsets.UTF_8));
-                String data = URLEncoder.encode("id", "UTF-8") + "=" + URLEncoder.encode(JSONString, "UTF-8");
-
-                writer.write(data);
+                writer.write(JSONString);
                 writer.flush();
                 writer.close();
                 ops.close();
-
-                //Create a new InputStreamReader
-                InputStream ips = http.getInputStream();
-                BufferedReader reader = new BufferedReader(new InputStreamReader(ips, StandardCharsets.ISO_8859_1));
-                String line;
-                while ((line = reader.readLine()) != null) {
-                    result += line;
+                switch (String.valueOf(http.getResponseCode()))
+                {
+                    case "200":
+                        /* A Stream object to get the returned data from API Call */
+                        InputStream ips = http.getInputStream();
+                        BufferedReader reader = new BufferedReader(new InputStreamReader(ips, StandardCharsets.ISO_8859_1));
+                        String line = "";
+                        //boolean started = false;
+                        while ((line = reader.readLine()) != null) {
+                            result += line;
+                        }
+                        reader.close();
+                        ips.close();
+                        break;
+                    default:
+                        result = "{\"ReturnMsg\":\"An Error Occurred!\"}";
+                        break;
                 }
-                reader.close();
-                ips.close();
+
                 http.disconnect();
                 return result;
-
-            } catch (MalformedURLException e) {
+            }
+            /* Handling Exceptions */ catch (MalformedURLException e) {
                 result = e.getMessage();
             } catch (IOException e) {
                 result = e.getMessage();
             }
             return result;
         }
+
+
 
         @SuppressLint("SetTextI18n")
         protected void onPostExecute(String result) {
@@ -518,16 +896,158 @@ public class AuthorActivity extends AppCompatActivity implements NavigationView.
             try {
 
                 JSONObject jsonObject = new JSONObject(result);
-                FollowItem.setTitle("Followers   " + jsonObject.getString("Followers"));
-                BookItem.setTitle("My Books   " + jsonObject.getString("CountBooks"));
+                FollowItem.setTitle("Followers   " + jsonObject.getString("NoOfFollowers"));
+               // BookItem.setTitle("My Books   0" );
                 userName.setText(jsonObject.getString("UserName"));
                 GetUserPicture Pic = new GetUserPicture();
-                Pic.execute(jsonObject.getString("photourl"));
+                Pic.execute(jsonObject.getString("Photo"));
             } catch (JSONException e) {
                 e.printStackTrace();
             }
         }
 
     }
+
+    @SuppressLint("StaticFieldLeak")
+    private class GetShelvesDetails extends AsyncTask<String, Void, String> {
+        static final String REQUEST_METHOD = "POST";
+        String userToken;
+
+        public GetShelvesDetails(String userToken) {
+            this.userToken = userToken;
+        }
+
+        @Override
+        protected void onPreExecute() {
+            /* Do Nothing */
+        }
+
+        @Override
+        protected String doInBackground(String... params) {
+            String UrlString = params[0];
+
+            String result = "";
+            try {
+                /* Create a URL object holding our url */
+                URL url = new URL(UrlString);
+                /* Create an HTTP Connection and adjust its options */
+                HttpURLConnection http = (HttpURLConnection) url.openConnection();
+                http.setRequestMethod(REQUEST_METHOD);
+                http.setDoInput(true);
+                http.setDoOutput(true);
+                http.setRequestProperty("content-type", "application/json");
+
+                /* A Stream object to hold the sent data to API Call */
+                OutputStream ops = http.getOutputStream();
+                BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(ops, StandardCharsets.UTF_8));
+                JSONObject newJson = new JSONObject();
+                newJson.put("token", userToken);
+                writer.write(newJson.toString());
+                writer.flush();
+                writer.close();
+                ops.close();
+
+                /* A Stream object to get the returned data from API Call */
+                switch (String.valueOf(http.getResponseCode()))
+                {
+                    case "200":
+                        /* A Stream object to get the returned data from API Call */
+                        InputStream ips = http.getInputStream();
+                        BufferedReader reader = new BufferedReader(new InputStreamReader(ips, StandardCharsets.ISO_8859_1));
+                        String line = "";
+                        while ((line = reader.readLine()) != null) {
+                            result += line;
+                        }
+                        reader.close();
+                        ips.close();
+                        break;
+                    case "400":
+                        result = "{\"ReturnMsg\":\"Error Occurred.\"}";
+                        break;
+                    default:
+                        break;
+                }
+                http.disconnect();
+                return result;
+
+            }
+            /* Handling Exceptions */ catch (MalformedURLException e) {
+                result = e.getMessage();
+            } catch (IOException e) {
+                result = e.getMessage();
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+            return result;
+        }
+
+        // static final String REQUEST_METHOD = "GET";
+        // JSONObject mJSON = new JSONObject();
+
+        /*   @Override
+           protected void onPreExecute()
+           {
+               // Do Nothing
+           }
+           */
+     /*
+        @Override
+        protected String doInBackground(String... params) {
+            String UrlString = params[0];
+            String UserToken = params[1];
+            String result = "";
+
+            UrlString = UrlString + "?token=" + UserToken;
+            HttpClient httpclient = new DefaultHttpClient();
+            HttpGet httpget = new HttpGet(UrlString);
+
+            HttpResponse response = null;
+            String server_response = null;
+            try {
+                response = httpclient.execute(httpget);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+
+            if (response.getStatusLine().getStatusCode() == 200) {
+                try {
+                    server_response = EntityUtils.toString(response.getEntity());
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+                Log.d("Server response", server_response);
+            } else {
+                Log.d("Server response", "Failed to get server response");
+            }
+
+            result = server_response;
+            return result;        }
+            */
+        @SuppressLint("SetTextI18n")
+        protected void onPostExecute(String result) {
+            if (result == null) {
+                Toast.makeText(mContext, "Unable to connect to server", Toast.LENGTH_SHORT).show();
+                return;
+            }
+            try {
+                /* Creating a JSON Object to parse the data in */
+                final JSONObject jsonObject = new JSONObject(result);
+                int TotalNumOfBooks = 0;
+                TotalNumOfBooks+=jsonObject.getInt("NoOfRead")+jsonObject.getInt("NoOfReading")+jsonObject.getInt("NoOfWantToRead");
+
+
+                BookItem.setTitle("My Books   "+TotalNumOfBooks);
+
+
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+        }
+
+    }
+
+
+
+
 
 }

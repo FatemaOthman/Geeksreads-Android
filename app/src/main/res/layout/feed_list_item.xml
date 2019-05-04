@@ -50,6 +50,16 @@
                         android:text="few minutes ago."
                         android:textSize="10dp" />
 
+                    <include
+
+                        android:id="@+id/book_item"
+                        layout="@layout/author_books_list_item"
+                        android:visibility="invisible">
+
+
+                    </include>
+
+
 
                 </LinearLayout>
 
