@@ -36,6 +36,9 @@ public class Reviews extends AppCompatActivity {
     ArrayList<ReviewDataModel> dataModels;
     TextView BookNameForReview;
     Context mContext;
+    public static String sForTestReviewsList;
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -44,12 +47,11 @@ public class Reviews extends AppCompatActivity {
         dataModels = new ArrayList<>();
         ReviewList = findViewById(R.id.ReviewsList);
         BookNameForReview = findViewById(R.id.ReviewsName);
-        //TODO: Remove next line and uncomment the following one.
-        //Don't forget to check with Sherouk that the BookName is passed.
+
         BookNameForReview.setText(getIntent().getStringExtra("BookName"));
 
         final String GetAllReviewsURL = APIs.API_GET_REVIEWS_LIST + "?UserId=" + UserSessionManager.getUserID() + "&" +
-                "bookId" + getIntent().getStringExtra("BookID") + "&" + "userName=" + getIntent().getStringExtra("userName");
+                "bookId=" + getIntent().getStringExtra("BookID");
 
         Reviews.GetAllReviews performBackgroundTask = new Reviews.GetAllReviews();
         performBackgroundTask.execute(GetAllReviewsURL);
@@ -95,7 +97,7 @@ public class Reviews extends AppCompatActivity {
         protected String doInBackground(String... params) {
             String UrlString = params[0];
             String result = "";
-
+            Log.d("AMR", "You entered the do in background in Reviews!");
             HttpClient httpclient = new DefaultHttpClient();
             HttpGet httpget = new HttpGet(UrlString);
             HttpResponse response = null;
@@ -106,6 +108,7 @@ public class Reviews extends AppCompatActivity {
                 e.printStackTrace();
             }
 
+            assert response != null;
             if (response.getStatusLine().getStatusCode() == 200) {
                 try {
                     server_response = EntityUtils.toString(response.getEntity());
@@ -133,7 +136,7 @@ public class Reviews extends AppCompatActivity {
 
                 dialog.setMessage(result);
                 //dialog.show();
-                Log.d("Test",result);
+                sForTestReviewsList = result;
                 JSONArray jsonArr = new JSONArray(result);
                 dataModels = ReviewDataModel.fromJson(jsonArr);
                 final ReviewsCustomAdapter ReviewAdapter = new ReviewsCustomAdapter(dataModels, mContext);

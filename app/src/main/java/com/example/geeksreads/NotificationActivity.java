@@ -21,6 +21,7 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.SearchView;
@@ -235,16 +236,17 @@ public class NotificationActivity extends AppCompatActivity implements Navigatio
 
             try {
                 //Create a URL object holding our url
+                //Create a URL object holding our url
                 URL url = new URL(UrlString);
                 HttpURLConnection http = (HttpURLConnection) url.openConnection();
                 http.setRequestMethod(REQUEST_METHOD);
                 http.setDoInput(true);
                 http.setDoOutput(true);
+                http.setRequestProperty("content-type", "application/json");
 
                 OutputStream ops = http.getOutputStream();
                 BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(ops, StandardCharsets.UTF_8));
 
-                Log.d("body",JSONString );
                 writer.write(JSONString);
                 writer.flush();
                 writer.close();
@@ -263,7 +265,7 @@ public class NotificationActivity extends AppCompatActivity implements Navigatio
                     ips.close();
                     TaskSuccess = true;
                 }
-                else                {
+                else {
                     TaskSuccess = false;
                     InputStream es = http.getErrorStream();
                     BufferedReader ereader = new BufferedReader(new InputStreamReader(es, StandardCharsets.ISO_8859_1));
@@ -274,6 +276,9 @@ public class NotificationActivity extends AppCompatActivity implements Navigatio
                     ereader.close();
                     es.close();
                 }
+                http.disconnect();
+                return result;
+
 
             } catch (MalformedURLException e) {
                 result = e.getMessage();
@@ -292,10 +297,19 @@ public class NotificationActivity extends AppCompatActivity implements Navigatio
                 return;
             }
             try {
-                dialog.setMessage(result);
-                //dialog.show();
                 ListView notificationList = findViewById(R.id.NotificationList);
-                notificationList.setAdapter(new Notification_JSONAdapter(mContext, new JSONArray(result)));
+                final Notification_JSONAdapter notificationJsonAdapter = new Notification_JSONAdapter(mContext, new JSONArray(result));
+                notificationList.setAdapter(notificationJsonAdapter);
+                notificationList.deferNotifyDataSetChanged();
+                notificationList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                    @Override
+                    public void onItemClick(AdapterView<?> arg0, View arg1, int position, long arg3) {
+                        Intent intent = new Intent(NotificationActivity.this, Reviews.class);
+                        intent.putExtra("BookID",notificationJsonAdapter.getBookID(position));
+                        intent.putExtra("BookName",notificationJsonAdapter.getBookName(position));
+                        startActivity(intent);
+                    }
+                });
             } catch (JSONException e) {
                 e.printStackTrace();
             }

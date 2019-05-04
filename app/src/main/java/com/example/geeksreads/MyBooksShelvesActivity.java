@@ -15,22 +15,19 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.SearchView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import org.apache.http.HttpResponse;
-import org.apache.http.client.HttpClient;
-import org.apache.http.client.methods.HttpGet;
-import org.apache.http.impl.client.DefaultHttpClient;
-import org.apache.http.util.EntityUtils;
+import com.example.geeksreads.views.LoadingView;
+
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -51,6 +48,10 @@ import java.util.Objects;
 
 import CustomFunctions.APIs;
 
+/**
+ * @author Mahmoud MORSY,
+ * This Class Activity handles Books Shelves View and Display for Users
+ */
 public class MyBooksShelvesActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
     /**
      * Global Public Static Variables used for Testing
@@ -59,7 +60,7 @@ public class MyBooksShelvesActivity extends AppCompatActivity implements Navigat
     /**
      * Global Public Static Variables used for Testing
      */
-    public static String sForTest_CurrentlyReading;
+    public static String sForTest_Reading;
     /**
      * Global Public Static Variables used for Testing
      */
@@ -76,6 +77,14 @@ public class MyBooksShelvesActivity extends AppCompatActivity implements Navigat
      */
     private Context mContext;
 
+    /**
+     * Global Variable for LoadingView to be displayed while loading a content from server
+     */
+    LoadingView Loading;
+
+    /**
+     * Function to be called when the Activity starts
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -119,24 +128,18 @@ public class MyBooksShelvesActivity extends AppCompatActivity implements Navigat
                 startActivity(mIntent);
             }
         });
-        JSONObject jsonUserDetails = new JSONObject();
-        try {
-            jsonUserDetails.put("token", UserSessionManager.getUserToken());
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-        String UrlSideBar = APIs.API_GET_USER_INFO;//"http://geeksreads.000webhostapp.com/Fatema/SideBar.php";
+        JSONObject JSON = new JSONObject();
+        String UrlSideBar = "http://geeksreads.000webhostapp.com/Fatema/SideBar.php";
         GetSideBarDetails getSideBarDetails = new GetSideBarDetails();
-        getSideBarDetails.execute(UrlSideBar, jsonUserDetails.toString());
-        GetShelvesDetails getShelvesDetails = new GetShelvesDetails(UserSessionManager.getUserToken());
-        String UrlShelvesDetails = APIs.API_GET_SHELVES_COUNT;
-        getShelvesDetails.execute(UrlShelvesDetails,UserSessionManager.getUserToken().toString());
+        getSideBarDetails.execute(UrlSideBar, JSON.toString());
 
         Button readButton = findViewById(R.id.ReadBtn);
         Button currentlyReadingButton = findViewById(R.id.CurrentlyReadingBtn);
         Button wantToReadButton = findViewById(R.id.WantToReadBtn);
 
 
+        TextView allControls[] = {readButton, currentlyReadingButton, wantToReadButton};
+        Loading = new LoadingView(allControls, (FrameLayout)findViewById(R.id.progressBarHolder), (TextView)findViewById(R.id.ProgressName));
         readButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -171,7 +174,9 @@ public class MyBooksShelvesActivity extends AppCompatActivity implements Navigat
         updateReadShelf.execute(urlService);
     }
 
-
+    /**
+     * Overriding back button function to a custom behaviour
+     */
     @Override
     public void onBackPressed() {
         DrawerLayout drawer = findViewById(R.id.drawer_layout);
@@ -182,6 +187,9 @@ public class MyBooksShelvesActivity extends AppCompatActivity implements Navigat
         }
     }
 
+    /**
+     * Function to be called when menu is created
+     */
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater inflater = getMenuInflater();
@@ -205,6 +213,9 @@ public class MyBooksShelvesActivity extends AppCompatActivity implements Navigat
     }
 
 
+    /**
+     * Function to do Actions of Navigation Bar
+     */
     @Override
     public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
 
@@ -230,6 +241,7 @@ public class MyBooksShelvesActivity extends AppCompatActivity implements Navigat
     }
 
     /**
+     * @author  Mahmoud MORSY
      * Class that get the data from host and Add it to its views.
      * The Parameters are host Url and toSend Data.
      */
@@ -237,15 +249,23 @@ public class MyBooksShelvesActivity extends AppCompatActivity implements Navigat
         static final String REQUEST_METHOD = "POST";
         String userToken;
 
+        /**
+         * Constructor for UpdateBookSHelfCountClass
+         * @param userToken Parameter to send user token
+         */
         public UpdateBookShelfCount(String userToken) {
             this.userToken = userToken;
         }
-
+        /**
+         * Function to be done before Executing, it starts Loading Animation
+         */
         @Override
         protected void onPreExecute() {
-            /* Do Nothing */
+            Loading.Start("Loading...");
         }
-
+        /**
+         * Function that executes the logic needed in the background thread
+         */
         @Override
         protected String doInBackground(String... params) {
             String UrlString = params[0];
@@ -265,7 +285,8 @@ public class MyBooksShelvesActivity extends AppCompatActivity implements Navigat
                 OutputStream ops = http.getOutputStream();
                 BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(ops, StandardCharsets.UTF_8));
                 JSONObject newJson = new JSONObject();
-                newJson.put("token", userToken);
+                newJson.put("token", UserSessionManager.getUserToken());
+                newJson.put("UserId", UserSessionManager.getUserID());
                 writer.write(newJson.toString());
                 writer.flush();
                 writer.close();
@@ -304,7 +325,9 @@ public class MyBooksShelvesActivity extends AppCompatActivity implements Navigat
             }
             return result;
         }
-
+        /**
+         * Function that does the needed actions in layout and finish loading animation
+         */
         @SuppressLint("SetTextI18n")
         protected void onPostExecute(String result) {
 
@@ -323,27 +346,32 @@ public class MyBooksShelvesActivity extends AppCompatActivity implements Navigat
                 Button wantToReadBtn = findViewById(R.id.WantToReadBtn);
                 Button currentlyReadingBtn = findViewById(R.id.CurrentlyReadingBtn);
 
+                sForTest_Reading = readingCount;
+                sForTest_Read = readCount;
+                sForTest_WantToRead = wantToReadCount;
+
+
                 readBtn.setText("Read  " + readCount);
-                sForTest_Read = "Read  " + readCount;
                 wantToReadBtn.setText("Want to Read  " + wantToReadCount);
-                sForTest_WantToRead = "Want to Read  " + wantToReadCount;
                 currentlyReadingBtn.setText("Currently Reading  " + readingCount);
-                sForTest_CurrentlyReading = "Currently Reading  " + readingCount;
             }
             /* Catching Exceptions */ catch (JSONException e) {
                 e.printStackTrace();
                 Toast.makeText(mContext, "Error in loading shelves data", Toast.LENGTH_SHORT).show();
             }
+            Loading.Stop();
         }
-
     }
 
     /**
-     * Class that get sidebar profile pic. from server
+     * @author  Mahmoud MORSY
+     * Class that get user profile pic. from server
      */
-    @SuppressLint("StaticFieldLeak")
     private class GetUserPicture extends AsyncTask<String, Void, Bitmap> {
 
+        /**
+         * Function that executes the logic needed in the background thread
+         */
         @Override
         protected Bitmap doInBackground(String... params) {
             try {
@@ -353,13 +381,17 @@ public class MyBooksShelvesActivity extends AppCompatActivity implements Navigat
                 connection.setDoInput(true);
                 connection.connect();
                 InputStream input = connection.getInputStream();
-                return BitmapFactory.decodeStream(input);
+                Bitmap myBitmap = BitmapFactory.decodeStream(input);
+                return myBitmap;
             } catch (Exception e) {
                 // Log.d(TAG,e.getMessage());
             }
             return null;
         }
 
+        /**
+         * Function that does the needed actions in layout and display picture
+         */
         @Override
         protected void onPostExecute(Bitmap result) {
             userPhoto.setImageBitmap(result);
@@ -370,64 +402,58 @@ public class MyBooksShelvesActivity extends AppCompatActivity implements Navigat
     /**
      * Class that get sidebar Data from server
      */
-    @SuppressLint("StaticFieldLeak")
     private class GetSideBarDetails extends AsyncTask<String, Void, String> {
-        static final String REQUEST_METHOD = "POST";
-        //public static final int READ_TIMEOUT = 3000;
-        //public static final int CONNECTION_TIMEOUT = 3000;
+        static final String REQUEST_METHOD = "GET";
         AlertDialog dialog;
 
+        /**
+         * Function to be done before Executing, it starts Loading Animation
+         */
         @Override
         protected void onPreExecute() {
             dialog = new AlertDialog.Builder(mContext).create();
             dialog.setTitle("Connection Status");
         }
 
+        /**
+         * Function that executes the logic needed in the background thread
+         */
         @Override
         protected String doInBackground(String... params) {
             String UrlString = params[0];
             String JSONString = params[1];
             String result = "";
+
             try {
-                /* Create a URL object holding our url */
+                //Create a URL object holding our url
                 URL url = new URL(UrlString);
-                /* Create an HTTP Connection and adjust its options */
                 HttpURLConnection http = (HttpURLConnection) url.openConnection();
                 http.setRequestMethod(REQUEST_METHOD);
                 http.setDoInput(true);
                 http.setDoOutput(true);
-                http.setRequestProperty("content-type", "application/json");
 
-                /* A Stream object to hold the sent data to API Call */
                 OutputStream ops = http.getOutputStream();
                 BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(ops, StandardCharsets.UTF_8));
-                writer.write(JSONString);
+                String data = URLEncoder.encode("id", "UTF-8") + "=" + URLEncoder.encode(JSONString, "UTF-8");
+
+                writer.write(data);
                 writer.flush();
                 writer.close();
                 ops.close();
-                switch (String.valueOf(http.getResponseCode()))
-                {
-                    case "200":
-                        /* A Stream object to get the returned data from API Call */
-                        InputStream ips = http.getInputStream();
-                        BufferedReader reader = new BufferedReader(new InputStreamReader(ips, StandardCharsets.ISO_8859_1));
-                        String line = "";
-                        //boolean started = false;
-                        while ((line = reader.readLine()) != null) {
-                            result += line;
-                        }
-                        reader.close();
-                        ips.close();
-                        break;
-                    default:
-                        result = "{\"ReturnMsg\":\"An Error Occurred!\"}";
-                        break;
-                }
 
+                //Create a new InputStreamReader
+                InputStream ips = http.getInputStream();
+                BufferedReader reader = new BufferedReader(new InputStreamReader(ips, StandardCharsets.ISO_8859_1));
+                String line = "";
+                while ((line = reader.readLine()) != null) {
+                    result += line;
+                }
+                reader.close();
+                ips.close();
                 http.disconnect();
                 return result;
-            }
-            /* Handling Exceptions */ catch (MalformedURLException e) {
+
+            } catch (MalformedURLException e) {
                 result = e.getMessage();
             } catch (IOException e) {
                 result = e.getMessage();
@@ -435,8 +461,9 @@ public class MyBooksShelvesActivity extends AppCompatActivity implements Navigat
             return result;
         }
 
-
-
+        /**
+         * Function that does the needed actions in layout and finish loading animation
+         */
         @SuppressLint("SetTextI18n")
         protected void onPostExecute(String result) {
             if (result == null) {
@@ -446,157 +473,16 @@ public class MyBooksShelvesActivity extends AppCompatActivity implements Navigat
             try {
 
                 JSONObject jsonObject = new JSONObject(result);
-                FollowItem.setTitle("Followers   " + jsonObject.getString("NoOfFollowers"));
-                // BookItem.setTitle("My Books   0" );
+                FollowItem.setTitle("Followers   " + jsonObject.getString("Followers"));
+                BookItem.setTitle("My Books   " + jsonObject.getString("CountBooks"));
                 userName.setText(jsonObject.getString("UserName"));
                 GetUserPicture Pic = new GetUserPicture();
-                Pic.execute(jsonObject.getString("Photo"));
+                Pic.execute(jsonObject.getString("photourl"));
             } catch (JSONException e) {
                 e.printStackTrace();
             }
         }
 
     }
-
-    @SuppressLint("StaticFieldLeak")
-    private class GetShelvesDetails extends AsyncTask<String, Void, String> {
-        static final String REQUEST_METHOD = "POST";
-        String userToken;
-
-        public GetShelvesDetails(String userToken) {
-            this.userToken = userToken;
-        }
-
-        @Override
-        protected void onPreExecute() {
-            /* Do Nothing */
-        }
-
-        @Override
-        protected String doInBackground(String... params) {
-            String UrlString = params[0];
-
-            String result = "";
-            try {
-                /* Create a URL object holding our url */
-                URL url = new URL(UrlString);
-                /* Create an HTTP Connection and adjust its options */
-                HttpURLConnection http = (HttpURLConnection) url.openConnection();
-                http.setRequestMethod(REQUEST_METHOD);
-                http.setDoInput(true);
-                http.setDoOutput(true);
-                http.setRequestProperty("content-type", "application/json");
-
-                /* A Stream object to hold the sent data to API Call */
-                OutputStream ops = http.getOutputStream();
-                BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(ops, StandardCharsets.UTF_8));
-                JSONObject newJson = new JSONObject();
-                newJson.put("token", userToken);
-                writer.write(newJson.toString());
-                writer.flush();
-                writer.close();
-                ops.close();
-
-                /* A Stream object to get the returned data from API Call */
-                switch (String.valueOf(http.getResponseCode()))
-                {
-                    case "200":
-                        /* A Stream object to get the returned data from API Call */
-                        InputStream ips = http.getInputStream();
-                        BufferedReader reader = new BufferedReader(new InputStreamReader(ips, StandardCharsets.ISO_8859_1));
-                        String line = "";
-                        while ((line = reader.readLine()) != null) {
-                            result += line;
-                        }
-                        reader.close();
-                        ips.close();
-                        break;
-                    case "400":
-                        result = "{\"ReturnMsg\":\"Error Occurred.\"}";
-                        break;
-                    default:
-                        break;
-                }
-                http.disconnect();
-                return result;
-
-            }
-            /* Handling Exceptions */ catch (MalformedURLException e) {
-                result = e.getMessage();
-            } catch (IOException e) {
-                result = e.getMessage();
-            } catch (JSONException e) {
-                e.printStackTrace();
-            }
-            return result;
-        }
-
-        // static final String REQUEST_METHOD = "GET";
-        // JSONObject mJSON = new JSONObject();
-
-        /*   @Override
-           protected void onPreExecute()
-           {
-               // Do Nothing
-           }
-           */
-     /*
-        @Override
-        protected String doInBackground(String... params) {
-            String UrlString = params[0];
-            String UserToken = params[1];
-            String result = "";
-
-            UrlString = UrlString + "?token=" + UserToken;
-            HttpClient httpclient = new DefaultHttpClient();
-            HttpGet httpget = new HttpGet(UrlString);
-
-            HttpResponse response = null;
-            String server_response = null;
-            try {
-                response = httpclient.execute(httpget);
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-
-            if (response.getStatusLine().getStatusCode() == 200) {
-                try {
-                    server_response = EntityUtils.toString(response.getEntity());
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-                Log.d("Server response", server_response);
-            } else {
-                Log.d("Server response", "Failed to get server response");
-            }
-
-            result = server_response;
-            return result;        }
-            */
-        @SuppressLint("SetTextI18n")
-        protected void onPostExecute(String result) {
-            if (result == null) {
-                Toast.makeText(mContext, "Unable to connect to server", Toast.LENGTH_SHORT).show();
-                return;
-            }
-            try {
-                /* Creating a JSON Object to parse the data in */
-                final JSONObject jsonObject = new JSONObject(result);
-                int TotalNumOfBooks = 0;
-                TotalNumOfBooks+=jsonObject.getInt("NoOfRead")+jsonObject.getInt("NoOfReading")+jsonObject.getInt("NoOfWantToRead");
-
-
-                BookItem.setTitle("My Books   "+TotalNumOfBooks);
-
-
-            } catch (JSONException e) {
-                e.printStackTrace();
-            }
-        }
-
-    }
-
-
-
 
 }

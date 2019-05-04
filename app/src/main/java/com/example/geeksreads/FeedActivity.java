@@ -7,6 +7,7 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.AsyncTask;
+import android.os.Build;
 import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
@@ -100,6 +101,13 @@ public class FeedActivity extends AppCompatActivity implements NavigationView.On
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_feed);
+
+        Intent NotificationService = new Intent(this, NotificationService.class);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            mContext.startForegroundService(NotificationService);
+        }
+        startService(NotificationService);
+
         recyclerView = (RecyclerView) findViewById(R.id.FeedRecyclerView);
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));

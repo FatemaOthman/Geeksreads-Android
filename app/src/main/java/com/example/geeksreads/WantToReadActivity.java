@@ -61,6 +61,7 @@ public class WantToReadActivity extends AppCompatActivity {
         final JSONObject jsonObject = new JSONObject();
         try {
             jsonObject.put("token", UserSessionManager.getUserToken());
+            jsonObject.put("UserId", UserSessionManager.getUserID());
         } catch (JSONException e) {
             e.printStackTrace();
         }
@@ -119,6 +120,7 @@ public class WantToReadActivity extends AppCompatActivity {
         //public static final int READ_TIMEOUT = 3000;
         //public static final int CONNECTION_TIMEOUT = 3000;
         AlertDialog dialog;
+        boolean TaskSuccess = false;
 
         @Override
         protected void onPreExecute() {
@@ -144,38 +146,35 @@ public class WantToReadActivity extends AppCompatActivity {
 
                 OutputStream ops = http.getOutputStream();
                 BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(ops, StandardCharsets.UTF_8));
-               // String data = URLEncoder.encode("id", "UTF-8") + "=" + URLEncoder.encode(JSONString, "UTF-8");
-                String data = JSONString;
-                writer.write(data);
+
+                writer.write(JSONString);
                 writer.flush();
                 writer.close();
                 ops.close();
 
-                switch (String.valueOf(http.getResponseCode()))
-                {
-                    case "200":
-                        /* A Stream object to get the returned data from API Call */
-                        InputStream ips = http.getInputStream();
-                        BufferedReader reader = new BufferedReader(new InputStreamReader(ips, StandardCharsets.ISO_8859_1));
-                        String line = "";
-                        //boolean started = false;
-                        while ((line = reader.readLine()) != null) {
-                            //   if ()
-                            result += line;
-                        }
-                        reader.close();
-                        ips.close();
-                        break;
-                    case "400":
-                        result = "";
-                        break;
-                    case "401":
-                        result = "";
-                        break;
-                    default:
-                        break;
+                if (String.valueOf(http.getResponseCode()).equals("200")) {
+                    /* A Stream object to get the returned data from API Call */
+                    InputStream ips = http.getInputStream();
+                    BufferedReader reader = new BufferedReader(new InputStreamReader(ips, StandardCharsets.ISO_8859_1));
+                    String line;
+                    while ((line = reader.readLine()) != null) {
+                        result += line;
+                    }
+                    reader.close();
+                    ips.close();
+                    TaskSuccess = true;
                 }
-
+                else                {
+                    TaskSuccess = false;
+                    InputStream es = http.getErrorStream();
+                    BufferedReader ereader = new BufferedReader(new InputStreamReader(es, StandardCharsets.ISO_8859_1));
+                    String eline;
+                    while ((eline = ereader.readLine()) != null) {
+                        result += eline;
+                    }
+                    ereader.close();
+                    es.close();
+                }
                 http.disconnect();
                 return result;
 
@@ -197,20 +196,26 @@ public class WantToReadActivity extends AppCompatActivity {
             }
             try {
                 dialog.setMessage(result);
-                //dialog.show();
+               // dialog.show();
                 JSONObject jsonObject = new JSONObject(result);
-                ListView wantToReadBookList = findViewById(R.id.WantToReadBookList);
-                final BookList_JSONAdapter bookListJsonAdapter = new BookList_JSONAdapter(mContext, new JSONArray(jsonObject.getString("WantToReadData")));
-                wantToReadBookList.setAdapter(bookListJsonAdapter);
-                wantToReadBookList.deferNotifyDataSetChanged();
-                wantToReadBookList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-                    @Override
-                    public void onItemClick(AdapterView<?> arg0, View arg1, int position, long arg3) {
-                        Intent intent = new Intent(WantToReadActivity.this, BookActivity.class);
-                        intent.putExtra("BookID",bookListJsonAdapter.getBookID(position));
-                        startActivity(intent);
-                    }
-                });
+                if (TaskSuccess) {
+                    ListView wantToReadBookList = findViewById(R.id.WantToReadBookList);
+                    final BookList_JSONAdapter bookListJsonAdapter = new BookList_JSONAdapter(mContext, new JSONArray(jsonObject.getString("WantToReadData")));
+                    wantToReadBookList.setAdapter(bookListJsonAdapter);
+                    wantToReadBookList.deferNotifyDataSetChanged();
+                    wantToReadBookList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                        @Override
+                        public void onItemClick(AdapterView<?> arg0, View arg1, int position, long arg3) {
+                            Intent intent = new Intent(WantToReadActivity.this, BookActivity.class);
+                            intent.putExtra("BookID", bookListJsonAdapter.getBookID(position));
+                            startActivity(intent);
+                        }
+                    });
+                }
+                else
+                {
+                    Toast.makeText(mContext, "Error happened during loading list ", Toast.LENGTH_SHORT).show();
+                }
             } catch (JSONException e) {
                 e.printStackTrace();
             }

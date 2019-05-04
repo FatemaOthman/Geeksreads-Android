@@ -27,6 +27,8 @@
     <string name="UserProfilePicture">User\'s Profile Picture</string>
     <string name="OtherProfilePicture">User\'s Profile Picture</string>
     <string name="OtherBooks">Number of books here</string>
+    <string name="collapse_text_label">See Less</string>
+    <string name="expand_text_label">See More</string>
     <string name="OtherProfileName">Other User Name</string>
     <string name="ActualBookNumber">Number of books</string>
     <string name="EditProfile">Edit Profile</string>
@@ -282,4 +284,6 @@
     <string name="OrForgetPassword">"If you forgot your password, "</string>
     <string name="ForgetPassword">Click Here</string>
     <string name="OrSignUpTxt">"Or to create a new account, "</string>
+    <string name="UploadPhotoBtnTxt">Upload New Photo</string>
+    <string name="ChooseNewPhotoTxt">Choose a New Photo</string>
 </resources>

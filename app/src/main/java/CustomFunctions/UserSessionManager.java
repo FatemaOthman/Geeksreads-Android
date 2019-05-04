@@ -1,16 +1,17 @@
 package CustomFunctions;
-
-
 import android.content.Context;
 import android.content.SharedPreferences;
-import android.content.ContextWrapper.*;
 import static android.content.Context.MODE_PRIVATE;
 
-/*
+/**
+ * @author Mahmoud MORSY,
  * This Class handles all login session information; stores them and provide public apis for other
  * layouts to retrieve needed and cashed information about the user
  */
 public class UserSessionManager {
+    /**
+     * Enum to have the types of Module States
+     */
     public enum UserSessionState
     {
         NO_DATA,
@@ -18,19 +19,81 @@ public class UserSessionManager {
         USER_LOGGED_IN
     }
 
+    /* Private Variables */
+
+    /**
+     * Static Variable to Store User Email
+     */
     private static String userEmail;
+    /**
+     * Static Variable to Store User Hashed Password
+     */
     private static String hashedPassword;
+    /**
+     * Static Variable to Store User Token
+     */
     private static String userToken;
+    /**
+     * Static Variable to Store User ID
+     */
     private static String userID;
+    /**
+     * Static Variable to Store Logged In Status
+     */
     private static boolean isLoggedIn;
-
+    /**
+     * Static Variable to Store Shared Preferences Data on User Device
+     */
     private static SharedPreferences userDataOnDevice;
+    /**
+     * Static Variable to Store Passed Context
+     */
     private static Context userContext;
-
+    /**
+     * Static Variable to Store Current Module State
+     */
     private static UserSessionState CurrentState;
+    /**
+     * Static Variable to Indicate if Module is Initialized or Not
+     */
+    private static boolean isInitialized = false;
 
-    public static void Initialize(Context context)
+    /**
+     * Constructor function for UserSession Manager Class
+     * @param _userToken Input String for UserToken
+     * @param _isTest Input Boolean if it's used for Testing
+     */
+    public UserSessionManager(String _userToken, boolean _isTest)
     {
+        if (_isTest)
+        {
+            userToken = _userToken;
+        }
+    }
+
+    /**
+     * Constructor function for UserSession Manager Class
+     * @param _userToken Input String for UserToken
+     * @param _userID Input String for UserID
+     * @param _isTest Input Boolean if it's used for Testing
+     */
+    public UserSessionManager(String _userToken, String _userID, boolean _isTest)
+    {
+        if (_isTest)
+        {
+            userID = _userID;
+            userToken = _userToken;
+        }
+    }
+
+    /**
+     * Function to Initialize the UserSessionManager Class & Load Saved Data in Device
+     * @param context Input Context of the Calling Activity
+     * @return The passed Context if function worked correctly
+     */
+    public static Context Initialize(Context context)
+    {
+        if (context == null) return null;
         userEmail = "";
         hashedPassword = "";
         userToken = "";
@@ -58,56 +121,60 @@ public class UserSessionManager {
         {
             CurrentState = UserSessionState.NO_DATA;
         }
+        isInitialized = true;
+        return context;
     }
 
+    /**
+     * Function to get the Saved Hashed User Password
+     * @return Saved Hashed Password of Current User
+     */
     public static String getHashedPassword()
     {
         return hashedPassword;
     }
 
+    /**
+     * Function to get the User Saved Email Address
+     * @return Saved User Email of Current User
+     */
     public static String getUserEmail()
     {
         return userEmail;
     }
 
+    /**
+     * Function to get the Saved User Token
+     * @return Saved User Token of Current User
+     */
     public static String getUserToken()
     {
         return userToken;
     }
-
+    /**
+     * Function to get the user ID of the Current User
+     * @return Saved User ID of Current User
+     */
     public static String getUserID()
     {
         return userID;
     }
-
+    /**
+     * Function to get the Current Status of the User Session
+     * @return Current Status of User Session: NO_DATA, LOGGED_IN, etc.
+     */
     public static UserSessionState getCurrentState()
     {
         return CurrentState;
     }
 
-    private static void Refresh()
-    {
-        isLoggedIn = userDataOnDevice.getBoolean("isLoggedIn", false);
-        userEmail = userDataOnDevice.getString("userEmail", "");
-        hashedPassword = userDataOnDevice.getString("hashedPassword", "");
-        userToken = userDataOnDevice.getString("userToken", "");
-        userID = userDataOnDevice.getString("userID", "");
-
-        if (isLoggedIn)
-        {
-            CurrentState = UserSessionState.USER_LOGGED_IN;
-        }
-        else if (!userEmail.isEmpty() && !userToken.isEmpty() && !hashedPassword.isEmpty())
-        {
-            CurrentState = UserSessionState.USER_DATA_AVAILABLE_BUT_NOT_LOGGED_IN;
-        }
-        else
-        {
-            CurrentState = UserSessionState.NO_DATA;
-        }
-    }
-    /* This function should be called when used signs In to save his token and user ID and set
-     * Logged in parameter to be true
+    /**
+     * This function should be called when user signs In to save his token and user ID and set
+     * logged in parameter to be true
+     * @param _userEmail : Current User Email
+     * @param _hashedPassword : Current User Hashed Password
+     * @param _userToken : Current User Token
+     * @param _userID : Current User ID
      */
     public static void saveUserData(String _userEmail, String _hashedPassword, String _userToken, String _userID)
     {
@@ -117,13 +184,16 @@ public class UserSessionManager {
         userID = _userID;
         isLoggedIn = true;
         CurrentState = UserSessionState.USER_LOGGED_IN;
+        if (!isInitialized) return;
         userDataOnDevice.edit().putString("userEmail", userEmail).apply();
         userDataOnDevice.edit().putString("hashedPassword", hashedPassword).apply();
         userDataOnDevice.edit().putString("userToken", userToken).apply();
         userDataOnDevice.edit().putString("userID", userID).apply();
         userDataOnDevice.edit().putBoolean("isLoggedIn", true).apply();
     }
-    /* This function resets all registered data about the user */
+    /**
+     * This function resets all registered data about the user
+     */
     public static void resetUserData()
     {
         userEmail = "";
@@ -131,23 +201,43 @@ public class UserSessionManager {
         userToken = "";
         isLoggedIn = false;
         CurrentState = UserSessionState.NO_DATA;
+        if (!isInitialized) return;
         userDataOnDevice.edit().putString("userEmail", "").apply();
         userDataOnDevice.edit().putString("hashedPassword", "").apply();
         userDataOnDevice.edit().putBoolean("isLoggedIn", false).apply();
         userDataOnDevice.edit().putString("userToken", "").apply();
         userDataOnDevice.edit().putString("userID", "").apply();
     }
-    /* This function should be called when used signs out to delete his token and user ID and reset
+    /** This function should be called when used signs out to delete his token and user ID and reset
      * Logged in parameter to be false
      */
     public static void logOutUser()
     {
-        userDataOnDevice.edit().putBoolean("isLoggedIn", false).apply();
-        userDataOnDevice.edit().putString("userToken", "").apply();
-        userDataOnDevice.edit().putString("userID", "").apply();
         userToken = "";
         isLoggedIn = false;
         CurrentState = UserSessionState.USER_DATA_AVAILABLE_BUT_NOT_LOGGED_IN;
+        if (!isInitialized) return;
+        userDataOnDevice.edit().putBoolean("isLoggedIn", false).apply();
+        userDataOnDevice.edit().putString("userToken", "").apply();
+        userDataOnDevice.edit().putString("userID", "").apply();
     }
 
+    /**
+     * This function should be called when used while TESTING to save stubbed token and user ID and set
+     * logged in parameter to be true
+     * @param _userEmail : Current User Email
+     * @param _hashedPassword : Current User Hashed Password
+     * @param _userToken : Current User Token
+     * @param _userID : Current User ID
+     */
+    public static void stubUserDataForTesting(String _userEmail, String _hashedPassword, String _userToken, String _userID)
+    {
+        if (APIs.TestingModeEnabled)
+        {
+            userEmail = _userEmail;
+            hashedPassword = _hashedPassword;
+            userToken = _userToken;
+            userID = _userID;
+        }
+    }
 }

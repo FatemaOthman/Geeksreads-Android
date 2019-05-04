@@ -8,6 +8,7 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.AsyncTask;
 import android.support.annotation.NonNull;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -37,7 +38,9 @@ import java.util.ArrayList;
 import CustomFunctions.APIs;
 import CustomFunctions.UserSessionManager;
 
-
+/**
+ * Reviews Custom Adapter: Adapter Class for Displaying A Book Reviews from the database.
+ */
 public class ReviewsCustomAdapter extends ArrayAdapter<ReviewDataModel> implements View.OnClickListener {
 
     Context mContext;
@@ -83,6 +86,7 @@ public class ReviewsCustomAdapter extends ArrayAdapter<ReviewDataModel> implemen
             viewHolder.UserName = convertView.findViewById(R.id.titleTextView);
             viewHolder.NLikes = convertView.findViewById(R.id.likeCounterTextView);
             viewHolder.NComments = convertView.findViewById(R.id.commentsCountTextView);
+            viewHolder.Comments = convertView.findViewById(R.id.commentsCountImageView);
             viewHolder.Likes = convertView.findViewById(R.id.likesImageView);
 
 
@@ -117,6 +121,7 @@ public class ReviewsCustomAdapter extends ArrayAdapter<ReviewDataModel> implemen
 
         ReviewsCustomAdapter.GetBookCoverImage CoverPic = new ReviewsCustomAdapter.GetBookCoverImage(position, holder);
         CoverPic.execute(dataModel.getBookCoverPicture());
+        Log.d("AMR", "dataModel.getBookCoverPicture(): " + dataModel.getBookCoverPicture());
 
         ReviewsCustomAdapter.GetUserImage UserPic = new ReviewsCustomAdapter.GetUserImage(position, holder);
         UserPic.execute(dataModel.getUserProfilePicture());
@@ -144,6 +149,18 @@ public class ReviewsCustomAdapter extends ArrayAdapter<ReviewDataModel> implemen
         );
 
 
+        viewHolder.Comments.setOnClickListener(
+                new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        Intent myIntent = new Intent(mContext, Comments.class);
+                        myIntent.putExtra("ReviewId", dataModel.getReviewID());
+                        mContext.startActivity(myIntent);
+                    }
+                }
+        );
+
+
         final JSONObject LikeJson = new JSONObject();
         try {
             LikeJson.put("token", UserSessionManager.getUserToken());
@@ -155,7 +172,6 @@ public class ReviewsCustomAdapter extends ArrayAdapter<ReviewDataModel> implemen
 
         final String LikeRequest = APIs.API_LIKE_REVIEW;
         final String UnLikeRequest = APIs.API_UNLIKE_REVIEW;
-        final String NumberOfLikes = viewHolder.NLikes.getText().toString();
 
         viewHolder.Likes.setOnClickListener(
                 new View.OnClickListener() {
@@ -169,20 +185,50 @@ public class ReviewsCustomAdapter extends ArrayAdapter<ReviewDataModel> implemen
                             TestObject.execute(LikeRequest, LikeJson.toString());
                             viewHolder.Likes.setImageResource(R.drawable.ic_like_active);
                             viewHolder.IsLiked = "true";
-                            viewHolder.NLikes.setText(Integer.toString(Integer.parseInt(NumberOfLikes) + 1));
+                            viewHolder.NLikes.setText(Integer.toString(Integer.parseInt(viewHolder.NLikes.getText().toString()) + 1));
 
-                        } else { //Review was liked
+                        } else { //Review was already liked
 
                             ReviewsCustomAdapter.UnLikeReview TestObject = new ReviewsCustomAdapter.UnLikeReview();
                             TestObject.execute(UnLikeRequest, LikeJson.toString());
                             viewHolder.Likes.setImageResource(R.drawable.ic_like);
                             viewHolder.IsLiked = "false";
-                            viewHolder.NLikes.setText(Integer.toString(Integer.parseInt(NumberOfLikes) - 1));
+                            viewHolder.NLikes.setText(Integer.toString(Integer.parseInt(viewHolder.NLikes.getText().toString()) - 1));
                         }
 
                     }
                 }
         );
+
+
+        viewHolder.NLikes.setOnClickListener(
+                new View.OnClickListener() {
+                    @SuppressLint("SetTextI18n")
+                    @Override
+                    public void onClick(View view) {
+
+                        if (viewHolder.IsLiked.equals("false")) { //Review wasn't already liked
+
+                            ReviewsCustomAdapter.LikeReview TestObject = new ReviewsCustomAdapter.LikeReview();
+                            TestObject.execute(LikeRequest, LikeJson.toString());
+                            viewHolder.Likes.setImageResource(R.drawable.ic_like_active);
+                            viewHolder.IsLiked = "true";
+                            viewHolder.NLikes.setText(Integer.toString(Integer.parseInt(viewHolder.NLikes.getText().toString()) + 1));
+
+                        } else { //Review was already liked
+
+                            ReviewsCustomAdapter.UnLikeReview TestObject = new ReviewsCustomAdapter.UnLikeReview();
+                            TestObject.execute(UnLikeRequest, LikeJson.toString());
+                            viewHolder.Likes.setImageResource(R.drawable.ic_like);
+                            viewHolder.IsLiked = "false";
+                            viewHolder.NLikes.setText(Integer.toString(Integer.parseInt(viewHolder.NLikes.getText().toString()) - 1));
+                        }
+
+                    }
+                }
+        );
+
+
 
         // Return the completed view to render on screen
         return convertView;
@@ -200,6 +246,7 @@ public class ReviewsCustomAdapter extends ArrayAdapter<ReviewDataModel> implemen
         String UserWhoWroteID;
         ImageView Likes;
         String IsLiked;
+        ImageView Comments;
     }
 
     private static class FixImagePosition {
@@ -309,7 +356,7 @@ public class ReviewsCustomAdapter extends ArrayAdapter<ReviewDataModel> implemen
         protected String doInBackground(String... params) {
             String UrlString = params[0];
             String JSONString = params[1];
-            String result = "";
+            StringBuilder result = new StringBuilder();
 
             try {
                 /* Create a URL object holding our url */
@@ -335,29 +382,29 @@ public class ReviewsCustomAdapter extends ArrayAdapter<ReviewDataModel> implemen
                         /* A Stream object to get the returned data from API Call */
                         InputStream ips = http.getInputStream();
                         BufferedReader reader = new BufferedReader(new InputStreamReader(ips, StandardCharsets.ISO_8859_1));
-                        String line = "";
+                        String line;
                         //boolean started = false;
                         while ((line = reader.readLine()) != null) {
-                            result += line;
+                            result.append(line);
                         }
                         reader.close();
                         ips.close();
                         break;
                     default:
-                        result = "{\"ReturnMsg\":\"An Error Occurred!\"}";
+                        result = new StringBuilder("{\"ReturnMsg\":\"An Error Occurred!\"}");
                         break;
                 }
 
                 http.disconnect();
-                return result;
+                return result.toString();
 
             }
             /* Handling Exceptions */ catch (MalformedURLException e) {
-                result = e.getMessage();
+                result = new StringBuilder(e.getMessage());
             } catch (IOException e) {
-                result = e.getMessage();
+                result = new StringBuilder(e.getMessage());
             }
-            return result;
+            return result.toString();
         }
 
         /**
@@ -373,15 +420,10 @@ public class ReviewsCustomAdapter extends ArrayAdapter<ReviewDataModel> implemen
                 Toast.makeText(mContext, "Unable to connect to server", Toast.LENGTH_SHORT).show();
                 return;
             }
-            try {
+
                 dialog.setMessage("Done");
                 //dialog.show();
 
-                JSONObject jsonObject = new JSONObject(result);
-
-            } catch (JSONException e) {
-                e.printStackTrace();
-            }
         }
 
     }
@@ -389,7 +431,7 @@ public class ReviewsCustomAdapter extends ArrayAdapter<ReviewDataModel> implemen
     @SuppressLint("StaticFieldLeak")
     private class UnLikeReview extends AsyncTask<String, Void, String> {
         public static final String REQUEST_METHOD = "POST";
-
+        boolean TaskSucc = false;
         AlertDialog dialog;
 
         @Override
@@ -402,7 +444,7 @@ public class ReviewsCustomAdapter extends ArrayAdapter<ReviewDataModel> implemen
         protected String doInBackground(String... params) {
             String UrlString = params[0];
             String JSONString = params[1];
-            String result = "";
+            StringBuilder result = new StringBuilder();
 
             try {
                 /* Create a URL object holding our url */
@@ -428,29 +470,30 @@ public class ReviewsCustomAdapter extends ArrayAdapter<ReviewDataModel> implemen
                         /* A Stream object to get the returned data from API Call */
                         InputStream ips = http.getInputStream();
                         BufferedReader reader = new BufferedReader(new InputStreamReader(ips, StandardCharsets.ISO_8859_1));
-                        String line = "";
+                        String line;
                         //boolean started = false;
                         while ((line = reader.readLine()) != null) {
-                            result += line;
+                            result.append(line);
                         }
                         reader.close();
                         ips.close();
+                        TaskSucc = true;
                         break;
                     default:
-                        result = "{\"ReturnMsg\":\"An Error Occurred!\"}";
+                        result = new StringBuilder("{\"ReturnMsg\":\"An Error Occurred!\"}");
                         break;
                 }
 
                 http.disconnect();
-                return result;
+                return result.toString();
 
             }
             /* Handling Exceptions */ catch (MalformedURLException e) {
-                result = e.getMessage();
+                result = new StringBuilder(e.getMessage());
             } catch (IOException e) {
-                result = e.getMessage();
+                result = new StringBuilder(e.getMessage());
             }
-            return result;
+            return result.toString();
         }
 
         /**
@@ -466,17 +509,10 @@ public class ReviewsCustomAdapter extends ArrayAdapter<ReviewDataModel> implemen
                 Toast.makeText(mContext, "Unable to connect to server", Toast.LENGTH_SHORT).show();
                 return;
             }
-            try {
-                dialog.setMessage("Done");
+
+            dialog.setMessage("Done");
                 //dialog.show();
 
-                JSONObject jsonObject = new JSONObject(result);
-                //TODO: Add post execute logic of like here
-
-
-            } catch (JSONException e) {
-                e.printStackTrace();
-            }
         }
 
     }

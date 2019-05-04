@@ -358,6 +358,7 @@ public class Profile extends AppCompatActivity implements NavigationView.OnNavig
                 }
 
                 http.disconnect();
+                Log.d("AMR", result);
                 return result;
 
             }
@@ -393,10 +394,11 @@ public class Profile extends AppCompatActivity implements NavigationView.OnNavig
                 FollowersCount.setText(jsonObject.getString("NoOfFollowers"));
                 FollowingCount.setText(jsonObject.getString("NoOfFollowings"));
                 Profile.GetUserPicture Pic = new Profile.GetUserPicture();
-                Pic.execute(jsonObject.getString("Photo"));
-                ForTestProfilePicture = jsonObject.getString("Photo");
+                Pic.execute(jsonObject.getString("photo"));
+                ForTestProfilePicture = jsonObject.getString("photo");
                 ForTestFollowersCount = FollowersCount.getText().toString();
                 ForTestFollowingCount = FollowingCount.getText().toString();
+
             } catch (JSONException e) {
                 e.printStackTrace();
             }

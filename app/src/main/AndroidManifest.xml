@@ -6,7 +6,7 @@
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_NOTIFICATION_POLICY"/>
-    
+
     <application
         android:icon="@mipmap/logo_vertically"
         android:label="@string/app_name"
@@ -19,6 +19,7 @@
         <activity android:name=".SignOutActivity" />
         <activity android:name=".FeedActivity">
 
+
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -26,12 +27,18 @@
 
                 <action android:name="android.intent.action.VIEW" />
             </intent-filter>
+
         </activity>
         <activity android:name=".ChooseShelfActivity" />
         <activity android:name=".SideBarActivity" />
         <activity android:name=".NotificationActivity" />
-        <activity android:name=".Profile" />
+        <activity android:name=".Profile">
+
+        </activity>
         <activity android:name=".Comments" />
+        <activity android:name=".Reviews">
+
+        </activity>
         <activity android:name=".BookActivity" />
         <activity android:name=".LoginActivity" />
         <activity android:name=".SignupActivity">
@@ -43,6 +50,7 @@
 
                 <action android:name="android.intent.action.VIEW" />
             </intent-filter>
+
         </activity>
 
         <activity android:name=".MyBooksShelvesActivity" />
@@ -69,12 +77,8 @@
         <activity
             android:name=".WantToReadActivity"
             android:parentActivityName=".MyBooksShelvesActivity" />
-        <activity android:name=".SearchHandlerActivity"
-            android:windowSoftInputMode="stateVisible" />
 
-
-
-
+        <service android:name=".NotificationService" />
     </application>
 
 </manifest>

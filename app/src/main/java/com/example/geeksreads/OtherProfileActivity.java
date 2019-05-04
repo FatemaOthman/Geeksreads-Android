@@ -15,6 +15,7 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -50,7 +51,7 @@ import CustomFunctions.UserSessionManager;
 
 public class OtherProfileActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener{
     public static String aForTestUserName = "";
-    public static String aForTestBooksCount = "";
+    public static String aForTestUserPic = "";
 
     ImageView OtherUserPhoto;
     Context mContext;
@@ -159,7 +160,7 @@ public class OtherProfileActivity extends AppCompatActivity implements Navigatio
 
         /////////////////////////////////////////////////////
 
-        final String SecondUrlService = APIs.API_GET_USER_READ_DETAILS;
+        final String SecondUrlService = APIs.API_GET_READ_LIST;
         OtherProfileActivity.GetOtherProfileBooks TheBooks = new OtherProfileActivity.GetOtherProfileBooks();
         TheBooks.execute(SecondUrlService, jsonObject.toString());
         /////////////////////////////////////////////////////
@@ -231,7 +232,7 @@ public class OtherProfileActivity extends AppCompatActivity implements Navigatio
     @SuppressLint("StaticFieldLeak")
     public class UnFollowUser extends AsyncTask<String, Void, String> {
         public static final String REQUEST_METHOD = "POST";
-
+        boolean TaskSucc = false;
         AlertDialog dialog;
 
         @Override
@@ -275,9 +276,11 @@ public class OtherProfileActivity extends AppCompatActivity implements Navigatio
                         while ((line = reader.readLine()) != null) {
                             //   if ()
                             result += line;
+                            Log.d("AMR", "Result: " + result);
                         }
                         reader.close();
                         ips.close();
+                        TaskSucc = true;
                         break;
                     case "400":
                         result = "{\"ReturnMsg\":\"Invalid email or password.\"}";
@@ -291,6 +294,7 @@ public class OtherProfileActivity extends AppCompatActivity implements Navigatio
 
 
                 http.disconnect();
+                Log.d("AMR", result);
                 return result;
 
             }
@@ -315,22 +319,17 @@ public class OtherProfileActivity extends AppCompatActivity implements Navigatio
                 Toast.makeText(mContext, "Unable to connect to server", Toast.LENGTH_SHORT).show();
                 return;
             }
-            try {
                 dialog.setMessage("Done");
                 //dialog.show();
 
-
-                JSONObject jsonObject = new JSONObject(result);
                 //  Log.i("AMR","Result: "+result);
-
-                if (jsonObject.getString("Follow").equals("true"))
+            Log.d("AMR", String.valueOf(TaskSucc));
+                if (TaskSucc)
                     FollowButton.setText("Follow");
-                else
+                else {
                     FollowButton.setText("Un-Follow");
-
-            } catch (JSONException e) {
-                e.printStackTrace();
-            }
+                    Toast.makeText(getApplicationContext(), "Unable to connect to Server!", Toast.LENGTH_SHORT).show();
+                }
         }
 
     }
@@ -354,7 +353,7 @@ public class OtherProfileActivity extends AppCompatActivity implements Navigatio
     @SuppressLint("StaticFieldLeak")
     public class FollowUser extends AsyncTask<String, Void, String> {
         public static final String REQUEST_METHOD = "POST";
-
+        boolean TaskSucc = false;
         AlertDialog dialog;
 
         @Override
@@ -400,6 +399,7 @@ public class OtherProfileActivity extends AppCompatActivity implements Navigatio
                         }
                         reader.close();
                         ips.close();
+                        TaskSucc = true;
                         break;
                     default:
                         result = "{\"ReturnMsg\":\"An Error Occurred!\"}";
@@ -431,20 +431,15 @@ public class OtherProfileActivity extends AppCompatActivity implements Navigatio
                 Toast.makeText(mContext, "Unable to connect to server", Toast.LENGTH_SHORT).show();
                 return;
             }
-            try {
                 dialog.setMessage("Done");
                 //dialog.show();
 
-                JSONObject jsonObject = new JSONObject(result);
-
-                if (jsonObject.getString("Follow").equals("true"))
+                if (TaskSucc)
                     FollowButton.setText("Un-Follow");
-                else
+                else {
                     FollowButton.setText("Follow");
-
-            } catch (JSONException e) {
-                e.printStackTrace();
-            }
+                    Toast.makeText(getApplicationContext(), "Unable to connect to Server!", Toast.LENGTH_SHORT).show();
+                }
         }
 
     }
@@ -613,11 +608,9 @@ public class OtherProfileActivity extends AppCompatActivity implements Navigatio
                 JSONObject jsonObject = new JSONObject(result);
                 OtherProfileActivity.GetOtherUserPicture Pic = new OtherProfileActivity.GetOtherUserPicture();
                 Pic.execute(jsonObject.getString("photo"));
-
+                aForTestUserPic = jsonObject.getString("photo");
                 UserName.setText(jsonObject.getString("UserName"));
                 aForTestUserName = UserName.getText().toString();
-                //BooksCount.setText(jsonObject.getString("CountBooks") + " " + "Books");
-                //aForTestBooksCount = BooksCount.getText().toString();
 
                 if (jsonObject.getString("IsFollowing").equals("true"))
                     FollowButton.setText("Un-Follow");

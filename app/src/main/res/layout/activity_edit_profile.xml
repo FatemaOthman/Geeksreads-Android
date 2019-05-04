@@ -19,6 +19,9 @@
             android:layout_height="wrap_content"
             android:orientation="vertical">
 
+            <!-- Progress bar overlay; shown while progress -->
+            <include layout="@layout/include_loading"/>
+
             <ImageView
                 android:id="@+id/UserProfilePhoto"
                 android:layout_width="match_parent"
@@ -57,6 +60,20 @@
                 android:hint="@string/BirthDateHint" />
 
             <Button
+                android:id="@+id/choosePhotoBtn"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="30dp"
+                android:layout_marginLeft="0dp"
+                android:layout_marginTop="0dp"
+                android:layout_marginEnd="30dp"
+                android:layout_marginRight="0dp"
+                android:layout_marginBottom="10dp"
+                android:background="@color/color0"
+                android:text="@string/ChooseNewPhotoTxt"
+                android:textColor="@color/White" />
+
+            <Button
                 android:id="@+id/ChangePasswordBtn"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -83,6 +100,10 @@
                 android:background="@color/color0"
                 android:text="@string/SaveChangesBtnTxt"
                 android:textColor="@color/White" />
+
+
         </LinearLayout>
+
     </ScrollView>
+
 </LinearLayout>

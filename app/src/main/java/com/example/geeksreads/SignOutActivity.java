@@ -8,7 +8,11 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
+import android.widget.FrameLayout;
+import android.widget.TextView;
 import android.widget.Toast;
+
+import com.example.geeksreads.views.LoadingView;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -25,7 +29,10 @@ import java.net.URL;
 import java.nio.charset.StandardCharsets;
 
 import CustomFunctions.APIs;
-
+/**
+ * @author Mahmoud MORSY,
+ * This Class Activity handles SignOut Process and Display for Users
+ */
 public class SignOutActivity extends AppCompatActivity {
     /**
      * Global Public Static Variables used for Testing
@@ -34,7 +41,17 @@ public class SignOutActivity extends AppCompatActivity {
     /**
      * Global Variables to Store Context of this Activity itself
      */
-    private Context mContext;
+    public static Context mContext;
+
+    /**
+     * Global Variable for LoadingView to be displayed while loading a content from server
+     */
+    LoadingView Loading;
+
+    /**
+     * Starts and Created Signout Activity
+     * @param savedInstanceState
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -43,9 +60,8 @@ public class SignOutActivity extends AppCompatActivity {
         Button signupButton = findViewById(R.id.signupBtn);
         mContext = this;
 
-
-        /* Delete all user's data (id and token) */
-        UserSessionManager.logOutUser();
+        TextView allControls[] = {loginButton, signupButton};
+        Loading = new LoadingView(allControls, (FrameLayout)findViewById(R.id.progressBarHolder), (TextView)findViewById(R.id.ProgressName));
 
         /* URL For Sign out API */
         String urlService = APIs.API_SIGNOUT;
@@ -76,20 +92,30 @@ public class SignOutActivity extends AppCompatActivity {
                 startActivity(myIntent);
             }
         });
+
+        /* Delete all user's data (id and token) */
+        UserSessionManager.logOutUser();
     }
 
     /**
+     * @author Mahmoud MORSY,
      * Class that get the data from host and Add it to its views.
      * The Parameters are host Url and toSend Data.
      */
     public class signOut extends AsyncTask<String, Void, String> {
         static final String REQUEST_METHOD = "POST";
 
+        /**
+         * Function to be done before Executing, it starts Loading Animation
+         */
         @Override
         protected void onPreExecute() {
-            /* Do Nothing */
+            Loading.Start("Signing out, Please wait...");
         }
 
+        /**
+         * Function that executes the logic needed in the background thread
+         */
         @Override
         protected String doInBackground(String... params) {
             String UrlString = params[0];
@@ -105,11 +131,13 @@ public class SignOutActivity extends AppCompatActivity {
                 http.setDoInput(true);
                 http.setDoOutput(true);
                 http.setRequestProperty("content-type", "application/json");
-                http.setRequestProperty("x-auth-token", UserToken);
                 /* A Stream object to hold the sent data to API Call */
                 OutputStream ops = http.getOutputStream();
                 BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(ops, StandardCharsets.UTF_8));
-                writer.write("");
+
+                JSONObject mJSON = new JSONObject();
+                mJSON.put("token", UserToken);
+                writer.write(mJSON.toString());
                 writer.flush();
                 writer.close();
                 ops.close();
@@ -138,10 +166,15 @@ public class SignOutActivity extends AppCompatActivity {
                 result = e.getMessage();
             } catch (IOException e) {
                 result = e.getMessage();
+            } catch (JSONException e) {
+                e.printStackTrace();
             }
             return result;
         }
 
+        /**
+         * Function that does the needed actions in layout and finish loading animation
+         */
         @SuppressLint("SetTextI18n")
         protected void onPostExecute(String result) {
             if (result == null) {
@@ -157,8 +190,8 @@ public class SignOutActivity extends AppCompatActivity {
             catch (JSONException e) {
                 e.printStackTrace();
             }
+            Loading.Stop();
         }
-
     }
 
 }

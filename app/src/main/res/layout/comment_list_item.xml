@@ -13,7 +13,7 @@
         android:src="@drawable/ic_stub" />
 
     <com.example.geeksreads.views.ExpandableTextView
-        android:id="@+id/commentText"
+        android:id="@+id/CommentText"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentTop="true"
@@ -38,14 +38,6 @@
             android:layout_height="match_parent"
             android:orientation="horizontal"
             android:paddingTop="@dimen/small_intrinsic_padding">
-
-            <TextView
-                android:id="@+id/dateTextView"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_alignParentStart="true"
-                android:text="day ago"
-                android:textAppearance="@style/TextAppearance.Second.Light" />
 
             <TextView
                 android:id="@+id/expand_collapse"

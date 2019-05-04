@@ -1,18 +1,18 @@
-/*
- * This class has some public helping functions that can be used in the code of many other classes
- */
+
 package CustomFunctions;
-import android.content.Context;
-import android.content.Intent;
-
-import com.example.geeksreads.FeedActivity;
-
 import java.math.BigInteger;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 
+/**
+ * @author Mahmoud MORSY,
+ * This class has some public helping functions that can be used in the code of many other classes
+ */
 public class HelpingFunctions {
-    /* Function that encrypts input string into MD5 Format */
+    /**
+     * @param inputStr Input String to be Encrypted
+     * @return MD5 Encryption String of input string
+     */
     public static String getMD5Encryption(String inputStr)
     {
         /* Variables Initialization */
