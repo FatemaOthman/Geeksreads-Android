@@ -304,10 +304,20 @@ public class NotificationActivity extends AppCompatActivity implements Navigatio
                 notificationList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                     @Override
                     public void onItemClick(AdapterView<?> arg0, View arg1, int position, long arg3) {
-                        Intent intent = new Intent(NotificationActivity.this, Reviews.class);
-                        intent.putExtra("BookID",notificationJsonAdapter.getBookID(position));
-                        intent.putExtra("BookName",notificationJsonAdapter.getBookName(position));
-                        startActivity(intent);
+                        if (notificationJsonAdapter.getType(position).equals("Comment") || notificationJsonAdapter.getType(position).equals("ReviewLike"))
+                        {
+                            Intent intent = new Intent(NotificationActivity.this, Reviews.class);
+                            intent.putExtra("BookID",notificationJsonAdapter.getBookID(position));
+                            intent.putExtra("BookName",notificationJsonAdapter.getBookName(position));
+                            startActivity(intent);
+                        }
+                        else
+                        {
+                            Intent intent = new Intent(NotificationActivity.this, OtherProfileActivity.class);
+                            intent.putExtra("FollowId",notificationJsonAdapter.getBookID(position));
+                            startActivity(intent);
+                        }
+
                     }
                 });
             } catch (JSONException e) {

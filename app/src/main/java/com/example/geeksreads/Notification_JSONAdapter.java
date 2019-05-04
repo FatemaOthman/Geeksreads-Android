@@ -30,6 +30,7 @@ public class Notification_JSONAdapter extends BaseAdapter {
     private JSONArray data;
     private String[] bookID = new String[100];
     private String[] bookName = new String[100];
+    private String[] type = new String[100];
 
     Notification_JSONAdapter(Context context, JSONArray data) {
         this.data = data;
@@ -44,6 +45,10 @@ public class Notification_JSONAdapter extends BaseAdapter {
     public String getBookName(int position)
     {
         return bookName[position];
+    }
+
+    public String getType(int position){
+        return type[position];
     }
 
     /**
@@ -101,15 +106,16 @@ public class Notification_JSONAdapter extends BaseAdapter {
         try {
 
             String notificationType = data.getJSONObject(i).getString("NotificationType");
+            type[i] = notificationType;
             String notificationBody , NotificationDate;
-            bookID[i] = data.getJSONObject(i).getString("BookId");
-            bookName[i] = data.getJSONObject(i).getString("BookName");
             if (notificationType.equals("ReviewLike"))
             {
                 notificationBody = data.getJSONObject(i).getString("MakerName") + " Liked your review on "
                                  + data.getJSONObject(i).getString("BookName");
 
                 NotificationDate = data.getJSONObject(i).getString("ReviewDate");
+                bookID[i] = data.getJSONObject(i).getString("BookId");
+                bookName[i] = data.getJSONObject(i).getString("BookName");
             }
             else if (notificationType.equals("Comment"))
             {
@@ -117,11 +123,14 @@ public class Notification_JSONAdapter extends BaseAdapter {
                         + data.getJSONObject(i).getString("BookName");
 
                 NotificationDate = data.getJSONObject(i).getString("CommentDate");
+                bookID[i] = data.getJSONObject(i).getString("BookId");
+                bookName[i] = data.getJSONObject(i).getString("BookName");
             }
              else
             {
                 notificationBody = data.getJSONObject(i).getString("MakerName") + " Started Following You";
                 NotificationDate = data.getJSONObject(i).getString("FollowDate");
+                bookID[i] = data.getJSONObject(i).getString("MakerId");
             }
             TextView notificationContent = itemView.findViewById(R.id.NotificationContent);
             notificationContent.setText(notificationBody);
@@ -131,7 +140,7 @@ public class Notification_JSONAdapter extends BaseAdapter {
 
 
             GetImage getCover = new GetImage(i,holder);
-            getCover.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR,data.getJSONObject(i).getString("Cover"));
+            getCover.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR,data.getJSONObject(i).getString("MakerPhoto"));
 
 
         } catch (JSONException e) {
