@@ -96,6 +96,22 @@ public class BookActivity extends AppCompatActivity implements NavigationView.On
     MenuItem FollowItem;
     MenuItem BookItem;
 
+    boolean checkReview(String review)
+    {
+        if (review.equals(""))
+        {
+            return false;
+        }
+        else if (review.length() <=6)
+        {
+            return false;
+        }
+        else
+        {
+            return true;
+        }
+    }
+
 
     /**
      * @param savedInstanceState
@@ -214,10 +230,10 @@ public class BookActivity extends AppCompatActivity implements NavigationView.On
                     Toast.makeText(mContext, "You have to rate before Adding a review.", Toast.LENGTH_SHORT).show();
                     sForTestAddingReview = "You have to rate before Adding a review.";
                 }
-                else if(Review.getText().toString().equals(""))
+                else if(!checkReview(Review.getText().toString()))
                 {
-                    Toast.makeText(mContext, "Your review is empty", Toast.LENGTH_SHORT).show();
-                    sForTestAddingReview = "Your review is empty";
+                    Toast.makeText(mContext, "Your review must be more than 6 char", Toast.LENGTH_SHORT).show();
+                    sForTestAddingReview = "Your review must be more than 6 char";
                 }
                 else
                 {
