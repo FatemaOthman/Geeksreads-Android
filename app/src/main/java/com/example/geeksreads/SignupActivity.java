@@ -14,12 +14,9 @@ import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.TextView;
 import android.widget.Toast;
-
 import com.example.geeksreads.views.LoadingView;
-
 import org.json.JSONException;
 import org.json.JSONObject;
-
 import CustomFunctions.UserSessionManager;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
@@ -33,9 +30,12 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import CustomFunctions.HelpingFunctions;
-
 import CustomFunctions.APIs;
 
+/**
+ * @author Mahmoud MORSY,
+ * This Activity class is for Sign up and Creating a new account for new users in Geekreads website
+ */
 public class SignupActivity extends AppCompatActivity {
     /**
      * Global Public Static Variables used for Testing
@@ -58,8 +58,13 @@ public class SignupActivity extends AppCompatActivity {
      */
     private Context mContext;
 
+    /**
+     * Global Variable to Use Loading Animation while fetching or sending data to server
+     */
     LoadingView Loading;
-    /* Enum for all types of validation errors in sign up data */
+    /**
+     * Enum for all types of validation errors in sign up data
+     */
     enum signUpValidationErrors
     {
         INVALID_USERNAME_LENGTH,
@@ -72,7 +77,14 @@ public class SignupActivity extends AppCompatActivity {
         NO_ERRORS,
     }
 
-    /* Function to check the validity of Data sent to Sign Up API */
+    /**
+     * Function to check the validity of Data sent to Sign Up API
+     * @param fullNameStr UserName of the New User
+     * @param emailStr Email Address of the New User
+     * @param passwordStr Password of the New User
+     * @param confPasswordStr Confirmation Password of the New User
+     * @return Sign Up Validation Error from ENUM defined
+     */
     public static signUpValidationErrors validateSignUpData(String fullNameStr, String emailStr, String passwordStr, String confPasswordStr)
     {
         /* If the user entered an invalid Username */
@@ -101,6 +113,9 @@ public class SignupActivity extends AppCompatActivity {
         }
     }
 
+    /**
+     * Override function for custom navigation for back button
+     */
     @Override
     public void onBackPressed()
     {
@@ -254,11 +269,18 @@ public class SignupActivity extends AppCompatActivity {
     public class signUp extends AsyncTask<String, Void, String> {
         static final String REQUEST_METHOD = "POST";
 
+        /**
+         * PreExecute function that starts loading animation
+         */
         @Override
         protected void onPreExecute() {
             Loading.Start("Creating account, Please wait...");
         }
 
+        /**
+         * Function that executes signup logic and send data to server in background
+         * @return Resulting response from server
+         */
         @Override
         protected String doInBackground(String... params) {
             String UrlString = params[0];
@@ -336,6 +358,11 @@ public class SignupActivity extends AppCompatActivity {
             return result;
         }
 
+        /**
+         * Function that does that changes in layout and take corresponding action for the incoming
+         * server response
+         * @param result Response taken from server
+         */
         @SuppressLint("SetTextI18n")
         protected void onPostExecute(String result) {
             if (result == null) {
@@ -388,6 +415,4 @@ public class SignupActivity extends AppCompatActivity {
         }
 
     }
-
-
 }

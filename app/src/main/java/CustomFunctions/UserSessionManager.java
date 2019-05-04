@@ -9,6 +9,9 @@ import static android.content.Context.MODE_PRIVATE;
  * layouts to retrieve needed and cashed information about the user
  */
 public class UserSessionManager {
+    /**
+     * Enum to have the types of Module States
+     */
     public enum UserSessionState
     {
         NO_DATA,
@@ -17,14 +20,42 @@ public class UserSessionManager {
     }
 
     /* Private Variables */
+
+    /**
+     * Static Variable to Store User Email
+     */
     private static String userEmail;
+    /**
+     * Static Variable to Store User Hashed Password
+     */
     private static String hashedPassword;
+    /**
+     * Static Variable to Store User Token
+     */
     private static String userToken;
+    /**
+     * Static Variable to Store User ID
+     */
     private static String userID;
+    /**
+     * Static Variable to Store Logged In Status
+     */
     private static boolean isLoggedIn;
+    /**
+     * Static Variable to Store Shared Preferences Data on User Device
+     */
     private static SharedPreferences userDataOnDevice;
+    /**
+     * Static Variable to Store Passed Context
+     */
     private static Context userContext;
+    /**
+     * Static Variable to Store Current Module State
+     */
     private static UserSessionState CurrentState;
+    /**
+     * Static Variable to Indicate if Module is Initialized or Not
+     */
     private static boolean isInitialized = false;
 
     /**
