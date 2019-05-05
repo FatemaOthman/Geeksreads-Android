@@ -6,6 +6,8 @@ import android.support.test.rule.ActivityTestRule;
 import org.junit.Rule;
 import org.junit.Test;
 
+import CustomFunctions.UserSessionManager;
+
 import static android.support.test.espresso.Espresso.onView;
 import static android.support.test.espresso.action.ViewActions.click;
 import static android.support.test.espresso.assertion.ViewAssertions.matches;
@@ -20,6 +22,8 @@ public class ChooseShelfActivityTest {
     @Rule
     public ActivityTestRule<ChooseShelfActivity> menuActivityTestRule =
             new ActivityTestRule<>(ChooseShelfActivity.class, true, false);
+
+    UserSessionManager userSessionManager = new UserSessionManager("xYzAbCdToKeN","anyid",true);
 
     @Test
     public void TestChooseRead(){
@@ -41,7 +45,7 @@ public class ChooseShelfActivityTest {
 
         onView(withId(R.id.AddShelfBtn)).perform(click());
 
-        assertEquals("Read", ChooseShelfActivity.sForTestChooseShelf);
+        assertEquals("Read", ChooseShelfActivity.sForTestRadioChooseShelf);
 
     }
 
@@ -65,7 +69,7 @@ public class ChooseShelfActivityTest {
 
         onView(withId(R.id.AddShelfBtn)).perform(click());
 
-        assertEquals("Reading", ChooseShelfActivity.sForTestChooseShelf);
+        assertEquals("Reading", ChooseShelfActivity.sForTestRadioChooseShelf);
 
     }
 
@@ -89,7 +93,7 @@ public class ChooseShelfActivityTest {
 
         onView(withId(R.id.AddShelfBtn)).perform(click());
 
-        assertEquals("WantToRead", ChooseShelfActivity.sForTestChooseShelf);
+        assertEquals("WantToRead", ChooseShelfActivity.sForTestRadioChooseShelf);
 
     }
 

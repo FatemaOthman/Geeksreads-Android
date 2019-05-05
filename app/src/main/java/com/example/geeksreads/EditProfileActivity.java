@@ -18,6 +18,7 @@ import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.provider.MediaStore;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Base64;
@@ -74,6 +75,7 @@ public class EditProfileActivity extends AppCompatActivity {
      * Global Variables to Store Context of this Activity itself
      */
     private Context mContext;
+    SwipeRefreshLayout mSwipeRefreshLayout;
 
     EditText userNameTxt;
     EditText birthDateTxt;
@@ -155,6 +157,7 @@ public class EditProfileActivity extends AppCompatActivity {
         chooseNewPic = findViewById(R.id.choosePhotoBtn);
         changePassword = findViewById(R.id.ChangePasswordBtn);
 
+
         setSupportActionBar(myToolbar);
         Objects.requireNonNull(getSupportActionBar()).setTitle("Edit Profile");
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
@@ -168,11 +171,11 @@ public class EditProfileActivity extends AppCompatActivity {
         Loading = new LoadingView(allControls, (FrameLayout)findViewById(R.id.progressBarHolder), (TextView)findViewById(R.id.ProgressName));
         mContext = this;
         /* URL For Get Current User Info API */
-        String urlService = APIs.API_GET_USER_INFO;
+        final String urlService = APIs.API_GET_USER_INFO;
 
         /* Creating a new instance of Get Profile Data Class */
         GetProfileData getProfileData = new GetProfileData();
-        JSONObject getDataJson = new JSONObject();
+        final JSONObject getDataJson = new JSONObject();
         try {
             //Log.w("MahmoudTOKEN", UserSessionManager.getUserToken());
             getDataJson.put("token", UserSessionManager.getUserToken());
@@ -182,7 +185,18 @@ public class EditProfileActivity extends AppCompatActivity {
         }
         getProfileData.execute(urlService, getDataJson.toString());
 
+        mSwipeRefreshLayout = findViewById(R.id.EditSwipeLayout);
+        mSwipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            /**
+             *  Overrided Function to decide what to do when refreshing the layout.
+             */
+            @Override
+            public void onRefresh() {
 
+                GetProfileData getProfileData = new GetProfileData();
+                getProfileData.execute(urlService, getDataJson.toString());
+            }
+        });
 
         changePassword.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -343,9 +357,11 @@ public class EditProfileActivity extends AppCompatActivity {
         Bitmap decodedByte = BitmapFactory.decodeByteArray(decodedString, 0, decodedString.length);
         return decodedByte;
     }
-    private void displayBitmap(Bitmap bitmap)
+    private void displayBitmap(ImageView userProfilePhoto,  Bitmap bitmap)
     {
-        ImageView userProfilePhoto = findViewById(R.id.UserProfilePhoto);
+        userProfilePhoto.destroyDrawingCache();
+        userProfilePhoto.setDrawingCacheEnabled(false);
+        userProfilePhoto.setWillNotCacheDrawing(true);
         userProfilePhoto.setImageBitmap(bitmap);
     }
 
@@ -364,6 +380,8 @@ public class EditProfileActivity extends AppCompatActivity {
                 String photoUrl = params[0];
                 URL url = new URL(photoUrl);
                 HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+                connection.setDefaultUseCaches(false);
+                connection.setUseCaches(false);
                 connection.setDoInput(true);
                 connection.connect();
                 InputStream input = connection.getInputStream();
@@ -450,6 +468,7 @@ public class EditProfileActivity extends AppCompatActivity {
 
         @SuppressLint("SetTextI18n")
         protected void onPostExecute(String result) {
+            mSwipeRefreshLayout.setRefreshing(false);
             if (result == null) {
                 Toast.makeText(mContext, "Unable to connect to server", Toast.LENGTH_SHORT).show();
                 return;
@@ -665,7 +684,14 @@ public class EditProfileActivity extends AppCompatActivity {
                 if (jsonObject.getString("ReturnMsg").contains("Successful"))
                 {
                     newUserPhoto_Url = jsonObject.getString("PhotoUrl");
-                    displayBitmap(getBitmapFromBase64(newUserPhoto_B64));
+                    ImageView userProfilePhoto = findViewById(R.id.UserProfilePhoto);
+                    displayBitmap(userProfilePhoto, getBitmapFromBase64(newUserPhoto_B64));
+
+                    if (Profile.UserPhoto != null)
+                    {
+                        displayBitmap(Profile.UserPhoto, getBitmapFromBase64(newUserPhoto_B64));
+                    }
+
                 }
 
             }

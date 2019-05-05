@@ -10,100 +10,107 @@
         android:id="@+id/toolbar"
         layout="@layout/toolbar" />
 
-    <ScrollView
-        android:layout_width="match_parent"
-        android:layout_height="match_parent">
+    <android.support.v4.widget.SwipeRefreshLayout
+        android:id="@+id/EditSwipeLayout"
+        style="@style/SwipeRefreshingLayout"
+        tools:context=".EditProfileActivity">
 
-        <LinearLayout
+        <ScrollView
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical">
+            android:layout_height="match_parent">
 
-            <!-- Progress bar overlay; shown while progress -->
-            <include layout="@layout/include_loading"/>
-
-            <ImageView
-                android:id="@+id/UserProfilePhoto"
-                android:layout_width="match_parent"
-                android:layout_height="150dp"
-                android:layout_marginTop="30dp"
-                android:layout_marginBottom="20dp"
-                tools:layout_editor_absoluteX="107dp"
-                tools:layout_editor_absoluteY="89dp"
-                tools:srcCompat="@tools:sample/avatars" />
-
-            <EditText
-                android:id="@+id/UserNameTxt"
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="30dp"
-                android:layout_marginLeft="0dp"
-                android:layout_marginTop="0dp"
-                android:layout_marginEnd="30dp"
-                android:layout_marginRight="0dp"
-                android:layout_marginBottom="0dp"
-                android:ems="10"
-                android:hint="@string/UsernameHint"
-                android:inputType="textPersonName" />
+                android:orientation="vertical">
 
-            <EditText
-                android:id="@+id/BirthDate"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="30dp"
-                android:layout_marginLeft="0dp"
-                android:layout_marginTop="0dp"
-                android:layout_marginEnd="30dp"
-                android:layout_marginRight="0dp"
-                android:layout_marginBottom="20dp"
-                android:ems="10"
-                android:hint="@string/BirthDateHint" />
+                <!-- Progress bar overlay; shown while progress -->
+                <include layout="@layout/include_loading"/>
 
-            <Button
-                android:id="@+id/choosePhotoBtn"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="30dp"
-                android:layout_marginLeft="0dp"
-                android:layout_marginTop="0dp"
-                android:layout_marginEnd="30dp"
-                android:layout_marginRight="0dp"
-                android:layout_marginBottom="10dp"
-                android:background="@color/color0"
-                android:text="@string/ChooseNewPhotoTxt"
-                android:textColor="@color/White" />
+                <ImageView
+                    android:id="@+id/UserProfilePhoto"
+                    android:layout_width="match_parent"
+                    android:layout_height="150dp"
+                    android:layout_marginTop="30dp"
+                    android:layout_marginBottom="20dp"
+                    tools:layout_editor_absoluteX="107dp"
+                    tools:layout_editor_absoluteY="89dp"
+                    tools:srcCompat="@tools:sample/avatars" />
 
-            <Button
-                android:id="@+id/ChangePasswordBtn"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="30dp"
-                android:layout_marginLeft="0dp"
-                android:layout_marginTop="0dp"
-                android:layout_marginEnd="30dp"
-                android:layout_marginRight="0dp"
-                android:layout_marginBottom="10dp"
-                android:background="@color/color0"
-                android:text="@string/ChangePasswordBtnTxt"
-                android:textColor="@color/White" />
+                <EditText
+                    android:id="@+id/UserNameTxt"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="30dp"
+                    android:layout_marginLeft="0dp"
+                    android:layout_marginTop="0dp"
+                    android:layout_marginEnd="30dp"
+                    android:layout_marginRight="0dp"
+                    android:layout_marginBottom="0dp"
+                    android:ems="10"
+                    android:hint="@string/UsernameHint"
+                    android:inputType="textPersonName" />
 
-            <Button
-                android:id="@+id/SaveChangesBtn"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="30dp"
-                android:layout_marginLeft="0dp"
-                android:layout_marginTop="0dp"
-                android:layout_marginEnd="30dp"
-                android:layout_marginRight="0dp"
-                android:layout_marginBottom="10dp"
-                android:background="@color/color0"
-                android:text="@string/SaveChangesBtnTxt"
-                android:textColor="@color/White" />
+                <EditText
+                    android:id="@+id/BirthDate"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="30dp"
+                    android:layout_marginLeft="0dp"
+                    android:layout_marginTop="0dp"
+                    android:layout_marginEnd="30dp"
+                    android:layout_marginRight="0dp"
+                    android:layout_marginBottom="20dp"
+                    android:ems="10"
+                    android:hint="@string/BirthDateHint" />
+
+                <Button
+                    android:id="@+id/choosePhotoBtn"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="30dp"
+                    android:layout_marginLeft="0dp"
+                    android:layout_marginTop="0dp"
+                    android:layout_marginEnd="30dp"
+                    android:layout_marginRight="0dp"
+                    android:layout_marginBottom="10dp"
+                    android:background="@color/color0"
+                    android:text="@string/ChooseNewPhotoTxt"
+                    android:textColor="@color/White" />
+
+                <Button
+                    android:id="@+id/ChangePasswordBtn"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="30dp"
+                    android:layout_marginLeft="0dp"
+                    android:layout_marginTop="0dp"
+                    android:layout_marginEnd="30dp"
+                    android:layout_marginRight="0dp"
+                    android:layout_marginBottom="10dp"
+                    android:background="@color/color0"
+                    android:text="@string/ChangePasswordBtnTxt"
+                    android:textColor="@color/White" />
+
+                <Button
+                    android:id="@+id/SaveChangesBtn"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="30dp"
+                    android:layout_marginLeft="0dp"
+                    android:layout_marginTop="0dp"
+                    android:layout_marginEnd="30dp"
+                    android:layout_marginRight="0dp"
+                    android:layout_marginBottom="10dp"
+                    android:background="@color/color0"
+                    android:text="@string/SaveChangesBtnTxt"
+                    android:textColor="@color/White" />
 
 
-        </LinearLayout>
+            </LinearLayout>
 
-    </ScrollView>
+        </ScrollView>
+
+    </android.support.v4.widget.SwipeRefreshLayout>
 
 </LinearLayout>

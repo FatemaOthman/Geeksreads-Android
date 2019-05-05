@@ -18,6 +18,7 @@ import android.support.annotation.RequiresApi;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -80,6 +81,7 @@ public class BookActivity extends AppCompatActivity implements NavigationView.On
     EditText Review;
     Button bookOptions;
     Button AddReview;
+    Button viewReviews;
     RatingBar bookStars;
     RatingBar bookRating;
     ProgressBar mProgressBar;
@@ -87,6 +89,7 @@ public class BookActivity extends AppCompatActivity implements NavigationView.On
     String AuthorID;
     String BookID;
     String BookName;
+    SwipeRefreshLayout mSwipeRefreshLayout;
 
     /* SideBar Views */
     ImageView userPhoto;
@@ -95,6 +98,22 @@ public class BookActivity extends AppCompatActivity implements NavigationView.On
     TextView booksCount;
     MenuItem FollowItem;
     MenuItem BookItem;
+
+    boolean checkReview(String review)
+    {
+        if (review.equals(""))
+        {
+            return false;
+        }
+        else if (review.length() <=6)
+        {
+            return false;
+        }
+        else
+        {
+            return true;
+        }
+    }
 
 
     /**
@@ -110,7 +129,7 @@ public class BookActivity extends AppCompatActivity implements NavigationView.On
 
 
         Intent intent = getIntent();
-        String getID = intent.getStringExtra("BookID");
+        final String getID = intent.getStringExtra("BookID");
 
         /* ToolBar and SideBar Setups */
         Toolbar myToolbar = findViewById(R.id.toolbar);
@@ -179,6 +198,7 @@ public class BookActivity extends AppCompatActivity implements NavigationView.On
         AddReview = findViewById(R.id.AddReview);
         bookRating = findViewById(R.id.ratingBook);
         Review = findViewById(R.id.Review);
+        viewReviews = findViewById(R.id.GoToReviews);
 
         bookOptions.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -214,10 +234,10 @@ public class BookActivity extends AppCompatActivity implements NavigationView.On
                     Toast.makeText(mContext, "You have to rate before Adding a review.", Toast.LENGTH_SHORT).show();
                     sForTestAddingReview = "You have to rate before Adding a review.";
                 }
-                else if(Review.getText().toString().equals(""))
+                else if(!checkReview(Review.getText().toString()))
                 {
-                    Toast.makeText(mContext, "Your review is empty", Toast.LENGTH_SHORT).show();
-                    sForTestAddingReview = "Your review is empty";
+                    Toast.makeText(mContext, "Your review must be more than 6 char", Toast.LENGTH_SHORT).show();
+                    sForTestAddingReview = "Your review must be more than 6 char";
                 }
                 else
                 {
@@ -233,6 +253,7 @@ public class BookActivity extends AppCompatActivity implements NavigationView.On
                         ReviewObject.put("reviewDate", format.format(calendar.getTime()));
                         ReviewObject.put("rating",bookRating.getRating());
                         Log.d("Body", ReviewObject.toString());
+                        //sForTestAddingReview = "Review Added";
 
                     } catch (JSONException e) {
                         e.printStackTrace();
@@ -244,9 +265,35 @@ public class BookActivity extends AppCompatActivity implements NavigationView.On
             }
         });
 
+        viewReviews.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                Intent intent = new Intent(BookActivity.this, Reviews.class);
+                intent.putExtra("BookID", BookID);
+                intent.putExtra("BookName",BookName);
+                startActivity(intent);
+
+            }
+        });
+
         Log.d("BookID",getID);
         /* Calling Async Task with my server url */
-        String UrlService = APIs.API_GET_BOOK_DETAILS;
+        final String UrlService = APIs.API_GET_BOOK_DETAILS;
+
+        mSwipeRefreshLayout = findViewById(R.id.BookSwipeLayout);
+        mSwipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            /**
+             *  Overrided Function to decide what to do when refreshing the layout.
+             */
+            @Override
+            public void onRefresh() {
+
+                mProgressBar.setVisibility(View.VISIBLE);
+                GetBookDetails getBookDetails = new GetBookDetails();
+                getBookDetails.execute(UrlService, getID);
+            }
+        });
         mProgressBar.setVisibility(View.VISIBLE);
         GetBookDetails getBookDetails = new GetBookDetails();
         getBookDetails.execute(UrlService, getID);
@@ -419,6 +466,7 @@ public class BookActivity extends AppCompatActivity implements NavigationView.On
         @SuppressLint("SetTextI18n")
         protected void onPostExecute(String result) {
             mProgressBar.setVisibility(View.GONE);
+            mSwipeRefreshLayout.setRefreshing(false);
             if (result == null) {
                 Toast.makeText(mContext, "Unable to connect to server", Toast.LENGTH_SHORT).show();
                 return;
@@ -432,8 +480,8 @@ public class BookActivity extends AppCompatActivity implements NavigationView.On
                     /* Get Json Object from server and preview results on Layout views */
                     bookTitle.setText(jsonObject.getString("Title"));
                     BookName = jsonObject.getString("Title");
-                    bookAuthor.setText("By: " + "" + jsonObject.getString("AuthorId"));
-                    AuthorID = jsonObject.getString("AuthorId");
+                    bookAuthor.setText("By: " + "" + jsonObject.getString("AuthorName"));
+                    AuthorID = jsonObject.getString("AuthorName");
                     BookID = jsonObject.getString("BookId");
                     ratingsNumber.setText(jsonObject.getString("RateCount") + " " + "Ratings");
                     reviewsNumber.setText(jsonObject.getString("ReviewCount") + " " + "Reviews");
@@ -677,6 +725,7 @@ public class BookActivity extends AppCompatActivity implements NavigationView.On
 
         @SuppressLint("SetTextI18n")
         protected void onPostExecute(String result) {
+            mSwipeRefreshLayout.setRefreshing(false);
             if (result == null) {
                 Toast.makeText(mContext, "Unable to connect to server", Toast.LENGTH_SHORT).show();
                 return;
@@ -688,10 +737,12 @@ public class BookActivity extends AppCompatActivity implements NavigationView.On
                     if (jsonObject.getString("AddedReviewSuc").equals("true")) {
                         Toast.makeText(mContext, "Review Added", Toast.LENGTH_SHORT).show();
                         sForTestAddingReview = "Review Added";
-                        Intent intent = new Intent(BookActivity.this, Reviews.class);
-                        intent.putExtra("BookID", BookID);
-                        intent.putExtra("BookName",BookName);
-                        startActivity(intent);
+                        if (!APIs.TestingModeEnabled) {
+                            Intent intent = new Intent(BookActivity.this, Reviews.class);
+                            intent.putExtra("BookID", BookID);
+                            intent.putExtra("BookName",BookName);
+                            startActivity(intent);
+                        }
                     }
                 }
                 else

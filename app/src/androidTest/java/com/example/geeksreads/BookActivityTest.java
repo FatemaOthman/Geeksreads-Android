@@ -10,7 +10,6 @@ import android.support.test.espresso.action.GeneralClickAction;
 import android.support.test.espresso.action.Press;
 import android.support.test.espresso.action.Tap;
 import android.support.test.espresso.assertion.ViewAssertions;
-import android.support.test.espresso.matcher.ViewMatchers;
 import android.support.test.rule.ActivityTestRule;
 import android.view.InputDevice;
 import android.view.MotionEvent;
@@ -21,9 +20,10 @@ import org.hamcrest.Matcher;
 import org.junit.Rule;
 import org.junit.Test;
 
+import CustomFunctions.UserSessionManager;
+
 import static android.support.test.InstrumentationRegistry.getInstrumentation;
 import static android.support.test.espresso.Espresso.onView;
-import static android.support.test.espresso.action.ViewActions.clearText;
 import static android.support.test.espresso.action.ViewActions.click;
 import static android.support.test.espresso.action.ViewActions.closeSoftKeyboard;
 import static android.support.test.espresso.action.ViewActions.replaceText;
@@ -39,6 +39,9 @@ public class BookActivityTest {
     @Rule
     public ActivityTestRule<BookActivity> menuActivityTestRule =
             new ActivityTestRule<>(BookActivity.class, true, false);
+
+
+    UserSessionManager userSessionManager = new UserSessionManager("xYzAbCdToKeN","anyid",true);
 
     @Test
     public void TestView() {
@@ -133,7 +136,6 @@ public class BookActivityTest {
         };
     }
 
-
     @Test
     public void TestAddReviewSuccess(){
         Intent mIntent = new Intent();
@@ -141,9 +143,9 @@ public class BookActivityTest {
 
         menuActivityTestRule.launchActivity(mIntent);
 
-        onView(withId(R.id.Review)).perform(scrollTo() ,typeText("Review") , closeSoftKeyboard());
-
         onView(withId(R.id.ratingBook)).perform(scrollTo() , setRating(4));
+
+        onView(withId(R.id.Review)).perform(scrollTo() ,typeText("Add Review to Test") , closeSoftKeyboard());
 
         onView(withId(R.id.AddReview)).perform(scrollTo() , click());
 
@@ -162,7 +164,7 @@ public class BookActivityTest {
 
         onView(withId(R.id.AddReview)).perform(scrollTo() , click());
 
-        assertEquals("Your review is empty", BookActivity.sForTestAddingReview);
+        assertEquals("Your review must be more than 6 char", BookActivity.sForTestAddingReview);
 
     }
 
@@ -173,7 +175,7 @@ public class BookActivityTest {
 
         menuActivityTestRule.launchActivity(mIntent);
 
-        onView(withId(R.id.Review)).perform(scrollTo() ,replaceText("Engineer") , closeSoftKeyboard());
+        onView(withId(R.id.Review)).perform(scrollTo() ,replaceText("Add Review to Test") , closeSoftKeyboard());
 
         onView(withId(R.id.AddReview)).perform(scrollTo() , click());
 
@@ -181,5 +183,21 @@ public class BookActivityTest {
 
     }
 
+    @Test
+    public void TestViewReviews(){
+        Intent mIntent = new Intent();
+        mIntent.putExtra("BookID", "111");
 
+        menuActivityTestRule.launchActivity(mIntent);
+
+        Instrumentation.ActivityMonitor activityMonitor = getInstrumentation().addMonitor(Reviews.class.getName(), null, false);
+
+        onView(withId(R.id.GoToReviews)).perform(scrollTo() , click());
+
+        Activity nextActivity = getInstrumentation().waitForMonitorWithTimeout(activityMonitor, 5000);
+        // next activity is opened and captured.
+        assertNotNull(nextActivity);
+        nextActivity .finish();
+    }
+    
 }
