@@ -21,6 +21,12 @@ public class SearchHandlerAdapter extends RecyclerView.Adapter<SearchHandlerAdap
         this.searchHandlerItemList = searchHandlerItemList;
         this.context = context;
     }
+    public void clear() {
+        final int size = searchHandlerItemList.size();
+        searchHandlerItemList.clear();
+        notifyItemRangeRemoved(0, size);
+    }
+
 
 
     /**

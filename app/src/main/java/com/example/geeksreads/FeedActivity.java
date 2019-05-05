@@ -250,6 +250,7 @@ public class FeedActivity extends AppCompatActivity implements NavigationView.On
             @Override
             public void onFocusChange(View v, boolean hasFocus) {
                 Intent intent = new Intent(FeedActivity.this,SearchHandlerActivity.class);
+
                 startActivity(intent);
 
             }

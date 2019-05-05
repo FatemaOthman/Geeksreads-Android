@@ -7,7 +7,8 @@
     android:orientation="vertical"
     tools:context=".SearchResultActivity">
 
-    <include android:id="@+id/toolbar" />
+    <include android:id="@+id/toolbar"
+        layout="@layout/toolbar"/>
 
     <TextView
         android:id="@+id/NumberOfSearchResults"
