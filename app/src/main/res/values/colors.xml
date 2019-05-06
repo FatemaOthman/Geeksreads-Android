@@ -10,9 +10,9 @@
     <color name="color0">#BAAB98</color>
     <color name="color1">#857156</color>
     <color name="color2">#5b4931</color>
-    <color name="ReadColor">#3CB371</color>
-    <color name="WantToReadColor">#F8F815</color>
-    <color name="ReadingColor">#FF8C04</color>
+    <color name="ReadColor">#2B7E50</color>
+    <color name="WantToReadColor">#A8A84D</color>
+    <color name="ReadingColor">#AC7F50</color>
     <color name="White">#FFFFFF</color>
     <color name="bkColor">#F9F9F9</color>
     <color name="colorNavHeader">#5c5c5c</color>
