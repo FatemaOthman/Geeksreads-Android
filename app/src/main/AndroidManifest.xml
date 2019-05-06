@@ -17,8 +17,9 @@
         tools:ignore="AllowBackup">
         <activity android:name=".ForgetPasswordActivity"/>
         <activity android:name=".SignOutActivity" />
-        <activity android:name=".FeedActivity">
-
+        <activity android:name=".FeedActivity"
+            android:windowSoftInputMode=""
+            >
 
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -77,7 +78,9 @@
             android:parentActivityName=".MyBooksShelvesActivity" />
         <activity android:name=".SearchHandlerActivity"
             android:windowSoftInputMode="stateVisible"/>
-        <activity android:name=".SearchResultActivity"/>
+        <activity android:name=".SearchResultActivity"
+            android:parentActivityName=".SearchHandlerActivity"
+            />
 
         <service android:name=".NotificationService" />
     </application>

@@ -39,6 +39,7 @@ public class SearchResultActivity extends AppCompatActivity {
     RecyclerView recyclerViewSearchHandler;
     RecyclerView.Adapter adapter;
     private List<BookItem> list;
+    private static String CallingActivity;
     TextView moreSearchResults;
     Context mContext;
 
@@ -52,6 +53,7 @@ public class SearchResultActivity extends AppCompatActivity {
         recyclerViewSearchHandler.setLayoutManager(new LinearLayoutManager(this));
         mContext = this;
         list=new ArrayList<>();
+        CallingActivity=getIntent().getStringExtra("CallingActivity");
 
         Toolbar myToolbar = findViewById(R.id.toolbar);
         setSupportActionBar(myToolbar);
@@ -64,11 +66,12 @@ public class SearchResultActivity extends AppCompatActivity {
 
     }
 
-    /**
-     * @param menu : Toolbar menu Object
-     * @return super.onCreateOptionsMenu(menu)
-     *  Overrided Function to create the toolbar and decide what to do when click it's menu items.
-     */
+
+        /**
+         * @param menu : Toolbar menu Object
+         * @return super.onCreateOptionsMenu(menu)
+         *  Overrided Function to create the toolbar and decide what to do when click it's menu items.
+         */
     @RequiresApi(api = Build.VERSION_CODES.O)
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -111,6 +114,95 @@ public class SearchResultActivity extends AppCompatActivity {
         return super.onCreateOptionsMenu(menu);
 
     }
+    @Override
+    public void onBackPressed() {
+        Intent intent;
+        switch (CallingActivity) {
+
+            case "AuthorActivity":
+                intent = new Intent(SearchResultActivity.this,
+                        AuthorActivity.class);
+                intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP
+                        | Intent.FLAG_ACTIVITY_SINGLE_TOP);
+                startActivity(intent);
+                break;
+            case "BookActivity":
+
+                intent = new Intent(SearchResultActivity.this,
+                        BookActivity.class);
+                intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP
+                        | Intent.FLAG_ACTIVITY_SINGLE_TOP);
+                startActivity(intent);
+                break;
+            case "ChangePasswordActivity":
+                intent = new Intent(SearchResultActivity.this,
+                        ChangePasswordActivity.class);
+                intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP
+                        | Intent.FLAG_ACTIVITY_SINGLE_TOP);
+                startActivity(intent);
+                break;
+            case "CurrentlyReadingActivity":
+                intent = new Intent(SearchResultActivity.this,
+                        CurrentlyReadingActivity.class);
+                intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP
+                        | Intent.FLAG_ACTIVITY_SINGLE_TOP);
+                startActivity(intent);
+                break;
+            case "EditProfileActivity":
+                intent = new Intent(SearchResultActivity.this,
+                        EditProfileActivity.class);
+                intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP
+                        | Intent.FLAG_ACTIVITY_SINGLE_TOP);
+                startActivity(intent);
+                break;
+            case "FeedActivity":
+                intent = new Intent(SearchResultActivity.this,
+                        FeedActivity.class);
+                intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP
+                        | Intent.FLAG_ACTIVITY_SINGLE_TOP);
+                startActivity(intent);
+                break;
+            case"MyBookShelvesActivity":
+                intent = new Intent(SearchResultActivity.this,
+                        MyBooksShelvesActivity.class);
+                intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP
+                        | Intent.FLAG_ACTIVITY_SINGLE_TOP);
+                startActivity(intent);
+                break;
+            case "NotificationActivity":
+                intent = new Intent(SearchResultActivity.this,
+                        NotificationActivity.class);
+                intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP
+                        | Intent.FLAG_ACTIVITY_SINGLE_TOP);
+                startActivity(intent);
+
+                break;
+            case"OtherProfileActivity":
+                intent = new Intent(SearchResultActivity.this,
+                        OtherProfileActivity.class);
+                intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP
+                        | Intent.FLAG_ACTIVITY_SINGLE_TOP);
+                startActivity(intent);
+                break;
+            case"WantToReadActivity":
+                intent = new Intent(SearchResultActivity.this,
+                        WantToReadActivity.class);
+                intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP
+                        | Intent.FLAG_ACTIVITY_SINGLE_TOP);
+                startActivity(intent);
+                break;
+            default:
+                intent = new Intent(SearchResultActivity.this,
+                        FeedActivity.class);
+                intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP
+                        | Intent.FLAG_ACTIVITY_SINGLE_TOP);
+                startActivity(intent);
+
+
+        }
+
+    }
+
 
     @SuppressLint("StaticFieldLeak")
     private class SearchResultDetails extends AsyncTask<String, Void, String> {

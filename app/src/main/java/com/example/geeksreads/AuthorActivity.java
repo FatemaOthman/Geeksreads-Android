@@ -86,6 +86,8 @@ public class AuthorActivity extends AppCompatActivity implements NavigationView.
     MenuItem FollowItem;
     MenuItem BookItem;
     String AuthorID;
+    View rootView;
+
 
 
     @Override
@@ -104,6 +106,9 @@ public class AuthorActivity extends AppCompatActivity implements NavigationView.
 
         /* ToolBar and SideBar Setups */
         Toolbar myToolbar = findViewById(R.id.toolbar);
+        rootView=findViewById(R.id.toolbar);
+
+
         setSupportActionBar(myToolbar);
         myToolbar.setNavigationOnClickListener(new View.OnClickListener() {
             @Override
@@ -199,21 +204,25 @@ public class AuthorActivity extends AppCompatActivity implements NavigationView.
 
 
         list = new ArrayList<>();
-        JSONObject mJSON = new JSONObject();
-       /*try {
-            mJSON.put("auth_id", AuthorID);
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }*/
+
 
         String UrlAuthor = APIs.API_GET_AUTHOR_BY_ID;//"https://geeksreads.herokuapp.com/api/authors/id?auth_id="+AuthorID;//5c911452938ffea87b4672d7";
 
 
         GetAuthorDetails getAuthorDetails = new GetAuthorDetails();
         getAuthorDetails.execute(UrlAuthor, AuthorID);
-        GetFollowingAuthorDetails getFollowingAuthorDetails = new GetFollowingAuthorDetails(UserSessionManager.getUserToken(),UserSessionManager.getUserID(),AuthorID);
+        FollowingAuthorDetails getFollowingAuthorDetails = new FollowingAuthorDetails();
+
+        JSONObject newJson = new JSONObject();
+        try {
+            newJson.put("token", UserSessionManager.getUserToken());
+            newJson.put("user_id",UserSessionManager.getUserID());
+            newJson.put("auth_id","5c911452938ffea87b4672d7");
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
         String UrlAuthorFollowingStatus = APIs.API_GET_FOLLOWING_AUTHOR_STATE;
-        getFollowingAuthorDetails.execute(UrlAuthorFollowingStatus);
+        getFollowingAuthorDetails.execute(UrlAuthorFollowingStatus,newJson.toString());
 
 
 
@@ -253,7 +262,9 @@ public class AuthorActivity extends AppCompatActivity implements NavigationView.
             @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
             @Override
             public void onFocusChange(View v, boolean hasFocus) {
-                Intent m = new Intent(mContext,SearchHandlerActivity.class);
+                rootView.requestFocus();
+                Intent m = new Intent(AuthorActivity.this,SearchHandlerActivity.class);
+                m.putExtra("CallingActivity","AuthorActivity");
                 startActivity(m);
 
 
@@ -415,6 +426,9 @@ public class AuthorActivity extends AppCompatActivity implements NavigationView.
 
                 JSONArray array=jsonObject.getJSONArray("BookId");
                 NumOfBooks.setText("Author of "+array.length()+" books.");
+                //array=jsonObject.getJSONArray("FollowingUserId");
+                //if(array.toString().contains(UserSessionManager.getUserID()))
+                //{}
                 // AuthorNumsOfReviews.setText(jsonObject.getString("numofreviews")+" reviews.");
 
 
@@ -465,30 +479,22 @@ public class AuthorActivity extends AppCompatActivity implements NavigationView.
         }
 
     }
-
     @SuppressLint("StaticFieldLeak")
-    private class GetFollowingAuthorDetails extends AsyncTask<String, Void, String> {
+    private class FollowingAuthorDetails extends AsyncTask<String, Void, String> {
         static final String REQUEST_METHOD = "POST";
-        String userToken;
-        String userID;
-        String authorID;
-
-        public GetFollowingAuthorDetails(String userToken,String user_id,String author_id) {
-            this.userToken = userToken;
-            userID=user_id;
-            authorID=author_id;
-        }
+        JSONObject mJSON = new JSONObject();
 
         @Override
         protected void onPreExecute() {
-            /* Do Nothing */
+
         }
 
         @Override
         protected String doInBackground(String... params) {
             String UrlString = params[0];
-
+            String JSONString = params[1];
             String result = "";
+
             try {
                 /* Create a URL object holding our url */
                 URL url = new URL(UrlString);
@@ -497,34 +503,20 @@ public class AuthorActivity extends AppCompatActivity implements NavigationView.
                 http.setRequestMethod(REQUEST_METHOD);
                 http.setDoInput(true);
                 http.setDoOutput(true);
-                http.setRequestProperty("Content-type", "application/json");
-
+                http.setRequestProperty("content-type", "application/json");
                 /* A Stream object to hold the sent data to API Call */
                 OutputStream ops = http.getOutputStream();
                 BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(ops, StandardCharsets.UTF_8));
-                JSONObject newJson = new JSONObject();
-                newJson.put("token", "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI1Y2NiODRlMTQ5NmNiYjAwMTdmNDgxMjgiLCJpYXQiOjE1NTY5NzM4NzEsImV4cCI6MTU1NzA2MDI3MX0.rbHGPMygD21ba3eN_ASFsBoG-gDEs32bBQlxTcK32fU");
-                newJson.put("user_id","5ccb84e1496cbb0017f48128");
-                newJson.put("auth_id","5c911452938ffea87b4672d7");
+                String data = JSONString;
 
-                writer.write(newJson.toString());
-                Log.d("FatemaToken",userToken);
-                Log.d("Fatemauser id:",userID);
-                Log.d("FatemaAuthorID:",authorID);
-                Log.d("FatemaJsonObject",newJson.toString());
-                Log.d("FatemaResponde",String.valueOf(http.getResponseCode()));
-                Log.d("FatemsREspinseText",http.getResponseMessage());
-
-
+                writer.write(data);
                 writer.flush();
                 writer.close();
                 ops.close();
-
-                /* A Stream object to get the returned data from API Call */
+                Log.w("MORSY", data+UrlString);
                 switch (String.valueOf(http.getResponseCode()))
                 {
                     case "200":
-                        /* A Stream object to get the returned data from API Call */
                         InputStream ips = http.getInputStream();
                         BufferedReader reader = new BufferedReader(new InputStreamReader(ips, StandardCharsets.ISO_8859_1));
                         String line = "";
@@ -533,37 +525,26 @@ public class AuthorActivity extends AppCompatActivity implements NavigationView.
                         }
                         reader.close();
                         ips.close();
-                        break;
-                    case "400":
-                        result = "{\"ReturnMsg\":\"Error Occurred.\"}";
+
                         break;
                     default:
+                        result = "{\"ReturnMsg\":\"An error occurred while saving your changes!\"}";
                         break;
                 }
                 http.disconnect();
                 return result;
-
             }
             /* Handling Exceptions */ catch (MalformedURLException e) {
                 result = e.getMessage();
-                Log.d("Fatemaesult",result);
-
             } catch (IOException e) {
-                //result = e.getMessage();
-                Log.d("Fatemareslt",result);
-
-
-
-            } catch (JSONException e) {
-                e.printStackTrace();
-                Log.d("Fatemaresul",result);
-
+                result = e.getMessage();
             }
-            return result;        }
+            return result;
+        }
 
         @SuppressLint("SetTextI18n")
         protected void onPostExecute(String result) {
-            Log.d("Fatemaresult",result);
+            AlertDialog.Builder dialog = new AlertDialog.Builder(mContext);
             if (result == null) {
                 Toast.makeText(mContext, "Unable to connect to server", Toast.LENGTH_SHORT).show();
                 return;
@@ -574,12 +555,11 @@ public class AuthorActivity extends AppCompatActivity implements NavigationView.
                 Follow=jsonObject.getBoolean("Isfollowed");
                 followingState.setText(Follow==true?"Following":"Follow");
 
-
-            } catch (JSONException e) {
+            }
+            /* Catching Exceptions */ catch (JSONException e) {
                 e.printStackTrace();
             }
         }
-
     }
 
     @SuppressLint("StaticFieldLeak")

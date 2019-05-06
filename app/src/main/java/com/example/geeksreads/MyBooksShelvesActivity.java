@@ -1,14 +1,17 @@
 package com.example.geeksreads;
 
 import android.annotation.SuppressLint;
+import android.annotation.TargetApi;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.AsyncTask;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.annotation.RequiresApi;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
@@ -73,6 +76,7 @@ public class MyBooksShelvesActivity extends AppCompatActivity implements Navigat
     TextView booksCount;
     MenuItem FollowItem;
     MenuItem BookItem;
+    View rootView;
     /**
      * Global Variables to Store Context of this Activity itself
      */
@@ -94,6 +98,7 @@ public class MyBooksShelvesActivity extends AppCompatActivity implements Navigat
         mContext = this;
 
         Toolbar myToolbar = findViewById(R.id.toolbar);
+        rootView=findViewById(R.id.toolbar);
         setSupportActionBar(myToolbar);
         Objects.requireNonNull(getSupportActionBar()).setDisplayShowTitleEnabled(false);
         DrawerLayout drawer = findViewById(R.id.drawer_layout);
@@ -214,6 +219,19 @@ public class MyBooksShelvesActivity extends AppCompatActivity implements Navigat
         searchView.setMaxWidth(800);
         searchView.setQueryHint("Search books");
         searchView.setBackgroundColor(getResources().getColor(R.color.white));
+        searchView.setOnQueryTextFocusChangeListener(new View.OnFocusChangeListener() {
+            @TargetApi(Build.VERSION_CODES.O)
+            @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
+            @Override
+            public void onFocusChange(View v, boolean hasFocus) {
+                rootView.requestFocus();
+                Intent intent = new Intent(MyBooksShelvesActivity.this,SearchHandlerActivity.class);
+                intent.putExtra("CallingActivity","MyBookShelvesActivity");
+                startActivity(intent);
+
+            }
+        });
+
         MenuItem item1 = menu.findItem(R.id.NotificationButton);
         item1.setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
             @Override

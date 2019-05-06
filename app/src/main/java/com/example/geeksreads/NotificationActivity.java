@@ -1,14 +1,17 @@
 package com.example.geeksreads;
 
 import android.annotation.SuppressLint;
+import android.annotation.TargetApi;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.AsyncTask;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.annotation.RequiresApi;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
@@ -61,6 +64,7 @@ public class NotificationActivity extends AppCompatActivity implements Navigatio
     TextView booksCount;
     MenuItem FollowItem;
     MenuItem BookItem;
+    View rootView;
 
     /**
      * @param savedInstanceState
@@ -74,6 +78,7 @@ public class NotificationActivity extends AppCompatActivity implements Navigatio
 
         /* ToolBar and SideBar Setups */
         Toolbar myToolbar = findViewById(R.id.toolbar);
+        rootView=findViewById(R.id.toolbar);
         setSupportActionBar(myToolbar);
         Objects.requireNonNull(getSupportActionBar()).setTitle("Notifications");
         myToolbar.setNavigationOnClickListener(new View.OnClickListener() {
@@ -159,6 +164,20 @@ public class NotificationActivity extends AppCompatActivity implements Navigatio
         MenuItem item = menu.findItem(R.id.menunotification);
         SearchView searchView = (SearchView) item.getActionView();
         searchView.setQueryHint("Search books");
+        searchView.setOnQueryTextFocusChangeListener(new View.OnFocusChangeListener() {
+            @TargetApi(Build.VERSION_CODES.O)
+            @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
+            @Override
+            public void onFocusChange(View v, boolean hasFocus) {
+                rootView.requestFocus();
+                Intent intent = new Intent(NotificationActivity.this,SearchHandlerActivity.class);
+
+                intent.putExtra("CallingActivity","NotificationActivity");
+                startActivity(intent);
+
+            }
+        });
+
         return super.onCreateOptionsMenu(menu);
     }
 

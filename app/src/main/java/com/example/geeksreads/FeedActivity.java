@@ -1,6 +1,7 @@
 package com.example.geeksreads;
 
 import android.annotation.SuppressLint;
+import android.annotation.TargetApi;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.Intent;
@@ -19,6 +20,7 @@ import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.text.Layout;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -37,6 +39,8 @@ import org.apache.http.util.EntityUtils;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.w3c.dom.Text;
+import org.xml.sax.ContentHandler;
 
 import CustomFunctions.APIs;
 import CustomFunctions.UserSessionManager;
@@ -56,16 +60,14 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
-public class FeedActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener{
+public class FeedActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
 
     RecyclerView recyclerView;
     RecyclerView.Adapter adapter;
     private List<FeedModel> list;
-    ImageView postPhoto;
     Context mContext;
-    TextView postBody;
-    TextView postTime;
-    String postPhotoURL;
+    View rootView;
+
 
     /* SideBar Views */
     ImageView userPhoto;
@@ -113,6 +115,7 @@ public class FeedActivity extends AppCompatActivity implements NavigationView.On
         recyclerView = (RecyclerView) findViewById(R.id.FeedRecyclerView);
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
+        rootView=findViewById(R.id.toolbar);
         mContext = this;
 
         /* ToolBar and SideBar Setups */
@@ -165,17 +168,20 @@ public class FeedActivity extends AppCompatActivity implements NavigationView.On
         GetShelvesDetails getShelvesDetails = new GetShelvesDetails(UserSessionManager.getUserToken());
         String UrlShelvesDetails = APIs.API_GET_SHELVES_COUNT;
         getShelvesDetails.execute(UrlShelvesDetails,UserSessionManager.getUserToken().toString());
+        Intent intent= new Intent(FeedActivity.this,AuthorActivity.class);
+        startActivity(intent);
 
-        postBody=findViewById(R.id.postBody);
-        postTime=findViewById(R.id.postTime);
-        postPhoto=findViewById(R.id.postPic);
+        //postBody=findViewById(R.id.postBody);
+        //postTime=findViewById(R.id.postTime);
+        //postPhoto=findViewById(R.id.postPic);
         list = new ArrayList<>();
-        //String Url= APIs.API_USER_STATUS;
-        //GetFeedDetails getFeedDetails= new GetFeedDetails(UserSessionManager.getUserToken());
-        //getFeedDetails.execute(Url);
+        Log.d("Token",UserSessionManager.getUserToken());
+        String Url= APIs.API_USER_STATUS;
+        GetFeedDetails getFeedDetails= new GetFeedDetails(UserSessionManager.getUserToken());
+        getFeedDetails.execute(Url);
         String Type;
 
-        for(int i=0;i<10;i++)
+        /*for(int i=0;i<10;i++)
         {
             Type = i%2==0?"Review":"Comment";
 
@@ -204,7 +210,7 @@ public class FeedActivity extends AppCompatActivity implements NavigationView.On
             list.add(B);
         }
         adapter =new FeedAdapter((ArrayList)list,mContext);
-        recyclerView.setAdapter(adapter);
+        recyclerView.setAdapter(adapter);*/
 
 
     }
@@ -235,22 +241,26 @@ public class FeedActivity extends AppCompatActivity implements NavigationView.On
      * @return super.onCreateOptionsMenu(menu)
      *  Overrided Function to create the toolbar and decide what to do when click it's menu items.
      */
+    @RequiresApi(api = Build.VERSION_CODES.O)
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
+
         MenuInflater inflater = getMenuInflater();
         inflater.inflate(R.menu.search_menu, menu);
-        MenuItem item = menu.findItem(R.id.menuSearch);
-        SearchView searchView = (SearchView) item.getActionView();
+         MenuItem item = menu.findItem(R.id.menuSearch);
+        final SearchView searchView = (SearchView) item.getActionView();
         searchView.setIconifiedByDefault(false);
         searchView.setMaxWidth(800);
         searchView.setQueryHint("Search books");
         searchView.setBackgroundColor(getResources().getColor(R.color.white));
         searchView.setOnQueryTextFocusChangeListener(new View.OnFocusChangeListener() {
+            @TargetApi(Build.VERSION_CODES.O)
             @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
             @Override
             public void onFocusChange(View v, boolean hasFocus) {
+                rootView.requestFocus();
                 Intent intent = new Intent(FeedActivity.this,SearchHandlerActivity.class);
-
+                intent.putExtra("CallingActivity","FeedActivity");
                 startActivity(intent);
 
             }
@@ -434,11 +444,11 @@ public class FeedActivity extends AppCompatActivity implements NavigationView.On
         @Override
         protected String doInBackground(String... params) {
             String UrlString = params[0];
-
             String result = "";
             try {
                 /* Create a URL object holding our url */
                 URL url = new URL(UrlString);
+
                 /* Create an HTTP Connection and adjust its options */
                 HttpURLConnection http = (HttpURLConnection) url.openConnection();
                 http.setRequestMethod(REQUEST_METHOD);
@@ -546,7 +556,8 @@ public class FeedActivity extends AppCompatActivity implements NavigationView.On
                 OutputStream ops = http.getOutputStream();
                 BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(ops, StandardCharsets.UTF_8));
                 JSONObject newJson = new JSONObject();
-                newJson.put("x-auth-token", userToken);
+                newJson.put("token", userToken);
+                newJson.put("UserId",UserSessionManager.getUserID());
                 writer.write(newJson.toString());
                 writer.flush();
                 writer.close();
@@ -594,33 +605,63 @@ public class FeedActivity extends AppCompatActivity implements NavigationView.On
             }
             try {
                 /* Creating a JSON Object to parse the data in */
-                final JSONObject jsonObject = new JSONObject(result);
                 final JSONArray jsonArray = new JSONArray(result);
-                for(int i=0;i<jsonArray.length();i++)
+                for(int i=0;i<2;i++)
                 {
                     JSONObject o = jsonArray.getJSONObject(i);
+                    FeedModel B;
+                    switch(o.getString("StatusType"))
+                    { case "Review":
+                        B=new FeedModel(
+                            "",
+                            o.getString("ReviewMakerId"),
+                           "",
+                            o.getString("StatusType"),
+                            o.getString("ReviewId"),
+                            "",
+                            o.getString("BookName"),
+                            o.getString("BookStatus"),
+                            o.getString("BookId"),
+                            "",
+                            o.getString("ReviewMakerName"),
+                            o.getString("ReviewMakerPhoto"),
+                           "",
+                            o.getString("AuthorName"),
+                            o.getString("AuthorId"),
+                            o.getString("BookPhoto"),
+                            o.getString("ReviewBody")
 
+                    );
+                        break;
+                        case"Comment":
 
-                    FeedModel B =new FeedModel(
+                      B =new FeedModel(
                             "",
                             o.getString("ReviewMakerId"),
                             o.getString("CommentMakerId"),
                             o.getString("StatusType"),
                             o.getString("ReviewId"),
                             o.getString("CommentId"),
-                            o.getString("BookName"),
-                            o.getString("BookStatus"),
-                            o.getString("BookId"),
+                           "",
+                           "",
+                           "",
                             o.getString("CommentMakerName"),
                             o.getString("ReviewMakerName"),
                             o.getString("ReviewMakerPhoto"),
                             o.getString("CommentMakerPhoto"),
-                            o.getString("AuthorName"),
-                            o.getString("AuthorId"),
-                            o.getString("BookPhoto"),
+                            "",
+                           "",
+                            "",
                             o.getString("ReviewBody")
 
-                            );
+                    );
+                      break;
+                        default:
+                            B=new FeedModel("","","","","","","","","","","","","","","","","");
+                    }
+
+
+
                     list.add(B);
                 }
                 adapter =new FeedAdapter((ArrayList)list,mContext);
@@ -629,6 +670,7 @@ public class FeedActivity extends AppCompatActivity implements NavigationView.On
 
             } catch (JSONException e) {
                 e.printStackTrace();
+                Log.d("ErrorFeed",e.getMessage());
             }
         }
 

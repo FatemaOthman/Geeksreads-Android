@@ -1,6 +1,7 @@
 package com.example.geeksreads;
 
 import android.annotation.SuppressLint;
+import android.annotation.TargetApi;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.Intent;
@@ -16,8 +17,10 @@ import java.text.SimpleDateFormat;
 
 import android.net.Uri;
 import android.os.AsyncTask;
+import android.os.Build;
 import android.os.Bundle;
 import android.provider.MediaStore;
+import android.support.annotation.RequiresApi;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -74,6 +77,7 @@ public class EditProfileActivity extends AppCompatActivity {
     /**
      * Global Variables to Store Context of this Activity itself
      */
+    View rootView;
     private Context mContext;
     SwipeRefreshLayout mSwipeRefreshLayout;
 
@@ -151,6 +155,7 @@ public class EditProfileActivity extends AppCompatActivity {
         setContentView(R.layout.activity_edit_profile);
 
         Toolbar myToolbar = findViewById(R.id.toolbar);
+        rootView=findViewById(R.id.toolbar);
         userNameTxt = findViewById(R.id.UserNameTxt);
         birthDateTxt = findViewById(R.id.BirthDate);
         saveChange = findViewById(R.id.SaveChangesBtn);
@@ -284,6 +289,19 @@ public class EditProfileActivity extends AppCompatActivity {
         SearchView searchView = (SearchView) item.getActionView();
         searchView.setMaxWidth(800);
         searchView.setQueryHint("Search books");
+        searchView.setOnQueryTextFocusChangeListener(new View.OnFocusChangeListener() {
+            @TargetApi(Build.VERSION_CODES.O)
+            @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
+            @Override
+            public void onFocusChange(View v, boolean hasFocus) {
+                rootView.requestFocus();
+                Intent intent = new Intent(EditProfileActivity.this,SearchHandlerActivity.class);
+                intent.putExtra("CallingActivity","EditProfileActivity");
+                startActivity(intent);
+
+            }
+        });
+
         MenuItem item1 = menu.findItem(R.id.NotificationButton);
         item1.setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
             @Override

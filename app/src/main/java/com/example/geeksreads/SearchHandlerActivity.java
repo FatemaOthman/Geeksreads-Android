@@ -47,6 +47,7 @@ import CustomFunctions.APIs;
 public class SearchHandlerActivity extends AppCompatActivity  {
     RecyclerView recyclerViewSearchHandler;
     RecyclerView.Adapter adapter;
+    private static String CallingActivity;
     private List<SearchHandlerItem> list;
     TextView moreSearchResults;
     Context mContext;
@@ -65,6 +66,7 @@ public class SearchHandlerActivity extends AppCompatActivity  {
         mContext = this;
         moreSearchResults = findViewById(R.id.MoreResultsOfSearchText);
         list=new ArrayList<>();
+        CallingActivity=getIntent().getStringExtra("CallingActivity");
 
         Toolbar myToolbar = findViewById(R.id.toolbar);
          setSupportActionBar(myToolbar);
@@ -93,23 +95,13 @@ public class SearchHandlerActivity extends AppCompatActivity  {
         searchView.setMaxWidth(800);
         searchView.setQueryHint("Search books");
         searchView.setBackgroundColor(getResources().getColor(R.color.white));
-        searchView.setFocusable(true);
-        searchView.setFocusable(true);
-        searchView.setTouchscreenBlocksFocus(true);
-        searchView.setEnabled(true);
-        searchView.setKeepScreenOn(true);
-        searchView.setKeyboardNavigationCluster(true);
-
-        //Intent i =getIntent();
-        //String S=i.getStringExtra("FirstSearch");
-       // searchView.setQuery((CharSequence) i,false);
-
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
 
             @Override
             public boolean onQueryTextSubmit(String query) {
                 Intent mIntent = new Intent(SearchHandlerActivity.this, SearchResultActivity.class);
                 mIntent.putExtra("queryText",query);
+                mIntent.putExtra("CallingActivity",CallingActivity);
                 startActivity(mIntent);
                 Log.e("queryText",query);
                 return true;
@@ -147,6 +139,96 @@ public class SearchHandlerActivity extends AppCompatActivity  {
         });
         return super.onCreateOptionsMenu(menu);
     }
+    @Override
+    public void onBackPressed() {
+        Intent intent;
+        switch (CallingActivity) {
+
+            case "AuthorActivity":
+                 intent = new Intent(SearchHandlerActivity.this,
+                        AuthorActivity.class);
+                intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP
+                        | Intent.FLAG_ACTIVITY_SINGLE_TOP);
+                startActivity(intent);
+                break;
+            case "BookActivity":
+
+                 intent = new Intent(SearchHandlerActivity.this,
+                        BookActivity.class);
+                intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP
+                        | Intent.FLAG_ACTIVITY_SINGLE_TOP);
+                startActivity(intent);
+                break;
+            case "ChangePasswordActivity":
+                intent = new Intent(SearchHandlerActivity.this,
+                        ChangePasswordActivity.class);
+                intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP
+                        | Intent.FLAG_ACTIVITY_SINGLE_TOP);
+                startActivity(intent);
+                break;
+            case "CurrentlyReadingActivity":
+                intent = new Intent(SearchHandlerActivity.this,
+                        CurrentlyReadingActivity.class);
+                intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP
+                        | Intent.FLAG_ACTIVITY_SINGLE_TOP);
+                startActivity(intent);
+                break;
+            case "EditProfileActivity":
+                intent = new Intent(SearchHandlerActivity.this,
+                        EditProfileActivity.class);
+                intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP
+                        | Intent.FLAG_ACTIVITY_SINGLE_TOP);
+                startActivity(intent);
+                break;
+            case "FeedActivity":
+                intent = new Intent(SearchHandlerActivity.this,
+                        FeedActivity.class);
+                intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP
+                        | Intent.FLAG_ACTIVITY_SINGLE_TOP);
+                startActivity(intent);
+                break;
+            case"MyBookShelvesActivity":
+                intent = new Intent(SearchHandlerActivity.this,
+                        MyBooksShelvesActivity.class);
+                intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP
+                        | Intent.FLAG_ACTIVITY_SINGLE_TOP);
+                startActivity(intent);
+                break;
+            case "NotificationActivity":
+                intent = new Intent(SearchHandlerActivity.this,
+                        NotificationActivity.class);
+                intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP
+                        | Intent.FLAG_ACTIVITY_SINGLE_TOP);
+                startActivity(intent);
+
+                break;
+            case"OtherProfileActivity":
+                intent = new Intent(SearchHandlerActivity.this,
+                        OtherProfileActivity.class);
+                intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP
+                        | Intent.FLAG_ACTIVITY_SINGLE_TOP);
+                startActivity(intent);
+                break;
+            case"WantToReadActivity":
+                intent = new Intent(SearchHandlerActivity.this,
+                        WantToReadActivity.class);
+                intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP
+                        | Intent.FLAG_ACTIVITY_SINGLE_TOP);
+                startActivity(intent);
+                break;
+            default:
+                intent = new Intent(SearchHandlerActivity.this,
+                        FeedActivity.class);
+                intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP
+                        | Intent.FLAG_ACTIVITY_SINGLE_TOP);
+                startActivity(intent);
+
+
+
+        }
+
+    }
+
 
 
     @SuppressLint("StaticFieldLeak")

@@ -2,6 +2,7 @@ package com.example.geeksreads;
 
 
 import android.annotation.SuppressLint;
+import android.annotation.TargetApi;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.Intent;
@@ -90,6 +91,8 @@ public class BookActivity extends AppCompatActivity implements NavigationView.On
     String BookID;
     String BookName;
     SwipeRefreshLayout mSwipeRefreshLayout;
+    /*SearchBar Views*/
+    View rootView;
 
     /* SideBar Views */
     ImageView userPhoto;
@@ -131,8 +134,10 @@ public class BookActivity extends AppCompatActivity implements NavigationView.On
         Intent intent = getIntent();
         final String getID = intent.getStringExtra("BookID");
 
+
         /* ToolBar and SideBar Setups */
         Toolbar myToolbar = findViewById(R.id.toolbar);
+        rootView=findViewById(R.id.toolbar);
         setSupportActionBar(myToolbar);
         myToolbar.setNavigationOnClickListener(new View.OnClickListener() {
             @Override
@@ -147,6 +152,7 @@ public class BookActivity extends AppCompatActivity implements NavigationView.On
         toggle.syncState();
         NavigationView navigationView = findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
+
         /* Getting All views by id from SideBar Layout */
         Menu menu = navigationView.getMenu();
         MenuItem itemFollower = menu.findItem(R.id.Followers);
@@ -328,6 +334,19 @@ public class BookActivity extends AppCompatActivity implements NavigationView.On
         searchView.setMaxWidth(800);
         searchView.setQueryHint("Search books");
         searchView.setBackgroundColor(getResources().getColor(R.color.white));
+        searchView.setOnQueryTextFocusChangeListener(new View.OnFocusChangeListener() {
+            @TargetApi(Build.VERSION_CODES.O)
+            @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
+            @Override
+            public void onFocusChange(View v, boolean hasFocus) {
+                rootView.requestFocus();
+                Intent intent = new Intent(BookActivity.this,SearchHandlerActivity.class);
+                intent.putExtra("CallingActivity","BookActivity");
+                startActivity(intent);
+
+            }
+        });
+
         MenuItem item1 = menu.findItem(R.id.NotificationButton);
         item1.setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
             @Override

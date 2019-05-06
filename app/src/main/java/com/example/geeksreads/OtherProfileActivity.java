@@ -1,14 +1,17 @@
 package com.example.geeksreads;
 
 import android.annotation.SuppressLint;
+import android.annotation.TargetApi;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.AsyncTask;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.annotation.RequiresApi;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
@@ -67,6 +70,7 @@ public class OtherProfileActivity extends AppCompatActivity implements Navigatio
     TextView booksCount;
     MenuItem FollowItem;
     MenuItem BookItem;
+    View rootView;
 
     /**
      * onCreate: Instantiate the OtherUSerProfile with data through sending an HTTP request
@@ -82,6 +86,7 @@ public class OtherProfileActivity extends AppCompatActivity implements Navigatio
 
         /* ToolBar and SideBar Setups */
         Toolbar myToolbar = findViewById(R.id.toolbar);
+        rootView=findViewById(R.id.toolbar);
         setSupportActionBar(myToolbar);
         myToolbar.setNavigationOnClickListener(new View.OnClickListener() {
             @Override
@@ -216,6 +221,19 @@ public class OtherProfileActivity extends AppCompatActivity implements Navigatio
         searchView.setMaxWidth(750);
         searchView.setQueryHint("Search books");
         searchView.setBackgroundColor(getResources().getColor(R.color.white));
+        searchView.setOnQueryTextFocusChangeListener(new View.OnFocusChangeListener() {
+            @TargetApi(Build.VERSION_CODES.O)
+            @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
+            @Override
+            public void onFocusChange(View v, boolean hasFocus) {
+                rootView.requestFocus();
+                Intent intent = new Intent(OtherProfileActivity.this,SearchHandlerActivity.class);
+                intent.putExtra("CallingActivity","OtherProfileActivity");
+                startActivity(intent);
+
+            }
+        });
+
         MenuItem item1 = menu.findItem(R.id.NotificationButton);
         item1.setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
             @Override
