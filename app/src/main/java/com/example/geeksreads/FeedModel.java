@@ -42,13 +42,16 @@ public class FeedModel {
         AuthorID = authorID;
         BookPhoto = bookPhoto;
         ReviewBody = reviewBody;
-        if(StatusType=="Review")
-        {type=1;
-        postBody=ReviewMakerName+" reviewd "+BookName;
-        }
-        else
-        {type=0;
-        postBody=CommentMakerName+" commented On "+ReviewMakerName+"'s review";
+        switch (StatusType) {
+            case "Review":
+                type = 1;
+                postBody = ReviewMakerName + " reviewd " + BookName;
+                break;
+
+            case "Comment":
+                type = 0;
+                postBody = CommentMakerName + " commented On " + ReviewMakerName + "'s review";
+                break;
         }
 
     }

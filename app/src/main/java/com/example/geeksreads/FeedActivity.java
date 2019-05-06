@@ -168,18 +168,20 @@ public class FeedActivity extends AppCompatActivity implements NavigationView.On
         GetShelvesDetails getShelvesDetails = new GetShelvesDetails(UserSessionManager.getUserToken());
         String UrlShelvesDetails = APIs.API_GET_SHELVES_COUNT;
         getShelvesDetails.execute(UrlShelvesDetails,UserSessionManager.getUserToken().toString());
+        Intent intent= new Intent(FeedActivity.this,AuthorActivity.class);
+        startActivity(intent);
 
         //postBody=findViewById(R.id.postBody);
         //postTime=findViewById(R.id.postTime);
         //postPhoto=findViewById(R.id.postPic);
         list = new ArrayList<>();
         Log.d("Token",UserSessionManager.getUserToken());
-        //String Url= APIs.API_USER_STATUS;
-        //GetFeedDetails getFeedDetails= new GetFeedDetails(UserSessionManager.getUserToken());
-        //getFeedDetails.execute(Url);
+        String Url= APIs.API_USER_STATUS;
+        GetFeedDetails getFeedDetails= new GetFeedDetails(UserSessionManager.getUserToken());
+        getFeedDetails.execute(Url);
         String Type;
 
-        for(int i=0;i<10;i++)
+        /*for(int i=0;i<10;i++)
         {
             Type = i%2==0?"Review":"Comment";
 
@@ -208,7 +210,7 @@ public class FeedActivity extends AppCompatActivity implements NavigationView.On
             list.add(B);
         }
         adapter =new FeedAdapter((ArrayList)list,mContext);
-        recyclerView.setAdapter(adapter);
+        recyclerView.setAdapter(adapter);*/
 
 
     }
@@ -442,11 +444,11 @@ public class FeedActivity extends AppCompatActivity implements NavigationView.On
         @Override
         protected String doInBackground(String... params) {
             String UrlString = params[0];
-
             String result = "";
             try {
                 /* Create a URL object holding our url */
                 URL url = new URL(UrlString);
+
                 /* Create an HTTP Connection and adjust its options */
                 HttpURLConnection http = (HttpURLConnection) url.openConnection();
                 http.setRequestMethod(REQUEST_METHOD);
@@ -554,7 +556,8 @@ public class FeedActivity extends AppCompatActivity implements NavigationView.On
                 OutputStream ops = http.getOutputStream();
                 BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(ops, StandardCharsets.UTF_8));
                 JSONObject newJson = new JSONObject();
-                newJson.put("x-auth-token", userToken);
+                newJson.put("token", userToken);
+                newJson.put("UserId",UserSessionManager.getUserID());
                 writer.write(newJson.toString());
                 writer.flush();
                 writer.close();
@@ -602,33 +605,63 @@ public class FeedActivity extends AppCompatActivity implements NavigationView.On
             }
             try {
                 /* Creating a JSON Object to parse the data in */
-                final JSONObject jsonObject = new JSONObject(result);
                 final JSONArray jsonArray = new JSONArray(result);
-                for(int i=0;i<jsonArray.length();i++)
+                for(int i=0;i<2;i++)
                 {
                     JSONObject o = jsonArray.getJSONObject(i);
+                    FeedModel B;
+                    switch(o.getString("StatusType"))
+                    { case "Review":
+                        B=new FeedModel(
+                            "",
+                            o.getString("ReviewMakerId"),
+                           "",
+                            o.getString("StatusType"),
+                            o.getString("ReviewId"),
+                            "",
+                            o.getString("BookName"),
+                            o.getString("BookStatus"),
+                            o.getString("BookId"),
+                            "",
+                            o.getString("ReviewMakerName"),
+                            o.getString("ReviewMakerPhoto"),
+                           "",
+                            o.getString("AuthorName"),
+                            o.getString("AuthorId"),
+                            o.getString("BookPhoto"),
+                            o.getString("ReviewBody")
 
+                    );
+                        break;
+                        case"Comment":
 
-                    FeedModel B =new FeedModel(
+                      B =new FeedModel(
                             "",
                             o.getString("ReviewMakerId"),
                             o.getString("CommentMakerId"),
                             o.getString("StatusType"),
                             o.getString("ReviewId"),
                             o.getString("CommentId"),
-                            o.getString("BookName"),
-                            o.getString("BookStatus"),
-                            o.getString("BookId"),
+                           "",
+                           "",
+                           "",
                             o.getString("CommentMakerName"),
                             o.getString("ReviewMakerName"),
                             o.getString("ReviewMakerPhoto"),
                             o.getString("CommentMakerPhoto"),
-                            o.getString("AuthorName"),
-                            o.getString("AuthorId"),
-                            o.getString("BookPhoto"),
+                            "",
+                           "",
+                            "",
                             o.getString("ReviewBody")
 
-                            );
+                    );
+                      break;
+                        default:
+                            B=new FeedModel("","","","","","","","","","","","","","","","","");
+                    }
+
+
+
                     list.add(B);
                 }
                 adapter =new FeedAdapter((ArrayList)list,mContext);
@@ -637,6 +670,7 @@ public class FeedActivity extends AppCompatActivity implements NavigationView.On
 
             } catch (JSONException e) {
                 e.printStackTrace();
+                Log.d("ErrorFeed",e.getMessage());
             }
         }
 

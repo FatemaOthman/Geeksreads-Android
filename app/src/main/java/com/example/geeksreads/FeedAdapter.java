@@ -244,6 +244,7 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
                 case FeedModel.COMMENT_TYPE:
                     ((CommentViewHolder) holder).textViewPostBody.setText(object.getPostBody());
                     ((CommentViewHolder) holder).TextViewPostTime.setText(object.getPostTime());
+                    if(object.getCommentMakerPhoto().length()>0)
                     Picasso.with(context)
                             .load(object.getCommentMakerPhoto())
                             .into(((CommentViewHolder) holder).imageViewPostPic);
@@ -257,11 +258,12 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
                     ((ReviewViewHolder)holder).textViewBookName.setText(object.getBookName());
                     String S = new String(object.getReviewBody());
                     S=S.substring(0,S.length()>120?120:S.length()-1);
+                    if(object.getReviewMakerPhoto().length()>0)
                     ((ReviewViewHolder)holder).textViewReviewBody.setText(S);
                     Picasso.with(context)
                             .load(object.getReviewMakerPhoto())
                             .into(((ReviewViewHolder)holder).imageViewPostPic);
-
+                    if(object.getBookPhoto().length()>0)
                     Picasso.with(context)
                             .load(object.getBookPhoto())
                             .into(((ReviewViewHolder)holder).imageViewBookCover);
