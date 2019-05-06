@@ -144,7 +144,6 @@ public class Profile extends AppCompatActivity implements NavigationView.OnNavig
         EditProfileButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                //   Intent myIntent = new Intent(Profile.this,FollowActivity.class);
                 Intent myIntent = new Intent(Profile.this, EditProfileActivity.class);
                 myIntent.putExtra("UserID", UserSessionManager.getUserID());
                 startActivity(myIntent);
@@ -155,19 +154,22 @@ public class Profile extends AppCompatActivity implements NavigationView.OnNavig
         FollowersCount.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                //   Intent myIntent = new Intent(Profile.this,FollowActivity.class);
+
                 Intent myIntent = new Intent(Profile.this, FollowActivity.class);
                 myIntent.putExtra("UserID", UserSessionManager.getUserID());
                 startActivity(myIntent);
+
             }
         });
 
         FollowingCount.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+
                 Intent myIntent = new Intent(Profile.this, FollowActivity.class);
                 myIntent.putExtra("UserID", UserSessionManager.getUserID());
                 startActivity(myIntent);
+
             }
         });
 
@@ -176,8 +178,8 @@ public class Profile extends AppCompatActivity implements NavigationView.OnNavig
         JSONObject mJSON = new JSONObject();
 
         try {
-
             mJSON.put("token", UserSessionManager.getUserToken());
+            // mJSON.put("token", "5ccb84e1496cbb0017f48128");
         } catch (JSONException e) {
             e.printStackTrace();
         }
@@ -357,6 +359,10 @@ public class Profile extends AppCompatActivity implements NavigationView.OnNavig
                 http.setDoInput(true);
                 http.setDoOutput(true);
                 http.setRequestProperty("content-type", "application/json");
+                http.setRequestProperty("x-auth-token", UserSessionManager.getUserToken());
+                // http.setRequestProperty("x-auth-token", "5ccb84e1496cbb0017f48128");
+
+
                 /* A Stream object to hold the sent data to API Call */
                 OutputStream ops = http.getOutputStream();
                 BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(ops, StandardCharsets.UTF_8));
@@ -633,15 +639,28 @@ public class Profile extends AppCompatActivity implements NavigationView.OnNavig
         static final String REQUEST_METHOD = "POST";
         String userToken;
 
-        UpdateBookShelfCount(String userToken) {
+        /**
+         * Constructor for UpdateBookSHelfCountClass
+         *
+         * @param userToken Parameter to send user token
+         */
+        public UpdateBookShelfCount(String userToken) {
             this.userToken = userToken;
         }
 
+        /**
+         * Function to be done before Executing, it starts Loading Animation
+         */
         @Override
         protected void onPreExecute() {
-            /* Do Nothing */
+           /*
+           Do Nothing
+            */
         }
 
+        /**
+         * Function that executes the logic needed in the background thread
+         */
         @Override
         protected String doInBackground(String... params) {
             String UrlString = params[0];
@@ -661,7 +680,8 @@ public class Profile extends AppCompatActivity implements NavigationView.OnNavig
                 OutputStream ops = http.getOutputStream();
                 BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(ops, StandardCharsets.UTF_8));
                 JSONObject newJson = new JSONObject();
-                newJson.put("token", userToken);
+                newJson.put("token", UserSessionManager.getUserToken());
+                newJson.put("UserId", UserSessionManager.getUserID());
                 writer.write(newJson.toString());
                 writer.flush();
                 writer.close();
@@ -699,7 +719,6 @@ public class Profile extends AppCompatActivity implements NavigationView.OnNavig
             }
             return result;
         }
-
         @SuppressLint("SetTextI18n")
         protected void onPostExecute(String result) {
 

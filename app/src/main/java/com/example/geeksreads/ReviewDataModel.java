@@ -29,7 +29,7 @@ class ReviewDataModel {
         // Deserialize json into object fields
         try {
 
-            DummyUser.BookCoverPicture = jsonObject.getString("BookCover");
+            DummyUser.BookCoverPicture = jsonObject.getString("bookCover");
             DummyUser.UserProfilePicture = jsonObject.getString("photo");
             DummyUser.UserName = jsonObject.getString("userName");
             DummyUser.NLikes = jsonObject.getString("likesCount");
@@ -37,7 +37,7 @@ class ReviewDataModel {
             DummyUser.ReviewText = jsonObject.getString("reviewBody");
             DummyUser.ReviewID = jsonObject.getString("reviewId");
             DummyUser.UserWhoWroteID = jsonObject.getString("userId");
-            DummyUser.IsLiked = jsonObject.getString("Liked");
+            DummyUser.IsLiked = jsonObject.getString("liked");
         } catch (JSONException e) {
             e.printStackTrace();
             return null;

@@ -38,11 +38,12 @@ import java.util.ArrayList;
 import CustomFunctions.APIs;
 import CustomFunctions.UserSessionManager;
 
+
 /**
  * Reviews Custom Adapter: Adapter Class for Displaying A Book Reviews from the database.
  */
 public class ReviewsCustomAdapter extends ArrayAdapter<ReviewDataModel> implements View.OnClickListener {
-
+    public static String sForTestLikeReview;
     Context mContext;
     private ArrayList<ReviewDataModel> dataSet;
 
@@ -389,6 +390,7 @@ public class ReviewsCustomAdapter extends ArrayAdapter<ReviewDataModel> implemen
                         }
                         reader.close();
                         ips.close();
+                        sForTestLikeReview = "true";
                         break;
                     default:
                         result = new StringBuilder("{\"ReturnMsg\":\"An Error Occurred!\"}");

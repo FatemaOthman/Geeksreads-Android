@@ -49,6 +49,10 @@ public class Reviews extends AppCompatActivity {
         BookNameForReview = findViewById(R.id.ReviewsName);
 
         BookNameForReview.setText(getIntent().getStringExtra("BookName"));
+       /*
+        final String GetAllReviewsURL = APIs.API_GET_REVIEWS_LIST + "?UserId=" + "5ccb84e1496cbb0017f48128" + "&" +
+                "bookId=" + "5c9114526f1439874b7cca1a";
+        */
 
         final String GetAllReviewsURL = APIs.API_GET_REVIEWS_LIST + "?UserId=" + UserSessionManager.getUserID() + "&" +
                 "bookId=" + getIntent().getStringExtra("BookID");
