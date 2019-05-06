@@ -1,9 +1,13 @@
 package com.example.geeksreads;
 
 import android.annotation.SuppressLint;
+import android.annotation.TargetApi;
 import android.content.Context;
+import android.content.Intent;
 import android.os.AsyncTask;
+import android.os.Build;
 import android.os.Bundle;
+import android.support.annotation.RequiresApi;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
@@ -51,6 +55,10 @@ public class ChangePasswordActivity extends AppCompatActivity {
     private Context mContext;
 
     LoadingView Loading;
+    /**
+     * *Global Variable to Store the RootView of SearchView
+     */
+    View rootView;
     /* Enum which specifies the kinds of errors that might come from verifyChangePassword function */
     enum changePasswordErrors
     {
@@ -91,6 +99,7 @@ public class ChangePasswordActivity extends AppCompatActivity {
         setContentView(R.layout.activity_change_password);
 
         Toolbar myToolbar = findViewById(R.id.toolbar);
+        rootView=findViewById(R.id.toolbar);
         setSupportActionBar(myToolbar);
         getSupportActionBar().setTitle("Change Password");
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
@@ -204,6 +213,19 @@ public class ChangePasswordActivity extends AppCompatActivity {
         SearchView searchView = (SearchView) item.getActionView();
         searchView.setMaxWidth(800);
         searchView.setQueryHint("Search books");
+        searchView.setOnQueryTextFocusChangeListener(new View.OnFocusChangeListener() {
+            @TargetApi(Build.VERSION_CODES.O)
+            @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
+            @Override
+            public void onFocusChange(View v, boolean hasFocus) {
+                rootView.requestFocus();
+                Intent intent = new Intent(ChangePasswordActivity.this,SearchHandlerActivity.class);
+                intent.putExtra("CallingActivity","ChangePasswordActivity");
+                startActivity(intent);
+
+            }
+        });
+
         return super.onCreateOptionsMenu(menu);
     }
 

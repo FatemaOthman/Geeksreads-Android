@@ -1,11 +1,14 @@
 package com.example.geeksreads;
 
 import android.annotation.SuppressLint;
+import android.annotation.TargetApi;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.os.AsyncTask;
+import android.os.Build;
 import android.os.Bundle;
+import android.support.annotation.RequiresApi;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -42,6 +45,7 @@ public class WantToReadActivity extends AppCompatActivity {
     SwipeRefreshLayout mSwipeRefreshLayout;
     JSONArray data = new JSONArray();
     Context mContext;
+    View rootView;
 
     /**
      * @param savedInstanceState
@@ -54,6 +58,7 @@ public class WantToReadActivity extends AppCompatActivity {
         mContext = this;
 
         Toolbar myToolbar = findViewById(R.id.toolbar);
+        rootView=findViewById(R.id.toolbar);
         setSupportActionBar(myToolbar);
         Objects.requireNonNull(getSupportActionBar()).setTitle("Want to Read");
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
@@ -97,6 +102,19 @@ public class WantToReadActivity extends AppCompatActivity {
         SearchView searchView = (SearchView) item.getActionView();
         searchView.setMaxWidth(800);
         searchView.setQueryHint("Search books");
+        searchView.setOnQueryTextFocusChangeListener(new View.OnFocusChangeListener() {
+            @TargetApi(Build.VERSION_CODES.O)
+            @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
+            @Override
+            public void onFocusChange(View v, boolean hasFocus) {
+                rootView.requestFocus();
+                Intent intent = new Intent(WantToReadActivity.this,SearchHandlerActivity.class);
+                intent.putExtra("CallingActivity","WantToReadActivity");
+                startActivity(intent);
+
+            }
+        });
+
         MenuItem item1 = menu.findItem(R.id.NotificationButton);
         item1.setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
             @Override

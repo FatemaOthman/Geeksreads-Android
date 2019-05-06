@@ -86,6 +86,8 @@ public class AuthorActivity extends AppCompatActivity implements NavigationView.
     MenuItem FollowItem;
     MenuItem BookItem;
     String AuthorID;
+    View rootView;
+
 
 
     @Override
@@ -104,6 +106,9 @@ public class AuthorActivity extends AppCompatActivity implements NavigationView.
 
         /* ToolBar and SideBar Setups */
         Toolbar myToolbar = findViewById(R.id.toolbar);
+        rootView=findViewById(R.id.toolbar);
+
+
         setSupportActionBar(myToolbar);
         myToolbar.setNavigationOnClickListener(new View.OnClickListener() {
             @Override
@@ -253,7 +258,9 @@ public class AuthorActivity extends AppCompatActivity implements NavigationView.
             @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
             @Override
             public void onFocusChange(View v, boolean hasFocus) {
-                Intent m = new Intent(mContext,SearchHandlerActivity.class);
+                rootView.requestFocus();
+                Intent m = new Intent(AuthorActivity.this,SearchHandlerActivity.class);
+                m.putExtra("CallingActivity","AuthorActivity");
                 startActivity(m);
 
 

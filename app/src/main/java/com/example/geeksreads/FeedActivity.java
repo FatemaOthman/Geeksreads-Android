@@ -1,6 +1,7 @@
 package com.example.geeksreads;
 
 import android.annotation.SuppressLint;
+import android.annotation.TargetApi;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.Intent;
@@ -19,6 +20,7 @@ import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.text.Layout;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -37,6 +39,8 @@ import org.apache.http.util.EntityUtils;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.w3c.dom.Text;
+import org.xml.sax.ContentHandler;
 
 import CustomFunctions.APIs;
 import CustomFunctions.UserSessionManager;
@@ -56,16 +60,14 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
-public class FeedActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener{
+public class FeedActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
 
     RecyclerView recyclerView;
     RecyclerView.Adapter adapter;
     private List<FeedModel> list;
-    ImageView postPhoto;
     Context mContext;
-    TextView postBody;
-    TextView postTime;
-    String postPhotoURL;
+    View rootView;
+
 
     /* SideBar Views */
     ImageView userPhoto;
@@ -113,6 +115,7 @@ public class FeedActivity extends AppCompatActivity implements NavigationView.On
         recyclerView = (RecyclerView) findViewById(R.id.FeedRecyclerView);
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
+        rootView=findViewById(R.id.toolbar);
         mContext = this;
 
         /* ToolBar and SideBar Setups */
@@ -166,10 +169,11 @@ public class FeedActivity extends AppCompatActivity implements NavigationView.On
         String UrlShelvesDetails = APIs.API_GET_SHELVES_COUNT;
         getShelvesDetails.execute(UrlShelvesDetails,UserSessionManager.getUserToken().toString());
 
-        postBody=findViewById(R.id.postBody);
-        postTime=findViewById(R.id.postTime);
-        postPhoto=findViewById(R.id.postPic);
+        //postBody=findViewById(R.id.postBody);
+        //postTime=findViewById(R.id.postTime);
+        //postPhoto=findViewById(R.id.postPic);
         list = new ArrayList<>();
+        Log.d("Token",UserSessionManager.getUserToken());
         //String Url= APIs.API_USER_STATUS;
         //GetFeedDetails getFeedDetails= new GetFeedDetails(UserSessionManager.getUserToken());
         //getFeedDetails.execute(Url);
@@ -235,22 +239,26 @@ public class FeedActivity extends AppCompatActivity implements NavigationView.On
      * @return super.onCreateOptionsMenu(menu)
      *  Overrided Function to create the toolbar and decide what to do when click it's menu items.
      */
+    @RequiresApi(api = Build.VERSION_CODES.O)
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
+
         MenuInflater inflater = getMenuInflater();
         inflater.inflate(R.menu.search_menu, menu);
-        MenuItem item = menu.findItem(R.id.menuSearch);
-        SearchView searchView = (SearchView) item.getActionView();
+         MenuItem item = menu.findItem(R.id.menuSearch);
+        final SearchView searchView = (SearchView) item.getActionView();
         searchView.setIconifiedByDefault(false);
         searchView.setMaxWidth(800);
         searchView.setQueryHint("Search books");
         searchView.setBackgroundColor(getResources().getColor(R.color.white));
         searchView.setOnQueryTextFocusChangeListener(new View.OnFocusChangeListener() {
+            @TargetApi(Build.VERSION_CODES.O)
             @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
             @Override
             public void onFocusChange(View v, boolean hasFocus) {
+                rootView.requestFocus();
                 Intent intent = new Intent(FeedActivity.this,SearchHandlerActivity.class);
-
+                intent.putExtra("CallingActivity","FeedActivity");
                 startActivity(intent);
 
             }

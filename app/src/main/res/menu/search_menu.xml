@@ -11,7 +11,8 @@
         android:title="@string/SearchText"
         app:actionViewClass="android.widget.SearchView"
         app:iconifiedByDefault="false"
-        app:showAsAction="always">
+        app:showAsAction="always"
+        >
 
     </item>
 
