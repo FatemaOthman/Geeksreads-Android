@@ -159,10 +159,10 @@ public class AuthorActivity extends AppCompatActivity implements NavigationView.
         }
         String UrlSideBar = APIs.API_GET_USER_INFO;//"http://geeksreads.000webhostapp.com/Fatema/SideBar.php";
         GetSideBarDetails getSideBarDetails = new GetSideBarDetails();
-        //getSideBarDetails.execute(UrlSideBar, jsonUserDetails.toString());
-        //GetShelvesDetails getShelvesDetails = new GetShelvesDetails(UserSessionManager.getUserToken());
+        getSideBarDetails.execute(UrlSideBar, jsonUserDetails.toString());
+        GetShelvesDetails getShelvesDetails = new GetShelvesDetails(UserSessionManager.getUserToken());
         String UrlShelvesDetails = APIs.API_USER_SHELVES;
-       // getShelvesDetails.execute(UrlShelvesDetails,UserSessionManager.getUserToken());
+       getShelvesDetails.execute(UrlShelvesDetails,UserSessionManager.getUserToken());
 
 
 
@@ -768,6 +768,7 @@ public class AuthorActivity extends AppCompatActivity implements NavigationView.
 
 
 
+
     /**
      * Class that get sidebar profile pic. from server
      */
@@ -802,7 +803,7 @@ public class AuthorActivity extends AppCompatActivity implements NavigationView.
      */
     @SuppressLint("StaticFieldLeak")
     private class GetSideBarDetails extends AsyncTask<String, Void, String> {
-        static final String REQUEST_METHOD = "GET";
+        static final String REQUEST_METHOD = "POST";
         //public static final int READ_TIMEOUT = 3000;
         //public static final int CONNECTION_TIMEOUT = 3000;
         AlertDialog dialog;
@@ -877,7 +878,7 @@ public class AuthorActivity extends AppCompatActivity implements NavigationView.
 
                 JSONObject jsonObject = new JSONObject(result);
                 FollowItem.setTitle("Followers   " + jsonObject.getString("NoOfFollowers"));
-               // BookItem.setTitle("My Books   0" );
+                // BookItem.setTitle("My Books   0" );
                 userName.setText(jsonObject.getString("UserName"));
                 GetUserPicture Pic = new GetUserPicture();
                 Pic.execute(jsonObject.getString("Photo"));
@@ -905,11 +906,11 @@ public class AuthorActivity extends AppCompatActivity implements NavigationView.
         @Override
         protected String doInBackground(String... params) {
             String UrlString = params[0];
-
             String result = "";
             try {
                 /* Create a URL object holding our url */
                 URL url = new URL(UrlString);
+
                 /* Create an HTTP Connection and adjust its options */
                 HttpURLConnection http = (HttpURLConnection) url.openConnection();
                 http.setRequestMethod(REQUEST_METHOD);
@@ -983,7 +984,6 @@ public class AuthorActivity extends AppCompatActivity implements NavigationView.
         }
 
     }
-
 
 
 

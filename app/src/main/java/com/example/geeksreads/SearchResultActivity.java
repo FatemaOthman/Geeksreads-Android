@@ -191,6 +191,20 @@ public class SearchResultActivity extends AppCompatActivity {
                         | Intent.FLAG_ACTIVITY_SINGLE_TOP);
                 startActivity(intent);
                 break;
+            case "Profile":
+                intent = new Intent(SearchResultActivity.this,
+                        Profile.class);
+                intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP
+                        | Intent.FLAG_ACTIVITY_SINGLE_TOP);
+                startActivity(intent);
+                break;
+            case"ReadBooksActivity":
+                intent = new Intent(SearchResultActivity.this,
+                        ReadBooksActivity.class);
+                intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP
+                        | Intent.FLAG_ACTIVITY_SINGLE_TOP);
+                startActivity(intent);
+                break;
             default:
                 intent = new Intent(SearchResultActivity.this,
                         FeedActivity.class);
