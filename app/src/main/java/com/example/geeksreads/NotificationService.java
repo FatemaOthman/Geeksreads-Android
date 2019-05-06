@@ -233,6 +233,7 @@ public class NotificationService extends Service {
                             final JSONObject jsonObject = new JSONObject();
                             try {
                                 jsonObject.put("NotificationId", NotificationId);
+                                jsonObject.put("token", UserSessionManager.getUserToken());
                             } catch (JSONException e) {
                                 e.printStackTrace();
                             }
