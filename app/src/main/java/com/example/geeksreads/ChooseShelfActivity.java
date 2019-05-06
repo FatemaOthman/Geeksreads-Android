@@ -304,6 +304,9 @@ public class ChooseShelfActivity extends AppCompatActivity {
                 Toast.makeText(mContext, jsonObject.getString("ReturnMsg"), Toast.LENGTH_SHORT).show();
                 sForTestChooseShelf = "Added Successfully to shelf";
 
+                Intent intent = new Intent(ChooseShelfActivity.this, MyBooksShelvesActivity.class);
+                startActivity(intent);
+
             } catch (JSONException e) {
                 Toast.makeText(mContext, "Error happen during adding to shelf", Toast.LENGTH_SHORT).show();
                 e.printStackTrace();
