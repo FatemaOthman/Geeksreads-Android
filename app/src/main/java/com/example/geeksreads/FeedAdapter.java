@@ -351,7 +351,7 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
                         @Override
                         public void onClick(View v) {
                             Intent intent = new Intent(context,Comments.class);
-                            intent.putExtra("ReviewId","5ccdb0f8a375f9643cc8b0c3");
+                            intent.putExtra("ReviewId",object.getReviewID());
                             context.startActivity(intent);
                         }
                     });
