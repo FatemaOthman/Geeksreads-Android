@@ -102,20 +102,13 @@ public class BookActivity extends AppCompatActivity implements NavigationView.On
     MenuItem FollowItem;
     MenuItem BookItem;
 
-    boolean checkReview(String review)
+   public static boolean checkReview(String review)
     {
         if (review.equals(""))
         {
             return false;
         }
-        else if (review.length() <=6)
-        {
-            return false;
-        }
-        else
-        {
-            return true;
-        }
+        else return review.length() > 6;
     }
 
 
@@ -296,6 +289,15 @@ public class BookActivity extends AppCompatActivity implements NavigationView.On
         Log.d("BookID",getID);
         /* Calling Async Task with my server url */
         final String UrlService = APIs.API_GET_BOOK_DETAILS;
+        final String UrlService2 = APIs.API_GET_BOOK_STATUS;
+
+        final JSONObject StatusObject = new JSONObject();
+        try {
+            StatusObject.put("token", UserSessionManager.getUserToken());
+            StatusObject.put("BookId", getID);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
 
         mSwipeRefreshLayout = findViewById(R.id.BookSwipeLayout);
         mSwipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
@@ -308,11 +310,21 @@ public class BookActivity extends AppCompatActivity implements NavigationView.On
                 mProgressBar.setVisibility(View.VISIBLE);
                 GetBookDetails getBookDetails = new GetBookDetails();
                 getBookDetails.execute(UrlService, getID);
+                if (!APIs.MimicModeEnabled) {
+                    GetBookStatus getStatus = new GetBookStatus();
+                    getStatus.execute(UrlService2, StatusObject.toString());
+                }
+
             }
         });
         mProgressBar.setVisibility(View.VISIBLE);
         GetBookDetails getBookDetails = new GetBookDetails();
         getBookDetails.execute(UrlService, getID);
+
+        if (!APIs.MimicModeEnabled) {
+            GetBookStatus getStatus = new GetBookStatus();
+            getStatus.execute(UrlService2, StatusObject.toString());
+        }
 
     }
 
@@ -537,20 +549,6 @@ public class BookActivity extends AppCompatActivity implements NavigationView.On
                     } else if (Float.parseFloat(Ratings) <= 5) {
                         LayerDrawable stars = (LayerDrawable) bookStars.getProgressDrawable();
                         stars.getDrawable(2).setColorFilter(Color.rgb(34, 139, 34), PorterDuff.Mode.SRC_ATOP);
-                    }
-                    Log.d("Book Status", jsonObject.getString("ReadStatus"));
-                    if (jsonObject.getString("ReadStatus").equals("Read")) {
-                        bookOptions.setText("Read");
-                        bookOptions.setBackgroundColor(getResources().getColor(R.color.ReadColor));
-                    } else if (jsonObject.getString("ReadStatus").equals("Want to Read")) {
-                        bookOptions.setText("Want To Read");
-                        bookOptions.setBackgroundColor(getResources().getColor(R.color.WantToReadColor));
-                    } else if (jsonObject.getString("ReadStatus").equals("Currently Reading")) {
-                        bookOptions.setText("Currently Reading");
-                        bookOptions.setBackgroundColor(getResources().getColor(R.color.ReadingColor));
-                    } else {
-                        bookOptions.setText("Add to shelf");
-                        bookOptions.setBackgroundColor(getResources().getColor(R.color.colorNotificationbar));
                     }
 
 
@@ -787,7 +785,6 @@ public class BookActivity extends AppCompatActivity implements NavigationView.On
 
     }
 
-
     /**
      * Class that Add Review to server
      */
@@ -893,5 +890,114 @@ public class BookActivity extends AppCompatActivity implements NavigationView.On
             }
         }
     }
+
+
+    @SuppressLint("StaticFieldLeak")
+    private class GetBookStatus extends AsyncTask<String, Void, String> {
+        static final String REQUEST_METHOD = "POST";
+        AlertDialog dialog;
+        boolean TaskSuccess = false;
+
+        @Override
+        protected void onPreExecute() {
+            dialog = new AlertDialog.Builder(mContext).create();
+            dialog.setTitle("Connection Status");
+        }
+
+        @RequiresApi(api = Build.VERSION_CODES.KITKAT)
+        @Override
+        protected String doInBackground(String... params) {
+            String UrlString = params[0];
+            String JSONString = params[1];
+            String result = "";
+
+            try {
+                //Create a URL object holding our url
+                URL url = new URL(UrlString);
+                HttpURLConnection http = (HttpURLConnection) url.openConnection();
+                http.setRequestMethod(REQUEST_METHOD);
+                http.setDoInput(true);
+                http.setDoOutput(true);
+                http.setRequestProperty("content-type", "application/json");
+
+                OutputStream ops = http.getOutputStream();
+                BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(ops, StandardCharsets.UTF_8));
+                writer.write(JSONString);
+                writer.flush();
+                writer.close();
+                ops.close();
+
+                Log.d("ResponseCode: " , String.valueOf(http.getResponseCode()) );
+                if (String.valueOf(http.getResponseCode()).equals("200")) {
+                    /* A Stream object to get the returned data from API Call */
+                    InputStream ips = http.getInputStream();
+                    BufferedReader reader = new BufferedReader(new InputStreamReader(ips, StandardCharsets.ISO_8859_1));
+                    String line;
+                    while ((line = reader.readLine()) != null) {
+                        result += line;
+                    }
+                    reader.close();
+                    ips.close();
+                    TaskSuccess = true;
+                }
+                else                {
+                    TaskSuccess = false;
+                    InputStream es = http.getErrorStream();
+                    BufferedReader ereader = new BufferedReader(new InputStreamReader(es, StandardCharsets.ISO_8859_1));
+                    String eline;
+                    while ((eline = ereader.readLine()) != null) {
+                        result += eline;
+                    }
+                    ereader.close();
+                    es.close();
+                }
+                http.disconnect();
+                return result;
+
+            } catch (MalformedURLException e) {
+                result = e.getMessage();
+            } catch (IOException e) {
+                result = e.getMessage();
+            }
+            Log.d("Result:" , result);
+            return result;
+        }
+
+        @SuppressLint("SetTextI18n")
+        protected void onPostExecute(String result) {
+            mSwipeRefreshLayout.setRefreshing(false);
+            if (result == null) {
+                Toast.makeText(mContext, "Unable to connect to server", Toast.LENGTH_SHORT).show();
+                return;
+            }
+            try {
+                Log.d("STATUS" , result);
+                JSONObject jsonObject = new JSONObject(result);
+                if( TaskSuccess) {
+                    if (jsonObject.getString("ReturnMsg").equals("Read")) {
+                        bookOptions.setText("Read");
+                        bookOptions.setBackgroundColor(getResources().getColor(R.color.ReadColor));
+                    } else if (jsonObject.getString("ReturnMsg").equals("Want To Read")) {
+                        bookOptions.setText("Want To Read");
+                        bookOptions.setBackgroundColor(getResources().getColor(R.color.WantToReadColor));
+                    } else if (jsonObject.getString("ReturnMsg").equals("Currently Reading")) {
+                        bookOptions.setText("Currently Reading");
+                        bookOptions.setBackgroundColor(getResources().getColor(R.color.ReadingColor));
+                    } else {
+                        bookOptions.setText("Add to shelf");
+                        bookOptions.setBackgroundColor(getResources().getColor(R.color.colorNotificationbar));
+                    }
+                }
+                else
+                {
+                   // Toast.makeText(mContext, "Error in Adding Review", Toast.LENGTH_SHORT).show();
+                }
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+
 }
 

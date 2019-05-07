@@ -168,8 +168,8 @@ public class FeedActivity extends AppCompatActivity implements NavigationView.On
         GetShelvesDetails getShelvesDetails = new GetShelvesDetails(UserSessionManager.getUserToken());
         String UrlShelvesDetails = APIs.API_GET_SHELVES_COUNT;
         getShelvesDetails.execute(UrlShelvesDetails,UserSessionManager.getUserToken().toString());
-        Intent intent= new Intent(FeedActivity.this,AuthorActivity.class);
-        startActivity(intent);
+        //Intent intent= new Intent(FeedActivity.this,AuthorActivity.class);
+        //startActivity(intent);
 
         //postBody=findViewById(R.id.postBody);
         //postTime=findViewById(R.id.postTime);
