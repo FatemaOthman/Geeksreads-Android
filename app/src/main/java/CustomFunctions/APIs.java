@@ -100,6 +100,8 @@ public class APIs {
     public static String API_UNFOLLOW_AUTHOR = "http://geeksreads.000webhostapp.com/Fatema/unfollow.php";
     public static String API_USER_STATUS ="http://geeksreads.000webhostapp.com/Fatema/show.php";
     public static String API_SEARCH="http://geeksreads.000webhostapp.com/Fatema/search.php";
+    public static String API_USER_SHELVES = "http://geeksreads.000webhostapp.com/Fatema/GetUserShelves";
+
 */
 
     public static boolean TestingModeEnabled = false;
