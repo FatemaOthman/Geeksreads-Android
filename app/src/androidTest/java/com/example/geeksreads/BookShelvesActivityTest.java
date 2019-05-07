@@ -76,39 +76,45 @@ public class BookShelvesActivityTest {
     @Test
     public void Test_zReadButton()
     {
-        Instrumentation.ActivityMonitor activityMonitor = getInstrumentation().addMonitor(ReadBooksActivity.class.getName(), null, false);
+        if (APIs.MimicModeEnabled) {
+            Instrumentation.ActivityMonitor activityMonitor = getInstrumentation().addMonitor(ReadBooksActivity.class.getName(), null, false);
 
-        onView(withId(R.id.ReadBtn)).perform(click());
+            onView(withId(R.id.ReadBtn)).perform(click());
 
-        Activity nextActivity = getInstrumentation().waitForMonitorWithTimeout(activityMonitor, 5000);
-        // next activity is opened and captured.
-        assertNotNull(nextActivity);
-        nextActivity .finish();
+            Activity nextActivity = getInstrumentation().waitForMonitorWithTimeout(activityMonitor, 5000);
+            // next activity is opened and captured.
+            assertNotNull(nextActivity);
+            nextActivity.finish();
+        }
     }
 
     @Test
     public void Test_zReadingButton()
     {
-        Instrumentation.ActivityMonitor activityMonitor = getInstrumentation().addMonitor(CurrentlyReadingActivity.class.getName(), null, false);
+        if (APIs.MimicModeEnabled) {
+            Instrumentation.ActivityMonitor activityMonitor = getInstrumentation().addMonitor(CurrentlyReadingActivity.class.getName(), null, false);
 
-        onView(withId(R.id.CurrentlyReadingBtn)).perform(click());
+            onView(withId(R.id.CurrentlyReadingBtn)).perform(click());
 
-        Activity nextActivity = getInstrumentation().waitForMonitorWithTimeout(activityMonitor, 5000);
-        // next activity is opened and captured.
-        assertNotNull(nextActivity);
-        nextActivity .finish();
+            Activity nextActivity = getInstrumentation().waitForMonitorWithTimeout(activityMonitor, 5000);
+            // next activity is opened and captured.
+            assertNotNull(nextActivity);
+            nextActivity.finish();
+        }
     }
 
     @Test
     public void Test_zWantButton()
     {
-        Instrumentation.ActivityMonitor activityMonitor = getInstrumentation().addMonitor(WantToReadActivity.class.getName(), null, false);
+        if (APIs.MimicModeEnabled) {
+            Instrumentation.ActivityMonitor activityMonitor = getInstrumentation().addMonitor(WantToReadActivity.class.getName(), null, false);
 
-        onView(withId(R.id.WantToReadBtn)).perform(click());
+            onView(withId(R.id.WantToReadBtn)).perform(click());
 
-        Activity nextActivity = getInstrumentation().waitForMonitorWithTimeout(activityMonitor, 5000);
-        // next activity is opened and captured.
-        assertNotNull(nextActivity);
-        nextActivity .finish();
+            Activity nextActivity = getInstrumentation().waitForMonitorWithTimeout(activityMonitor, 5000);
+            // next activity is opened and captured.
+            assertNotNull(nextActivity);
+            nextActivity.finish();
+        }
     }
 }

@@ -6,6 +6,7 @@ import android.support.test.rule.ActivityTestRule;
 import org.junit.Rule;
 import org.junit.Test;
 
+import CustomFunctions.APIs;
 import CustomFunctions.UserSessionManager;
 
 import static android.support.test.espresso.Espresso.onView;
@@ -27,184 +28,190 @@ public class ChooseShelfActivityTest {
 
     @Test
     public void TestChooseRead(){
+        if (APIs.MimicModeEnabled) {
+            Intent myIntent = new Intent();
+            myIntent.putExtra("Author", "Jane Austen");
+            myIntent.putExtra("Title", "Pride and Prejudice");
+            myIntent.putExtra("Rating", "4.25");
+            myIntent.putExtra("RatingNumber", "128768");
+            myIntent.putExtra("Pages", "240");
+            myIntent.putExtra("published", "1-2-1999");
+            myIntent.putExtra("bookID", "111");
+            myIntent.putExtra("cover", "http://geeksreads.000webhostapp.com/Shrouk/Cover.jpg");
+            myIntent.putExtra("BookStatus", "");
 
-        Intent myIntent = new Intent();
-        myIntent.putExtra("Author","Jane Austen");
-        myIntent.putExtra("Title", "Pride and Prejudice");
-        myIntent.putExtra("Rating","4.25");
-        myIntent.putExtra("RatingNumber","128768");
-        myIntent.putExtra("Pages","240");
-        myIntent.putExtra("published","1-2-1999");
-        myIntent.putExtra("bookID","111");
-        myIntent.putExtra("cover", "http://geeksreads.000webhostapp.com/Shrouk/Cover.jpg");
-        myIntent.putExtra("BookStatus", "");
+            menuActivityTestRule.launchActivity(myIntent);
 
-        menuActivityTestRule.launchActivity(myIntent);
+            onView(withId(R.id.radioRead)).perform(click());
 
-        onView(withId(R.id.radioRead)).perform(click());
+            onView(withId(R.id.AddShelfBtn)).perform(click());
 
-        onView(withId(R.id.AddShelfBtn)).perform(click());
-
-        assertEquals("Read", ChooseShelfActivity.sForTestRadioChooseShelf);
-
+            assertEquals("Read", ChooseShelfActivity.sForTestRadioChooseShelf);
+        }
     }
 
     @Test
     public void TestChooseReading(){
 
-        Intent myIntent = new Intent();
-        myIntent.putExtra("Author","Jane Austen");
-        myIntent.putExtra("Title", "Pride and Prejudice");
-        myIntent.putExtra("Rating","4.25");
-        myIntent.putExtra("RatingNumber","128768");
-        myIntent.putExtra("Pages","240");
-        myIntent.putExtra("published","1-2-1999");
-        myIntent.putExtra("bookID","111");
-        myIntent.putExtra("cover", "http://geeksreads.000webhostapp.com/Shrouk/Cover.jpg");
-        myIntent.putExtra("BookStatus", "");
+        if (APIs.MimicModeEnabled) {
+            Intent myIntent = new Intent();
+            myIntent.putExtra("Author", "Jane Austen");
+            myIntent.putExtra("Title", "Pride and Prejudice");
+            myIntent.putExtra("Rating", "4.25");
+            myIntent.putExtra("RatingNumber", "128768");
+            myIntent.putExtra("Pages", "240");
+            myIntent.putExtra("published", "1-2-1999");
+            myIntent.putExtra("bookID", "111");
+            myIntent.putExtra("cover", "http://geeksreads.000webhostapp.com/Shrouk/Cover.jpg");
+            myIntent.putExtra("BookStatus", "");
 
-        menuActivityTestRule.launchActivity(myIntent);
+            menuActivityTestRule.launchActivity(myIntent);
 
-        onView(withId(R.id.radioReading)).perform(click());
+            onView(withId(R.id.radioReading)).perform(click());
 
-        onView(withId(R.id.AddShelfBtn)).perform(click());
+            onView(withId(R.id.AddShelfBtn)).perform(click());
 
-        assertEquals("Reading", ChooseShelfActivity.sForTestRadioChooseShelf);
-
+            assertEquals("Reading", ChooseShelfActivity.sForTestRadioChooseShelf);
+        }
     }
 
     @Test
     public void TestChooseWantToRead(){
 
-        Intent myIntent = new Intent();
-        myIntent.putExtra("Author","Jane Austen");
-        myIntent.putExtra("Title", "Pride and Prejudice");
-        myIntent.putExtra("Rating","4.25");
-        myIntent.putExtra("RatingNumber","128768");
-        myIntent.putExtra("Pages","240");
-        myIntent.putExtra("published","1-2-1999");
-        myIntent.putExtra("bookID","111");
-        myIntent.putExtra("cover", "http://geeksreads.000webhostapp.com/Shrouk/Cover.jpg");
-        myIntent.putExtra("BookStatus", "");
+        if (APIs.MimicModeEnabled) {
+            Intent myIntent = new Intent();
+            myIntent.putExtra("Author", "Jane Austen");
+            myIntent.putExtra("Title", "Pride and Prejudice");
+            myIntent.putExtra("Rating", "4.25");
+            myIntent.putExtra("RatingNumber", "128768");
+            myIntent.putExtra("Pages", "240");
+            myIntent.putExtra("published", "1-2-1999");
+            myIntent.putExtra("bookID", "111");
+            myIntent.putExtra("cover", "http://geeksreads.000webhostapp.com/Shrouk/Cover.jpg");
+            myIntent.putExtra("BookStatus", "");
 
-        menuActivityTestRule.launchActivity(myIntent);
+            menuActivityTestRule.launchActivity(myIntent);
 
-        onView(withId(R.id.radioWantRead)).perform(click());
+            onView(withId(R.id.radioWantRead)).perform(click());
 
-        onView(withId(R.id.AddShelfBtn)).perform(click());
+            onView(withId(R.id.AddShelfBtn)).perform(click());
 
-        assertEquals("WantToRead", ChooseShelfActivity.sForTestRadioChooseShelf);
-
+            assertEquals("WantToRead", ChooseShelfActivity.sForTestRadioChooseShelf);
+        }
     }
 
     @Test
     public void TestNoShelfChosen(){
 
-        Intent myIntent = new Intent();
-        myIntent.putExtra("Author","Jane Austen");
-        myIntent.putExtra("Title", "Pride and Prejudice");
-        myIntent.putExtra("Rating","4.25");
-        myIntent.putExtra("RatingNumber","128768");
-        myIntent.putExtra("Pages","240");
-        myIntent.putExtra("published","1-2-1999");
-        myIntent.putExtra("bookID","111");
-        myIntent.putExtra("cover", "http://geeksreads.000webhostapp.com/Shrouk/Cover.jpg");
-        myIntent.putExtra("BookStatus", "");
+        if (APIs.MimicModeEnabled) {
+            Intent myIntent = new Intent();
+            myIntent.putExtra("Author", "Jane Austen");
+            myIntent.putExtra("Title", "Pride and Prejudice");
+            myIntent.putExtra("Rating", "4.25");
+            myIntent.putExtra("RatingNumber", "128768");
+            myIntent.putExtra("Pages", "240");
+            myIntent.putExtra("published", "1-2-1999");
+            myIntent.putExtra("bookID", "111");
+            myIntent.putExtra("cover", "http://geeksreads.000webhostapp.com/Shrouk/Cover.jpg");
+            myIntent.putExtra("BookStatus", "");
 
-        menuActivityTestRule.launchActivity(myIntent);
+            menuActivityTestRule.launchActivity(myIntent);
 
-        onView(withId(R.id.AddShelfBtn)).perform(click());
+            onView(withId(R.id.AddShelfBtn)).perform(click());
 
-        assertEquals("You need to choose Shelf", ChooseShelfActivity.sForTestChooseShelf);
-
+            assertEquals("You need to choose Shelf", ChooseShelfActivity.sForTestChooseShelf);
+        }
     }
 
     @Test
     public void TestAddToShelf(){
 
-        Intent myIntent = new Intent();
-        myIntent.putExtra("Author","Jane Austen");
-        myIntent.putExtra("Title", "Pride and Prejudice");
-        myIntent.putExtra("Rating","4.25");
-        myIntent.putExtra("RatingNumber","128768");
-        myIntent.putExtra("Pages","240");
-        myIntent.putExtra("published","1-2-1999");
-        myIntent.putExtra("bookID","111");
-        myIntent.putExtra("cover", "http://geeksreads.000webhostapp.com/Shrouk/Cover.jpg");
-        myIntent.putExtra("BookStatus", "");
+        if (APIs.MimicModeEnabled) {
+            Intent myIntent = new Intent();
+            myIntent.putExtra("Author", "Jane Austen");
+            myIntent.putExtra("Title", "Pride and Prejudice");
+            myIntent.putExtra("Rating", "4.25");
+            myIntent.putExtra("RatingNumber", "128768");
+            myIntent.putExtra("Pages", "240");
+            myIntent.putExtra("published", "1-2-1999");
+            myIntent.putExtra("bookID", "111");
+            myIntent.putExtra("cover", "http://geeksreads.000webhostapp.com/Shrouk/Cover.jpg");
+            myIntent.putExtra("BookStatus", "");
 
-        menuActivityTestRule.launchActivity(myIntent);
+            menuActivityTestRule.launchActivity(myIntent);
 
-        onView(withId(R.id.radioWantRead)).perform(click());
+            onView(withId(R.id.radioWantRead)).perform(click());
 
-        onView(withId(R.id.AddShelfBtn)).perform(click());
+            onView(withId(R.id.AddShelfBtn)).perform(click());
 
-        assertEquals("Added Successfully to shelf", ChooseShelfActivity.sForTestChooseShelf);
-
+            assertEquals("Added Successfully to shelf", ChooseShelfActivity.sForTestChooseShelf);
+        }
     }
 
     @Test
     public void TestMoveToReading(){
 
-        Intent myIntent = new Intent();
-        myIntent.putExtra("Author","Jane Austen");
-        myIntent.putExtra("Title", "Pride and Prejudice");
-        myIntent.putExtra("Rating","4.25");
-        myIntent.putExtra("RatingNumber","128768");
-        myIntent.putExtra("Pages","240");
-        myIntent.putExtra("published","1-2-1999");
-        myIntent.putExtra("bookID","111");
-        myIntent.putExtra("cover", "http://geeksreads.000webhostapp.com/Shrouk/Cover.jpg");
-        myIntent.putExtra("BookStatus", "Want To Read");
+        if (APIs.MimicModeEnabled) {
+            Intent myIntent = new Intent();
+            myIntent.putExtra("Author", "Jane Austen");
+            myIntent.putExtra("Title", "Pride and Prejudice");
+            myIntent.putExtra("Rating", "4.25");
+            myIntent.putExtra("RatingNumber", "128768");
+            myIntent.putExtra("Pages", "240");
+            myIntent.putExtra("published", "1-2-1999");
+            myIntent.putExtra("bookID", "111");
+            myIntent.putExtra("cover", "http://geeksreads.000webhostapp.com/Shrouk/Cover.jpg");
+            myIntent.putExtra("BookStatus", "Want To Read");
 
-        menuActivityTestRule.launchActivity(myIntent);
+            menuActivityTestRule.launchActivity(myIntent);
 
-        onView(withId(R.id.radioRead)).check(matches(not(isClickable())));
-        onView(withId(R.id.radioWantRead)).check(matches((isChecked())));
-
+            onView(withId(R.id.radioRead)).check(matches(not(isClickable())));
+            onView(withId(R.id.radioWantRead)).check(matches((isChecked())));
+        }
     }
 
     @Test
     public void TestMoveToRead(){
 
-        Intent myIntent = new Intent();
-        myIntent.putExtra("Author","Jane Austen");
-        myIntent.putExtra("Title", "Pride and Prejudice");
-        myIntent.putExtra("Rating","4.25");
-        myIntent.putExtra("RatingNumber","128768");
-        myIntent.putExtra("Pages","240");
-        myIntent.putExtra("published","1-2-1999");
-        myIntent.putExtra("bookID","111");
-        myIntent.putExtra("cover", "http://geeksreads.000webhostapp.com/Shrouk/Cover.jpg");
-        myIntent.putExtra("BookStatus", "Currently Reading");
+        if (APIs.MimicModeEnabled) {
+            Intent myIntent = new Intent();
+            myIntent.putExtra("Author", "Jane Austen");
+            myIntent.putExtra("Title", "Pride and Prejudice");
+            myIntent.putExtra("Rating", "4.25");
+            myIntent.putExtra("RatingNumber", "128768");
+            myIntent.putExtra("Pages", "240");
+            myIntent.putExtra("published", "1-2-1999");
+            myIntent.putExtra("bookID", "111");
+            myIntent.putExtra("cover", "http://geeksreads.000webhostapp.com/Shrouk/Cover.jpg");
+            myIntent.putExtra("BookStatus", "Currently Reading");
 
-        menuActivityTestRule.launchActivity(myIntent);
+            menuActivityTestRule.launchActivity(myIntent);
 
-        onView(withId(R.id.radioWantRead)).check(matches(not(isClickable())));
-        onView(withId(R.id.radioReading)).check(matches((isChecked())));
-
+            onView(withId(R.id.radioWantRead)).check(matches(not(isClickable())));
+            onView(withId(R.id.radioReading)).check(matches((isChecked())));
+        }
     }
 
     @Test
     public void TestIfRead(){
 
-        Intent myIntent = new Intent();
-        myIntent.putExtra("Author","Jane Austen");
-        myIntent.putExtra("Title", "Pride and Prejudice");
-        myIntent.putExtra("Rating","4.25");
-        myIntent.putExtra("RatingNumber","128768");
-        myIntent.putExtra("Pages","240");
-        myIntent.putExtra("published","1-2-1999");
-        myIntent.putExtra("bookID","111");
-        myIntent.putExtra("cover", "http://geeksreads.000webhostapp.com/Shrouk/Cover.jpg");
-        myIntent.putExtra("BookStatus", "Read");
+        if (APIs.MimicModeEnabled) {
+            Intent myIntent = new Intent();
+            myIntent.putExtra("Author", "Jane Austen");
+            myIntent.putExtra("Title", "Pride and Prejudice");
+            myIntent.putExtra("Rating", "4.25");
+            myIntent.putExtra("RatingNumber", "128768");
+            myIntent.putExtra("Pages", "240");
+            myIntent.putExtra("published", "1-2-1999");
+            myIntent.putExtra("bookID", "111");
+            myIntent.putExtra("cover", "http://geeksreads.000webhostapp.com/Shrouk/Cover.jpg");
+            myIntent.putExtra("BookStatus", "Read");
 
-        menuActivityTestRule.launchActivity(myIntent);
+            menuActivityTestRule.launchActivity(myIntent);
 
-        onView(withId(R.id.radioWantRead)).check(matches(not(isClickable())));
-        onView(withId(R.id.radioReading)).check(matches(not(isClickable())));
-        onView(withId(R.id.radioRead)).check(matches((isChecked())));
-
+            onView(withId(R.id.radioWantRead)).check(matches(not(isClickable())));
+            onView(withId(R.id.radioReading)).check(matches(not(isClickable())));
+            onView(withId(R.id.radioRead)).check(matches((isChecked())));
+        }
     }
-
 }
