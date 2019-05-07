@@ -17,6 +17,8 @@ class ReviewDataModel {
     private String ReviewText;
     private String UserWhoWroteID;
     private String IsLiked;
+    private String DateOfReview;
+    private String Rating;
 
     /**
      * fromJson: Put Data from a single JSONOBJECT into a UserDataModel
@@ -38,6 +40,8 @@ class ReviewDataModel {
             DummyUser.ReviewID = jsonObject.getString("reviewId");
             DummyUser.UserWhoWroteID = jsonObject.getString("userId");
             DummyUser.IsLiked = jsonObject.getString("liked");
+            DummyUser.DateOfReview = jsonObject.getString("reviewDate");
+            DummyUser.Rating = jsonObject.getString("rating");
         } catch (JSONException e) {
             e.printStackTrace();
             return null;
@@ -159,6 +163,24 @@ class ReviewDataModel {
      */
     String getUserWhoWroteID() {
         return UserWhoWroteID;
+    }
+
+    /**
+     * getReviewDate: Gets Date of the review
+     *
+     * @return DateOfReview
+     */
+    String getReviewDate() {
+        return DateOfReview;
+    }
+
+    /**
+     * getReviewRating: Gets rating of the review
+     *
+     * @return rating
+     */
+    String getReviewRating() {
+        return Rating;
     }
 
 }

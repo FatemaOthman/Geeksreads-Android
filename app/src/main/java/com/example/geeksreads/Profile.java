@@ -178,8 +178,8 @@ public class Profile extends AppCompatActivity implements NavigationView.OnNavig
         JSONObject mJSON = new JSONObject();
 
         try {
-            mJSON.put("token", UserSessionManager.getUserToken());
-            // mJSON.put("token", "5ccb84e1496cbb0017f48128");
+            // mJSON.put("token", UserSessionManager.getUserToken());
+            mJSON.put("token", "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI1Y2I2MGEwYWQ0MmU5YjAwMTczZmExZmQiLCJpYXQiOjE1NTcxNDQ1MTEsImV4cCI6MTU1NzIzMDkxMX0.r_wnJ_i28G2Ot-gBEXw_cTbGpTNnYX1sGhlFTYFXRWs");
         } catch (JSONException e) {
             e.printStackTrace();
         }
@@ -359,8 +359,8 @@ public class Profile extends AppCompatActivity implements NavigationView.OnNavig
                 http.setDoInput(true);
                 http.setDoOutput(true);
                 http.setRequestProperty("content-type", "application/json");
-                http.setRequestProperty("x-auth-token", UserSessionManager.getUserToken());
-                // http.setRequestProperty("x-auth-token", "5ccb84e1496cbb0017f48128");
+                // http.setRequestProperty("x-auth-token", UserSessionManager.getUserToken());
+                http.setRequestProperty("x-auth-token", "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI1Y2I2MGEwYWQ0MmU5YjAwMTczZmExZmQiLCJpYXQiOjE1NTcxNDQ1MTEsImV4cCI6MTU1NzIzMDkxMX0.r_wnJ_i28G2Ot-gBEXw_cTbGpTNnYX1sGhlFTYFXRWs");
 
 
                 /* A Stream object to hold the sent data to API Call */
@@ -427,8 +427,8 @@ public class Profile extends AppCompatActivity implements NavigationView.OnNavig
                 FollowersCount.setText(jsonObject.getString("NoOfFollowers"));
                 FollowingCount.setText(jsonObject.getString("NoOfFollowings"));
                 Profile.GetUserPicture Pic = new Profile.GetUserPicture();
-                Pic.execute(jsonObject.getString("photo"));
-                ForTestProfilePicture = jsonObject.getString("photo");
+                Pic.execute(jsonObject.getString("Photo"));
+                ForTestProfilePicture = jsonObject.getString("Photo");
                 ForTestFollowersCount = FollowersCount.getText().toString();
                 ForTestFollowingCount = FollowingCount.getText().toString();
 
