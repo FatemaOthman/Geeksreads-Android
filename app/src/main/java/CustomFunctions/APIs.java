@@ -49,7 +49,6 @@ public class APIs {
     public static String API_GET_BOOKS_WRITTEN_BY_AUTHOR = "https://geeksreads.herokuapp.com/api/books/author";
     public static String API_FOLLOW_AUTHOR = "https://geeksreads.herokuapp.com/api/authors/follow";
     public static String API_UNFOLLOW_AUTHOR = "https://geeksreads.herokuapp.com/api/authors/unfollow";
-    public static String API_AUTHOR_ISFOLLOWED ="https://geeksreads.herokuapp.com/api/authors/isfollowed";
     public static String API_USER_SHELVES = "https://geeksreads.herokuapp.com/api/users/GetUserShelves";
     public static String API_USER_STATUS ="https://geeksreads.herokuapp.com/api/user_status/show/";
     public static String API_SEARCH="https://geeksreads.herokuapp.com/api/search/";

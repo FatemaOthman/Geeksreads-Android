@@ -168,49 +168,13 @@ public class FeedActivity extends AppCompatActivity implements NavigationView.On
         GetShelvesDetails getShelvesDetails = new GetShelvesDetails(UserSessionManager.getUserToken());
         String UrlShelvesDetails = APIs.API_GET_SHELVES_COUNT;
         getShelvesDetails.execute(UrlShelvesDetails,UserSessionManager.getUserToken().toString());
-        Intent intent= new Intent(FeedActivity.this,AuthorActivity.class);
-        startActivity(intent);
 
-        //postBody=findViewById(R.id.postBody);
-        //postTime=findViewById(R.id.postTime);
-        //postPhoto=findViewById(R.id.postPic);
+
         list = new ArrayList<>();
         Log.d("Token",UserSessionManager.getUserToken());
         String Url= APIs.API_USER_STATUS;
         GetFeedDetails getFeedDetails= new GetFeedDetails(UserSessionManager.getUserToken());
         getFeedDetails.execute(Url);
-        String Type;
-
-        /*for(int i=0;i<10;i++)
-        {
-            Type = i%2==0?"Review":"Comment";
-
-
-
-            FeedModel B =new FeedModel(
-                    "",
-                    "5c911452a48b42bb84bc785c",
-                    "5c911452a48b42bb84bc785c",
-                    Type,
-                   "Review"+i,
-                    "Comment"+i,
-                    "Book"+i,
-                    "Read",
-                    "BookID"+i,
-                    "CommentMakerName"+i,
-                    "ReviewMakerName"+i,
-                    "https://loremflickr.com/cache/resized/1955_44782960525_027acf00f1_320_240_nofilter.jpg",
-                   "https://loremflickr.com/cache/resized/1955_44782960525_027acf00f1_320_240_nofilter.jpg",
-                    "AuthorName"+i,
-                    "5c911452938ffea87b4672d7",
-                   "https://loremflickr.com/cache/resized/1955_44782960525_027acf00f1_320_240_nofilter.jpg",
-                    "ReviewBody"
-
-            );
-            list.add(B);
-        }
-        adapter =new FeedAdapter((ArrayList)list,mContext);
-        recyclerView.setAdapter(adapter);*/
 
 
     }
@@ -613,7 +577,7 @@ public class FeedActivity extends AppCompatActivity implements NavigationView.On
                     switch(o.getString("StatusType"))
                     { case "Review":
                         B=new FeedModel(
-                            "",
+                            o.getString("ReviewDate"),
                             o.getString("ReviewMakerId"),
                            "",
                             o.getString("StatusType"),
@@ -629,14 +593,15 @@ public class FeedActivity extends AppCompatActivity implements NavigationView.On
                             o.getString("AuthorName"),
                             o.getString("AuthorId"),
                             o.getString("BookPhoto"),
-                            o.getString("ReviewBody")
+                            o.getString("ReviewBody"),
+                            o.getBoolean("ReviewIsLiked")
 
                     );
                         break;
                         case"Comment":
 
                       B =new FeedModel(
-                            "",
+                            o.getString("CommentDate"),
                             o.getString("ReviewMakerId"),
                             o.getString("CommentMakerId"),
                             o.getString("StatusType"),
@@ -652,12 +617,13 @@ public class FeedActivity extends AppCompatActivity implements NavigationView.On
                             "",
                            "",
                             "",
-                            o.getString("ReviewBody")
+                            o.getString("ReviewBody"),
+                              true
 
                     );
                       break;
                         default:
-                            B=new FeedModel("","","","","","","","","","","","","","","","","");
+                            B=new FeedModel("","","","","","","","","","","","","","","","","",true);
                     }
 
 

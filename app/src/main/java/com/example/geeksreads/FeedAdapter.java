@@ -1,8 +1,11 @@
 package com.example.geeksreads;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
+import android.graphics.Typeface;
+import android.os.AsyncTask;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.RecyclerView;
 import android.text.SpannableString;
@@ -17,10 +20,29 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.RatingBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.squareup.picasso.Picasso;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+import org.w3c.dom.Text;
+
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.OutputStream;
+import java.io.OutputStreamWriter;
+import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
+
+import CustomFunctions.APIs;
+import CustomFunctions.UserSessionManager;
 
 public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
@@ -45,6 +67,7 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
             this.type=type;
             this.context=mContext;
             this.ExtraText=ExtraText;
+
         }
         @Override
         public void onClick(final View widget) {
@@ -56,9 +79,9 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
             }
             else if(this.type ==1)
             {
-                /*Intent myintent = new Intent(context,Review.class);
-                myintent.putExtra("ReviewID",ExtraText);
-                context.startActivity(myintent);*/
+                Intent intent = new Intent(context,Comments.class);
+                intent.putExtra("ReviewId",ExtraText);
+                context.startActivity(intent);
 
             }
             else
@@ -74,7 +97,6 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
         public void updateDrawState(TextPaint ds) {
             super.updateDrawState(ds);
             ds.setUnderlineText(false);
-          //  ds.setFakeBoldText(true);
             ds.setColor(Color.DKGRAY);
             ds.setElegantTextHeight(true);
 
@@ -141,6 +163,8 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
         public TextView textViewPostBody;
         public TextView TextViewPostTime;
         public ImageView imageViewPostPic;
+        public TextView LikeText;
+        public TextView CommentText;
 
         public CommentViewHolder(View itemView) {
             super(itemView);
@@ -168,6 +192,8 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
         public ImageView imageViewBookCover;
         public TextView textViewReviewBody;
         public Button buttonBookState;
+        public Button LikeText;
+        public Button CommentText;
 
 
         public ReviewViewHolder(View itemView) {
@@ -184,6 +210,9 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
             imageViewBookCover=(ImageView) itemView.findViewById(R.id.bookCover);
             buttonBookState = (Button) itemView.findViewById(R.id.BookState);
             textViewReviewBody=(TextView)itemView.findViewById(R.id.ReviewBody);
+            this.LikeText=(Button) itemView.findViewById(R.id.LikeReview);
+            this.CommentText=(Button) itemView.findViewById(R.id.CommentonReview);
+
 
 
 
@@ -256,10 +285,74 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
                     ((ReviewViewHolder) holder).TextViewPostTime.setText(object.getPostTime());
                     ((ReviewViewHolder)holder).textViewBookAuthor.setText(object.getBookAuthor());
                     ((ReviewViewHolder)holder).textViewBookName.setText(object.getBookName());
+                    if(object.isLiked()==true) {
+                        ((ReviewViewHolder)holder).LikeText.setText("Liked");
+                    }
+
+                    else
+                    {
+                        ((ReviewViewHolder)holder).LikeText.setText("Like");
+                    }
+
+                    ((ReviewViewHolder)holder).LikeText.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            if(object.isLiked()==true)
+                            {
+                                UnLikeResource UnlikeResource = new UnLikeResource(holder);
+                                String UrlLike= APIs.API_UNLIKE_REVIEW;
+                                JSONObject jsonObject=new JSONObject();
+
+                                try {
+                                    jsonObject.put("token",UserSessionManager.getUserToken());
+                                    jsonObject.put("User_Id",UserSessionManager.getUserID());
+                                    jsonObject.put("resourceId",object.getReviewID());
+                                    jsonObject.put("Type","Review");
+                                } catch (JSONException e) {
+                                    e.printStackTrace();
+                                }
+                                UnlikeResource.execute(UrlLike,jsonObject.toString());
+                                ((ReviewViewHolder)holder).LikeText.setText("Like");
+                                object.setIsLiked(false);
+
+
+                            }
+                            else
+                            {
+                                LikeResource likeResource = new LikeResource(holder);
+                                String UrlUnLike= APIs.API_LIKE_REVIEW;
+                                JSONObject jsonObject=new JSONObject();
+
+                                try {
+                                    jsonObject.put("token",UserSessionManager.getUserToken());
+                                    jsonObject.put("User_Id",UserSessionManager.getUserID());
+                                    jsonObject.put("resourceId",object.getReviewID());
+                                    jsonObject.put("Type","Review");
+                                } catch (JSONException e) {
+                                    e.printStackTrace();
+                                }
+                                likeResource.execute(UrlUnLike,jsonObject.toString());
+                                ((ReviewViewHolder)holder).LikeText.setText("Liked");
+                                object.setIsLiked(true);
+
+                            }
+                        }
+                    });
+                    ((ReviewViewHolder)holder).CommentText.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            Intent intent = new Intent(context,Comments.class);
+                            intent.putExtra("ReviewId","5ccdb0f8a375f9643cc8b0c3");
+                            context.startActivity(intent);
+                        }
+                    });
+
+
+
+
                     String S = new String(object.getReviewBody());
-                    S=S.substring(0,S.length()>120?120:S.length()-1);
-                    if(object.getReviewMakerPhoto().length()>0)
                     ((ReviewViewHolder)holder).textViewReviewBody.setText(S);
+                    if(object.getReviewMakerPhoto().length()>0)
                     Picasso.with(context)
                             .load(object.getReviewMakerPhoto())
                             .into(((ReviewViewHolder)holder).imageViewPostPic);
@@ -292,10 +385,12 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
                             Intent myIntent = new Intent(context, ChooseShelfActivity.class);
                             myIntent.putExtra("Author",object.getBookAuthor());
                             myIntent.putExtra("Title", object.getBookName());
-                            myIntent.putExtra("Pages","3");
+                            myIntent.putExtra("Pages","320");
                             myIntent.putExtra("published","9-9-2011");
                             myIntent.putExtra("cover", object.getBookPhoto());
                             myIntent.putExtra("BookID",object.getBookID());
+                            myIntent.putExtra("RatingNumber","30,500");
+                            myIntent.putExtra("Rating","4.5");
                             context.startActivity(myIntent);
 
 
@@ -346,6 +441,189 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     public int getItemCount() {
         return dataSet.size();
     }
+
+    @SuppressLint("StaticFieldLeak")
+    private class UnLikeResource extends AsyncTask<String, Void, String> {
+        static final String REQUEST_METHOD = "POST";
+        RecyclerView.ViewHolder holder;
+        public UnLikeResource(RecyclerView.ViewHolder holder)
+        {
+            this.holder=holder;
+        }
+
+        @Override
+        protected void onPreExecute() {
+            /* Do Nothing */
+        }
+
+        @Override
+        protected String doInBackground(String... params) {
+            String UrlString = params[0];
+            String newJson = params[1];
+
+            String result = "";
+            try {
+                /* Create a URL object holding our url */
+                URL url = new URL(UrlString);
+                /* Create an HTTP Connection and adjust its options */
+                HttpURLConnection http = (HttpURLConnection) url.openConnection();
+                http.setRequestMethod(REQUEST_METHOD);
+                http.setDoInput(true);
+                http.setDoOutput(true);
+                http.setRequestProperty("content-type", "application/json");
+
+                /* A Stream object to hold the sent data to API Call */
+                OutputStream ops = http.getOutputStream();
+                BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(ops, StandardCharsets.UTF_8));
+                writer.write(newJson);
+                writer.flush();
+                writer.close();
+                ops.close();
+
+                /* A Stream object to get the returned data from API Call */
+                switch (String.valueOf(http.getResponseCode()))
+                {
+                    case "200":
+                        /* A Stream object to get the returned data from API Call */
+                        InputStream ips = http.getInputStream();
+                        BufferedReader reader = new BufferedReader(new InputStreamReader(ips, StandardCharsets.ISO_8859_1));
+                        String line = "";
+                        while ((line = reader.readLine()) != null) {
+                            result += line;
+                        }
+                        reader.close();
+                        ips.close();
+                        break;
+                    case "400":
+                        result = "{\"ReturnMsg\":\"Error Occurred.\"}";
+                        break;
+                    default:
+                        break;
+                }
+                http.disconnect();
+                return result;
+
+            }
+            /* Handling Exceptions */ catch (MalformedURLException e) {
+                result = e.getMessage();
+            } catch (IOException e) {
+                result = e.getMessage();
+            }
+            return result;
+        }
+
+        @SuppressLint("SetTextI18n")
+        protected void onPostExecute(String result) {
+            if (result == null) {
+                Toast.makeText(context, "Unable to connect to server", Toast.LENGTH_SHORT).show();
+                return;
+            }
+            /* Creating a JSON Object to parse the data in */
+
+            if(result.equals("unliked")) {
+                ((ReviewViewHolder)holder).LikeText.setTypeface(((ReviewViewHolder)holder).LikeText.getTypeface(), Typeface.NORMAL);
+                ((ReviewViewHolder)holder).LikeText.setText("Like");
+
+
+            }
+
+
+        }
+
+    }
+
+    @SuppressLint("StaticFieldLeak")
+    private class LikeResource extends AsyncTask<String, Void, String> {
+        static final String REQUEST_METHOD = "POST";
+        RecyclerView.ViewHolder holder;
+        public LikeResource(RecyclerView.ViewHolder holder)
+        {
+            this.holder=holder;
+        }
+
+        @Override
+        protected void onPreExecute() {
+            /* Do Nothing */
+        }
+
+        @Override
+        protected String doInBackground(String... params) {
+            String UrlString = params[0];
+            String newJson = params[1];
+
+            String result = "";
+            try {
+                /* Create a URL object holding our url */
+                URL url = new URL(UrlString);
+                /* Create an HTTP Connection and adjust its options */
+                HttpURLConnection http = (HttpURLConnection) url.openConnection();
+                http.setRequestMethod(REQUEST_METHOD);
+                http.setDoInput(true);
+                http.setDoOutput(true);
+                http.setRequestProperty("content-type", "application/json");
+
+                /* A Stream object to hold the sent data to API Call */
+                OutputStream ops = http.getOutputStream();
+                BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(ops, StandardCharsets.UTF_8));
+                writer.write(newJson);
+                writer.flush();
+                writer.close();
+                ops.close();
+
+                /* A Stream object to get the returned data from API Call */
+                switch (String.valueOf(http.getResponseCode()))
+                {
+                    case "200":
+                        /* A Stream object to get the returned data from API Call */
+                        InputStream ips = http.getInputStream();
+                        BufferedReader reader = new BufferedReader(new InputStreamReader(ips, StandardCharsets.ISO_8859_1));
+                        String line = "";
+                        while ((line = reader.readLine()) != null) {
+                            result += line;
+                        }
+                        reader.close();
+                        ips.close();
+                        break;
+                    case "400":
+                        result = "{\"ReturnMsg\":\"Error Occurred.\"}";
+                        break;
+                    default:
+                        break;
+                }
+                http.disconnect();
+                return result;
+
+            }
+            /* Handling Exceptions */ catch (MalformedURLException e) {
+                result = e.getMessage();
+            } catch (IOException e) {
+                result = e.getMessage();
+            }
+            return result;
+        }
+
+        @SuppressLint("SetTextI18n")
+        protected void onPostExecute(String result) {
+            if (result == null) {
+                Toast.makeText(context, "Unable to connect to server", Toast.LENGTH_SHORT).show();
+                return;
+            }
+            /* Creating a JSON Object to parse the data in */
+            //final JSONObject jsonObject = new JSONObject(result);
+            if(result.equals("liked"))
+            {
+
+            }
+
+
+        }
+
+    }
+
+
+
+
+
 
 }
 
