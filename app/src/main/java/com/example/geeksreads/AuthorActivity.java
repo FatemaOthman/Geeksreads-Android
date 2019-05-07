@@ -101,7 +101,6 @@ public class AuthorActivity extends AppCompatActivity implements NavigationView.
         mContext = this;
         Intent intent = getIntent();
         AuthorID=intent.getStringExtra("AuthorID");
-        AuthorID = "5c911452938ffea87b4672d7";//intent.getStringExtra("AuthorID");
 
 
         /* ToolBar and SideBar Setups */
@@ -162,7 +161,7 @@ public class AuthorActivity extends AppCompatActivity implements NavigationView.
         getSideBarDetails.execute(UrlSideBar, jsonUserDetails.toString());
         GetShelvesDetails getShelvesDetails = new GetShelvesDetails(UserSessionManager.getUserToken());
         String UrlShelvesDetails = APIs.API_USER_SHELVES;
-       getShelvesDetails.execute(UrlShelvesDetails,UserSessionManager.getUserToken());
+        getShelvesDetails.execute(UrlShelvesDetails,UserSessionManager.getUserToken());
 
 
 
@@ -222,7 +221,10 @@ public class AuthorActivity extends AppCompatActivity implements NavigationView.
             e.printStackTrace();
         }
         String UrlAuthorFollowingStatus = APIs.API_GET_FOLLOWING_AUTHOR_STATE;
-        getFollowingAuthorDetails.execute(UrlAuthorFollowingStatus,newJson.toString());
+        String UrlBooksWrittenByAuthor=APIs.API_GET_BOOKS_WRITTEN_BY_AUTHOR;
+        GetBooksWrittenByAuthorDetails getBooksWrittenByAuthorDetails=new GetBooksWrittenByAuthorDetails();
+        getBooksWrittenByAuthorDetails.execute(UrlBooksWrittenByAuthor,AuthorID);
+       // getFollowingAuthorDetails.execute(UrlAuthorFollowingStatus,newJson.toString());
 
 
 
@@ -426,52 +428,20 @@ public class AuthorActivity extends AppCompatActivity implements NavigationView.
 
                 JSONArray array=jsonObject.getJSONArray("BookId");
                 NumOfBooks.setText("Author of "+array.length()+" books.");
-                //array=jsonObject.getJSONArray("FollowingUserId");
-                //if(array.toString().contains(UserSessionManager.getUserID()))
-                //{}
-                // AuthorNumsOfReviews.setText(jsonObject.getString("numofreviews")+" reviews.");
-
-
-                // if(/*jsonObject.getString("followed").equals("true")*/)
-                // {
-                //followingState.setText("Following");
-                //Follow=true;
-                // }
-                /*else {
-                    followingState.setText("Follow");
-                    Follow=false;
-                }*/
-
+                array=jsonObject.getJSONArray("FollowingUserId");
+                if(array.toString().contains(UserSessionManager.getUserID()))
+                {
+                    Follow=true;
+                }
+                else
+                    Follow = false;
+                followingState.setText(Follow==true?"Following":"Follow");
                 /* Start Async Task to get the image from url */
                 GetImage getAuthorPic = new GetImage();
                 ImageURL = jsonObject.getString("Photo");
                 getAuthorPic.execute(ImageURL);
 
-                // sForTestAuthorName=(String)AuthorName.getText();
-                // sForTestAuthorNumOfRates=(String) AuthorNumsOfRating.getText();
-                // sForTestNumOfBooks=(String) NumOfBooks.getText();
-                // sForTestAuthorDescription =(String) AuthorDescription.getText();
-                // sForTestAuthorPicURL=ImageURL;
-                // sFortTestFollowStatus=followingState.getText().toString();
-                // sForTestAuthorRate=AuthorRating.getText().toString();
-                // sForTestAuthorNumOfReviews=AuthorNumsOfReviews.getText().toString();
-                //   JSONArray array=jsonObject.getJSONArray("authorbooks");
-             /*   for(int i=0;i<array.length();i++)
-                {
-                    JSONObject o = array.getJSONObject(i);
-                    BookItem B =new BookItem(
-                            o.getString("name"),
-                            o.getString("author"),
-                            o.getString("bookrate"),
-                            o.getString("numofrates"),
-                            o.getString("coverurl"),
-                            o.getString("readingstatus"),
-                            o.getString("BookId")
-                    );
-                    list.add(B);
-                }
-                adapter =new BookAdapter(list,getApplicationContext());
-                recyclerView.setAdapter(adapter);*/
+
 
             } catch (JSONException e) {
                 e.printStackTrace();
@@ -479,6 +449,86 @@ public class AuthorActivity extends AppCompatActivity implements NavigationView.
         }
 
     }
+
+
+    @SuppressLint("StaticFieldLeak")
+    private class GetBooksWrittenByAuthorDetails extends AsyncTask<String, Void, String> {
+        static final String REQUEST_METHOD = "GET";
+        JSONObject mJSON = new JSONObject();
+
+        @Override
+        protected void onPreExecute() {
+            /* Do Nothing */
+        }
+
+        @Override
+        protected String doInBackground(String... params) {
+            String UrlString = params[0];
+            String AuthorID = params[1];
+            String result = "";
+
+            UrlString = UrlString + "?search_param=" + AuthorID;
+            HttpClient httpclient = new DefaultHttpClient();
+            HttpGet httpget = new HttpGet(UrlString);
+
+            HttpResponse response = null;
+            String server_response = null;
+            try {
+                response = httpclient.execute(httpget);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+
+            if (response.getStatusLine().getStatusCode() == 200) {
+                try {
+                    server_response = EntityUtils.toString(response.getEntity());
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+                Log.d("Server response", server_response);
+            } else {
+                Log.d("Server response", "Failed to get server response");
+            }
+
+            result = server_response;
+            return result;        }
+
+        @SuppressLint("SetTextI18n")
+        protected void onPostExecute(String result) {
+            if (result == null) {
+                Toast.makeText(mContext, "Unable to connect to server", Toast.LENGTH_SHORT).show();
+                return;
+            }
+            try {
+                /* Creating a JSON Object to parse the data in */
+                //final JSONObject jsonObject = new JSONObject(result);
+                JSONArray jsonArray = new JSONArray(result);
+
+
+                for(int i=0;i<jsonArray.length();i++)
+                {
+                    JSONObject o = jsonArray.getJSONObject(i);
+                    BookItem B =new BookItem(
+                            o.getString("Title"),
+                            o.getString("AuthorName"),
+                            o.getString("BookRating"),
+                            o.getString("RateCount"),
+                            o.getString("Cover"),
+                            o.getString("ReadStatus"),
+                            o.getString("BookId")
+                    );
+                    list.add(B);
+                }
+                adapter =new BookAdapter(list,getApplicationContext());
+                recyclerView.setAdapter(adapter);
+
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+        }
+
+    }
+
     @SuppressLint("StaticFieldLeak")
     private class FollowingAuthorDetails extends AsyncTask<String, Void, String> {
         static final String REQUEST_METHOD = "POST";
@@ -600,7 +650,7 @@ public class AuthorActivity extends AppCompatActivity implements NavigationView.
                 BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(ops, StandardCharsets.UTF_8));
                 JSONObject newJson = new JSONObject();
                 newJson.put("token", userToken);
-                newJson.put("myuser_id",userID);
+                newJson.put("myuserId",userID);
                 newJson.put("auth_id",authorID);
                 writer.write(newJson.toString());
                 writer.flush();
@@ -633,10 +683,15 @@ public class AuthorActivity extends AppCompatActivity implements NavigationView.
             }
             /* Handling Exceptions */ catch (MalformedURLException e) {
                 result = e.getMessage();
+                Log.d("Error3",e.getMessage());
+
             } catch (IOException e) {
                 result = e.getMessage();
+                Log.d("Error2",e.getMessage());
             } catch (JSONException e) {
                 e.printStackTrace();
+                Log.d("Error1",e.getMessage());
+
             }
             return result;
         }
@@ -702,7 +757,7 @@ public class AuthorActivity extends AppCompatActivity implements NavigationView.
                 BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(ops, StandardCharsets.UTF_8));
                 JSONObject newJson = new JSONObject();
                 newJson.put("token", userToken);
-                newJson.put("myuser_id",userID);
+                newJson.put("myuserId",userID);
                 newJson.put("auth_id",authorID);
                 writer.write(newJson.toString());
                 writer.flush();

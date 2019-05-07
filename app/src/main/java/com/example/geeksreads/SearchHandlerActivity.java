@@ -316,6 +316,24 @@ public class SearchHandlerActivity extends AppCompatActivity  {
 
 
                 }
+                if(jsonArray.length()>1)
+                {
+                    JSONArray ArrayAuthor = jsonArray.getJSONArray(1);
+                    for(int i=0;i<((2>ArrayAuthor.length())?ArrayAuthor.length():2);i++)
+                    {
+                        JSONObject obj=ArrayAuthor.getJSONObject(i);
+                        SearchHandlerItem o = new SearchHandlerItem(
+                                obj.getString("Title"),
+                                obj.getString("AuthorName"),
+                                obj.getString("BookId")
+                        );
+
+                        list.add(o);
+
+
+                    }
+                }
+
                 Log.d("ListSize", toString().valueOf(list.size()));
                 adapter =new SearchHandlerAdapter(list,getApplicationContext());
                 recyclerViewSearchHandler.setAdapter(adapter);

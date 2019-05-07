@@ -11,6 +11,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.util.AtomicFile;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -272,7 +273,7 @@ public class SearchResultActivity extends AppCompatActivity {
                 JSONArray jsonArray=new JSONArray(result);
                 JSONArray ArrayTitle = jsonArray.getJSONArray(0);
 
-                for(int i=0;i<2;i++)
+                for(int i = 0; i< ArrayTitle.length(); i++)
                 {
                     JSONObject obj=ArrayTitle.getJSONObject(i);
                     BookItem o = new BookItem(
@@ -289,6 +290,27 @@ public class SearchResultActivity extends AppCompatActivity {
                     list.add(o);
 
 
+                }
+                if(jsonArray.length()>1)
+                {
+                    JSONArray ArrayAuthor = jsonArray.getJSONArray(1);
+                    for(int i=0;i<ArrayAuthor.length();i++)
+                    {
+                        JSONObject obj=ArrayAuthor.getJSONObject(i);
+                        BookItem o = new BookItem(
+                                obj.getString("Title"),
+                                obj.getString("AuthorName"),
+                                obj.getString("BookRating"),
+                                obj.getString("RateCount"),
+                                obj.getString("Cover"),
+                                obj.getString("ReadStatus"),
+                                obj.getString("BookId")
+
+                        );
+                        list.add(o);
+
+
+                    }
                 }
                 Log.d("ListSize", toString().valueOf(list.size()));
                 adapter =new BookAdapter(list,getApplicationContext());

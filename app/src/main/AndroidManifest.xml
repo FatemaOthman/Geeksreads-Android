@@ -18,7 +18,9 @@
         <activity android:name=".ForgetPasswordActivity"/>
         <activity android:name=".SignOutActivity" />
         <activity android:name=".FeedActivity"
-            android:windowSoftInputMode="">
+            android:windowSoftInputMode=""
+            >
+
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -34,9 +36,7 @@
         <activity android:name=".Profile">
 
         </activity>
-        <activity android:name=".Comments">
-
-        </activity>
+        <activity android:name=".Comments" />
         <activity android:name=".Reviews">
 
         </activity>
