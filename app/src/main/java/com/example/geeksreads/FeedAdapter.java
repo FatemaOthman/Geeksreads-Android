@@ -277,6 +277,15 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
                     Picasso.with(context)
                             .load(object.getCommentMakerPhoto())
                             .into(((CommentViewHolder) holder).imageViewPostPic);
+                    ((CommentViewHolder) holder).imageViewPostPic.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            Intent myIntent = new Intent(context, OtherProfileActivity.class);
+                            myIntent.putExtra("FollowId",object.getReviewMakerID());
+                            context.startActivity(myIntent);
+
+                        }
+                    });
                     String Original = ((CommentViewHolder) holder).textViewPostBody.getText().toString();
                     SetLink(0,Original,object, context,holder);
                     break;

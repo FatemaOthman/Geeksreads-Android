@@ -101,7 +101,6 @@ public class AuthorActivity extends AppCompatActivity implements NavigationView.
         mContext = this;
         Intent intent = getIntent();
         AuthorID=intent.getStringExtra("AuthorID");
-        AuthorID = "5c911452938ffea87b4672d7";//intent.getStringExtra("AuthorID");
 
 
         /* ToolBar and SideBar Setups */
@@ -437,49 +436,12 @@ public class AuthorActivity extends AppCompatActivity implements NavigationView.
                 else
                     Follow = false;
                 followingState.setText(Follow==true?"Following":"Follow");
-                // AuthorNumsOfReviews.setText(jsonObject.getString("numofreviews")+" reviews.");
-
-
-                // if(/*jsonObject.getString("followed").equals("true")*/)
-                // {
-                //followingState.setText("Following");
-                //Follow=true;
-                // }
-                /*else {
-                    followingState.setText("Follow");
-                    Follow=false;
-                }*/
-
                 /* Start Async Task to get the image from url */
                 GetImage getAuthorPic = new GetImage();
                 ImageURL = jsonObject.getString("Photo");
                 getAuthorPic.execute(ImageURL);
 
-                // sForTestAuthorName=(String)AuthorName.getText();
-                // sForTestAuthorNumOfRates=(String) AuthorNumsOfRating.getText();
-                // sForTestNumOfBooks=(String) NumOfBooks.getText();
-                // sForTestAuthorDescription =(String) AuthorDescription.getText();
-                // sForTestAuthorPicURL=ImageURL;
-                // sFortTestFollowStatus=followingState.getText().toString();
-                // sForTestAuthorRate=AuthorRating.getText().toString();
-                // sForTestAuthorNumOfReviews=AuthorNumsOfReviews.getText().toString();
-                //   JSONArray array=jsonObject.getJSONArray("authorbooks");
-             /*   for(int i=0;i<array.length();i++)
-                {
-                    JSONObject o = array.getJSONObject(i);
-                    BookItem B =new BookItem(
-                            o.getString("name"),
-                            o.getString("author"),
-                            o.getString("bookrate"),
-                            o.getString("numofrates"),
-                            o.getString("coverurl"),
-                            o.getString("readingstatus"),
-                            o.getString("BookId")
-                    );
-                    list.add(B);
-                }
-                adapter =new BookAdapter(list,getApplicationContext());
-                recyclerView.setAdapter(adapter);*/
+
 
             } catch (JSONException e) {
                 e.printStackTrace();

@@ -570,7 +570,7 @@ public class FeedActivity extends AppCompatActivity implements NavigationView.On
             try {
                 /* Creating a JSON Object to parse the data in */
                 final JSONArray jsonArray = new JSONArray(result);
-                for(int i=0;i<2;i++)
+                for(int i=0;i<jsonArray.length();i++)
                 {
                     JSONObject o = jsonArray.getJSONObject(i);
                     FeedModel B;

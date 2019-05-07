@@ -69,7 +69,7 @@ public class FeedModel {
 
             case "Comment":
                 type = 0;
-                postBody = CommentMakerName + " commented On " + ReviewMakerName + "'s review";
+                postBody = CommentMakerName + " commented on " + ReviewMakerName + "'s review";
                 break;
         }
 
