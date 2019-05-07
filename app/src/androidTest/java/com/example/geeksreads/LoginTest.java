@@ -78,7 +78,7 @@ public class LoginTest {
                 .perform(typeText("Mahmoud123456789"), closeSoftKeyboard());
         onView(withId(R.id.LoginBtn)).perform(click());
 
-        assertEquals("Log in Successful.", LoginActivity.sForTest);
+        assertEquals("Login Successful", LoginActivity.sForTest);
     }
 
     @Test
