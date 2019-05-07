@@ -92,13 +92,13 @@ public class APIs {
     */
 
     /*
-    public static String API_GET_AUTHOR_BY_ID = "http://geeksreads.000webhostapp.com/Fatema//id";
-    public static String API_GET_FOLLOWING_AUTHOR_STATE = "http://geeksreads.000webhostapp.com/Fatema//isfollowed";
-    public static String API_GET_BOOKS_WRITTEN_BY_AUTHOR = "http://geeksreads.000webhostapp.com/Fatema//author";
-    public static String API_FOLLOW_AUTHOR = "http://geeksreads.000webhostapp.com/Fatema/follow";
-    public static String API_UNFOLLOW_AUTHOR = "http://geeksreads.000webhostapp.com/Fatema/unfollow";
-    public static String API_USER_STATUS ="http://geeksreads.000webhostapp.com/Fatema/show/";
-    public static String API_SEARCH="http://geeksreads.000webhostapp.com/Fatema/search/";
+    public static String API_GET_AUTHOR_BY_ID = "http://geeksreads.000webhostapp.com/Fatema/id.php";
+    public static String API_GET_FOLLOWING_AUTHOR_STATE = "http://geeksreads.000webhostapp.com/Fatema/isfollowed.php";
+    public static String API_GET_BOOKS_WRITTEN_BY_AUTHOR = "http://geeksreads.000webhostapp.com/Fatema/author.php";
+    public static String API_FOLLOW_AUTHOR = "http://geeksreads.000webhostapp.com/Fatema/follow.php";
+    public static String API_UNFOLLOW_AUTHOR = "http://geeksreads.000webhostapp.com/Fatema/unfollow.php";
+    public static String API_USER_STATUS ="http://geeksreads.000webhostapp.com/Fatema/show.php";
+    public static String API_SEARCH="http://geeksreads.000webhostapp.com/Fatema/search.php";
 */
 
     public static boolean TestingModeEnabled = false;
