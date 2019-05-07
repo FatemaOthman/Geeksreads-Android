@@ -20,7 +20,6 @@
         <activity android:name=".FeedActivity"
             android:windowSoftInputMode="">
 
-
         </activity>
         <activity android:name=".ChooseShelfActivity" />
         <activity android:name=".SideBarActivity" />
@@ -28,9 +27,7 @@
         <activity android:name=".Profile">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
-
                 <action android:name="android.intent.action.VIEW" />
             </intent-filter>
         </activity>
@@ -47,7 +44,7 @@
                         <intent-filter>
                             <action android:name="android.intent.action.MAIN" />
 
-                             <action android:name="android.intent.action.VIEW" />
+                            <action android:name="android.intent.action.VIEW" />
                         </intent-filter>
             -->
         </activity>
