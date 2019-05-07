@@ -372,26 +372,14 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
                     String Original1 = ((ReviewViewHolder) holder).textViewPostBody.getText().toString();
                     SetLink(1,Original1,object, context,holder);
 
+                    ((ReviewViewHolder)holder).buttonBookState.setText("Visit Book");
+                    ((ReviewViewHolder)holder).buttonBookState.setBackgroundColor(ContextCompat.getColor(context, R.color.colorNotificationbar));
 
-
-                    if (object.getBookStatue().equals("Read")) {
-                        ((ReviewViewHolder)holder).buttonBookState.setText("Read");
-                        ((ReviewViewHolder)holder).buttonBookState.setBackgroundColor(ContextCompat.getColor(context, R.color.ReadColor));
-                    } else if (object.getBookStatue().equals("Want to Read")) {
-                        ((ReviewViewHolder)holder).buttonBookState.setText("Want To Read");
-                        ((ReviewViewHolder)holder).buttonBookState.setBackgroundColor(ContextCompat.getColor(context, R.color.WantToReadColor));
-                    } else if (object.getBookStatue().equals("Currently Reading")) {
-                        ((ReviewViewHolder)holder).buttonBookState.setText("Currently Reading");
-                        ((ReviewViewHolder)holder).buttonBookState.setBackgroundColor(ContextCompat.getColor(context, R.color.ReadingColor));
-                    } else {
-                        ((ReviewViewHolder)holder).buttonBookState.setText("Add to shelf");
-                        ((ReviewViewHolder)holder).buttonBookState.setBackgroundColor(ContextCompat.getColor(context, R.color.colorNotificationbar));
-                    }
 
                     ((ReviewViewHolder)holder).buttonBookState.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
-                            Intent myIntent = new Intent(context, ChooseShelfActivity.class);
+                            Intent myIntent = new Intent(context, BookActivity.class);
                             myIntent.putExtra("Author",object.getBookAuthor());
                             myIntent.putExtra("Title", object.getBookName());
                             myIntent.putExtra("Pages","320");

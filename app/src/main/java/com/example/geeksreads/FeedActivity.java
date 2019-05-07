@@ -584,7 +584,7 @@ public class FeedActivity extends AppCompatActivity implements NavigationView.On
                             o.getString("ReviewId"),
                             "",
                             o.getString("BookName"),
-                            o.getString("BookStatus"),
+                            "Add to shelf",
                             o.getString("BookId"),
                             "",
                             o.getString("ReviewMakerName"),
