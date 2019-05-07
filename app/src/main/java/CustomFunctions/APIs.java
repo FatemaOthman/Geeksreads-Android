@@ -76,6 +76,7 @@ public class APIs {
 //    public static String API_ADD_BOOK_REVIEW = "http://geeksreads.000webhostapp.com/Shrouk/AddReview.php";
 //    public static String API_GET_USER_NOTIFICATIONS = "http://geeksreads.000webhostapp.com/Shrouk/Notifications.php";
 //    public static String API_MAKE_NOTIFICATION_SEEN = "http://geeksreads.000webhostapp.com/Shrouk/NotificationSeen.php";
+//    public static String API_GET_BOOK_STATUS = "";
 
     /*
     public static String API_GET_USER_INFO = "http://geeksreads.000webhostapp.com/Amr/UserProfile.php";
