@@ -18,6 +18,7 @@
         <activity android:name=".ForgetPasswordActivity"/>
         <activity android:name=".SignOutActivity" />
         <activity android:name=".FeedActivity"
+            android:windowSoftInputMode=""
             >
 
             <intent-filter>

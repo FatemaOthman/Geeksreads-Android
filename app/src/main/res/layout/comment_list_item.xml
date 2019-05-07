@@ -8,9 +8,16 @@
 
     <ImageView
         android:id="@+id/avatarImageView"
-        android:layout_width="50dp"
-        android:layout_height="50dp"
+        android:layout_width="59dp"
+        android:layout_height="51dp"
         android:src="@drawable/ic_stub" />
+
+    <TextView
+        android:id="@+id/CommentUserName"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/avatarImageView"
+        android:text="TextView" />
 
     <com.example.geeksreads.views.ExpandableTextView
         android:id="@+id/CommentText"

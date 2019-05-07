@@ -61,10 +61,9 @@ public class CommentCustomAdapter  extends ArrayAdapter<CommentDataModel> implem
 
             holder.position = position;
 
-            viewHolder.UserPicInfo = convertView.findViewById(R.id.authorImageView);
-            viewHolder.Details = convertView.findViewById(R.id.detailsTextView);
-            viewHolder.UserName = convertView.findViewById(R.id.titleTextView);
-            //   viewHolder.NLikes = convertView.findViewById(R.id.likeCounterTextView);
+            viewHolder.UserPicInfo = convertView.findViewById(R.id.avatarImageView);
+            viewHolder.Details = convertView.findViewById(R.id.CommentText);
+            viewHolder.UserName = convertView.findViewById(R.id.CommentUserName);
 
             holder.Cover = viewHolder.UserPicInfo;
 
@@ -77,8 +76,7 @@ public class CommentCustomAdapter  extends ArrayAdapter<CommentDataModel> implem
         assert dataModel != null;
         viewHolder.Details.setText(dataModel.getCommentText());
         viewHolder.UserName.setText(dataModel.getUserName());
-        // viewHolder.NLikes.setText(dataModel.getNLikes());
-        viewHolder.ReviewID = dataModel.getCommentID();
+        viewHolder.CommentID = dataModel.getCommentID();
         viewHolder.UserWhoWroteID = dataModel.getUserWhoWroteID();
 
         CommentCustomAdapter.GetUserImage UserPic = new CommentCustomAdapter.GetUserImage(position, holder);
@@ -105,8 +103,7 @@ public class CommentCustomAdapter  extends ArrayAdapter<CommentDataModel> implem
         ImageView UserPicInfo;
         ExpandableTextView Details;
         TextView UserName;
-        //  TextView NLikes;
-        String ReviewID;
+        String CommentID;
         String UserWhoWroteID;
     }
 

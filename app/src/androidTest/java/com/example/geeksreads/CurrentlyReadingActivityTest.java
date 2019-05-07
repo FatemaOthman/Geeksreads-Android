@@ -11,6 +11,7 @@ import org.hamcrest.Matcher;
 import org.junit.Rule;
 import org.junit.Test;
 
+import CustomFunctions.APIs;
 import CustomFunctions.UserSessionManager;
 
 import static android.support.test.InstrumentationRegistry.getInstrumentation;
@@ -54,21 +55,25 @@ public class CurrentlyReadingActivityTest {
     @Test
     public void TestRefreshLayout()
     {
-        onView(withId(R.id.CurrentlySwipeLayout))
-                .perform(withCustomConstraints(swipeDown(), isDisplayingAtLeast(85)));
+        if (APIs.MimicModeEnabled) {
+            onView(withId(R.id.CurrentlySwipeLayout))
+                    .perform(withCustomConstraints(swipeDown(), isDisplayingAtLeast(85)));
+        }
     }
 
     @Test
     public void OnClickItem()
     {
-        Instrumentation.ActivityMonitor activityMonitor = getInstrumentation().addMonitor(BookActivity.class.getName(), null, false);
+        if (APIs.MimicModeEnabled) {
+            Instrumentation.ActivityMonitor activityMonitor = getInstrumentation().addMonitor(BookActivity.class.getName(), null, false);
 
-        onData(anything()).inAdapterView(withId(R.id.CurrentlyReadingList)).atPosition(0).perform(click());
+            onData(anything()).inAdapterView(withId(R.id.CurrentlyReadingList)).atPosition(0).perform(click());
 
-        Activity nextActivity = getInstrumentation().waitForMonitorWithTimeout(activityMonitor, 5000);
-        // next activity is opened and captured.
-        assertNotNull(nextActivity);
-        nextActivity .finish();
+            Activity nextActivity = getInstrumentation().waitForMonitorWithTimeout(activityMonitor, 5000);
+            // next activity is opened and captured.
+            assertNotNull(nextActivity);
+            nextActivity.finish();
+        }
 
     }
 

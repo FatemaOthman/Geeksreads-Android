@@ -25,11 +25,11 @@ public class CommentDataModel {
         CommentDataModel DummyUser = new CommentDataModel();
         // Deserialize json into object fields
         try {
-            DummyUser.UserProfilePicture = jsonObject.getString("photo");
+            DummyUser.UserProfilePicture = jsonObject.getString("Photo");
             DummyUser.UserName = jsonObject.getString("userName");
             DummyUser.CommentText = jsonObject.getString("Body");
-            DummyUser.CommentID = jsonObject.getString("CommentID");
-            DummyUser.UserWhoWroteID = jsonObject.getString("userID");
+            DummyUser.CommentID = jsonObject.getString("CommentId");
+            DummyUser.UserWhoWroteID = jsonObject.getString("userId");
             // DummyUser.DateOfComment = jsonObject.getString("date");
         } catch (JSONException e) {
             e.printStackTrace();

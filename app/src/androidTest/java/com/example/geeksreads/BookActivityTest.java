@@ -20,6 +20,7 @@ import org.hamcrest.Matcher;
 import org.junit.Rule;
 import org.junit.Test;
 
+import CustomFunctions.APIs;
 import CustomFunctions.UserSessionManager;
 
 import static android.support.test.InstrumentationRegistry.getInstrumentation;
@@ -46,50 +47,55 @@ public class BookActivityTest {
     @Test
     public void TestView() {
 
-        Intent mIntent = new Intent();
-        mIntent.putExtra("BookID", "111");
+        if (APIs.MimicModeEnabled) {
+            Intent mIntent = new Intent();
+            mIntent.putExtra("BookID", "111");
 
-        menuActivityTestRule.launchActivity(mIntent);
-        /* Testing getting Author of the Book right */
-        onView(withId(R.id.AuthorNameTxt)).check(ViewAssertions.matches(withText("By: Jane Austen")));
+            menuActivityTestRule.launchActivity(mIntent);
+            /* Testing getting Author of the Book right */
+            onView(withId(R.id.AuthorNameTxt)).check(ViewAssertions.matches(withText("By: Jane Austen")));
 
-        /* Testing getting Title of the Book right */
-        onView(withId(R.id.BookTitleTxt)).check(ViewAssertions.matches(withText("Pride and Prejudice")));
+            /* Testing getting Title of the Book right */
+            onView(withId(R.id.BookTitleTxt)).check(ViewAssertions.matches(withText("Pride and Prejudice")));
 
-        /* Testing getting Rating of the Book right */
-        onView(withId(R.id.RatingBar)).check(ViewAssertions.matches(withText("4.25")));
-        onView(withId(R.id.ReviewsNumberTxt)).check(ViewAssertions.matches(withText("56204 Reviews")));
-        onView(withId(R.id.RatingsNumberTxt)).check(ViewAssertions.matches(withText("2533019 Ratings")));
+            /* Testing getting Rating of the Book right */
+            onView(withId(R.id.RatingBar)).check(ViewAssertions.matches(withText("4.25")));
+            onView(withId(R.id.ReviewsNumberTxt)).check(ViewAssertions.matches(withText("56204 Reviews")));
+            onView(withId(R.id.RatingsNumberTxt)).check(ViewAssertions.matches(withText("2533019 Ratings")));
 
 
-        /* Testing getting Date of the Book right */
-        onView(withId(R.id.PublishedOnTxt)).check(ViewAssertions.matches(withText("Published On  28-1-1813, By: Modern Library")));
+            /* Testing getting Date of the Book right */
+            onView(withId(R.id.PublishedOnTxt)).check(ViewAssertions.matches(withText("Published On  28-1-1813, By: Modern Library")));
 
-        /* Testing getting ISBN of the Book right */
-        onView(withId(R.id.ISBN)).check(ViewAssertions.matches(withText("ISBN: 9780679783268")));
+            /* Testing getting ISBN of the Book right */
+            onView(withId(R.id.ISBN)).check(ViewAssertions.matches(withText("ISBN: 9780679783268")));
 
-        /* Testing getting pages Number of the Book right */
-        onView(withId(R.id.pages)).check(ViewAssertions.matches(withText("279 pages")));
+            /* Testing getting pages Number of the Book right */
+            onView(withId(R.id.pages)).check(ViewAssertions.matches(withText("279 pages")));
 
-        /* Testing The finishing of all Async Tasks */
-        assertEquals("Done", BookActivity.sForTestBookActivity);
+            /* Testing The finishing of all Async Tasks */
+            assertEquals("Done", BookActivity.sForTestBookActivity);
+        }
     }
 
     @Test
     public void TestButton(){
-        Intent mIntent = new Intent();
-        mIntent.putExtra("BookID", "111");
 
-        menuActivityTestRule.launchActivity(mIntent);
+        if (APIs.MimicModeEnabled) {
+            Intent mIntent = new Intent();
+            mIntent.putExtra("BookID", "111");
 
-        Instrumentation.ActivityMonitor activityMonitor = getInstrumentation().addMonitor(ChooseShelfActivity.class.getName(), null, false);
+            menuActivityTestRule.launchActivity(mIntent);
 
-        onView(withId(R.id.OptionsDropList)).perform(click());
+            Instrumentation.ActivityMonitor activityMonitor = getInstrumentation().addMonitor(ChooseShelfActivity.class.getName(), null, false);
 
-        Activity nextActivity = getInstrumentation().waitForMonitorWithTimeout(activityMonitor, 5000);
-        // next activity is opened and captured.
-        assertNotNull(nextActivity);
-        nextActivity .finish();
+            onView(withId(R.id.OptionsDropList)).perform(click());
+
+            Activity nextActivity = getInstrumentation().waitForMonitorWithTimeout(activityMonitor, 5000);
+            // next activity is opened and captured.
+            assertNotNull(nextActivity);
+            nextActivity.finish();
+        }
     }
 
     private static ViewAction setRating(final float rating) {
@@ -138,66 +144,73 @@ public class BookActivityTest {
 
     @Test
     public void TestAddReviewSuccess(){
-        Intent mIntent = new Intent();
-        mIntent.putExtra("BookID", "111");
 
-        menuActivityTestRule.launchActivity(mIntent);
+        if (APIs.MimicModeEnabled) {
+            Intent mIntent = new Intent();
+            mIntent.putExtra("BookID", "111");
 
-        onView(withId(R.id.ratingBook)).perform(scrollTo() , setRating(4));
+            menuActivityTestRule.launchActivity(mIntent);
 
-        onView(withId(R.id.Review)).perform(scrollTo() ,typeText("Add Review to Test") , closeSoftKeyboard());
+            onView(withId(R.id.ratingBook)).perform(scrollTo(), setRating(4));
 
-        onView(withId(R.id.AddReview)).perform(scrollTo() , click());
+            onView(withId(R.id.Review)).perform(scrollTo(), typeText("Add Review to Test"), closeSoftKeyboard());
 
-        assertEquals("Review Added", BookActivity.sForTestAddingReview);
+            onView(withId(R.id.AddReview)).perform(scrollTo(), click());
 
+            assertEquals("Review Added", BookActivity.sForTestAddingReview);
+        }
     }
 
     @Test
     public void TestAddReviewNoBody(){
-        Intent mIntent = new Intent();
-        mIntent.putExtra("BookID", "111");
 
-        menuActivityTestRule.launchActivity(mIntent);
+        if (APIs.MimicModeEnabled) {
+            Intent mIntent = new Intent();
+            mIntent.putExtra("BookID", "111");
 
-        onView(withId(R.id.ratingBook)).perform(scrollTo() , setRating(4));
+            menuActivityTestRule.launchActivity(mIntent);
 
-        onView(withId(R.id.AddReview)).perform(scrollTo() , click());
+            onView(withId(R.id.ratingBook)).perform(scrollTo(), setRating(4));
 
-        assertEquals("Your review must be more than 6 char", BookActivity.sForTestAddingReview);
+            onView(withId(R.id.AddReview)).perform(scrollTo(), click());
 
+            assertEquals("Your review must be more than 6 char", BookActivity.sForTestAddingReview);
+        }
     }
 
     @Test
     public void TestAddReviewNoRate(){
-        Intent mIntent = new Intent();
-        mIntent.putExtra("BookID", "111");
 
-        menuActivityTestRule.launchActivity(mIntent);
+        if (APIs.MimicModeEnabled) {
+            Intent mIntent = new Intent();
+            mIntent.putExtra("BookID", "111");
 
-        onView(withId(R.id.Review)).perform(scrollTo() ,replaceText("Add Review to Test") , closeSoftKeyboard());
+            menuActivityTestRule.launchActivity(mIntent);
 
-        onView(withId(R.id.AddReview)).perform(scrollTo() , click());
+            onView(withId(R.id.Review)).perform(scrollTo(), replaceText("Add Review to Test"), closeSoftKeyboard());
 
-        assertEquals("You have to rate before Adding a review.", BookActivity.sForTestAddingReview);
+            onView(withId(R.id.AddReview)).perform(scrollTo(), click());
 
-    }
+            assertEquals("You have to rate before Adding a review.", BookActivity.sForTestAddingReview);
+        }
+     }
 
     @Test
     public void TestViewReviews(){
-        Intent mIntent = new Intent();
-        mIntent.putExtra("BookID", "111");
+        if (APIs.MimicModeEnabled) {
+            Intent mIntent = new Intent();
+            mIntent.putExtra("BookID", "111");
 
-        menuActivityTestRule.launchActivity(mIntent);
+            menuActivityTestRule.launchActivity(mIntent);
 
-        Instrumentation.ActivityMonitor activityMonitor = getInstrumentation().addMonitor(Reviews.class.getName(), null, false);
+            Instrumentation.ActivityMonitor activityMonitor = getInstrumentation().addMonitor(Reviews.class.getName(), null, false);
 
-        onView(withId(R.id.GoToReviews)).perform(scrollTo() , click());
+            onView(withId(R.id.GoToReviews)).perform(scrollTo(), click());
 
-        Activity nextActivity = getInstrumentation().waitForMonitorWithTimeout(activityMonitor, 5000);
-        // next activity is opened and captured.
-        assertNotNull(nextActivity);
-        nextActivity .finish();
+            Activity nextActivity = getInstrumentation().waitForMonitorWithTimeout(activityMonitor, 5000);
+            // next activity is opened and captured.
+            assertNotNull(nextActivity);
+            nextActivity.finish();
+        }
     }
-    
 }

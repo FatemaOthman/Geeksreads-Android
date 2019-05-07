@@ -14,6 +14,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.ImageView;
+import android.widget.RatingBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -38,11 +39,12 @@ import java.util.ArrayList;
 import CustomFunctions.APIs;
 import CustomFunctions.UserSessionManager;
 
+
 /**
  * Reviews Custom Adapter: Adapter Class for Displaying A Book Reviews from the database.
  */
 public class ReviewsCustomAdapter extends ArrayAdapter<ReviewDataModel> implements View.OnClickListener {
-
+    public static String sForTestLikeReview;
     Context mContext;
     private ArrayList<ReviewDataModel> dataSet;
 
@@ -88,6 +90,8 @@ public class ReviewsCustomAdapter extends ArrayAdapter<ReviewDataModel> implemen
             viewHolder.NComments = convertView.findViewById(R.id.commentsCountTextView);
             viewHolder.Comments = convertView.findViewById(R.id.commentsCountImageView);
             viewHolder.Likes = convertView.findViewById(R.id.likesImageView);
+            viewHolder.Rating = convertView.findViewById(R.id.ReviewRatingBar);
+            viewHolder.DateOfReview = convertView.findViewById(R.id.DateOfReview);
 
 
             holder.Cover = viewHolder.UserPicInfo;
@@ -105,9 +109,16 @@ public class ReviewsCustomAdapter extends ArrayAdapter<ReviewDataModel> implemen
         viewHolder.UserName.setText(dataModel.getUserName());
         viewHolder.NLikes.setText(dataModel.getNLikes());
         viewHolder.NComments.setText(dataModel.getNComments());
+        viewHolder.DateOfReview.setText(dataModel.getReviewDate());
+
         viewHolder.ReviewID = dataModel.getReviewID();
         viewHolder.UserWhoWroteID = dataModel.getUserWhoWroteID();
         viewHolder.IsLiked = dataModel.getLikeStatus();
+
+        viewHolder.Rating.setNumStars(5);
+        viewHolder.Rating.setRating(Float.parseFloat(dataModel.getReviewRating()));
+
+
 
         if (viewHolder.IsLiked.equals("true")) {
             viewHolder.Likes.setImageResource(R.drawable.ic_like_active);
@@ -247,6 +258,8 @@ public class ReviewsCustomAdapter extends ArrayAdapter<ReviewDataModel> implemen
         ImageView Likes;
         String IsLiked;
         ImageView Comments;
+        RatingBar Rating;
+        TextView DateOfReview;
     }
 
     private static class FixImagePosition {
@@ -343,7 +356,7 @@ public class ReviewsCustomAdapter extends ArrayAdapter<ReviewDataModel> implemen
     @SuppressLint("StaticFieldLeak")
     private class LikeReview extends AsyncTask<String, Void, String> {
         public static final String REQUEST_METHOD = "POST";
-
+        public boolean TestSucc = false;
         AlertDialog dialog;
 
         @Override
@@ -389,6 +402,8 @@ public class ReviewsCustomAdapter extends ArrayAdapter<ReviewDataModel> implemen
                         }
                         reader.close();
                         ips.close();
+                        sForTestLikeReview = "true";
+                        TestSucc = true;
                         break;
                     default:
                         result = new StringBuilder("{\"ReturnMsg\":\"An Error Occurred!\"}");
@@ -420,7 +435,9 @@ public class ReviewsCustomAdapter extends ArrayAdapter<ReviewDataModel> implemen
                 Toast.makeText(mContext, "Unable to connect to server", Toast.LENGTH_SHORT).show();
                 return;
             }
-
+            if (TestSucc) {
+                Log.d("AMR", "Like is successful");
+            }
                 dialog.setMessage("Done");
                 //dialog.show();
 
@@ -509,7 +526,9 @@ public class ReviewsCustomAdapter extends ArrayAdapter<ReviewDataModel> implemen
                 Toast.makeText(mContext, "Unable to connect to server", Toast.LENGTH_SHORT).show();
                 return;
             }
-
+            if (TaskSucc) {
+                Log.d("AMR", "Unliked Succesfully");
+            }
             dialog.setMessage("Done");
                 //dialog.show();
 

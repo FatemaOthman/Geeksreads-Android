@@ -30,6 +30,7 @@ public class APIs {
     public static String API_ADD_BOOK_REVIEW = "https://geeksreads.herokuapp.com/api/reviews/add";
     public static String API_GET_USER_NOTIFICATIONS = "https://geeksreads.herokuapp.com/api/users/notifications";
     public static String API_MAKE_NOTIFICATION_SEEN = "https://geeksreads.herokuapp.com/api/users//Notification/seen";
+    public static String API_GET_BOOK_STATUS = "https://geeksreads.herokuapp.com/api/users/GetBookReadStatus";
 
     public static String API_GET_USER_BY_ID = "https://geeksreads.herokuapp.com/api/users/GetUserById";
     public static String API_FOLLOW_USER = "https://geeksreads.herokuapp.com/api/users/Follow";

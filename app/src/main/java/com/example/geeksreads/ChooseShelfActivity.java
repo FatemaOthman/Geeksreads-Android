@@ -13,6 +13,7 @@ import android.support.annotation.RequiresApi;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
@@ -163,7 +164,7 @@ public class ChooseShelfActivity extends AppCompatActivity {
                     JSONObject ReviewObject = new JSONObject();
                     try {
                         ReviewObject.put("token", UserSessionManager.getUserToken());
-                        ReviewObject.put("bookId", getBookID);
+                        ReviewObject.put("BookId", getBookID);
                         ReviewObject.put("ShelfType", shelfID);
                     } catch (JSONException e) {
                         e.printStackTrace();
@@ -181,7 +182,8 @@ public class ChooseShelfActivity extends AppCompatActivity {
                     {
                         UrlService = APIs.API_ADD_BOOK_TOSHELF;
                     }
-
+                    Log.d("BODY:", ReviewObject.toString());
+                    Log.d("URL",UrlService);
                     AddShelfTask addShelfTask = new AddShelfTask();
                     addShelfTask.execute(UrlService, ReviewObject.toString());
                 }
@@ -299,13 +301,14 @@ public class ChooseShelfActivity extends AppCompatActivity {
                 return;
             }
             try {
+                if (TaskSuccess) {
+                    JSONObject jsonObject = new JSONObject(result);
+                    Toast.makeText(mContext, jsonObject.getString("ReturnMsg"), Toast.LENGTH_SHORT).show();
+                    sForTestChooseShelf = "Added Successfully to shelf";
 
-                JSONObject jsonObject = new JSONObject(result);
-                Toast.makeText(mContext, jsonObject.getString("ReturnMsg"), Toast.LENGTH_SHORT).show();
-                sForTestChooseShelf = "Added Successfully to shelf";
-
-                Intent intent = new Intent(ChooseShelfActivity.this, MyBooksShelvesActivity.class);
-                startActivity(intent);
+                    Intent intent = new Intent(ChooseShelfActivity.this, MyBooksShelvesActivity.class);
+                    startActivity(intent);
+                }
 
             } catch (JSONException e) {
                 Toast.makeText(mContext, "Error happen during adding to shelf", Toast.LENGTH_SHORT).show();
