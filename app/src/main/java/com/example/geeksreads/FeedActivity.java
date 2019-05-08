@@ -87,7 +87,7 @@ public class FeedActivity extends AppCompatActivity implements NavigationView.On
         mContext = this;
         UserSessionManager.Initialize(mContext);
         UserSessionManager.UserSessionState currentUserState = UserSessionManager.getCurrentState();
-        Loading = new LoadingView(null, (FrameLayout)findViewById(R.id.progressBarHolder), (TextView)findViewById(R.id.ProgressName));
+
         if (currentUserState == UserSessionManager.UserSessionState.USER_LOGGED_IN)
         {
             /* Stay Here */
@@ -110,7 +110,7 @@ public class FeedActivity extends AppCompatActivity implements NavigationView.On
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_feed);
-
+        Loading = new LoadingView(null, (FrameLayout)findViewById(R.id.progressBarHolder), (TextView)findViewById(R.id.ProgressName));
         Intent NotificationService = new Intent(this, NotificationService.class);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             mContext.startForegroundService(NotificationService);
