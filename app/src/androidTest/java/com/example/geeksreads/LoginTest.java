@@ -83,17 +83,6 @@ public class LoginTest {
 
     @Test
     /* Other error occurred in Login */
-    public void Test_UnknownErrorOccurred() {
-        onView(withId(R.id.EmailTxt))
-                .perform(typeText("mahmoud_3@live.com"), closeSoftKeyboard());
-        onView(withId(R.id.PasswordTxt))
-                .perform(typeText("Mah1142019"), closeSoftKeyboard());
-        onView(withId(R.id.LoginBtn)).perform(click());
-        if (!APIs.MimicModeEnabled) return;
-        assertEquals("An error occurred!", LoginActivity.sForTest);
-    }
-    @Test
-    /* Other error occurred in Login */
     public void Test_A1() {
         onView(withId(R.id.EmailTxt))
                 .perform(typeText("mahmoud_3@live.com"), closeSoftKeyboard());

@@ -93,29 +93,42 @@ public class EditProfileActivity extends AppCompatActivity {
     {
             try
             {
-                if (dateToValidate.split("[/]").length != 2)
+                System.out.println("START");
+                if (dateToValidate.split("[/]").length != 3)
                 {
+                    System.out.println("ERROR //");
+                    //System.out.println(dateToValidate.split("[/]")[0]);
+                    //System.out.println(dateToValidate.split("[/]")[1]);
                     return false;
                 }
                 else
                 {
                     String Date = dateToValidate;
-                    String Month = Date.substring(0, Date.indexOf('/'));
-                    Date = Date.substring(Date.indexOf('/')+1);
+
                     String Day = Date.substring(0, Date.indexOf('/'));
                     Date = Date.substring(Date.indexOf('/')+1);
+
+                    String Month = Date.substring(0, Date.indexOf('/'));
+                    Date = Date.substring(Date.indexOf('/')+1);
+
                     String Year = Date;
 
+                    System.out.println("Day:"+Day);
+                    System.out.println("Month:"+Month);
+                    System.out.println("Year:"+Year);
                     if (Month.length() < 1)
                     {
+                        System.out.println("Month<1");
                         return false;
                     }
                     else if (Day.length() < 1)
                     {
+                        System.out.println("Day<1");
                         return false;
                     }
                     else if (Year.length() < 4)
                     {
+                        System.out.println("Year<4");
                         return false;
                     }
                     else
@@ -142,7 +155,8 @@ public class EditProfileActivity extends AppCompatActivity {
 
                         }catch(Exception ex2)
                         {
-return false;
+                            System.out.println("EXCEPTION");
+                            return false;
                         }
                     }
                 }

@@ -20,7 +20,7 @@
     <string name="DisplayNameHint">Display Name</string>
     <string name="PasswordHint">Password</string>
     <string name="EmailHint">Email Address</string>
-    <string name="BirthDateHint">Birth Date Month/Day/Year</string>
+    <string name="BirthDateHint">Birth Date Day/Month/Year</string>
     <string name="ChangePasswordBtnTxt">Change Password</string>
     <string name="SaveChangesBtnTxt">Save Changes</string>
     <string name="SignUpHeaderTxt">Create a new account in geeksreads</string>
