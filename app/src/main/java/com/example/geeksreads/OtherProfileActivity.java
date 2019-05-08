@@ -167,12 +167,12 @@ public class OtherProfileActivity extends AppCompatActivity implements Navigatio
         MyProfile.execute(UrlService, JSON.toString());
 
         /////////////////////////////////////////////////////
-/*
+
         final String SecondUrlService = APIs.API_GET_USER_READ_DETAILS;
         OtherProfileActivity.GetOtherProfileBooks TheBooks = new OtherProfileActivity.GetOtherProfileBooks();
         TheBooks.execute(SecondUrlService, jsonObject.toString());
         /////////////////////////////////////////////////////
-*/
+
         OtherProfileActivity.UpdateBookShelfCount updateReadShelf = new OtherProfileActivity.UpdateBookShelfCount(UserSessionManager.getUserToken());
 
         /* URL For Get Shelves Count API */
@@ -684,6 +684,7 @@ public class OtherProfileActivity extends AppCompatActivity implements Navigatio
                 http.setRequestMethod(REQUEST_METHOD);
                 http.setDoInput(true);
                 http.setDoOutput(true);
+                http.setRequestProperty("content-type", "application/json");
                 http.setRequestProperty("x-auth-token", UserSessionManager.getUserToken());
 
                 /* A Stream object to hold the sent data to API Call */
@@ -736,7 +737,9 @@ public class OtherProfileActivity extends AppCompatActivity implements Navigatio
                 //dialog.show();
                 Log.d("AMR", "OtherBooks:" + result);
                 ListView wantToReadBookList = findViewById(R.id.OtherUserBookList);
-                final BookList_JSONAdapter bookListJsonAdapter = new BookList_JSONAdapter(mContext, new JSONArray(result));
+                JSONObject IntermediateJson = new JSONObject(result);
+                JSONArray FinalJSon = IntermediateJson.getJSONArray("ReadData");
+                final BookList_JSONAdapter bookListJsonAdapter = new BookList_JSONAdapter(mContext, FinalJSon);
                 wantToReadBookList.setAdapter(bookListJsonAdapter);
                 wantToReadBookList.deferNotifyDataSetChanged();
                 wantToReadBookList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
