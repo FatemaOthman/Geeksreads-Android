@@ -346,7 +346,7 @@ public class OtherProfileActivity extends AppCompatActivity implements Navigatio
                 //dialog.show();
 
                 //  Log.i("AMR","Result: "+result);
-            Log.d("AMR", String.valueOf(TaskSucc));
+            Log.d("AMR", "FollowUser:" + String.valueOf(TaskSucc));
                 if (TaskSucc)
                     FollowButton.setText("Follow");
                 else {
@@ -626,11 +626,11 @@ public class OtherProfileActivity extends AppCompatActivity implements Navigatio
             try {
                 dialog.setMessage("Done");
                 //dialog.show();
-
+                Log.d("AMR", "OtherProfile:" + result);
                 JSONObject jsonObject = new JSONObject(result);
                 OtherProfileActivity.GetOtherUserPicture Pic = new OtherProfileActivity.GetOtherUserPicture();
-                Pic.execute(jsonObject.getString("photo"));
-                aForTestUserPic = jsonObject.getString("photo");
+                Pic.execute(jsonObject.getString("Photo"));
+                aForTestUserPic = jsonObject.getString("Photo");
                 UserName.setText(jsonObject.getString("UserName"));
                 aForTestUserName = UserName.getText().toString();
 
@@ -684,7 +684,7 @@ public class OtherProfileActivity extends AppCompatActivity implements Navigatio
                 /* A Stream object to hold the sent data to API Call */
                 OutputStream ops = http.getOutputStream();
                 BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(ops, StandardCharsets.UTF_8));
-                writer.write("");
+                writer.write(JSONString);
                 writer.flush();
                 writer.close();
                 ops.close();
@@ -729,6 +729,7 @@ public class OtherProfileActivity extends AppCompatActivity implements Navigatio
             try {
                 dialog.setMessage(result);
                 //dialog.show();
+                Log.d("AMR", "OtherBooks:" + result);
                 ListView wantToReadBookList = findViewById(R.id.OtherUserBookList);
                 final BookList_JSONAdapter bookListJsonAdapter = new BookList_JSONAdapter(mContext, new JSONArray(result));
                 wantToReadBookList.setAdapter(bookListJsonAdapter);
@@ -900,7 +901,8 @@ public class OtherProfileActivity extends AppCompatActivity implements Navigatio
                 OutputStream ops = http.getOutputStream();
                 BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(ops, StandardCharsets.UTF_8));
                 JSONObject newJson = new JSONObject();
-                newJson.put("token", userToken);
+                newJson.put("token", UserSessionManager.getUserToken());
+                newJson.put("UserId", getIntent().getStringExtra("FollowId"));
                 writer.write(newJson.toString());
                 writer.flush();
                 writer.close();
