@@ -139,9 +139,6 @@ public class OtherProfileActivity extends AppCompatActivity implements Navigatio
         String UrlSideBar = APIs.API_GET_USER_INFO;//"http://geeksreads.000webhostapp.com/Fatema/SideBar.php";
         GetSideBarDetails getSideBarDetails = new GetSideBarDetails();
         getSideBarDetails.execute(UrlSideBar, jsonUserDetails.toString());
-        GetShelvesDetails getShelvesDetails = new GetShelvesDetails(UserSessionManager.getUserToken());
-        String UrlShelvesDetails = APIs.API_USER_SHELVES;
-        getShelvesDetails.execute(UrlShelvesDetails,UserSessionManager.getUserToken());
         ///////////////////////////////////////////////////////
         OtherUserPhoto = findViewById(R.id.UserProfilePhoto);
         UserName = findViewById(R.id.OtherUserName);
@@ -157,8 +154,9 @@ public class OtherProfileActivity extends AppCompatActivity implements Navigatio
             JSON.put("token", UserSessionManager.getUserToken());
             JSON.put("UserId", getIntent().getStringExtra("FollowId"));
 
+            jsonObject.put("token", UserSessionManager.getUserToken());
             jsonObject.put("UserId", getIntent().getStringExtra("FollowId"));
-            jsonObject.put("ShelfName","Read");
+            // jsonObject.put("ShelfName","Read");
 
         } catch (JSONException e) {
             e.printStackTrace();
@@ -169,11 +167,18 @@ public class OtherProfileActivity extends AppCompatActivity implements Navigatio
         MyProfile.execute(UrlService, JSON.toString());
 
         /////////////////////////////////////////////////////
-
-        final String SecondUrlService = APIs.API_GET_READ_LIST;
+/*
+        final String SecondUrlService = APIs.API_GET_USER_READ_DETAILS;
         OtherProfileActivity.GetOtherProfileBooks TheBooks = new OtherProfileActivity.GetOtherProfileBooks();
         TheBooks.execute(SecondUrlService, jsonObject.toString());
         /////////////////////////////////////////////////////
+*/
+        OtherProfileActivity.UpdateBookShelfCount updateReadShelf = new OtherProfileActivity.UpdateBookShelfCount(UserSessionManager.getUserToken());
+
+        /* URL For Get Shelves Count API */
+        String GetShelvesCountUrl = APIs.API_GET_SHELVES_COUNT;
+
+        updateReadShelf.execute(GetShelvesCountUrl);
 
         final String FollowRequest = APIs.API_FOLLOW_USER;
         final String UnFollowRequest = APIs.API_UN_FOLLOW_USER;
@@ -408,7 +413,7 @@ public class OtherProfileActivity extends AppCompatActivity implements Navigatio
                 writer.flush();
                 writer.close();
                 ops.close();
-
+                Log.d("AMR", "Follow Response:" + String.valueOf(http.getResponseCode()));
                 switch (String.valueOf(http.getResponseCode())) {
                     case "200":
                         /* A Stream object to get the returned data from API Call */
@@ -653,7 +658,7 @@ public class OtherProfileActivity extends AppCompatActivity implements Navigatio
      */
     @SuppressLint("StaticFieldLeak")
     private class GetOtherProfileBooks extends AsyncTask<String, Void, String> {
-        public static final String REQUEST_METHOD = "GET";
+        public static final String REQUEST_METHOD = "POST";
         //public static final int READ_TIMEOUT = 3000;
         //public static final int CONNECTION_TIMEOUT = 3000;
         AlertDialog dialog;
@@ -868,28 +873,45 @@ public class OtherProfileActivity extends AppCompatActivity implements Navigatio
 
     }
 
+    /**
+     * Class that get the data from host and Add it to its views.
+     * The Parameters are host Url and toSend Data.
+     */
     @SuppressLint("StaticFieldLeak")
-    private class GetShelvesDetails extends AsyncTask<String, Void, String> {
+    public class UpdateBookShelfCount extends AsyncTask<String, String, String> {
         static final String REQUEST_METHOD = "POST";
         String userToken;
 
-        public GetShelvesDetails(String userToken) {
+        /**
+         * Constructor for UpdateBookSHelfCountClass
+         *
+         * @param userToken Parameter to send user token
+         */
+        public UpdateBookShelfCount(String userToken) {
             this.userToken = userToken;
         }
 
+        /**
+         * Function to be done before Executing, it starts Loading Animation
+         */
         @Override
         protected void onPreExecute() {
-            /* Do Nothing */
+           /*
+           Do Nothing
+            */
         }
 
+        /**
+         * Function that executes the logic needed in the background thread
+         */
         @Override
         protected String doInBackground(String... params) {
             String UrlString = params[0];
+
             String result = "";
             try {
                 /* Create a URL object holding our url */
                 URL url = new URL(UrlString);
-
                 /* Create an HTTP Connection and adjust its options */
                 HttpURLConnection http = (HttpURLConnection) url.openConnection();
                 http.setRequestMethod(REQUEST_METHOD);
@@ -909,8 +931,7 @@ public class OtherProfileActivity extends AppCompatActivity implements Navigatio
                 ops.close();
 
                 /* A Stream object to get the returned data from API Call */
-                switch (String.valueOf(http.getResponseCode()))
-                {
+                switch (String.valueOf(http.getResponseCode())) {
                     case "200":
                         /* A Stream object to get the returned data from API Call */
                         InputStream ips = http.getInputStream();
@@ -944,6 +965,7 @@ public class OtherProfileActivity extends AppCompatActivity implements Navigatio
 
         @SuppressLint("SetTextI18n")
         protected void onPostExecute(String result) {
+
             if (result == null) {
                 Toast.makeText(mContext, "Unable to connect to server", Toast.LENGTH_SHORT).show();
                 return;
@@ -951,15 +973,16 @@ public class OtherProfileActivity extends AppCompatActivity implements Navigatio
             try {
                 /* Creating a JSON Object to parse the data in */
                 final JSONObject jsonObject = new JSONObject(result);
-                int TotalNumOfBooks = 0;
-                TotalNumOfBooks+=jsonObject.getInt("NoOfRead")+jsonObject.getInt("NoOfReading")+jsonObject.getInt("NoOfWantToRead");
-
-
-                BookItem.setTitle("My Books   "+TotalNumOfBooks);
-
-
-            } catch (JSONException e) {
+                String readCount = jsonObject.getString("NoOfRead");
+                String wantToReadCount = jsonObject.getString("NoOfWantToRead");
+                String readingCount = jsonObject.getString("NoOfReading");
+                String FullCount = Integer.toString(Integer.parseInt(readCount) + Integer.parseInt(wantToReadCount) + Integer.parseInt(readingCount));
+                BooksCount.setText(FullCount + " " + "Books");
+                Log.d("AMR", "BooksCount: " + FullCount);
+            }
+            /* Catching Exceptions */ catch (JSONException e) {
                 e.printStackTrace();
+                Toast.makeText(mContext, "Error in loading shelves data", Toast.LENGTH_SHORT).show();
             }
         }
 
