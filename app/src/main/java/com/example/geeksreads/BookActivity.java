@@ -553,13 +553,13 @@ public class BookActivity extends AppCompatActivity implements NavigationView.On
 
                     if(APIs.MimicModeEnabled)
                     {
-                        if (jsonObject.getString("BookStatus").equals("Read")) {
+                        if (jsonObject.getString("ReadStatus").equals("Read")) {
                             bookOptions.setText("Read");
                             bookOptions.setBackgroundColor(getResources().getColor(R.color.ReadColor));
-                        } else if (jsonObject.getString("BookStatus").equals("Want to Read")) {
+                        } else if (jsonObject.getString("ReadStatus").equals("Want to Read")) {
                             bookOptions.setText("Want To Read");
                             bookOptions.setBackgroundColor(getResources().getColor(R.color.WantToReadColor));
-                        } else if (jsonObject.getString("BookStatus").equals("Currently Reading")) {
+                        } else if (jsonObject.getString("ReadStatus").equals("Currently Reading")) {
                             bookOptions.setText("Currently Reading");
                             bookOptions.setBackgroundColor(getResources().getColor(R.color.ReadingColor));
                         } else {
