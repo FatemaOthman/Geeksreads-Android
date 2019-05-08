@@ -139,9 +139,16 @@ public class ReviewsCustomAdapter extends ArrayAdapter<ReviewDataModel> implemen
                 new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
-                        Intent myIntent = new Intent(mContext, OtherProfileActivity.class);
-                        myIntent.putExtra("FollowId", dataModel.getUserWhoWroteID());
-                        mContext.startActivity(myIntent);
+                        if (!dataModel.getUserWhoWroteID().equals(UserSessionManager.getUserID())) {
+                            Intent myIntent = new Intent(mContext, OtherProfileActivity.class);
+                            myIntent.putExtra("FollowId", dataModel.getUserWhoWroteID());
+                            mContext.startActivity(myIntent);
+                        } else {
+
+                            Intent myIntent = new Intent(mContext, Profile.class);
+                            mContext.startActivity(myIntent);
+
+                        }
                     }
                 }
         );
