@@ -39,6 +39,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 
 import CustomFunctions.APIs;
+import CustomFunctions.UserSessionManager;
 
 public class Comments extends AppCompatActivity {
 
@@ -73,12 +74,16 @@ public class Comments extends AppCompatActivity {
 
                     try {
                         @SuppressLint("SimpleDateFormat")
-                        SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
+                        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
                         String CurrentDate = sdf.format(System.currentTimeMillis());
-                        AddCommentJson.put("UserID", LoginActivity.sCurrentUserID);
-                        AddCommentJson.put("reviewId", getIntent().getStringExtra("ReviewId"));
+                        AddCommentJson.put("userId", LoginActivity.sCurrentUserID);
+                        AddCommentJson.put("BookId", getIntent().getStringExtra("BookId"));
+                        AddCommentJson.put("ReviewId", getIntent().getStringExtra("ReviewId"));
                         AddCommentJson.put("date", CurrentDate);
-                        AddCommentJson.put("body", CommentTextHolder.getText().toString());
+                        AddCommentJson.put("Body", CommentTextHolder.getText().toString());
+                        AddCommentJson.put("token", UserSessionManager.getUserToken());
+                        AddCommentJson.put("LikesCount", "0");
+                        AddCommentJson.put("Photo", getIntent().getStringExtra("Photo"));
 
                     } catch (JSONException e) {
                         e.printStackTrace();
@@ -96,7 +101,7 @@ public class Comments extends AppCompatActivity {
         });
 
 
-        // final String CommentsListUrl = "https://geeksreads.herokuapp.com/api/comments/list?ReviewId="+"5ccdb0f8a375f9643cc8b0c3";
+        //final String CommentsListUrl = "https://geeksreads.herokuapp.com/api/comments/list?ReviewId=" + "5ccdb0f8a375f9643cc8b0c3";
         final String CommentsListUrl = APIs.API_GET_COMMENTS_LIST + "?ReviewId=" + getIntent().getStringExtra("ReviewId");
 
         Comments.GetAllComments performBackgroundTask = new Comments.GetAllComments();
@@ -141,15 +146,16 @@ public class Comments extends AppCompatActivity {
                 e.printStackTrace();
             }
 
+            Log.d("AMR", "ServerCode:" + response.getStatusLine().getStatusCode());
             if (response.getStatusLine().getStatusCode() == 200) {
                 try {
                     server_response = EntityUtils.toString(response.getEntity());
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
-                Log.d("Server response", server_response);
+                Log.d("AMR", "Comments" + server_response);
             } else {
-                Log.d("Server response", "Failed to get server response");
+                Log.d("AMR", "Comments:" + "Failed to get server response");
             }
 
             result = server_response;
@@ -164,7 +170,7 @@ public class Comments extends AppCompatActivity {
         protected void onPostExecute(String result) {
 
             if (result == null) {
-                Toast.makeText(mContext, "Unable to connect to server", Toast.LENGTH_SHORT).show();
+                Toast.makeText(mContext, "No Comments to show", Toast.LENGTH_SHORT).show();
                 return;
             }
             try {
@@ -219,6 +225,8 @@ public class Comments extends AppCompatActivity {
                 http.setDoInput(true);
                 http.setDoOutput(true);
                 http.setRequestProperty("content-type", "application/json");
+                http.setRequestProperty("x-auth-token", UserSessionManager.getUserToken());
+
                 /* A Stream object to hold the sent data to API Call */
                 OutputStream ops = http.getOutputStream();
                 BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(ops, StandardCharsets.UTF_8));
@@ -226,7 +234,7 @@ public class Comments extends AppCompatActivity {
                 writer.flush();
                 writer.close();
                 ops.close();
-
+                Log.d("AMR", String.valueOf(http.getResponseCode()));
                 switch (String.valueOf(http.getResponseCode())) {
                     case "200":
                         /* A Stream object to get the returned data from API Call */

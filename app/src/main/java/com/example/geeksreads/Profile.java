@@ -65,6 +65,9 @@ public class Profile extends AppCompatActivity implements NavigationView.OnNavig
     MenuItem FollowItem;
     MenuItem BookItem;
     View rootView;
+    Button readButton;
+    Button currentlyReadingButton;
+    Button wantToReadButton;
 
     /*
     public static String getCurrentID() {
@@ -141,6 +144,42 @@ public class Profile extends AppCompatActivity implements NavigationView.OnNavig
         String UrlShelvesDetails = APIs.API_USER_SHELVES;
         getShelvesDetails.execute(UrlShelvesDetails,UserSessionManager.getUserToken());
 
+        final String urlService = APIs.API_GET_SHELVES_COUNT;
+        UpdateBookShelf updateShelf = new UpdateBookShelf(UserSessionManager.getUserToken());
+        updateShelf.execute(urlService);
+        /////////////////////////////////////////////////////
+        readButton = findViewById(R.id.ReadBtn);
+        currentlyReadingButton = findViewById(R.id.CurrentlyReadingBtn);
+        wantToReadButton = findViewById(R.id.WantToReadBtn);
+
+        readButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                Intent myIntent = new Intent(Profile.this, ReadBooksActivity.class);
+                startActivity(myIntent);
+
+            }
+        });
+        currentlyReadingButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent myIntent = new Intent(Profile.this, CurrentlyReadingActivity.class);
+                startActivity(myIntent);
+
+            }
+        });
+        wantToReadButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent myIntent = new Intent(Profile.this, WantToReadActivity.class);
+                startActivity(myIntent);
+
+            }
+        });
+
+
+        ///////////////////////////////////////////
         EditProfileButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -626,7 +665,6 @@ public class Profile extends AppCompatActivity implements NavigationView.OnNavig
 
     ///////////////////////////////////////
 
-
     /**
      * Class that get the data from host and Add it to its views.
      * The Parameters are host Url and toSend Data.
@@ -739,6 +777,126 @@ public class Profile extends AppCompatActivity implements NavigationView.OnNavig
             }
         }
 
+    }
+
+    /**
+     * @author Mahmoud MORSY
+     * Class that get the data from host and Add it to its views.
+     * The Parameters are host Url and toSend Data.
+     */
+    public class UpdateBookShelf extends AsyncTask<String, String, String> {
+        static final String REQUEST_METHOD = "POST";
+        String userToken;
+
+        /**
+         * Constructor for UpdateBookSHelfCountClass
+         *
+         * @param userToken Parameter to send user token
+         */
+        public UpdateBookShelf(String userToken) {
+            this.userToken = userToken;
+        }
+
+        /**
+         * Function to be done before Executing, it starts Loading Animation
+         */
+        @Override
+        protected void onPreExecute() {
+        }
+
+        /**
+         * Function that executes the logic needed in the background thread
+         */
+        @Override
+        protected String doInBackground(String... params) {
+            String UrlString = params[0];
+
+            String result = "";
+            try {
+                /* Create a URL object holding our url */
+                URL url = new URL(UrlString);
+                /* Create an HTTP Connection and adjust its options */
+                HttpURLConnection http = (HttpURLConnection) url.openConnection();
+                http.setRequestMethod(REQUEST_METHOD);
+                http.setDoInput(true);
+                http.setDoOutput(true);
+                http.setRequestProperty("content-type", "application/json");
+
+                /* A Stream object to hold the sent data to API Call */
+                OutputStream ops = http.getOutputStream();
+                BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(ops, StandardCharsets.UTF_8));
+                JSONObject newJson = new JSONObject();
+                newJson.put("token", UserSessionManager.getUserToken());
+                newJson.put("UserId", UserSessionManager.getUserID());
+                writer.write(newJson.toString());
+                writer.flush();
+                writer.close();
+                ops.close();
+
+                /* A Stream object to get the returned data from API Call */
+                switch (String.valueOf(http.getResponseCode())) {
+                    case "200":
+                        /* A Stream object to get the returned data from API Call */
+                        InputStream ips = http.getInputStream();
+                        BufferedReader reader = new BufferedReader(new InputStreamReader(ips, StandardCharsets.ISO_8859_1));
+                        String line = "";
+                        while ((line = reader.readLine()) != null) {
+                            result += line;
+                        }
+                        reader.close();
+                        ips.close();
+                        break;
+                    case "400":
+                        result = "{\"ReturnMsg\":\"Error Occurred.\"}";
+                        break;
+                    default:
+                        break;
+                }
+                http.disconnect();
+                return result;
+
+            }
+            /* Handling Exceptions */ catch (MalformedURLException e) {
+                result = e.getMessage();
+            } catch (IOException e) {
+                result = e.getMessage();
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+            return result;
+        }
+
+        /**
+         * Function that does the needed actions in layout and finish loading animation
+         */
+        @SuppressLint("SetTextI18n")
+        protected void onPostExecute(String result) {
+
+            if (result == null) {
+                Toast.makeText(mContext, "Unable to connect to server", Toast.LENGTH_SHORT).show();
+                return;
+            }
+            try {
+                /* Creating a JSON Object to parse the data in */
+                final JSONObject jsonObject = new JSONObject(result);
+                String readCount = jsonObject.getString("NoOfRead");
+                String wantToReadCount = jsonObject.getString("NoOfWantToRead");
+                String readingCount = jsonObject.getString("NoOfReading");
+
+                Button readBtn = findViewById(R.id.ReadBtn);
+                Button wantToReadBtn = findViewById(R.id.WantToReadBtn);
+                Button currentlyReadingBtn = findViewById(R.id.CurrentlyReadingBtn);
+
+
+                readBtn.setText("Read  " + readCount);
+                wantToReadBtn.setText("Want to Read  " + wantToReadCount);
+                currentlyReadingBtn.setText("Currently Reading  " + readingCount);
+            }
+            /* Catching Exceptions */ catch (JSONException e) {
+                e.printStackTrace();
+                Toast.makeText(mContext, "Error in loading shelves data", Toast.LENGTH_SHORT).show();
+            }
+        }
     }
 
 

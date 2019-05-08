@@ -17,9 +17,13 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
+import android.widget.FrameLayout;
 import android.widget.ListView;
 import android.widget.SearchView;
+import android.widget.TextView;
 import android.widget.Toast;
+
+import com.example.geeksreads.views.LoadingView;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -46,6 +50,7 @@ public class WantToReadActivity extends AppCompatActivity {
     JSONArray data = new JSONArray();
     Context mContext;
     View rootView;
+    LoadingView Loading;
 
     /**
      * @param savedInstanceState
@@ -62,7 +67,7 @@ public class WantToReadActivity extends AppCompatActivity {
         setSupportActionBar(myToolbar);
         Objects.requireNonNull(getSupportActionBar()).setTitle("Want to Read");
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-
+        Loading = new LoadingView(null, (FrameLayout)findViewById(R.id.progressBarHolder), (TextView)findViewById(R.id.ProgressName));
         final JSONObject jsonObject = new JSONObject();
         try {
             jsonObject.put("token", UserSessionManager.getUserToken());
@@ -142,6 +147,7 @@ public class WantToReadActivity extends AppCompatActivity {
 
         @Override
         protected void onPreExecute() {
+            Loading.Start("Loading, Please wait...");
             dialog = new AlertDialog.Builder(mContext).create();
             dialog.setTitle("Connection Status");
             //progress.setVisibility(View.VISIBLE);
@@ -236,7 +242,7 @@ public class WantToReadActivity extends AppCompatActivity {
                 }
             } catch (JSONException e) {
                 e.printStackTrace();
-            }
+            }Loading.Stop();
         }
 
     }

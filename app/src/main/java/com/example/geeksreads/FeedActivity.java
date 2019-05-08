@@ -26,10 +26,13 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.SearchView;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import com.example.geeksreads.views.LoadingView;
 
 import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
@@ -68,7 +71,7 @@ public class FeedActivity extends AppCompatActivity implements NavigationView.On
     private List<FeedModel> list;
     Context mContext;
     View rootView;
-
+    LoadingView Loading;
 
     /* SideBar Views */
     ImageView userPhoto;
@@ -84,6 +87,7 @@ public class FeedActivity extends AppCompatActivity implements NavigationView.On
         mContext = this;
         UserSessionManager.Initialize(mContext);
         UserSessionManager.UserSessionState currentUserState = UserSessionManager.getCurrentState();
+
         if (currentUserState == UserSessionManager.UserSessionState.USER_LOGGED_IN)
         {
             /* Stay Here */
@@ -106,7 +110,7 @@ public class FeedActivity extends AppCompatActivity implements NavigationView.On
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_feed);
-
+        Loading = new LoadingView(null, (FrameLayout)findViewById(R.id.progressBarHolder), (TextView)findViewById(R.id.ProgressName));
         Intent NotificationService = new Intent(this, NotificationService.class);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             mContext.startForegroundService(NotificationService);
@@ -499,7 +503,7 @@ public class FeedActivity extends AppCompatActivity implements NavigationView.On
 
         @Override
         protected void onPreExecute() {
-            /* Do Nothing */
+            Loading.Start("Loading...");
         }
 
         @Override
@@ -641,6 +645,7 @@ public class FeedActivity extends AppCompatActivity implements NavigationView.On
                 e.printStackTrace();
                 Log.d("ErrorFeed",e.getMessage());
             }
+            Loading.Stop();
         }
 
     }

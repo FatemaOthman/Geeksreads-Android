@@ -55,7 +55,7 @@ import CustomFunctions.UserSessionManager;
 public class OtherProfileActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener{
     public static String aForTestUserName = "";
     public static String aForTestUserPic = "";
-
+    JSONArray BooksArray;
     ImageView OtherUserPhoto;
     Context mContext;
     TextView UserName;
@@ -139,9 +139,6 @@ public class OtherProfileActivity extends AppCompatActivity implements Navigatio
         String UrlSideBar = APIs.API_GET_USER_INFO;//"http://geeksreads.000webhostapp.com/Fatema/SideBar.php";
         GetSideBarDetails getSideBarDetails = new GetSideBarDetails();
         getSideBarDetails.execute(UrlSideBar, jsonUserDetails.toString());
-        GetShelvesDetails getShelvesDetails = new GetShelvesDetails(UserSessionManager.getUserToken());
-        String UrlShelvesDetails = APIs.API_USER_SHELVES;
-        getShelvesDetails.execute(UrlShelvesDetails,UserSessionManager.getUserToken());
         ///////////////////////////////////////////////////////
         OtherUserPhoto = findViewById(R.id.UserProfilePhoto);
         UserName = findViewById(R.id.OtherUserName);
@@ -157,8 +154,9 @@ public class OtherProfileActivity extends AppCompatActivity implements Navigatio
             JSON.put("token", UserSessionManager.getUserToken());
             JSON.put("UserId", getIntent().getStringExtra("FollowId"));
 
+            jsonObject.put("token", UserSessionManager.getUserToken());
             jsonObject.put("UserId", getIntent().getStringExtra("FollowId"));
-            jsonObject.put("ShelfName","Read");
+            // jsonObject.put("ShelfName","Read");
 
         } catch (JSONException e) {
             e.printStackTrace();
@@ -170,10 +168,27 @@ public class OtherProfileActivity extends AppCompatActivity implements Navigatio
 
         /////////////////////////////////////////////////////
 
-        final String SecondUrlService = APIs.API_GET_READ_LIST;
+        final String ReadBooksDetails = APIs.API_GET_USER_READ_DETAILS;
         OtherProfileActivity.GetOtherProfileBooks TheBooks = new OtherProfileActivity.GetOtherProfileBooks();
-        TheBooks.execute(SecondUrlService, jsonObject.toString());
+        TheBooks.execute(ReadBooksDetails, jsonObject.toString());
+
+
+
+
+
+
+
+
+
+
         /////////////////////////////////////////////////////
+
+        OtherProfileActivity.UpdateBookShelfCount updateReadShelf = new OtherProfileActivity.UpdateBookShelfCount(UserSessionManager.getUserToken());
+
+        /* URL For Get Shelves Count API */
+        String GetShelvesCountUrl = APIs.API_GET_SHELVES_COUNT;
+
+        updateReadShelf.execute(GetShelvesCountUrl);
 
         final String FollowRequest = APIs.API_FOLLOW_USER;
         final String UnFollowRequest = APIs.API_UN_FOLLOW_USER;
@@ -408,7 +423,7 @@ public class OtherProfileActivity extends AppCompatActivity implements Navigatio
                 writer.flush();
                 writer.close();
                 ops.close();
-
+                Log.d("AMR", String.valueOf(http.getResponseCode()));
                 switch (String.valueOf(http.getResponseCode())) {
                     case "200":
                         /* A Stream object to get the returned data from API Call */
@@ -424,6 +439,7 @@ public class OtherProfileActivity extends AppCompatActivity implements Navigatio
                         TaskSucc = true;
                         break;
                     default:
+
                         result = "{\"ReturnMsg\":\"An Error Occurred!\"}";
                         break;
                 }
@@ -633,8 +649,8 @@ public class OtherProfileActivity extends AppCompatActivity implements Navigatio
                 aForTestUserPic = jsonObject.getString("Photo");
                 UserName.setText(jsonObject.getString("UserName"));
                 aForTestUserName = UserName.getText().toString();
-
-                if (jsonObject.getString("IsFollowing").equals("true"))
+                Log.d("AMR", "FollowButton: " + jsonObject.getString("IsFollowing"));
+                if (jsonObject.getString("IsFollowing").equals("True"))
                     FollowButton.setText("Un-Follow");
                 else
                     FollowButton.setText("Follow");
@@ -653,7 +669,7 @@ public class OtherProfileActivity extends AppCompatActivity implements Navigatio
      */
     @SuppressLint("StaticFieldLeak")
     private class GetOtherProfileBooks extends AsyncTask<String, Void, String> {
-        public static final String REQUEST_METHOD = "GET";
+        public static final String REQUEST_METHOD = "POST";
         //public static final int READ_TIMEOUT = 3000;
         //public static final int CONNECTION_TIMEOUT = 3000;
         AlertDialog dialog;
@@ -679,6 +695,7 @@ public class OtherProfileActivity extends AppCompatActivity implements Navigatio
                 http.setRequestMethod(REQUEST_METHOD);
                 http.setDoInput(true);
                 http.setDoOutput(true);
+                http.setRequestProperty("content-type", "application/json");
                 http.setRequestProperty("x-auth-token", UserSessionManager.getUserToken());
 
                 /* A Stream object to hold the sent data to API Call */
@@ -731,7 +748,10 @@ public class OtherProfileActivity extends AppCompatActivity implements Navigatio
                 //dialog.show();
                 Log.d("AMR", "OtherBooks:" + result);
                 ListView wantToReadBookList = findViewById(R.id.OtherUserBookList);
-                final BookList_JSONAdapter bookListJsonAdapter = new BookList_JSONAdapter(mContext, new JSONArray(result));
+                JSONObject IntermediateJson = new JSONObject(result);
+                JSONArray FinalJSon = IntermediateJson.getJSONArray("ReadData");
+
+                final BookList_JSONAdapter bookListJsonAdapter = new BookList_JSONAdapter(mContext, FinalJSon);
                 wantToReadBookList.setAdapter(bookListJsonAdapter);
                 wantToReadBookList.deferNotifyDataSetChanged();
                 wantToReadBookList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -868,28 +888,45 @@ public class OtherProfileActivity extends AppCompatActivity implements Navigatio
 
     }
 
+    /**
+     * Class that get the data from host and Add it to its views.
+     * The Parameters are host Url and toSend Data.
+     */
     @SuppressLint("StaticFieldLeak")
-    private class GetShelvesDetails extends AsyncTask<String, Void, String> {
+    public class UpdateBookShelfCount extends AsyncTask<String, String, String> {
         static final String REQUEST_METHOD = "POST";
         String userToken;
 
-        public GetShelvesDetails(String userToken) {
+        /**
+         * Constructor for UpdateBookSHelfCountClass
+         *
+         * @param userToken Parameter to send user token
+         */
+        public UpdateBookShelfCount(String userToken) {
             this.userToken = userToken;
         }
 
+        /**
+         * Function to be done before Executing, it starts Loading Animation
+         */
         @Override
         protected void onPreExecute() {
-            /* Do Nothing */
+           /*
+           Do Nothing
+            */
         }
 
+        /**
+         * Function that executes the logic needed in the background thread
+         */
         @Override
         protected String doInBackground(String... params) {
             String UrlString = params[0];
+
             String result = "";
             try {
                 /* Create a URL object holding our url */
                 URL url = new URL(UrlString);
-
                 /* Create an HTTP Connection and adjust its options */
                 HttpURLConnection http = (HttpURLConnection) url.openConnection();
                 http.setRequestMethod(REQUEST_METHOD);
@@ -909,8 +946,7 @@ public class OtherProfileActivity extends AppCompatActivity implements Navigatio
                 ops.close();
 
                 /* A Stream object to get the returned data from API Call */
-                switch (String.valueOf(http.getResponseCode()))
-                {
+                switch (String.valueOf(http.getResponseCode())) {
                     case "200":
                         /* A Stream object to get the returned data from API Call */
                         InputStream ips = http.getInputStream();
@@ -944,6 +980,7 @@ public class OtherProfileActivity extends AppCompatActivity implements Navigatio
 
         @SuppressLint("SetTextI18n")
         protected void onPostExecute(String result) {
+
             if (result == null) {
                 Toast.makeText(mContext, "Unable to connect to server", Toast.LENGTH_SHORT).show();
                 return;
@@ -951,18 +988,134 @@ public class OtherProfileActivity extends AppCompatActivity implements Navigatio
             try {
                 /* Creating a JSON Object to parse the data in */
                 final JSONObject jsonObject = new JSONObject(result);
-                int TotalNumOfBooks = 0;
-                TotalNumOfBooks+=jsonObject.getInt("NoOfRead")+jsonObject.getInt("NoOfReading")+jsonObject.getInt("NoOfWantToRead");
+                String readCount = jsonObject.getString("NoOfRead");
+                String wantToReadCount = jsonObject.getString("NoOfWantToRead");
+                String readingCount = jsonObject.getString("NoOfReading");
+                String FullCount = Integer.toString(Integer.parseInt(readCount) + Integer.parseInt(wantToReadCount) + Integer.parseInt(readingCount));
+
+                //TODO: change the following line.
+                FullCount = Integer.toString(Integer.parseInt(readCount));
+                BooksCount.setText(FullCount + " " + "Books");
+
+                Log.d("AMR", "BooksCount: " + FullCount);
+            }
+            /* Catching Exceptions */ catch (JSONException e) {
+                e.printStackTrace();
+                Toast.makeText(mContext, "Error in loading shelves data", Toast.LENGTH_SHORT).show();
+            }
+        }
+
+    }
 
 
-                BookItem.setTitle("My Books   "+TotalNumOfBooks);
+    /**
+     * A Private class that extend Async Task to connect to server in background.
+     * It get the Want to Read book lists.
+     */
+    @SuppressLint("StaticFieldLeak")
+    private class GetWanttoReadBooks extends AsyncTask<String, Void, String> {
+        public static final String REQUEST_METHOD = "POST";
+        //public static final int READ_TIMEOUT = 3000;
+        //public static final int CONNECTION_TIMEOUT = 3000;
+        AlertDialog dialog;
+        boolean TaskSuccess = false;
 
+        @Override
+        protected void onPreExecute() {
+            dialog = new AlertDialog.Builder(mContext).create();
+            dialog.setTitle("Connection Status");
+            //progress.setVisibility(View.VISIBLE);
+        }
 
+        @Override
+        protected String doInBackground(String... params) {
+            String UrlString = params[0];
+            String JSONString = params[1];
+            String result = "";
+
+            try {
+                //Create a URL object holding our url
+                URL url = new URL(UrlString);
+                HttpURLConnection http = (HttpURLConnection) url.openConnection();
+                http.setRequestMethod(REQUEST_METHOD);
+                http.setDoInput(true);
+                http.setDoOutput(true);
+                http.setRequestProperty("content-type", "application/json");
+
+                OutputStream ops = http.getOutputStream();
+                BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(ops, StandardCharsets.UTF_8));
+
+                writer.write(JSONString);
+                writer.flush();
+                writer.close();
+                ops.close();
+
+                if (String.valueOf(http.getResponseCode()).equals("200")) {
+                    /* A Stream object to get the returned data from API Call */
+                    InputStream ips = http.getInputStream();
+                    BufferedReader reader = new BufferedReader(new InputStreamReader(ips, StandardCharsets.ISO_8859_1));
+                    String line;
+                    while ((line = reader.readLine()) != null) {
+                        result += line;
+                    }
+                    reader.close();
+                    ips.close();
+                    TaskSuccess = true;
+                } else {
+                    TaskSuccess = false;
+                    InputStream es = http.getErrorStream();
+                    BufferedReader ereader = new BufferedReader(new InputStreamReader(es, StandardCharsets.ISO_8859_1));
+                    String eline;
+                    while ((eline = ereader.readLine()) != null) {
+                        result += eline;
+                    }
+                    ereader.close();
+                    es.close();
+                }
+                http.disconnect();
+                return result;
+
+            } catch (MalformedURLException e) {
+                result = e.getMessage();
+            } catch (IOException e) {
+                result = e.getMessage();
+            }
+            return result;
+        }
+
+        @SuppressLint("SetTextI18n")
+        protected void onPostExecute(String result) {
+
+            if (result == null) {
+                Toast.makeText(mContext, "Unable to connect to server", Toast.LENGTH_SHORT).show();
+                return;
+            }
+            try {
+                dialog.setMessage(result);
+                // dialog.show();
+                JSONObject jsonObject = new JSONObject(result);
+                if (TaskSuccess) {
+                    ListView wantToReadBookList = findViewById(R.id.WantToReadBookList);
+                    final BookList_JSONAdapter bookListJsonAdapter = new BookList_JSONAdapter(mContext, new JSONArray(jsonObject.getString("WantToReadData")));
+                    wantToReadBookList.setAdapter(bookListJsonAdapter);
+                    wantToReadBookList.deferNotifyDataSetChanged();
+                    wantToReadBookList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                        @Override
+                        public void onItemClick(AdapterView<?> arg0, View arg1, int position, long arg3) {
+                            Intent intent = new Intent(OtherProfileActivity.this, BookActivity.class);
+                            intent.putExtra("BookID", bookListJsonAdapter.getBookID(position));
+                            startActivity(intent);
+                        }
+                    });
+                } else {
+                    Toast.makeText(mContext, "Error happened during loading list ", Toast.LENGTH_SHORT).show();
+                }
             } catch (JSONException e) {
                 e.printStackTrace();
             }
         }
 
     }
+
 }
 

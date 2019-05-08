@@ -9,7 +9,8 @@
 
     <include android:id="@+id/toolbar"
         layout="@layout/toolbar"/>
-
+    <!-- Progress bar overlay; shown while progress -->
+    <include layout="@layout/include_loading"/>
     <TextView
         android:id="@+id/NumberOfSearchResults"
         android:layout_width="match_parent"

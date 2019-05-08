@@ -13,8 +13,12 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
+import android.widget.FrameLayout;
 import android.widget.ListView;
+import android.widget.TextView;
 import android.widget.Toast;
+
+import com.example.geeksreads.views.LoadingView;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -41,7 +45,7 @@ public class Followers_Fragment extends Fragment {
     ListView FollowersList;
     Context mContext;
     ArrayList<UserDataModel> dataModels;
-
+    LoadingView Loading;
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -50,7 +54,7 @@ public class Followers_Fragment extends Fragment {
         ///////////////////////////////////////////////////////////////////////
         mContext = getContext();
         dataModels = new ArrayList<>();
-
+        Loading = new LoadingView(null, (FrameLayout)view.findViewById(R.id.progressBarHolder), (TextView)view.findViewById(R.id.ProgressName));
         //In my code here, I am sending the id of the user
         JSONObject JSON = new JSONObject();
         try {
@@ -90,6 +94,7 @@ public class Followers_Fragment extends Fragment {
 
         @Override
         protected void onPreExecute() {
+            Loading.Start("Loading, Please wait...");
             dialog = new AlertDialog.Builder(mContext).create();
             dialog.setTitle("Connection Status");
         }
@@ -172,6 +177,7 @@ public class Followers_Fragment extends Fragment {
             } catch (JSONException e) {
                 e.printStackTrace();
             }
+            Loading.Stop();
         }
 
     }

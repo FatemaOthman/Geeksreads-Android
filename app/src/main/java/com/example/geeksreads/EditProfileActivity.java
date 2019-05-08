@@ -89,8 +89,69 @@ public class EditProfileActivity extends AppCompatActivity {
 
     LoadingView Loading;
     /* Function to check the validity of the input date string with a format of DD/MM/YYYY and before 5 Years*/
-    public static boolean isThisDateValid(String dateToValidate) {
+    public static boolean isThisDateValid(String dateToValidate)
+    {
+            try
+            {
+                if (dateToValidate.split("[/]").length != 2)
+                {
+                    return false;
+                }
+                else
+                {
+                    String Date = dateToValidate;
+                    String Month = Date.substring(0, Date.indexOf('/'));
+                    Date = Date.substring(Date.indexOf('/')+1);
+                    String Day = Date.substring(0, Date.indexOf('/'));
+                    Date = Date.substring(Date.indexOf('/')+1);
+                    String Year = Date;
 
+                    if (Month.length() < 1)
+                    {
+                        return false;
+                    }
+                    else if (Day.length() < 1)
+                    {
+                        return false;
+                    }
+                    else if (Year.length() < 4)
+                    {
+                        return false;
+                    }
+                    else
+                    {
+                        try
+                        {
+                            int iDay =Integer.parseInt(Day);
+                            int iMonth = Integer.parseInt(Month);
+                            int iYear = Integer.parseInt(Year);
+
+                            if (iDay <= 0 || iDay > 31)
+                            {
+                                return false;
+                            }
+                            else if (iMonth <= 0 || iMonth > 12)
+                            {
+                                return false;
+                            }
+                            else if (iYear <= 0)
+                            {
+                                return false;
+                            }
+
+
+                        }catch(Exception ex2)
+                        {
+return false;
+                        }
+                    }
+                }
+
+
+            }catch (Exception ex)
+            {
+                return false;
+            }
 
         //Log.w("DATTEEEE", dateToValidate);
         SimpleDateFormat sdf = new SimpleDateFormat("mm/dd/yyyy");
@@ -246,6 +307,15 @@ public class EditProfileActivity extends AppCompatActivity {
                             String Day = Date.substring(0, Date.indexOf('/'));
                             Date = Date.substring(Date.indexOf('/')+1);
                             String Year = Date;
+
+                            if (Month.length() < 2)
+                            {
+                                Month = "0" + Month;
+                            }
+                            if (Day.length() < 2)
+                            {
+                                Day = "0" + Day;
+                            }
                             Date = Year + "-" + Day+ "-" + Month+ "T00:00:00.000Z";
                             JSON.put("token", UserSessionManager.getUserToken());
                             JSON.put("NewUserName", userNameStr);

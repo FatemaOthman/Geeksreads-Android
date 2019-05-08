@@ -17,9 +17,13 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
+import android.widget.FrameLayout;
 import android.widget.ListView;
 import android.widget.SearchView;
+import android.widget.TextView;
 import android.widget.Toast;
+
+import com.example.geeksreads.views.LoadingView;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -45,6 +49,7 @@ public class CurrentlyReadingActivity extends AppCompatActivity {
     SwipeRefreshLayout mSwipeRefreshLayout;
     JSONArray data = new JSONArray();
     Context mContext;
+    LoadingView Loading;
 
     /**
      * @param savedInstanceState
@@ -62,9 +67,7 @@ public class CurrentlyReadingActivity extends AppCompatActivity {
         Objects.requireNonNull(getSupportActionBar()).setTitle("Currently Reading");
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
-
-
-
+        Loading = new LoadingView(null, (FrameLayout)findViewById(R.id.progressBarHolder), (TextView)findViewById(R.id.ProgressName));
 
         final JSONObject jsonObject = new JSONObject();
         try {
@@ -146,6 +149,7 @@ public class CurrentlyReadingActivity extends AppCompatActivity {
 
         @Override
         protected void onPreExecute() {
+            Loading.Start("Loading, Please wait...");
             dialog = new AlertDialog.Builder(mContext).create();
             dialog.setTitle("Connection Status");
             //progress.setVisibility(View.VISIBLE);
@@ -242,6 +246,7 @@ public class CurrentlyReadingActivity extends AppCompatActivity {
                 Toast.makeText(mContext, "Unable to get Shelf Data from server", Toast.LENGTH_SHORT).show();
                 e.printStackTrace();
             }
+            Loading.Stop();
         }
 
     }
