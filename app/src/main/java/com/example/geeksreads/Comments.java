@@ -96,8 +96,8 @@ public class Comments extends AppCompatActivity {
         });
 
 
-        // final String CommentsListUrl = "https://geeksreads.herokuapp.com/api/comments/list?ReviewId="+"5ccdb0f8a375f9643cc8b0c3";
-        final String CommentsListUrl = APIs.API_GET_COMMENTS_LIST + "?ReviewId=" + getIntent().getStringExtra("ReviewId");
+        final String CommentsListUrl = "https://geeksreads.herokuapp.com/api/comments/list?ReviewId=" + "5ccdb0f8a375f9643cc8b0c3";
+        //final String CommentsListUrl = APIs.API_GET_COMMENTS_LIST + "?ReviewId=" + getIntent().getStringExtra("ReviewId");
 
         Comments.GetAllComments performBackgroundTask = new Comments.GetAllComments();
         performBackgroundTask.execute(CommentsListUrl);

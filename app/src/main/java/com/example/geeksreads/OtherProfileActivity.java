@@ -649,8 +649,8 @@ public class OtherProfileActivity extends AppCompatActivity implements Navigatio
                 aForTestUserPic = jsonObject.getString("Photo");
                 UserName.setText(jsonObject.getString("UserName"));
                 aForTestUserName = UserName.getText().toString();
-
-                if (jsonObject.getString("IsFollowing").equals("true"))
+                Log.d("AMR", "FollowButton: " + jsonObject.getString("IsFollowing"));
+                if (jsonObject.getString("IsFollowing").equals("True"))
                     FollowButton.setText("Un-Follow");
                 else
                     FollowButton.setText("Follow");
