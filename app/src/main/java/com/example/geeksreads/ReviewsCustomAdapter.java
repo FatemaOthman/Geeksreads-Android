@@ -160,6 +160,7 @@ public class ReviewsCustomAdapter extends ArrayAdapter<ReviewDataModel> implemen
                         Intent myIntent = new Intent(mContext, Comments.class);
                         myIntent.putExtra("ReviewId", dataModel.getReviewID());
                         myIntent.putExtra("BookId", dataModel.getBookID());
+                        myIntent.putExtra("Photo", dataModel.getUserProfilePicture());
                         mContext.startActivity(myIntent);
                     }
                 }
