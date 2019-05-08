@@ -54,7 +54,7 @@ public class Following_Fragment extends Fragment {
         //In my code here, I am sending the id of the user
         JSONObject JSON = new JSONObject();
         try {
-            JSON.put("User_id", UserSessionManager.getUserID());
+            JSON.put("user_id", UserSessionManager.getUserID());
             JSON.put("token", UserSessionManager.getUserToken());
         } catch (JSONException e) {
             e.printStackTrace();
