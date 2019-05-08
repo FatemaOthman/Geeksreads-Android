@@ -522,7 +522,7 @@ public class BookActivity extends AppCompatActivity implements NavigationView.On
                     bookTitle.setText(jsonObject.getString("Title"));
                     BookName = jsonObject.getString("Title");
                     bookAuthor.setText("By: " + "" + jsonObject.getString("AuthorName"));
-                    AuthorID = jsonObject.getString("AuthorName");
+                    AuthorID = jsonObject.getString("AuthorId");
                     BookID = jsonObject.getString("BookId");
                     ratingsNumber.setText(jsonObject.getString("RateCount") + " " + "Ratings");
                     reviewsNumber.setText(jsonObject.getString("ReviewCount") + " " + "Reviews");
