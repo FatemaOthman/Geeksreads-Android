@@ -551,6 +551,23 @@ public class BookActivity extends AppCompatActivity implements NavigationView.On
                         stars.getDrawable(2).setColorFilter(Color.rgb(34, 139, 34), PorterDuff.Mode.SRC_ATOP);
                     }
 
+                    if(APIs.MimicModeEnabled)
+                    {
+                        if (jsonObject.getString("ReadStatus").equals("Read")) {
+                            bookOptions.setText("Read");
+                            bookOptions.setBackgroundColor(getResources().getColor(R.color.ReadColor));
+                        } else if (jsonObject.getString("ReadStatus").equals("Want to Read")) {
+                            bookOptions.setText("Want To Read");
+                            bookOptions.setBackgroundColor(getResources().getColor(R.color.WantToReadColor));
+                        } else if (jsonObject.getString("ReadStatus").equals("Currently Reading")) {
+                            bookOptions.setText("Currently Reading");
+                            bookOptions.setBackgroundColor(getResources().getColor(R.color.ReadingColor));
+                        } else {
+                            bookOptions.setText("Add to shelf");
+                            bookOptions.setBackgroundColor(getResources().getColor(R.color.colorNotificationbar));
+                        }
+                    }
+
 
                     /* Start Async Task to get the image from url */
                     GetImage getCover = new GetImage();
