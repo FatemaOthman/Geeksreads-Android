@@ -195,22 +195,5 @@ public class BookActivityTest {
         }
      }
 
-    @Test
-    public void TestViewReviews(){
-        if (APIs.MimicModeEnabled) {
-            Intent mIntent = new Intent();
-            mIntent.putExtra("BookID", "111");
 
-            menuActivityTestRule.launchActivity(mIntent);
-
-            Instrumentation.ActivityMonitor activityMonitor = getInstrumentation().addMonitor(Reviews.class.getName(), null, false);
-
-            onView(withId(R.id.GoToReviews)).perform(scrollTo(), click());
-
-            Activity nextActivity = getInstrumentation().waitForMonitorWithTimeout(activityMonitor, 5000);
-            // next activity is opened and captured.
-            assertNotNull(nextActivity);
-            nextActivity.finish();
-        }
-    }
 }

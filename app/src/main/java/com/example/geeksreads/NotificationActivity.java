@@ -25,11 +25,14 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.SearchView;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import com.example.geeksreads.views.LoadingView;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -56,6 +59,7 @@ public class NotificationActivity extends AppCompatActivity implements Navigatio
 
     Context mContext;
     SwipeRefreshLayout mSwipeRefreshLayout;
+    LoadingView Loading;
 
     /* SideBar Views */
     ImageView userPhoto;
@@ -75,7 +79,7 @@ public class NotificationActivity extends AppCompatActivity implements Navigatio
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_notification);
         mContext = this;
-
+        Loading = new LoadingView(null, (FrameLayout)findViewById(R.id.progressBarHolder), (TextView)findViewById(R.id.ProgressName));
         /* ToolBar and SideBar Setups */
         Toolbar myToolbar = findViewById(R.id.toolbar);
         rootView=findViewById(R.id.toolbar);
@@ -250,6 +254,7 @@ public class NotificationActivity extends AppCompatActivity implements Navigatio
 
         @Override
         protected void onPreExecute() {
+            Loading.Start("Loading, Please wait...");
             dialog = new AlertDialog.Builder(mContext).create();
             dialog.setTitle("Connection Status");
             //progress.setVisibility(View.VISIBLE);
@@ -351,6 +356,7 @@ public class NotificationActivity extends AppCompatActivity implements Navigatio
             } catch (JSONException e) {
                 e.printStackTrace();
             }
+            Loading.Stop();
         }
 
     }

@@ -185,25 +185,21 @@ public class NotificationService extends Service {
                     Log.d("length", String.valueOf(Notifications.length()));
                     for (int i = 0; i < Notifications.length(); i++)
                     {
-                        JSONObject CurrentNotification = Notifications.getJSONObject(i);
-                        Log.d("SEEN", String.valueOf(CurrentNotification.getBoolean("Seen")));
-                        String notificationBody;
-                        String NotificationId = CurrentNotification.getString("NotificationId");
+                        try{
+                            JSONObject CurrentNotification=Notifications.getJSONObject(i);
+                            Log.d("SEEN", String.valueOf(CurrentNotification.getBoolean("Seen")));
+                            String notificationBody;
+                            String NotificationId=CurrentNotification.getString("NotificationId");
 
-                        if (CurrentNotification.getString("NotificationType").equals("ReviewLike"))
-                        {
-                            notificationBody = CurrentNotification.getString("MakerName") + " Liked you review on "
-                                    + CurrentNotification.getString("BookName");
-                        }
-                        else if (CurrentNotification.getString("NotificationType").equals("Comment"))
-                        {
-                            notificationBody = CurrentNotification.getString("MakerName") + " commented on review in "
-                                    + CurrentNotification.getString("BookName");
-                        }
-                        else
-                        {
-                            notificationBody = CurrentNotification.getString("MakerName") + " Started Following You";
-                        }
+                            if (CurrentNotification.getString("NotificationType").equals("ReviewLike")) {
+                                notificationBody=CurrentNotification.getString("MakerName") + " Liked you review on "
+                                        + CurrentNotification.getString("BookName");
+                            } else if (CurrentNotification.getString("NotificationType").equals("Comment")) {
+                                notificationBody=CurrentNotification.getString("MakerName") + " commented on review in "
+                                        + CurrentNotification.getString("BookName");
+                            } else {
+                                notificationBody=CurrentNotification.getString("MakerName") + " Started Following You";
+                            }
 
                         if (!CurrentNotification.getBoolean("Seen")) {
 
@@ -243,6 +239,10 @@ public class NotificationService extends Service {
                             MarkSeen seen = new MarkSeen();
                             seen.execute(UrlService, jsonObject.toString());
                             break;
+                        }
+                        }
+                        catch (JSONException e) {
+                            e.printStackTrace();
                         }
                     }
                 }

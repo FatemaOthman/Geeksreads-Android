@@ -68,6 +68,6 @@ public class EditProfileUnitTest {
     }
     @Test
     public void EditProfileData_areValid() {
-        assertEquals(EditProfileActivity.editProfileValidationErrors.NO_ERRORS, EditProfileActivity.validateEditProfileData("MahmoudMorsy","mahmoud_morsy@live.com", "1/9/1995"));
+        assertEquals(EditProfileActivity.editProfileValidationErrors.NO_ERRORS, EditProfileActivity.validateEditProfileData("MahmoudMorsy","mahmoud_morsy@live.com", "01/09/1995"));
     }
 }

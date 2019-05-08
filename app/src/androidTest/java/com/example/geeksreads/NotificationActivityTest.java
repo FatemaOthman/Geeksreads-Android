@@ -62,20 +62,6 @@ public class NotificationActivityTest {
         }
     }
 
-    @Test
-    public void OnClickItem()
-    {
-        if (APIs.MimicModeEnabled) {
-            Instrumentation.ActivityMonitor activityMonitor = getInstrumentation().addMonitor(Reviews.class.getName(), null, false);
 
-            onData(anything()).inAdapterView(withId(R.id.NotificationList)).atPosition(0).perform(click());
-
-            Activity nextActivity = getInstrumentation().waitForMonitorWithTimeout(activityMonitor, 5000);
-            // next activity is opened and captured.
-            assertNotNull(nextActivity);
-            nextActivity.finish();
-        }
-
-    }
 
 }
