@@ -8,6 +8,7 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AlertDialog;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -125,6 +126,7 @@ public class Following_Fragment extends Fragment {
                 writer.flush();
                 writer.close();
                 ops.close();
+                Log.d("AMR", "Follow :http.getResponseCode(): " + String.valueOf(http.getResponseCode()));
                 switch (String.valueOf(http.getResponseCode())) {
                     case "200":
                         /* A Stream object to get the returned data from API Call */
@@ -172,7 +174,7 @@ public class Following_Fragment extends Fragment {
                 return;
             }
             try {
-
+                Log.d("AMR", "Following: " + result);
                 JSONArray jsonArr = new JSONArray(result);
                 dataModels = UserDataModel.fromJson(jsonArr);
                 FollowingAdapter = new CustomAdapter(dataModels, mContext.getApplicationContext());
