@@ -82,6 +82,7 @@ public class BookAdapter extends RecyclerView.Adapter<BookAdapter.ViewHolder>{
             @Override
             public void onClick(View view) {
                 Intent myIntent = new Intent(context, BookActivity.class);
+                myIntent.putExtra("BookID",bookitem.getBookID());
                 context.startActivity(myIntent);
 
 
