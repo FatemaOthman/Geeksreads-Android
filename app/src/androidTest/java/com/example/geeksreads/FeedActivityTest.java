@@ -3,12 +3,15 @@ package com.example.geeksreads;
 import android.app.Activity;
 import android.app.Instrumentation;
 import android.content.Intent;
+import android.support.test.espresso.UiController;
 import android.support.test.espresso.ViewAction;
 import android.support.test.espresso.ViewAssertion;
 import android.support.test.espresso.contrib.RecyclerViewActions;
 import android.support.test.rule.ActivityTestRule;
 import android.support.v7.widget.RecyclerView;
+import android.view.View;
 
+import org.hamcrest.Matcher;
 import org.junit.Test;
 
 import CustomFunctions.APIs;
@@ -26,6 +29,31 @@ import static org.junit.Assert.*;
 public class FeedActivityTest {
     public ActivityTestRule<FeedActivity> menuActivityTestRule =
             new ActivityTestRule<>(FeedActivity.class, true, false);
+    public static class MyViewAction {
+
+        public  static ViewAction clickChildViewWithId(final int id) {
+            return new ViewAction() {
+                @Override
+                public Matcher<View> getConstraints() {
+                    return null;
+                }
+
+                @Override
+                public String getDescription() {
+                    return "Click on a child view with specified id.";
+                }
+
+                @Override
+                public void perform(UiController uiController, View view) {
+                    View v = view.findViewById(id);
+                    v.performClick();
+                }
+            };
+        }
+
+    }
+
+
 
 
     UserSessionManager userSessionManager = new UserSessionManager("xYzAbCdToKeN", "anyid", true);
@@ -46,21 +74,18 @@ public class FeedActivityTest {
     }
 
     @Test
-    public void OnClickItem()
+    public void OnClickItemBookCover()
     {
-        if (APIs.MimicModeEnabled) {
-            if(getRVcount()>0)
-            {
-                onView(withId((R.id.FeedRecyclerView))).perform(RecyclerViewActions.actionOnItemAtPosition(0,click()));
-            }
-        }
+        Instrumentation.ActivityMonitor activityMonitor = getInstrumentation().addMonitor(BookActivity.class.getName(), null, false);
 
-    }
-    private int getRVcount()
-    {
-        onData(withId(R.id.FeedRecyclerView));
-        RecyclerView recyclerView = (RecyclerView)menuActivityTestRule.getActivity().findViewById(R.id.FeedRecyclerView);
-        return recyclerView.getAdapter().getItemCount();
+        onView(withId(R.id.FeedRecyclerView)).perform(
+                RecyclerViewActions.actionOnItemAtPosition(0, MyViewAction.clickChildViewWithId(R.id.bookCover)));
+        Activity nextActivity = getInstrumentation().waitForMonitorWithTimeout(activityMonitor, 5000);
+        // next activity is opened and captured.
+        assertNotNull(nextActivity);
+        nextActivity.finish();
+
+
     }
 
 }
