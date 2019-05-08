@@ -37,7 +37,7 @@ import CustomFunctions.APIs;
 import CustomFunctions.UserSessionManager;
 
 public class Followers_Fragment extends Fragment {
-
+    public static String ForTestResponse;
     ListView FollowersList;
     Context mContext;
     ArrayList<UserDataModel> dataModels;
@@ -54,7 +54,7 @@ public class Followers_Fragment extends Fragment {
         //In my code here, I am sending the id of the user
         JSONObject JSON = new JSONObject();
         try {
-            JSON.put("User_id", UserSessionManager.getUserID());
+            JSON.put("user_id", UserSessionManager.getUserID());
             JSON.put("token", UserSessionManager.getUserToken());
         } catch (JSONException e) {
             e.printStackTrace();
@@ -84,7 +84,7 @@ public class Followers_Fragment extends Fragment {
     }
 
     public class GetDetails extends AsyncTask<String, Void, String> {
-        public static final String REQUEST_METHOD = "GET";
+        public static final String REQUEST_METHOD = "POST";
 
         AlertDialog dialog;
 
@@ -109,7 +109,7 @@ public class Followers_Fragment extends Fragment {
                 http.setDoInput(true);
                 http.setDoOutput(true);
                 http.setRequestProperty("content-type", "application/json");
-
+                http.setRequestProperty("x-auth-token", UserSessionManager.getUserToken());
                 /* A Stream object to hold the sent data to API Call */
                 OutputStream ops = http.getOutputStream();
                 BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(ops, StandardCharsets.UTF_8));
@@ -161,6 +161,7 @@ public class Followers_Fragment extends Fragment {
             }
             try {
 
+                ForTestResponse = result;
                 JSONArray jsonArr = new JSONArray(result);
 
                 dataModels = UserDataModel.fromJson(jsonArr);

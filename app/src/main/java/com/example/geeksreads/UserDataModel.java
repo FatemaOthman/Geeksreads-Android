@@ -23,7 +23,7 @@ public class UserDataModel {
         // Deserialize json into object fields
         try {
             DummyUser.User_ID = jsonObject.getString("UserId");
-            DummyUser.Picture_Url = jsonObject.getString("photo");
+            DummyUser.Picture_Url = jsonObject.getString("Photo");
             DummyUser.User_Name = jsonObject.getString("UserName");
 
         } catch (JSONException e) {

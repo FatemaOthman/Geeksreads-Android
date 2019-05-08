@@ -178,8 +178,7 @@ public class Profile extends AppCompatActivity implements NavigationView.OnNavig
         JSONObject mJSON = new JSONObject();
 
         try {
-            // mJSON.put("token", UserSessionManager.getUserToken());
-            mJSON.put("token", "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI1Y2I2MGEwYWQ0MmU5YjAwMTczZmExZmQiLCJpYXQiOjE1NTcxNDQ1MTEsImV4cCI6MTU1NzIzMDkxMX0.r_wnJ_i28G2Ot-gBEXw_cTbGpTNnYX1sGhlFTYFXRWs");
+            mJSON.put("token", UserSessionManager.getUserToken());
         } catch (JSONException e) {
             e.printStackTrace();
         }
@@ -359,9 +358,7 @@ public class Profile extends AppCompatActivity implements NavigationView.OnNavig
                 http.setDoInput(true);
                 http.setDoOutput(true);
                 http.setRequestProperty("content-type", "application/json");
-                // http.setRequestProperty("x-auth-token", UserSessionManager.getUserToken());
-                http.setRequestProperty("x-auth-token", "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI1Y2I2MGEwYWQ0MmU5YjAwMTczZmExZmQiLCJpYXQiOjE1NTcxNDQ1MTEsImV4cCI6MTU1NzIzMDkxMX0.r_wnJ_i28G2Ot-gBEXw_cTbGpTNnYX1sGhlFTYFXRWs");
-
+                http.setRequestProperty("x-auth-token", UserSessionManager.getUserToken());
 
                 /* A Stream object to hold the sent data to API Call */
                 OutputStream ops = http.getOutputStream();
@@ -422,7 +419,7 @@ public class Profile extends AppCompatActivity implements NavigationView.OnNavig
                 return;
             }
             try {
-
+                Log.d("AMR", "Profile: " + result);
                 JSONObject jsonObject = new JSONObject(result);
                 FollowersCount.setText(jsonObject.getString("NoOfFollowers"));
                 FollowingCount.setText(jsonObject.getString("NoOfFollowings"));
@@ -520,7 +517,7 @@ public class Profile extends AppCompatActivity implements NavigationView.OnNavig
 
                 JSONObject jsonObject = new JSONObject(result);
                 FollowItem.setTitle("Followers   " + jsonObject.getString("NoOfFollowers"));
-                // BookItem.setTitle("My Books   0" );
+
                 userName.setText(jsonObject.getString("UserName"));
                 GetUserPicture Pic = new GetUserPicture();
                 Pic.execute(jsonObject.getString("Photo"));
@@ -734,7 +731,7 @@ public class Profile extends AppCompatActivity implements NavigationView.OnNavig
                 String readingCount = jsonObject.getString("NoOfReading");
                 String FullCount = Integer.toString(Integer.parseInt(readCount) + Integer.parseInt(wantToReadCount) + Integer.parseInt(readingCount));
                 BooksCount.setText(FullCount + " " + "Books");
-
+                Log.d("AMR", "BooksCount: " + FullCount);
             }
             /* Catching Exceptions */ catch (JSONException e) {
                 e.printStackTrace();

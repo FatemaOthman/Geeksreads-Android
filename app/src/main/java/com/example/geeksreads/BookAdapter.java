@@ -58,24 +58,14 @@ public class BookAdapter extends RecyclerView.Adapter<BookAdapter.ViewHolder>{
                 .into(holder.imageViewBookCover);
 
 
-        if (bookitem.getStatus().equals("Read")) {
-            holder.buttonBookState.setText("Read");
-            holder.buttonBookState.setBackgroundColor(ContextCompat.getColor(context, R.color.ReadColor));
-        } else if (bookitem.getStatus().equals("Want to Read")) {
-            holder.buttonBookState.setText("Want To Read");
-            holder.buttonBookState.setBackgroundColor(ContextCompat.getColor(context, R.color.WantToReadColor));
-        } else if (bookitem.getStatus().equals("Currently Reading")) {
-            holder.buttonBookState.setText("Currently Reading");
-            holder.buttonBookState.setBackgroundColor(ContextCompat.getColor(context, R.color.ReadingColor));
-        } else {
-            holder.buttonBookState.setText("Add to shelf");
+            holder.buttonBookState.setText("View Book");
             holder.buttonBookState.setBackgroundColor(ContextCompat.getColor(context, R.color.colorNotificationbar));
-        }
+
 
         holder.buttonBookState.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent myIntent = new Intent(context, ChooseShelfActivity.class);
+                Intent myIntent = new Intent(context, BookActivity.class);
                 myIntent.putExtra("Author",bookitem.getBookAuthor());
                 myIntent.putExtra("Title", bookitem.getBookName());
                 myIntent.putExtra("Rating",bookitem.getBookRate());
@@ -92,6 +82,7 @@ public class BookAdapter extends RecyclerView.Adapter<BookAdapter.ViewHolder>{
             @Override
             public void onClick(View view) {
                 Intent myIntent = new Intent(context, BookActivity.class);
+                myIntent.putExtra("BookID",bookitem.getBookID());
                 context.startActivity(myIntent);
 
 

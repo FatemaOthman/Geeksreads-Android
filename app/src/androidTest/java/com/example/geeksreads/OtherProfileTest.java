@@ -19,7 +19,7 @@ public class OtherProfileTest {
     @Test
     public void Test_Other_Profile() {
         onView(withId(R.id.OtherUserName)).check(ViewAssertions.matches(withText("Amr Khaled")));
-        assertEquals("http://geeksreads.000webhostapp.com/LoggedInUser/PP.jpg", OtherProfileActivity.aForTestUserPic);
+        assertEquals("http://geeksreads.000webhostapp.com/Amr/MyPic.jpg", OtherProfileActivity.aForTestUserPic);
 
     }
 
