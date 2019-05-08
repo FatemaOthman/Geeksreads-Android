@@ -19,7 +19,7 @@ public class ProfileTest {
 
 
         //Test Profile Picture:
-        assertEquals("http://geeksreads.000webhostapp.com/LoggedInUser/PP.jpg", Profile.ForTestProfilePicture);
+        assertEquals("http://geeksreads.000webhostapp.com/Amr/MyPic.jpg", Profile.ForTestProfilePicture);
 
         //Test Followers Count:
         assertEquals("50", Profile.ForTestFollowersCount);

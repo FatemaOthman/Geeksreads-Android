@@ -37,7 +37,7 @@ import CustomFunctions.APIs;
 import CustomFunctions.UserSessionManager;
 
 public class Followers_Fragment extends Fragment {
-
+    public static String ForTestResponse;
     ListView FollowersList;
     Context mContext;
     ArrayList<UserDataModel> dataModels;
@@ -161,6 +161,7 @@ public class Followers_Fragment extends Fragment {
             }
             try {
 
+                ForTestResponse = result;
                 JSONArray jsonArr = new JSONArray(result);
 
                 dataModels = UserDataModel.fromJson(jsonArr);
