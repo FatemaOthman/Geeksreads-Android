@@ -419,6 +419,7 @@ public class AuthorActivity extends AppCompatActivity implements NavigationView.
                 final JSONObject jsonObject = new JSONObject(result);
 
                 AuthorName.setText(jsonObject.getString("AuthorName"));
+                sForTestAuthorName=AuthorName.getText().toString();
                 // AuthorNumsOfRating.setText(jsonObject.getString("numofrates")+" ratings.");
 
                 //  AuthorRating.setText(jsonObject.getString("rate"));
@@ -427,6 +428,7 @@ public class AuthorActivity extends AppCompatActivity implements NavigationView.
                 AuthorDescription.setText(jsonObject.getString("About"));
 
                 JSONArray array=jsonObject.getJSONArray("BookId");
+                sForTestNumOfBooks = String.valueOf(array.length());
                 NumOfBooks.setText("Author of "+array.length()+" books.");
                 array=jsonObject.getJSONArray("FollowingUserId");
                 if(array.toString().contains(UserSessionManager.getUserID()))
@@ -439,6 +441,7 @@ public class AuthorActivity extends AppCompatActivity implements NavigationView.
                 /* Start Async Task to get the image from url */
                 GetImage getAuthorPic = new GetImage();
                 ImageURL = jsonObject.getString("Photo");
+                sForTestAuthorPicURL=ImageURL;
                 getAuthorPic.execute(ImageURL);
 
 

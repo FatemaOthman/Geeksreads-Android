@@ -45,7 +45,8 @@ import CustomFunctions.APIs;
 import CustomFunctions.UserSessionManager;
 
 public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
-
+    public static String sForTestLikeStatus;
+    public static boolean sFortTestLikeBoolean;
 
     private ArrayList<FeedModel> dataSet;
     Context context;
@@ -323,6 +324,8 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
                                 UnlikeResource.execute(UrlLike,jsonObject.toString());
                                 ((ReviewViewHolder)holder).LikeText.setText("Like");
                                 object.setIsLiked(false);
+                                sForTestLikeStatus = "Like";
+                                sFortTestLikeBoolean=false;
 
 
                             }
@@ -343,6 +346,8 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
                                 likeResource.execute(UrlUnLike,jsonObject.toString());
                                 ((ReviewViewHolder)holder).LikeText.setText("Liked");
                                 object.setIsLiked(true);
+                                sForTestLikeStatus = "Liked";
+                                sFortTestLikeBoolean=true;
 
                             }
                         }

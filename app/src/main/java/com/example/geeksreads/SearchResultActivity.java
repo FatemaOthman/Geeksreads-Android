@@ -43,6 +43,7 @@ public class SearchResultActivity extends AppCompatActivity {
     private static String CallingActivity;
     TextView moreSearchResults;
     Context mContext;
+    public static int sFortTestNumOfResult;
 
 
     @Override
@@ -312,6 +313,7 @@ public class SearchResultActivity extends AppCompatActivity {
 
                     }
                 }
+                sFortTestNumOfResult=jsonArray.length();
                 Log.d("ListSize", toString().valueOf(list.size()));
                 adapter =new BookAdapter(list,getApplicationContext());
                 recyclerViewSearchHandler.setAdapter(adapter);

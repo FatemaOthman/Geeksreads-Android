@@ -61,6 +61,7 @@ import java.util.List;
 import java.util.Objects;
 
 public class FeedActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
+    public static String sForTestFeeditemsCount;
 
     RecyclerView recyclerView;
     RecyclerView.Adapter adapter;
@@ -570,6 +571,7 @@ public class FeedActivity extends AppCompatActivity implements NavigationView.On
             try {
                 /* Creating a JSON Object to parse the data in */
                 final JSONArray jsonArray = new JSONArray(result);
+                sForTestFeeditemsCount=String.valueOf(jsonArray.length());
                 for(int i=0;i<jsonArray.length();i++)
                 {
                     JSONObject o = jsonArray.getJSONObject(i);

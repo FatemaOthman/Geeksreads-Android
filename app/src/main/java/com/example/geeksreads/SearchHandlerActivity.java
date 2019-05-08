@@ -51,6 +51,7 @@ public class SearchHandlerActivity extends AppCompatActivity  {
     private List<SearchHandlerItem> list;
     TextView moreSearchResults;
     Context mContext;
+    public static int sForTestNumOfResults;
 
     /**
      * @param savedInstanceState
@@ -333,6 +334,7 @@ public class SearchHandlerActivity extends AppCompatActivity  {
 
                     }
                 }
+                sForTestNumOfResults=jsonArray.length();
 
                 Log.d("ListSize", toString().valueOf(list.size()));
                 adapter =new SearchHandlerAdapter(list,getApplicationContext());
