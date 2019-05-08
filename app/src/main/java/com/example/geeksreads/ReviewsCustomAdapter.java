@@ -118,8 +118,6 @@ public class ReviewsCustomAdapter extends ArrayAdapter<ReviewDataModel> implemen
         viewHolder.Rating.setNumStars(5);
         viewHolder.Rating.setRating(Float.parseFloat(dataModel.getReviewRating()));
 
-
-
         if (viewHolder.IsLiked.equals("true")) {
             viewHolder.Likes.setImageResource(R.drawable.ic_like_active);
 
