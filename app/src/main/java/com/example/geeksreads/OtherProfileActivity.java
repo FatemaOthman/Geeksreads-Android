@@ -142,9 +142,6 @@ public class OtherProfileActivity extends AppCompatActivity implements Navigatio
         GetShelvesDetails getShelvesDetails = new GetShelvesDetails(UserSessionManager.getUserToken());
         String UrlShelvesDetails = APIs.API_USER_SHELVES;
         getShelvesDetails.execute(UrlShelvesDetails,UserSessionManager.getUserToken());
-
-
-
         ///////////////////////////////////////////////////////
         OtherUserPhoto = findViewById(R.id.UserProfilePhoto);
         UserName = findViewById(R.id.OtherUserName);
@@ -359,7 +356,6 @@ public class OtherProfileActivity extends AppCompatActivity implements Navigatio
         }
 
     }
-
 
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -780,8 +776,6 @@ public class OtherProfileActivity extends AppCompatActivity implements Navigatio
 
         }
     }
-
-
     /**
      * Class that get sidebar Data from server
      */

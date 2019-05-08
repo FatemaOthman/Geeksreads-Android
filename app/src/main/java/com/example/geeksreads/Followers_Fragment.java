@@ -84,7 +84,7 @@ public class Followers_Fragment extends Fragment {
     }
 
     public class GetDetails extends AsyncTask<String, Void, String> {
-        public static final String REQUEST_METHOD = "GET";
+        public static final String REQUEST_METHOD = "POST";
 
         AlertDialog dialog;
 
@@ -109,7 +109,7 @@ public class Followers_Fragment extends Fragment {
                 http.setDoInput(true);
                 http.setDoOutput(true);
                 http.setRequestProperty("content-type", "application/json");
-
+                http.setRequestProperty("x-auth-token", UserSessionManager.getUserToken());
                 /* A Stream object to hold the sent data to API Call */
                 OutputStream ops = http.getOutputStream();
                 BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(ops, StandardCharsets.UTF_8));
