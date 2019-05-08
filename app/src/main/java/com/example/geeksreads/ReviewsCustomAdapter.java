@@ -159,6 +159,7 @@ public class ReviewsCustomAdapter extends ArrayAdapter<ReviewDataModel> implemen
                     public void onClick(View view) {
                         Intent myIntent = new Intent(mContext, Comments.class);
                         myIntent.putExtra("ReviewId", dataModel.getReviewID());
+                        myIntent.putExtra("BookId", dataModel.getBookID());
                         mContext.startActivity(myIntent);
                     }
                 }
@@ -171,6 +172,7 @@ public class ReviewsCustomAdapter extends ArrayAdapter<ReviewDataModel> implemen
                     public void onClick(View view) {
                         Intent myIntent = new Intent(mContext, Comments.class);
                         myIntent.putExtra("ReviewId", dataModel.getReviewID());
+                        myIntent.putExtra("BookId", dataModel.getBookID());
                         mContext.startActivity(myIntent);
                     }
                 }

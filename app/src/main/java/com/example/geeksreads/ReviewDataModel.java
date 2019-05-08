@@ -6,6 +6,8 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 
+import static org.json.JSONObject.NULL;
+
 class ReviewDataModel {
 
     private String ReviewID;
@@ -19,6 +21,7 @@ class ReviewDataModel {
     private String IsLiked;
     private String DateOfReview;
     private String Rating;
+    private String BookID;
 
     /**
      * fromJson: Put Data from a single JSONOBJECT into a UserDataModel
@@ -34,6 +37,7 @@ class ReviewDataModel {
             DummyUser.BookCoverPicture = jsonObject.getString("bookCover");
             DummyUser.UserProfilePicture = jsonObject.getString("photo");
             DummyUser.UserName = jsonObject.getString("userName");
+            DummyUser.BookID = jsonObject.getString("bookId");
             DummyUser.NLikes = jsonObject.getString("likesCount");
             DummyUser.NComments = jsonObject.getString("commCount");
             DummyUser.ReviewText = jsonObject.getString("reviewBody");
@@ -44,7 +48,15 @@ class ReviewDataModel {
             DummyUser.Rating = jsonObject.getString("rating");
         } catch (JSONException e) {
             e.printStackTrace();
-            return null;
+            try {
+                if (jsonObject.getString("bookCover").equals(NULL)) {
+                    DummyUser.BookCoverPicture = jsonObject.getString("photo");
+
+                }
+            } catch (JSONException e1) {
+                e1.printStackTrace();
+            }
+            // return null;
         }
         // Return new object
         return DummyUser;
@@ -181,6 +193,10 @@ class ReviewDataModel {
      */
     String getReviewRating() {
         return Rating;
+    }
+
+    String getBookID() {
+        return BookID;
     }
 
 }
