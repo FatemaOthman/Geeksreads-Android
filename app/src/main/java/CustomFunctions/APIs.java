@@ -32,7 +32,7 @@ public class APIs {
     public static String API_MAKE_NOTIFICATION_SEEN = "https://geeksreads.herokuapp.com/api/users//Notification/seen";
     public static String API_GET_BOOK_STATUS = "https://geeksreads.herokuapp.com/api/users/GetBookReadStatus";
 
-    public static String API_GET_USER_BY_ID = "https://geeksreads.herokuapp.com/api/users/GetUserById";
+   public static String API_GET_USER_BY_ID = "https://geeksreads.herokuapp.com/api/users/GetUserById";
     public static String API_FOLLOW_USER = "https://geeksreads.herokuapp.com/api/users/Follow";
     public static String API_UN_FOLLOW_USER = "https://geeksreads.herokuapp.com/api/users/unFollow";
     public static String API_GET_USER_READ_DETAILS = "https://geeksreads.herokuapp.com/api/Users/GetUserReadDetails";
@@ -45,14 +45,14 @@ public class APIs {
     public static String API_UNLIKE_REVIEW = "https://geeksreads.herokuapp.com/api/resources/unlike";
 
 
-    public static String API_GET_AUTHOR_BY_ID = "https://geeksreads.herokuapp.com/api/authors/id";
+    /*public static String API_GET_AUTHOR_BY_ID = "https://geeksreads.herokuapp.com/api/authors/id";
     public static String API_GET_FOLLOWING_AUTHOR_STATE = "https://geeksreads.herokuapp.com/api/authors/isfollowed";
     public static String API_GET_BOOKS_WRITTEN_BY_AUTHOR = "https://geeksreads.herokuapp.com/api/books/author";
     public static String API_FOLLOW_AUTHOR = "https://geeksreads.herokuapp.com/api/authors/follow";
     public static String API_UNFOLLOW_AUTHOR = "https://geeksreads.herokuapp.com/api/authors/unfollow";
     public static String API_USER_SHELVES = "https://geeksreads.herokuapp.com/api/users/GetUserShelves";
     public static String API_USER_STATUS ="https://geeksreads.herokuapp.com/api/user_status/show/";
-    public static String API_SEARCH="https://geeksreads.herokuapp.com/api/search/";
+    public static String API_SEARCH="https://geeksreads.herokuapp.com/api/search/";*/
 
     /* APIS Links for the Mimic Services APIs on Our Mimic Server, uncomment when used with Mimic */
 //    public static String API_LOGIN = "http://geeksreads.000webhostapp.com/Morsy/Signin.php";
@@ -92,7 +92,7 @@ public class APIs {
     public static String API_ADD_COMMENT = "http://geeksreads.000webhostapp.com/Amr/AddComment.php";
     */
 
-    /*
+
     public static String API_GET_AUTHOR_BY_ID = "http://geeksreads.000webhostapp.com/Fatema/id.php";
     public static String API_GET_FOLLOWING_AUTHOR_STATE = "http://geeksreads.000webhostapp.com/Fatema/isfollowed.php";
     public static String API_GET_BOOKS_WRITTEN_BY_AUTHOR = "http://geeksreads.000webhostapp.com/Fatema/author.php";
@@ -102,8 +102,8 @@ public class APIs {
     public static String API_SEARCH="http://geeksreads.000webhostapp.com/Fatema/search.php";
     public static String API_USER_SHELVES = "http://geeksreads.000webhostapp.com/Fatema/GetUserShelves";
 
-*/
 
-    public static boolean TestingModeEnabled = false;
-    public static boolean MimicModeEnabled = false;
+
+    public static boolean TestingModeEnabled = true;
+    public static boolean MimicModeEnabled = true;
 }

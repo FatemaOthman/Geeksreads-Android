@@ -631,9 +631,10 @@ public class FeedActivity extends AppCompatActivity implements NavigationView.On
 
 
                     list.add(B);
+                    adapter =new FeedAdapter((ArrayList)list,mContext);
+                    recyclerView.setAdapter(adapter);
+
                 }
-                adapter =new FeedAdapter((ArrayList)list,mContext);
-                recyclerView.setAdapter(adapter);
 
 
             } catch (JSONException e) {

@@ -3,7 +3,11 @@ package com.example.geeksreads;
 import android.app.Activity;
 import android.app.Instrumentation;
 import android.content.Intent;
+import android.support.test.espresso.ViewAction;
+import android.support.test.espresso.ViewAssertion;
+import android.support.test.espresso.contrib.RecyclerViewActions;
 import android.support.test.rule.ActivityTestRule;
+import android.support.v7.widget.RecyclerView;
 
 import org.junit.Test;
 
@@ -12,6 +16,7 @@ import CustomFunctions.UserSessionManager;
 
 import static android.support.test.InstrumentationRegistry.getInstrumentation;
 import static android.support.test.espresso.Espresso.onData;
+import static android.support.test.espresso.Espresso.onView;
 import static android.support.test.espresso.action.ViewActions.click;
 import static android.support.test.espresso.matcher.ViewMatchers.withId;
 import static junit.framework.Assert.assertNotNull;
@@ -31,7 +36,10 @@ public class FeedActivityTest {
         if (APIs.MimicModeEnabled) {
             Intent mIntent = new Intent();
             menuActivityTestRule.launchActivity(mIntent);
-            assertEquals("2", BookActivity.sForTestBookActivity);
+            onView(withId(R.id.FeedRecyclerView));
+            assertEquals("2",FeedActivity.sForTestFeeditemsCount);
+
+           // onData(withId(R.id.FeedRecyclerView)).check("2".equals(FeedActivity.sForTestFeeditemsCount));
 
         }
 
@@ -41,15 +49,18 @@ public class FeedActivityTest {
     public void OnClickItem()
     {
         if (APIs.MimicModeEnabled) {
-            Instrumentation.ActivityMonitor activityMonitor = getInstrumentation().addMonitor(FeedActivity.class.getName(), null, false);
-
-            onData(anything()).inAdapterView(withId(R.id.menuSearch)).atPosition(0).perform(click());
-
-            Activity nextActivity = getInstrumentation().waitForMonitorWithTimeout(activityMonitor, 5000);
-            assertNotNull(nextActivity);
-            nextActivity.finish();
+            if(getRVcount()>0)
+            {
+                onView(withId((R.id.FeedRecyclerView))).perform(RecyclerViewActions.actionOnItemAtPosition(0,click()));
+            }
         }
 
+    }
+    private int getRVcount()
+    {
+        onData(withId(R.id.FeedRecyclerView));
+        RecyclerView recyclerView = (RecyclerView)menuActivityTestRule.getActivity().findViewById(R.id.FeedRecyclerView);
+        return recyclerView.getAdapter().getItemCount();
     }
 
 }
