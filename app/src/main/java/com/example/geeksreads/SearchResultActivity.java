@@ -17,9 +17,12 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.FrameLayout;
 import android.widget.SearchView;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import com.example.geeksreads.views.LoadingView;
 
 import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
@@ -44,7 +47,7 @@ public class SearchResultActivity extends AppCompatActivity {
     TextView moreSearchResults;
     Context mContext;
     public static int sFortTestNumOfResult;
-
+    LoadingView Loading;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -54,6 +57,9 @@ public class SearchResultActivity extends AppCompatActivity {
         recyclerViewSearchHandler.setHasFixedSize(true);
         recyclerViewSearchHandler.setLayoutManager(new LinearLayoutManager(this));
         mContext = this;
+
+        Loading = new LoadingView(null, (FrameLayout)findViewById(R.id.progressBarHolder), (TextView)findViewById(R.id.ProgressName));
+
         list=new ArrayList<>();
         CallingActivity=getIntent().getStringExtra("CallingActivity");
 
@@ -227,7 +233,7 @@ public class SearchResultActivity extends AppCompatActivity {
 
         @Override
         protected void onPreExecute() {
-            /* Do Nothing */
+            Loading.Start("Searching...");
         }
 
         @Override
@@ -323,6 +329,7 @@ public class SearchResultActivity extends AppCompatActivity {
             } catch (JSONException e) {
                 e.printStackTrace();
             }
+            Loading.Stop();
         }
 
     }
